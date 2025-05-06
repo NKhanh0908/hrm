@@ -11,8 +11,13 @@ import com.project.hrm.mapper.EmployeeMapper;
 import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
+import com.project.hrm.specifications.EmployeeSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,10 +46,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<EmployeeDTO> getAll() {
-        return employeeMapper.toEmployeeDTOList(
-                employeeRepository.findAll()
-        );
+    public Page<EmployeeDTO> getAll(String name, String email, String gender, String address, int page, int size) {
+        Specification<Employees> spec = EmployeeSpecification.filterEmployee(name, email, gender, address);
+        Pageable pageable = PageRequest.of(page, size);
+        return employeeMapper.pageToEmployeeDTOList(employeeRepository.findAll(spec, pageable));
     }
 
     @Transactional(readOnly = true)

@@ -1,13 +1,15 @@
 package com.project.hrm.mapper;
 
 import com.project.hrm.dto.departmentDTO.DepartmentDTO;
-import com.project.hrm.dto.employeeDTO.ContactDTO;
+import com.project.hrm.dto.employeeDTO.ContractDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeUpdateDTO;
 import com.project.hrm.entities.Contracts;
 import com.project.hrm.entities.Employees;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,13 +20,14 @@ public class EmployeeMapper {
     private final DepartmentMapper departmentMapper;
 
     @Autowired
-    private EmployeeMapper(DepartmentMapper departmentMapper){
+    private EmployeeMapper(DepartmentMapper departmentMapper) {
         this.departmentMapper = departmentMapper;
     }
 
     // TODO: convert entities to dto
 
-    public EmployeeDTO toEmployeeDTO(Employees employees){
+    public EmployeeDTO toEmployeeDTO(Employees employees) {
+        DepartmentDTO departmentDTO = departmentMapper.toDepartmentDTO(employees.getDepartment());
         return EmployeeDTO.builder()
                 .id(employees.getId())
                 .firstName(employees.getFirstName())
@@ -35,11 +38,11 @@ public class EmployeeMapper {
                 .dateOfBirth(employees.getDateOfBirth())
                 .citizenIdentificationCard(employees.getCitizenIdentificationCard())
                 .address(employees.getAddress())
-                .departmentDTO(departmentMapper.toDepartmentDTO(employees.getDepartment()))
+                .departmentDTO(departmentDTO)
                 .build();
     }
 
-    public Employees toEntity(EmployeeDTO employeeDTO){
+    public Employees toEntity(EmployeeDTO employeeDTO) {
         return Employees.builder()
                 .id(employeeDTO.getId())
                 .firstName(employeeDTO.getFirstName())
@@ -54,8 +57,8 @@ public class EmployeeMapper {
                 .build();
     }
 
-    public ContactDTO toContactDTO(Contracts contracts){
-        ContactDTO contactDTO = new ContactDTO();
+    public ContractDTO toContactDTO(Contracts contracts) {
+        ContractDTO contactDTO = new ContractDTO();
         contactDTO.setId(contracts.getId());
         contactDTO.setDescription(contracts.getDescription());
         contactDTO.setBaseSalary(contracts.getBaseSalary());
@@ -67,11 +70,20 @@ public class EmployeeMapper {
         return contactDTO;
     }
 
-    public List<EmployeeDTO> toEmployeeDTOList(List<Employees> employees){
+    public List<EmployeeDTO> toEmployeeDTOList(List<Employees> employees) {
         return employees.stream().map(this::toEmployeeDTO).collect(Collectors.toList());
     }
 
-    public Employees employeeCreateToEmployee(EmployeeCreateDTO employeeCreateDTO, DepartmentDTO departmentDTO){
+    public Page<EmployeeDTO> pageToEmployeeDTOList(Page<Employees> employees) {
+        List<EmployeeDTO> dtoList = employees
+                .stream()
+                .map(this::toEmployeeDTO)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, employees.getPageable(), employees.getTotalElements());
+    }
+
+    public Employees employeeCreateToEmployee(EmployeeCreateDTO employeeCreateDTO, DepartmentDTO departmentDTO) {
         return Employees.builder()
                 .firstName(employeeCreateDTO.getFirstName())
                 .lastName(employeeCreateDTO.getLastName())
@@ -85,7 +97,7 @@ public class EmployeeMapper {
                 .build();
     }
 
-    public Employees employeeUpdateToEmployee(EmployeeUpdateDTO employeeUpdateDTO, DepartmentDTO departmentDTO){
+    public Employees employeeUpdateToEmployee(EmployeeUpdateDTO employeeUpdateDTO, DepartmentDTO departmentDTO) {
         return Employees.builder().build();
     }
 
