@@ -1,4 +1,4 @@
-package com.project.hrm.dto.employeeDTO;
+package com.project.hrm.dto.contractDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContractDTO {
+public class ContractUpdateDTO {
     private Integer id;
     private String title;
     private LocalDateTime contractSigningDate;
@@ -19,5 +19,5 @@ public class ContractDTO {
     private LocalDateTime endDate;
     private Double baseSalary;
     private String description;
-    private EmployeeDTO employeeDTO;
+    private Integer employeeId;
 }

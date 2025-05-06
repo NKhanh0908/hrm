@@ -1,5 +1,7 @@
-package com.project.hrm.dto.departmentDTO;
+package com.project.hrm.dto.applyDTO;
 
+import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +13,11 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplyUpdateDTO {
+public class ApplyDTO {
     private Integer id;
     private LocalDateTime applyAt;
     private String status;
     private String position;
-    private Integer recruitmentId;
-    private Integer candidateProfileId;
+    private RecruitmentDTO recruitmentDTO;
+    private CandidateProfileDTO candidateProfileDTO;
 }

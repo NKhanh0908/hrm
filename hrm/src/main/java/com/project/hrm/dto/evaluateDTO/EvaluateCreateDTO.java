@@ -1,6 +1,5 @@
-package com.project.hrm.dto.departmentDTO;
+package com.project.hrm.dto.evaluateDTO;
 
-import com.project.erp.dto.hrm.employeeDTO.EmployeeDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,12 +11,11 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EvaluateDTO {
-    private Integer id;
+public class EvaluateCreateDTO {
     private String feedback;
     private LocalDateTime feedbackAt;
     private String suggest;
     private String evaluate;
-    private EmployeeDTO employeeDTO;
-    private CandidateProfileDTO candidateProfileDTO;
+    private Integer candidateId;
+    private Integer createBy;
 }

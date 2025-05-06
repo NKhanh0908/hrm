@@ -1,6 +1,5 @@
-package com.project.hrm.dto.departmentDTO;
+package com.project.hrm.dto.recruitmentDTO;
 
-import com.project.erp.dto.hrm.employeeDTO.EmployeeDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecruitmentRequirementsDTO {
+public class RecruitmentRequirementsUpdateDTO {
     private Integer id;
     private String description;
     private String positions;
@@ -20,6 +19,6 @@ public class RecruitmentRequirementsDTO {
     private String expectedSalary;
     private String status;
     private LocalDateTime dateRequired;
-    private DepartmentDTO departmentDTO;
-    private EmployeeDTO employeeDTO;
+    private Integer departmentId;
+    private Integer createdBy;
 }

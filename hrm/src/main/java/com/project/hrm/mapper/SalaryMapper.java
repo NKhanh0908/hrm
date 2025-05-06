@@ -1,8 +1,8 @@
 package com.project.hrm.mapper;
 
-import com.project.hrm.dto.employeeDTO.DetailSalaryDTO;
-import com.project.hrm.dto.employeeDTO.SalaryDTO;
-import com.project.hrm.dto.employeeDTO.SubsidyDTO;
+import com.project.hrm.dto.salaryDTO.DetailSalaryDTO;
+import com.project.hrm.dto.salaryDTO.SalaryDTO;
+import com.project.hrm.dto.salaryDTO.SubsidyDTO;
 import com.project.hrm.entities.DetailSalary;
 import com.project.hrm.entities.Salary;
 import com.project.hrm.entities.Subsidy;

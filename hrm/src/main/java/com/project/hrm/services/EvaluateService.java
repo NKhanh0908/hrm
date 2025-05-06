@@ -1,8 +1,8 @@
 package com.project.hrm.services;
 
-import com.project.hrm.dto.departmentDTO.EvaluateCreateDTO;
-import com.project.hrm.dto.departmentDTO.EvaluateDTO;
-import com.project.hrm.dto.departmentDTO.EvaluateUpdateDTO;
+import com.project.hrm.dto.evaluateDTO.EvaluateCreateDTO;
+import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
+import com.project.hrm.dto.evaluateDTO.EvaluateUpdateDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

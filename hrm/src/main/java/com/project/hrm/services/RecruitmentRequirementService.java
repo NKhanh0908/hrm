@@ -1,8 +1,8 @@
 package com.project.hrm.services;
 
-import com.project.hrm.dto.departmentDTO.RecruitmentRequirementsCreateDTO;
-import com.project.hrm.dto.departmentDTO.RecruitmentRequirementsDTO;
-import com.project.hrm.dto.departmentDTO.RecruitmentRequirementsUpdateDTO;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

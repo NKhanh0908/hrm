@@ -1,8 +1,8 @@
 package com.project.hrm.services;
 
-import com.project.hrm.dto.employeeDTO.SalaryCreateDTO;
-import com.project.hrm.dto.employeeDTO.SalaryDTO;
-import com.project.hrm.dto.employeeDTO.SalaryUpdateDTO;
+import com.project.hrm.dto.salaryDTO.SalaryCreateDTO;
+import com.project.hrm.dto.salaryDTO.SalaryDTO;
+import com.project.hrm.dto.salaryDTO.SalaryUpdateDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

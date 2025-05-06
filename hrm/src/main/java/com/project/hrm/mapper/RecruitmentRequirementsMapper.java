@@ -1,8 +1,8 @@
 package com.project.hrm.mapper;
 
 
-import com.project.hrm.dto.departmentDTO.RecruitmentDTO;
-import com.project.hrm.dto.departmentDTO.RecruitmentRequirementsDTO;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentDTO;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.entities.RecruitmentRequirements;
 import org.springframework.beans.factory.annotation.Autowired;

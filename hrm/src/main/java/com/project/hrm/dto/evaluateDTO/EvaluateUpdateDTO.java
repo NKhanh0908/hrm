@@ -1,4 +1,4 @@
-package com.project.hrm.dto.departmentDTO;
+package com.project.hrm.dto.evaluateDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EvaluateCreateDTO {
+public class EvaluateUpdateDTO {
+    private Integer id;
     private String feedback;
     private LocalDateTime feedbackAt;
     private String suggest;

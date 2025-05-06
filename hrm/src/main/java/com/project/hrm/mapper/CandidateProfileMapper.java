@@ -1,9 +1,9 @@
 package com.project.hrm.mapper;
 
 
-import com.project.hrm.dto.departmentDTO.ApplyDTO;
-import com.project.hrm.dto.departmentDTO.CandidateProfileDTO;
-import com.project.hrm.dto.departmentDTO.EvaluateDTO;
+import com.project.hrm.dto.applyDTO.ApplyDTO;
+import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
+import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.entities.Apply;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Evaluate;

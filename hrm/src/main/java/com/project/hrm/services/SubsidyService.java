@@ -1,8 +1,8 @@
 package com.project.hrm.services;
 
-import com.project.hrm.dto.employeeDTO.SubsidyCreateDTO;
-import com.project.hrm.dto.employeeDTO.SubsidyDTO;
-import com.project.hrm.dto.employeeDTO.SubsidyUpdateDTO;
+import com.project.hrm.dto.salaryDTO.SubsidyCreateDTO;
+import com.project.hrm.dto.salaryDTO.SubsidyDTO;
+import com.project.hrm.dto.salaryDTO.SubsidyUpdateDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

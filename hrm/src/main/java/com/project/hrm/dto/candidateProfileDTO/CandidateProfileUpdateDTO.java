@@ -1,4 +1,4 @@
-package com.project.hrm.dto.departmentDTO;
+package com.project.hrm.dto.candidateProfileDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

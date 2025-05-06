@@ -12,8 +12,8 @@ import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.specifications.EmployeeSpecification;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +26,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeMapper employeeMapper;
@@ -33,16 +34,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentMapper departmentMapper;
 
-    @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository,
-                               EmployeeMapper employeeMapper,
-                               DepartmentService departmentService,
-                               DepartmentMapper departmentMapper) {
-        this.employeeMapper = employeeMapper;
-        this.departmentService = departmentService;
-        this.employeeRepository = employeeRepository;
-        this.departmentMapper = departmentMapper;
-    }
+
 
     @Transactional(readOnly = true)
     @Override
@@ -105,6 +97,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(checkExists(employeeId)) employeeRepository.deleteById(employeeId);
         else throw new RuntimeException("Employee not found");
     }
+
 
     private Integer getGenerationId(){
         UUID uuid = UUID.randomUUID();

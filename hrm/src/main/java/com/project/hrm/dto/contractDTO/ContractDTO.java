@@ -1,5 +1,6 @@
-package com.project.hrm.dto.employeeDTO;
+package com.project.hrm.dto.contractDTO;
 
+import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContractUpdateDTO {
+public class ContractDTO {
     private Integer id;
     private String title;
     private LocalDateTime contractSigningDate;
@@ -19,5 +20,5 @@ public class ContractUpdateDTO {
     private LocalDateTime endDate;
     private Double baseSalary;
     private String description;
-    private Integer employeeId;
+    private EmployeeDTO employeeDTO;
 }

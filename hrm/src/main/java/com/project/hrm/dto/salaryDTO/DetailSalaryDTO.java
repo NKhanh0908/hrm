@@ -1,4 +1,4 @@
-package com.project.hrm.dto.employeeDTO;
+package com.project.hrm.dto.salaryDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DetailSalaryUpdateDTO {
+public class DetailSalaryDTO {
     private Integer id;
     private Double basicSalary;
-    private Integer salaryId;
 }

@@ -1,8 +1,8 @@
 package com.project.hrm.services;
 
-import com.project.hrm.dto.employeeDTO.ContractCreateDTO;
-import com.project.hrm.dto.employeeDTO.ContractDTO;
-import com.project.hrm.dto.employeeDTO.ContractUpdateDTO;
+import com.project.hrm.dto.contractDTO.ContractCreateDTO;
+import com.project.hrm.dto.contractDTO.ContractDTO;
+import com.project.hrm.dto.contractDTO.ContractUpdateDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

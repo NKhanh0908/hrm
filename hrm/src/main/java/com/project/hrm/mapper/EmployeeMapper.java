@@ -1,7 +1,7 @@
 package com.project.hrm.mapper;
 
 import com.project.hrm.dto.departmentDTO.DepartmentDTO;
-import com.project.hrm.dto.employeeDTO.ContractDTO;
+import com.project.hrm.dto.contractDTO.ContractDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeUpdateDTO;

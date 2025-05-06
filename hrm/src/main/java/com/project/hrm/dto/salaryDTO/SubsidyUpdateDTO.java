@@ -1,4 +1,4 @@
-package com.project.hrm.dto.employeeDTO;
+package com.project.hrm.dto.salaryDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubsidyCreateDTO {
+public class SubsidyUpdateDTO {
+    private Integer id;
     private String typeSubsidy;
     private Double amount;
     private Integer salaryId;
