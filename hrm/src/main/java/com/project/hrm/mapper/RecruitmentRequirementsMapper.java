@@ -1,49 +1,44 @@
 package com.project.hrm.mapper;
 
-
 import com.project.hrm.dto.recruitmentDTO.RecruitmentDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.entities.RecruitmentRequirements;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class RecruitmentRequirementsMapper {
+
     private final DepartmentMapper departmentMapper;
     private final EmployeeMapper employeeMapper;
 
-    @Autowired
-    public RecruitmentRequirementsMapper(DepartmentMapper departmentMapper, EmployeeMapper employeeMapper) {
-        this.departmentMapper = departmentMapper;
-        this.employeeMapper = employeeMapper;
+
+    public RecruitmentRequirementsDTO toRecruitmentRequirementsDTO(RecruitmentRequirements recruitmentRequirements) {
+        return RecruitmentRequirementsDTO.builder()
+                .id(recruitmentRequirements.getId())
+                .dateRequired(recruitmentRequirements.getDateRequired())
+                .description(recruitmentRequirements.getDescription())
+                .expectedSalary(recruitmentRequirements.getExpectedSalary())
+                .positions(recruitmentRequirements.getPositions())
+                .quantity(recruitmentRequirements.getQuantity())
+                .status(recruitmentRequirements.getStatus())
+                .departmentDTO(departmentMapper.toDepartmentDTO(recruitmentRequirements.getDepartments()))
+                .employeeDTO(employeeMapper.toEmployeeDTO(recruitmentRequirements.getEmployees()))
+                .build();
     }
 
-    public RecruitmentRequirementsDTO toRecruitmentRequirementsDTO(RecruitmentRequirements recruitmentRequirements){
-        RecruitmentRequirementsDTO recruitmentRequirementsDTO = new RecruitmentRequirementsDTO();
-        recruitmentRequirementsDTO.setId(recruitmentRequirements.getId());
-        recruitmentRequirementsDTO.setDateRequired(recruitmentRequirements.getDateRequired());
-        recruitmentRequirementsDTO.setDescription(recruitmentRequirements.getDescription());
-        recruitmentRequirementsDTO.setExpectedSalary(recruitmentRequirements.getExpectedSalary());
-        recruitmentRequirementsDTO.setPositions(recruitmentRequirements.getPositions());
-        recruitmentRequirementsDTO.setQuantity(recruitmentRequirements.getQuantity());
-        recruitmentRequirementsDTO.setStatus(recruitmentRequirements.getStatus());
-        recruitmentRequirementsDTO.setDepartmentDTO(departmentMapper.toDepartmentDTO(recruitmentRequirements.getDepartments()));
-        recruitmentRequirementsDTO.setEmployeeDTO(employeeMapper.toEmployeeDTO(recruitmentRequirements.getEmployees()));
-        return recruitmentRequirementsDTO;
+    public RecruitmentDTO toRecruitmentDTO(Recruitment recruitment) {
+        return RecruitmentDTO.builder()
+                .id(recruitment.getId())
+                .email(recruitment.getEmail())
+                .deadline(recruitment.getDeadline())
+                .position(recruitment.getPosition())
+                .createAt(recruitment.getCreateAt()) // Sửa chỗ này: ban đầu là recruitmentDTO.getCreateAt() => lỗi logic
+                .jobDescription(recruitment.getJobDescription()) // Tương tự
+                .recruitmentRequirementsDTO(toRecruitmentRequirementsDTO(recruitment.getRecruitmentRequirements()))
+                .build();
     }
-
-    public RecruitmentDTO toRecruitmentDTO(Recruitment recruitment){
-        RecruitmentDTO recruitmentDTO = new RecruitmentDTO();
-        recruitmentDTO.setId(recruitment.getId());
-        recruitmentDTO.setEmail(recruitment.getEmail());
-        recruitmentDTO.setDeadline(recruitment.getDeadline());
-        recruitmentDTO.setPosition(recruitment.getPosition());
-        recruitmentDTO.setCreateAt(recruitmentDTO.getCreateAt());
-        recruitmentDTO.setJobDescription(recruitmentDTO.getJobDescription());
-        recruitmentDTO.setRecruitmentRequirementsDTO(toRecruitmentRequirementsDTO(recruitment.getRecruitmentRequirements()));
-        return recruitmentDTO;
-    }
-
-
 }

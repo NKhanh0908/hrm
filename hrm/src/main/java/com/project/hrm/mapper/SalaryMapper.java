@@ -9,64 +9,59 @@ import com.project.hrm.entities.Subsidy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SalaryMapper {
 
-    // TODO: convert entities to dto
-
-    public SalaryDTO toSalaryDTO(Salary salary, DetailSalary detailSalary, List<Subsidy> subsidyList){
-        SalaryDTO dto = new SalaryDTO();
-        dto.setId(salary.getId());
-        dto.setTime(salary.getTime());
-        dto.setTotalAmount(salary.getTotalAmount());
-        dto.setDetailSalaryDTO(toDetailSalaryDTO(detailSalary));
-        if(subsidyList != null){
-            dto.setSubsidyDTOList(subsidyList
-                    .stream()
-                    .map(this::toSubsidyDTO)
-                    .collect(java.util.stream.Collectors.toList()));
-        }
-        return dto;
+    // Convert entities to DTOs
+    public SalaryDTO toSalaryDTO(Salary salary, DetailSalary detailSalary, List<Subsidy> subsidyList) {
+        return SalaryDTO.builder()
+                .id(salary.getId())
+                .time(salary.getTime())
+                .totalAmount(salary.getTotalAmount())
+                .detailSalaryDTO(toDetailSalaryDTO(detailSalary))
+                .subsidyDTOList(subsidyList != null
+                        ? subsidyList.stream().map(this::toSubsidyDTO).collect(Collectors.toList())
+                        : null)
+                .build();
     }
 
-    public DetailSalaryDTO toDetailSalaryDTO(DetailSalary detailSalary){
-        DetailSalaryDTO dto = new DetailSalaryDTO();
-        dto.setId(detailSalary.getId());
-        dto.setBasicSalary(detailSalary.getBasicSalary());
-        return dto;
+    public DetailSalaryDTO toDetailSalaryDTO(DetailSalary detailSalary) {
+        return DetailSalaryDTO.builder()
+                .id(detailSalary.getId())
+                .basicSalary(detailSalary.getBasicSalary())
+                .build();
     }
 
-    public SubsidyDTO toSubsidyDTO(Subsidy subtitle){
-        SubsidyDTO dto = new SubsidyDTO();
-        dto.setId(subtitle.getId());
-        dto.setTypeSubsidy(subtitle.getTypeSubsidy());
-        dto.setAmount(subtitle.getAmount());
-        return dto;
+    public SubsidyDTO toSubsidyDTO(Subsidy subtitle) {
+        return SubsidyDTO.builder()
+                .id(subtitle.getId())
+                .typeSubsidy(subtitle.getTypeSubsidy())
+                .amount(subtitle.getAmount())
+                .build();
     }
 
-    // TODO: convert dto to entities
-
-    public Subsidy toSubsidy(SubsidyDTO subsidyDTO){
-        Subsidy subtitle = new Subsidy();
-        subtitle.setId(subsidyDTO.getId());
-        subtitle.setTypeSubsidy(subsidyDTO.getTypeSubsidy());
-        subtitle.setAmount(subsidyDTO.getAmount());
-        return subtitle;
+    public Subsidy toSubsidy(SubsidyDTO subsidyDTO) {
+        return Subsidy.builder()
+        .id(subsidyDTO.getId())
+        .typeSubsidy(subsidyDTO.getTypeSubsidy())
+        .amount(subsidyDTO.getAmount())
+        .build();
     }
 
-    public DetailSalary toDetailSalary(DetailSalaryDTO detailSalaryDTO){
-        DetailSalary detailSalary = new DetailSalary();
-        detailSalary.setId(detailSalaryDTO.getId());
-        detailSalary.setBasicSalary(detailSalaryDTO.getBasicSalary());
-        return detailSalary;
+    public DetailSalary toDetailSalary(DetailSalaryDTO detailSalaryDTO) {
+        return DetailSalary.builder()
+        .id(detailSalaryDTO.getId())
+        .basicSalary(detailSalaryDTO.getBasicSalary())
+        .build();
     }
 
-    public Salary toSalary(SalaryDTO salaryDTO){
-        Salary salary = new Salary();
-        salary.setId(salaryDTO.getId());
-        salary.setTime(salaryDTO.getTime());
-        salary.setTotalAmount(salaryDTO.getTotalAmount());
-        return salary;
+    public Salary toSalary(SalaryDTO salaryDTO) {
+        return Salary.builder()
+        .id(salaryDTO.getId())
+        .time(salaryDTO.getTime())
+        .totalAmount(salaryDTO.getTotalAmount())
+        .build();
     }
 }

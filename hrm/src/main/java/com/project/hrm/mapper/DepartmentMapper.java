@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class DepartmentMapper {
     public DepartmentDTO toDepartmentDTO(Departments departments){
-        DepartmentDTO departmentDTO = new DepartmentDTO();
-        departmentDTO.setId(departments.getId());
-        departmentDTO.setAddress(departments.getAddress());
-        departmentDTO.setPhone(departments.getPhone());
-        departmentDTO.setDepartmentName(departments.getDepartmentName());
-        departmentDTO.setEmail(departments.getEmail());
-        departmentDTO.setDescription(departments.getDescription());
-        return departmentDTO;
+        return DepartmentDTO.builder()
+        .id(departments.getId())
+        .address(departments.getAddress())
+        .phone(departments.getPhone())
+        .departmentName(departments.getDepartmentName())
+        .email(departments.getEmail())
+        .description(departments.getDescription())
+        .build();
     }
 
     public Departments toDepartment(DepartmentDTO departmentDTO){
