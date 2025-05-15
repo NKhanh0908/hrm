@@ -27,7 +27,7 @@ public class Apply {
     @ManyToOne
     @JoinColumn
     private Recruitment recruitment;
-
+    
     @ManyToOne
     @JoinColumn
     private CandidateProfile candidateProfile;

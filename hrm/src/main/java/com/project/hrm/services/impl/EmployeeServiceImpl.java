@@ -46,12 +46,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional(readOnly = true)
     @Override
+    public Employees findById(Integer id){
+        return employeeRepository.findById(id)
+                .orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public EmployeeDTO getById(Integer id) {
         return employeeMapper.toEmployeeDTO(
                 employeeRepository.findById(id)
                        .orElseThrow(() -> new RuntimeException("Employee not found"))
         );
     }
+
+
 
     @Transactional(readOnly = true)
     @Override
