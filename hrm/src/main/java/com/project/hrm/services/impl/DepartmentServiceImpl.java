@@ -7,6 +7,7 @@ import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.mapper.DepartmentMapper;
 import com.project.hrm.repositories.DepartmentRepository;
+import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.specifications.DepartmentSpecification;
@@ -27,7 +28,7 @@ import java.util.UUID;
 public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
-    private final @Lazy EmployeeService employeeService;
+    private final EmployeeRepository employeeRepository;
 
     /**
      * Tìm kiếm Phòng ban theo mã phòng ban
@@ -129,7 +130,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Pageable pageable = PageRequest.of(page, size);
 
         return departmentMapper.convertPageEntityToPageDTO(
-                departmentRepository.findAll(pageable, departmentsSpecification)
+                departmentRepository.findAll(departmentsSpecification, pageable)
         );
     }
 
@@ -143,7 +144,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public DepartmentDTO appointmentOfDean(Integer departmentId, Integer employeeId) {
-        Employees employee = employeeService.findById(employeeId);
+        Employees employee = employeeRepository.findById(employeeId).orElseThrow();
 
         Departments departments = findById(departmentId);
 

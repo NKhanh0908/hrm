@@ -14,6 +14,7 @@ import com.project.hrm.services.EmployeeService;
 import com.project.hrm.specifications.EmployeeSpecification;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ import java.util.UUID;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeMapper employeeMapper;
-    private final DepartmentService departmentService;
+    private final @Lazy DepartmentService departmentService;
     private final EmployeeRepository employeeRepository;
     private final DepartmentMapper departmentMapper;
 

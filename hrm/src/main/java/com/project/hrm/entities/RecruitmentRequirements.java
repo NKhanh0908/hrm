@@ -1,5 +1,6 @@
 package com.project.hrm.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -28,9 +29,11 @@ public class RecruitmentRequirements {
 
     @ManyToOne
     @JoinColumn
+    @JsonBackReference
     private Departments departments;
 
     @ManyToOne
     @JoinColumn(name = "on_upload")
+    @JsonBackReference
     private Employees employees;
 }
