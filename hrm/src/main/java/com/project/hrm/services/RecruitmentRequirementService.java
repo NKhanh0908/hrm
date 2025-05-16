@@ -12,17 +12,19 @@ import java.util.List;
 
 @Service
 public interface RecruitmentRequirementService {
-    Page<RecruitmentRequirementsDTO> filterRecruitmentRequirements(RecruitmentRequirementFilter recruitmentRequirementFilter, int page, int size);
-
-    RecruitmentRequirements getEntityById(Integer id);
-
-    RecruitmentRequirementsDTO getDTOById(Integer id);
-
-    Boolean checkExists(Integer requirementId);
-
     RecruitmentRequirementsDTO create(RecruitmentRequirementsCreateDTO recruitmentRequirementsCreateDTO);
 
     RecruitmentRequirementsDTO update(RecruitmentRequirementsUpdateDTO recruitmentRequirementsUpdateDTO);
 
     void delete(Integer requirementId);
+
+    RecruitmentRequirements getEntityById(Integer id);
+
+    RecruitmentRequirementsDTO getDTOById(Integer id);
+
+    List<RecruitmentRequirementsDTO> filterRecruitmentRequirements(RecruitmentRequirementFilter recruitmentRequirementFilter, int page, int size);
+
+    Boolean checkExists(Integer requirementId);
+
+
 }

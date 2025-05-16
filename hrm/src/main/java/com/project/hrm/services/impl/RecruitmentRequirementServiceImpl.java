@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -36,7 +37,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
     @Transactional(readOnly = true)
     @Override
-    public Page<RecruitmentRequirementsDTO> filterRecruitmentRequirements(RecruitmentRequirementFilter recruitmentRequirementFilter, int page, int size) {
+    public List<RecruitmentRequirementsDTO> filterRecruitmentRequirements(RecruitmentRequirementFilter recruitmentRequirementFilter, int page, int size) {
         Specification<RecruitmentRequirements> recruitmentRequirementsSpecification
                 = RecruitmentRequirementsSpecification.filter(recruitmentRequirementFilter);
 

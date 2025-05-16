@@ -8,17 +8,19 @@ import com.project.hrm.entities.Departments;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface DepartmentService {
-    Departments getEntityById(Integer id);
-
-    DepartmentDTO getDTOById(Integer id);
-
     DepartmentDTO create(DepartmentCreateDTO departmentCreateDTO);
 
     DepartmentDTO update(DepartmentUpdateDTO departmentUpdateDTO);
 
-    Page<DepartmentDTO> filterDepartment(DepartmentFilter departmentFilter, int page, int size);
+    DepartmentDTO getById(Integer id);
+
+    Departments getEntityById(Integer id);
+
+    List<DepartmentDTO> filter(DepartmentFilter departmentFilter, int page, int size);
 
     DepartmentDTO appointmentOfDean(Integer departmentId, Integer employeeId);
 }

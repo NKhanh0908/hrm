@@ -50,12 +50,10 @@ public class RecruitmentRequirementsMapper {
     }
 
 
-    public Page<RecruitmentRequirementsDTO> toPageEntityToPageDTO(Page<RecruitmentRequirements> recruitmentRequirementsPage){
-        List<RecruitmentRequirementsDTO> recruitmentRequirementsDTOList
-                = recruitmentRequirementsPage.stream()
+    public List<RecruitmentRequirementsDTO> toPageEntityToPageDTO(Page<RecruitmentRequirements> recruitmentRequirementsPage){
+        return recruitmentRequirementsPage.getContent()
+                .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(recruitmentRequirementsDTOList, recruitmentRequirementsPage.getPageable(), recruitmentRequirementsPage.getTotalElements());
     }
 }

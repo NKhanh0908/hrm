@@ -59,13 +59,11 @@ public class DepartmentMapper {
                 .build();
     }
 
-    public Page<DepartmentDTO> convertPageEntityToPageDTO(Page<Departments> departmentsPage){
-        List<DepartmentDTO> departmentDTOList = departmentsPage
+    public List<DepartmentDTO> convertPageEntityToPageDTO(Page<Departments> departmentsPage){
+        return departmentsPage.getContent()
                 .stream()
                 .map(this::toDepartmentDTO)
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(departmentDTOList, departmentsPage.getPageable(), departmentsPage.getTotalElements());
     }
 
 }

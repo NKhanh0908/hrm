@@ -4,9 +4,12 @@ import com.project.hrm.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.entities.Evaluate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class EvaluateMapper {
@@ -31,5 +34,12 @@ public class EvaluateMapper {
                 .feedback(evaluate.getFeedback())
                 .feedbackAt(evaluate.getFeedbackAt())
                 .build();
+    }
+
+    public List<EvaluateDTO> convertPageToList(Page<Evaluate> evaluatePage){
+        return evaluatePage.getContent()
+                .stream()
+                .map(this::toEvaluateDTO)
+                .collect(Collectors.toList());
     }
 }

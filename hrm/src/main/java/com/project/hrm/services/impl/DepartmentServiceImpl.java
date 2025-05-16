@@ -62,7 +62,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Transactional(readOnly = true)
     @Override
-    public DepartmentDTO getDTOById(Integer id) {
+    public DepartmentDTO getById(Integer id) {
         return departmentMapper.toDepartmentDTO(departmentRepository.findById(id)
                 .orElseThrow(() -> {
                     String message = "Find DepartmentsDTO with id " + id + " not found";
@@ -144,7 +144,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Transactional(readOnly = true)
     @Override
-    public Page<DepartmentDTO> filterDepartment(DepartmentFilter departmentFilter, int page, int size) {
+    public List<DepartmentDTO> filter(DepartmentFilter departmentFilter, int page, int size) {
         log.info("Filter Department");
 
         Specification<Departments> departmentsSpecification = DepartmentSpecification.filterDepartment(departmentFilter);

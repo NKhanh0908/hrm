@@ -9,15 +9,16 @@ import java.util.List;
 
 @Service
 public interface ContractService {
-    List<ContractDTO> getAll();
-
-    ContractDTO getById(Integer id);
-
-    Boolean checkExists(Integer contractId);
-
     ContractDTO create(ContractCreateDTO contractCreateDTO);
 
     ContractDTO update(ContractUpdateDTO contractUpdateDTO);
 
     void delete(Integer contractId);
+
+    ContractDTO getById(Integer id);
+
+    Boolean checkExists(Integer contractId);
+
+    List<ContractDTO> getAll();
+
 }

@@ -12,7 +12,11 @@ import java.util.List;
 
 @Service
 public interface RecruitmentService {
-    Page<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size);
+    RecruitmentDTO create(RecruitmentCreateDTO recruitmentCreateDTO);
+
+    RecruitmentDTO update(RecruitmentUpdateDTO recruitmentUpdateDTO);
+
+    void delete(Integer recruitmentId);
 
     Recruitment getEntityById(Integer id);
 
@@ -20,9 +24,6 @@ public interface RecruitmentService {
 
     Boolean checkExists(Integer recruitmentId);
 
-    RecruitmentDTO create(RecruitmentCreateDTO recruitmentCreateDTO);
+    List<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size);
 
-    RecruitmentDTO update(RecruitmentUpdateDTO recruitmentUpdateDTO);
-
-    void delete(Integer recruitmentId);
 }

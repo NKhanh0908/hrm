@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CandidateProfileMapper {
@@ -70,6 +71,12 @@ public class CandidateProfileMapper {
                 .position(apply.getPosition())
                 .candidateProfileDTO(toCandidateProfileDTO(apply.getCandidateProfile()))
                 .build();
+    }
+
+    public List<CandidateProfileDTO> convertPageToList(Page<CandidateProfile> candidateProfilePage){
+        return candidateProfilePage.getContent().stream()
+                .map(this::toCandidateProfileDTO)
+                .collect(Collectors.toList());
     }
 
 }

@@ -30,12 +30,11 @@ public class RecruitmentMapper {
                 .build();
     }
 
-    public Page<RecruitmentDTO> convertPageEntityToPageDTO(Page<Recruitment> recruitmentPage){
-        List<RecruitmentDTO> recruitmentList = recruitmentPage.stream()
+    public List<RecruitmentDTO> convertPageEntityToPageDTO(Page<Recruitment> recruitmentPage){
+        return recruitmentPage.getContent()
+                .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(recruitmentList, recruitmentPage.getPageable(), recruitmentPage.getTotalElements());
     }
 
     public Recruitment convertCreateToEntity(RecruitmentCreateDTO recruitmentCreateDTO, RecruitmentRequirements recruitmentRequirements){

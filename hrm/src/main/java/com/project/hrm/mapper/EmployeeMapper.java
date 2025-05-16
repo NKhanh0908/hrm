@@ -45,12 +45,11 @@ public class EmployeeMapper {
                 .collect(Collectors.toList());
     }
 
-    public Page<EmployeeDTO> pageToEmployeeDTOList(Page<Employees> employees) {
-        List<EmployeeDTO> dtoList = employees.stream()
+    public List<EmployeeDTO> pageToEmployeeDTOList(Page<Employees> employeesPage) {
+        return employeesPage.getContent()
+                .stream()
                 .map(this::toEmployeeDTO)
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(dtoList, employees.getPageable(), employees.getTotalElements());
     }
 
     // Convert DTO to entity

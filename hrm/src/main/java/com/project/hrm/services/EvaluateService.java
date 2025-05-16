@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public interface EvaluateService {
-    List<EvaluateDTO> getAll(EvaluateFilter evaluateFilter , int page,int size);
+    List<EvaluateDTO> filter(EvaluateFilter evaluateFilter , int page, int size);
 
     EvaluateDTO getById(Integer id);
 

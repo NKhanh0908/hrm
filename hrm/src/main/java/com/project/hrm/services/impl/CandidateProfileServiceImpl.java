@@ -33,6 +33,8 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     @Transactional
     @Override
     public CandidateProfileDTO create(CandidateProfileCreateDTO candidateProfileCreateDTO) {
+        log.info("Create CandidateProfile");
+
         CandidateProfile candidateProfile=candidateProfileMapper.convertCreateToEntity(candidateProfileCreateDTO);
 
         candidateProfile.setId(getGenerationId());
@@ -45,6 +47,8 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     @Transactional
     @Override
     public CandidateProfileDTO update(CandidateProfileUpdateDTO dto) {
+        log.info("Update CandidateProfile");
+
         CandidateProfile existing = candidateProfileRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("CandidateProfile not found with ID: " + dto.getId()));
 
@@ -79,12 +83,14 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     @Transactional
     @Override
     public void delete(Integer id) {
-
+        log.info("Delete CandidateProfile");
     }
 
     @Transactional(readOnly = true)
     @Override
     public CandidateProfileDTO getById(Integer id) {
+        log.info("Find CandidateProfile by id: {}", id);
+
         return candidateProfileMapper.toCandidateProfileDTO(
                 candidateProfileRepository.findById(id)
                         .orElseThrow(() -> {
@@ -99,19 +105,21 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     @Transactional(readOnly = true)
     @Override
     public List<CandidateProfileDTO> filter(CandidateProfileFilter candidateProfileFilter, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending()); // sort mặc định theo id giảm dần
+        log.info("Filter CandidateProfile");
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Specification<CandidateProfile> spec = CandidateProfileSpecification.filter(candidateProfileFilter);
 
         Page<CandidateProfile> pageResult = candidateProfileRepository.findAll(spec, pageable);
 
-        return pageResult.getContent().stream()
-                .map(candidateProfileMapper::toCandidateProfileDTO)
-                .collect(Collectors.toList());
+        return candidateProfileMapper.convertPageToList(pageResult);
     }
 
     @Transactional(readOnly = true)
     @Override
     public CandidateProfile getEntityById(Integer id) {
+        log.info("Find Entity CandidateProfile by id: {}", id);
+
         return candidateProfileRepository.findById(id)
                 .orElseThrow(() -> {
                     String message = "Find CandidateProfile with id " + id + " not found";
