@@ -17,7 +17,7 @@ public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Before("execution(* com.project.hrm.services.*.*(..))")
+    @Before("execution(* com.project.hrm.controllers.*(..))")
     public void logBeforeMethodExecution(JoinPoint joinPoint) {
         logger.info("Before method execution: {}", joinPoint.getSignature().getName());
         logger.info("Arguments: {}", Arrays.toString(joinPoint.getArgs()));
@@ -28,15 +28,15 @@ public class LoggingAspect {
 //        logger.info("After method execution: {} is successfully", joinPoint.getSignature().getName());
 //    }
 
-    @AfterReturning(pointcut = "execution(* com.project.hrm.services.*.*(..))", returning = "result")
-    public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        logger.info("After returning - Method: {} returned: {}", joinPoint.getSignature().getName(), result);
-    }
+//    @AfterReturning(pointcut = "execution(* com.project.hrm.services.*.*(..))", returning = "result")
+//    public void logAfterReturning(JoinPoint joinPoint, Object result) {
+//        logger.info("After returning - Method: {} returned: {}", joinPoint.getSignature().getName(), result);
+//    }
 
-    @AfterThrowing(pointcut = "execution(* com.project.hrm.services.*.*(..))", throwing = "exception")
-    public void logAfterThrowing(JoinPoint joinPoint, Throwable exception) {
-        logger.error("Exception - Method: {} threw an exception: {}", joinPoint.getSignature().getName(), exception.getMessage());
-    }
+//    @AfterThrowing(pointcut = "execution(* com.project.hrm.services.*.*(..))", throwing = "exception")
+//    public void logAfterThrowing(JoinPoint joinPoint, Throwable exception) {
+//        logger.error("Exception - Method: {} threw an exception: {}", joinPoint.getSignature().getName(), exception.getMessage());
+//    }
 
 //    @Around("execution(* com.project.erp.services.*.*(..))")
 //    public Object logAroundMethodExecution(ProceedingJoinPoint joinPoint) throws Throwable {

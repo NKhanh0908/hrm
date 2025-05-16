@@ -35,7 +35,6 @@ public class ApplyServiceImpl implements ApplyService {
     private final ApplyMapper applyMapper;
     private final RecruitmentService recruitmentService;
     private final CandidateProfileService candidateProfileService;
-    private final ApplyService applyService;
 
     /**
      * Creates a new Apply entity using the provided creation DTO.
