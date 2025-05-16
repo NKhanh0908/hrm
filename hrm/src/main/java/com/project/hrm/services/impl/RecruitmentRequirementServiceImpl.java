@@ -3,6 +3,7 @@ package com.project.hrm.services.impl;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
+import com.project.hrm.mapper.RecruitmentRequirementsMapper;
 import com.project.hrm.repositories.RecruitmentRepository;
 import com.project.hrm.services.RecruitmentRequirementService;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RecruitmentRequirementServiceImpl implements RecruitmentRequirementService {
     private final RecruitmentRepository recruitmentRepository;
+    private final RecruitmentRequirementsMapper recruitmentRequirementsMapper;
 
     @Override
     public List<RecruitmentRequirementsDTO> filterRecruitmentRequirements(String positions, String status, LocalDateTime dateFrom, LocalDateTime dateTo, Integer departmentId, int page, int size) {

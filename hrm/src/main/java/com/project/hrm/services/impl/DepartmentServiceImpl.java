@@ -31,11 +31,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final EmployeeRepository employeeRepository;
 
     /**
-     * Tìm kiếm Phòng ban theo mã phòng ban
+     * Finds a department by its unique identifier.
      *
-     * @param id mã phòng ban cần tìm
-     * @return đối tượng {@link Departments} đại diện cho phòng ban tìm thấy.
-     * Trả về trực tiếp Entity phục vụ cho các Service khác
+     * @param id the ID of the department to search for
+     * @return the {@link Departments} entity if found;
+     *         returns the raw entity for use by other services
      */
     @Transactional(readOnly = true)
     @Override
@@ -45,11 +45,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     /**
-     * Tìm kiếm Phòng ban theo mã phòng ban
+     * Finds a department by its unique identifier.
      *
-     * @param id mã phòng ban cần tìm
-     * @return đối tượng {@link DepartmentDTO} đại diện cho phòng ban tìm thấy.
-     * Trả về DTO Entity phục vụ cho yêu cầu từ Controller
+     * @param id the ID of the department to search for
+     * @return the {@link DepartmentDTO} entity if found
+     * returns the raw DTO for use by controller required
      */
     @Transactional(readOnly = true)
     @Override
@@ -59,11 +59,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     /**
-     * Tạo mới một phòng ban dựa trên thông tin được cung cấp trong {@link DepartmentCreateDTO}.
-     * Phương thức này chuyển đổi DTO sang entity, tự sinh ID mới và lưu vào cơ sở dữ liệu.
+     * Creates a new department based on the information provided in {@link DepartmentCreateDTO}.
+     * This method maps the DTO to an entity, generates a new ID, and persists it to the database.
      *
-     * @param departmentCreateDTO đối tượng chứa thông tin phòng ban cần tạo mới.
-     * @return đối tượng {@link DepartmentDTO} đại diện cho phòng ban vừa được tạo.
+     * @param departmentCreateDTO the DTO containing the details of the department to be created
+     * @return a {@link DepartmentDTO} representing the newly created department
      */
     @Override
     public DepartmentDTO create(DepartmentCreateDTO departmentCreateDTO) {
@@ -79,17 +79,18 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     /**
-     * Chỉnh sửa một phòng ban dựa trên thông tin được cung cấp trong {@link DepartmentUpdateDTO}.
+     * Updates an existing department based on the information provided in {@link DepartmentUpdateDTO}.
+     * This method maps the DTO to the entity, applies the changes, and persists the updated entity.
      *
-     * @param departmentUpdateDTO đối tượng chứa thông tin phòng ban cập nhật.
-     * @return đối tượng {@link DepartmentDTO} sau khi cập nhật.
+     * @param departmentUpdateDTO the DTO containing the updated department details
+     * @return a {@link DepartmentDTO} representing the department after the update
      */
     @Override
     public DepartmentDTO update(DepartmentUpdateDTO departmentUpdateDTO) {
         Departments department = findById(departmentUpdateDTO.getId());
 
         if(departmentUpdateDTO.getDepartmentName()!=null){
-            department.setDepartmentName(department.getDepartmentName());
+            department.setDepartmentName(departmentUpdateDTO.getDepartmentName());
         }
 
         if(departmentUpdateDTO.getPhone()!=null){
@@ -112,15 +113,15 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     /**
-     * Lọc danh sách phòng ban dựa theo các tiêu chí tên phòng ban, địa chỉ và email.
-     * Phương thức sử dụng phân trang và chỉ thực hiện truy vấn đọc (read-only transaction).
+     * Filters the list of departments based on department name, address, and email.
+     * This method supports pagination and executes within a read-only transaction.
      *
-     * @param departmentName tên phòng ban cần tìm kiếm (có thể là chuỗi con).
-     * @param address địa chỉ của phòng ban (có thể để trống).
-     * @param email email của phòng ban (có thể để trống).
-     * @param page số trang (tính từ 0).
-     * @param size số lượng bản ghi mỗi trang.
-     * @return trang kết quả chứa các {@link DepartmentDTO} phù hợp với điều kiện lọc.
+     * @param departmentName the (possibly partial) name of the department to filter by
+     * @param address        the address of the department (optional)
+     * @param email          the email of the department (optional)
+     * @param page           the zero-based page index
+     * @param size           the number of records per page
+     * @return a paginated result containing {@link DepartmentDTO} instances that match the filter criteria
      */
     @Transactional(readOnly = true)
     @Override
@@ -135,23 +136,19 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     /**
-     * Phân bổ nhân viên làm trưởng phòng ban
+     * Assigns an employee as the head of a department.
      *
-     * @param departmentId mã phòng ban.
-     * @param employeeId mã nhân viên phân công.
-     *
-     * @return đối tượng {@link DepartmentDTO} .
+     * @param departmentId the ID of the department
+     * @param employeeId   the ID of the employee to be assigned as head
+     * @return a {@link DepartmentDTO} representing the department with the updated head assignment
      */
+    @Transactional
     @Override
     public DepartmentDTO appointmentOfDean(Integer departmentId, Integer employeeId) {
         Employees employee = employeeRepository.findById(employeeId).orElseThrow();
 
-        Departments departments = findById(departmentId);
-
-        departments.setDean(employee);
-
         return departmentMapper.toDepartmentDTO(
-                departmentRepository.save(departments)
+                departmentRepository.updateDean(employeeId, departmentId)
         );
     }
 
