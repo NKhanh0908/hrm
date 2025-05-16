@@ -91,6 +91,11 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public CandidateProfile getEntityById(Integer id) {
+        return candidateProfileRepository.findById(id).orElseThrow();
+    }
+
     private Integer getGenerationId(){
         UUID uuid = UUID.randomUUID();
 

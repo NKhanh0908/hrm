@@ -22,7 +22,6 @@ public class Evaluate {
     private Integer id;
     private String feedback;
     private LocalDateTime feedbackAt;
-    private String suggest;
     private String evaluate;
 
     @ManyToOne

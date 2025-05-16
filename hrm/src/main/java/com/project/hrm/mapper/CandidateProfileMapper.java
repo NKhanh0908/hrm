@@ -56,7 +56,6 @@ public class CandidateProfileMapper {
                 .id(evaluate.getId())
                 .evaluate(evaluate.getEvaluate())
                 .feedback(evaluate.getFeedback())
-                .suggest(evaluate.getSuggest())
                 .feedbackAt(evaluate.getFeedbackAt())
                 .build();
     }

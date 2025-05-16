@@ -2,6 +2,7 @@ package com.project.hrm.services;
 
 
 import com.project.hrm.dto.candidateProfileDTO.*;
+import com.project.hrm.entities.CandidateProfile;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ public interface CandidateProfileService {
     void delete(Integer id);
     CandidateProfileDTO getById(Integer id);
     List<CandidateProfileDTO> filter(CandidateProfileFilter candidateProfileFilter, int page, int size);
+    CandidateProfile getEntityById(Integer id);
 }
