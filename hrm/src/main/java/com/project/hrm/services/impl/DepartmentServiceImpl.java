@@ -2,6 +2,7 @@ package com.project.hrm.services.impl;
 
 import com.project.hrm.dto.departmentDTO.DepartmentCreateDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentDTO;
+import com.project.hrm.dto.departmentDTO.DepartmentFilter;
 import com.project.hrm.dto.departmentDTO.DepartmentUpdateDTO;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
@@ -39,7 +40,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Transactional(readOnly = true)
     @Override
-    public Departments findById(Integer id) {
+    public Departments getEntityById(Integer id) {
         return departmentRepository.findById(id)
                 .orElseThrow();
     }
@@ -53,7 +54,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Transactional(readOnly = true)
     @Override
-    public DepartmentDTO getById(Integer id) {
+    public DepartmentDTO getDTOById(Integer id) {
         return departmentMapper.toDepartmentDTO(departmentRepository.findById(id)
                 .orElseThrow());
     }
@@ -87,7 +88,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public DepartmentDTO update(DepartmentUpdateDTO departmentUpdateDTO) {
-        Departments department = findById(departmentUpdateDTO.getId());
+        Departments department = getEntityById(departmentUpdateDTO.getId());
 
         if(departmentUpdateDTO.getDepartmentName()!=null){
             department.setDepartmentName(departmentUpdateDTO.getDepartmentName());
@@ -113,20 +114,20 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     /**
-     * Filters the list of departments based on department name, address, and email.
+     * Filters the list of departments based on department name, address, and email by {@link DepartmentFilter}.
      * This method supports pagination and executes within a read-only transaction.
-     *
-     * @param departmentName the (possibly partial) name of the department to filter by
-     * @param address        the address of the department (optional)
-     * @param email          the email of the department (optional)
+     * @param departmentFilter include
+     *          departmentName the (possibly partial) name of the department to filter by
+     *          address        the address of the department (optional)
+     *          email          the email of the department (optional)
      * @param page           the zero-based page index
      * @param size           the number of records per page
      * @return a paginated result containing {@link DepartmentDTO} instances that match the filter criteria
      */
     @Transactional(readOnly = true)
     @Override
-    public Page<DepartmentDTO> filterDepartment(String departmentName, String address, String email, int page, int size) {
-        Specification<Departments> departmentsSpecification = DepartmentSpecification.filterDepartment(departmentName, address, email);
+    public Page<DepartmentDTO> filterDepartment(DepartmentFilter departmentFilter, int page, int size) {
+        Specification<Departments> departmentsSpecification = DepartmentSpecification.filterDepartment(departmentFilter);
 
         Pageable pageable = PageRequest.of(page, size);
 

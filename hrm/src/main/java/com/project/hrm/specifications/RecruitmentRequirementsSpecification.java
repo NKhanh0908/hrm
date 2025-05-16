@@ -1,5 +1,6 @@
 package com.project.hrm.specifications;
 
+import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementFilter;
 import com.project.hrm.entities.RecruitmentRequirements;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -9,51 +10,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecruitmentRequirementsSpecification {
-    public static Specification<RecruitmentRequirements> filter( Integer departmentId,
-                                                                 String positions,
-                                                                 String status,
-                                                                 LocalDateTime dateFrom,
-                                                                 LocalDateTime dateTo){
+    public static Specification<RecruitmentRequirements> filter(RecruitmentRequirementFilter recruitmentRequirementFilter){
         return ((root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // Phòng ban
-            if (departmentId != null) {
+            if (recruitmentRequirementFilter.getDepartmentId() != null) {
                 predicates.add(cb.equal(
                         root.get("departments").get("id"),
-                        departmentId
+                        recruitmentRequirementFilter.getDepartmentId()
                 ));
             }
 
-            // Vị trí
-            if (positions != null && !positions.isEmpty()) {
+            if (recruitmentRequirementFilter.getPositions() != null && !recruitmentRequirementFilter.getPositions().isEmpty()) {
                 predicates.add(cb.like(
                         cb.lower(root.get("positions")),
-                        "%" + positions.toLowerCase() + "%"
+                        "%" + recruitmentRequirementFilter.getPositions().toLowerCase() + "%"
                 ));
             }
 
-            // Trạng thái
-            if (status != null && !status.isEmpty()) {
+            if (recruitmentRequirementFilter.getStatus() != null && !recruitmentRequirementFilter.getStatus().isEmpty()) {
                 predicates.add(cb.equal(
                         cb.lower(root.get("status")),
-                        status.toLowerCase()
+                        recruitmentRequirementFilter.getStatus().toLowerCase()
                 ));
             }
 
-            // Ngày yêu cầu từ
-            if (dateFrom != null) {
+            if (recruitmentRequirementFilter.getDateFrom() != null) {
                 predicates.add(cb.greaterThanOrEqualTo(
                         root.get("dateRequired"),
-                        dateFrom
+                        recruitmentRequirementFilter.getDateFrom()
                 ));
             }
 
-            // Ngày yêu cầu đến
-            if (dateTo != null) {
+            if (recruitmentRequirementFilter.getDateTo() != null) {
                 predicates.add(cb.lessThanOrEqualTo(
                         root.get("dateRequired"),
-                        dateTo
+                        recruitmentRequirementFilter.getDateTo()
                 ));
             }
 
