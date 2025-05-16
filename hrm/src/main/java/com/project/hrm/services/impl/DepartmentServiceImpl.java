@@ -13,6 +13,7 @@ import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.specifications.DepartmentSpecification;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
@@ -42,7 +44,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Departments getEntityById(Integer id) {
         return departmentRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> {
+                    String message = "Find Departments with id " + id + " not found";
+
+                    log.error(message);
+
+                    return new RuntimeException(message);
+                });
     }
 
     /**
@@ -56,7 +64,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public DepartmentDTO getDTOById(Integer id) {
         return departmentMapper.toDepartmentDTO(departmentRepository.findById(id)
-                .orElseThrow());
+                .orElseThrow(() -> {
+                    String message = "Find DepartmentsDTO with id " + id + " not found";
+
+                    log.error(message);
+
+                    return new RuntimeException(message);
+                }));
     }
 
     /**
@@ -68,6 +82,8 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public DepartmentDTO create(DepartmentCreateDTO departmentCreateDTO) {
+        log.info("Create Department");
+
         Departments departments = new Departments();
 
         departments = departmentMapper.convertCreateToEntity(departmentCreateDTO);
@@ -88,6 +104,8 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public DepartmentDTO update(DepartmentUpdateDTO departmentUpdateDTO) {
+        log.info("Update Department");
+
         Departments department = getEntityById(departmentUpdateDTO.getId());
 
         if(departmentUpdateDTO.getDepartmentName()!=null){
@@ -127,6 +145,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional(readOnly = true)
     @Override
     public Page<DepartmentDTO> filterDepartment(DepartmentFilter departmentFilter, int page, int size) {
+        log.info("Filter Department");
+
         Specification<Departments> departmentsSpecification = DepartmentSpecification.filterDepartment(departmentFilter);
 
         Pageable pageable = PageRequest.of(page, size);
@@ -146,13 +166,14 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional
     @Override
     public DepartmentDTO appointmentOfDean(Integer departmentId, Integer employeeId) {
+        log.info("Appointment of Dean Department");
+
         Employees employee = employeeRepository.findById(employeeId).orElseThrow();
 
         return departmentMapper.toDepartmentDTO(
                 departmentRepository.updateDean(employeeId, departmentId)
         );
     }
-
 
     private Integer getGenerationId(){
         UUID uuid = UUID.randomUUID();

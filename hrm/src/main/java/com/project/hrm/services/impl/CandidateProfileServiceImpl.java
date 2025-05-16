@@ -10,30 +10,39 @@ import com.project.hrm.repositories.CandidateProfileRepository;
 import com.project.hrm.services.CandidateProfileService;
 import com.project.hrm.specifications.CandidateProfileSpecification;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Service
+@Slf4j
 @AllArgsConstructor
 public class CandidateProfileServiceImpl implements CandidateProfileService {
     private final CandidateProfileRepository candidateProfileRepository;
     private final CandidateProfileMapper candidateProfileMapper;
+
+    @Transactional
     @Override
     public CandidateProfileDTO create(CandidateProfileCreateDTO candidateProfileCreateDTO) {
         CandidateProfile candidateProfile=candidateProfileMapper.convertCreateToEntity(candidateProfileCreateDTO);
 
         candidateProfile.setId(getGenerationId());
+
         return candidateProfileMapper.toCandidateProfileDTO(
                 candidateProfileRepository.save(candidateProfile)
         );
     }
 
+    @Transactional
     @Override
     public CandidateProfileDTO update(CandidateProfileUpdateDTO dto) {
         CandidateProfile existing = candidateProfileRepository.findById(dto.getId())
@@ -62,23 +71,32 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         }
 
         CandidateProfile updated = candidateProfileRepository.save(existing);
+
         return candidateProfileMapper.toCandidateProfileDTO(updated);
     }
 
 
+    @Transactional
     @Override
     public void delete(Integer id) {
 
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CandidateProfileDTO getById(Integer id) {
         return candidateProfileMapper.toCandidateProfileDTO(
                 candidateProfileRepository.findById(id)
-                        .orElseThrow()
-        );
+                        .orElseThrow(() -> {
+                            String message = "Find CandidateProfileDTO with id " + id + " not found";
+
+                            log.error(message);
+
+                            return new RuntimeException(message);
+                        }));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CandidateProfileDTO> filter(CandidateProfileFilter candidateProfileFilter, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending()); // sort mặc định theo id giảm dần
@@ -91,9 +109,17 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CandidateProfile getEntityById(Integer id) {
-        return candidateProfileRepository.findById(id).orElseThrow();
+        return candidateProfileRepository.findById(id)
+                .orElseThrow(() -> {
+                    String message = "Find CandidateProfile with id " + id + " not found";
+
+                    log.error(message);
+
+                    return new RuntimeException(message);
+                });
     }
 
     private Integer getGenerationId(){

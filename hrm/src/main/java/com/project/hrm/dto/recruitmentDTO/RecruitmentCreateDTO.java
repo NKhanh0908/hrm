@@ -17,6 +17,5 @@ public class RecruitmentCreateDTO {
     private String email;
     private LocalDateTime deadline;
     private String jobDescription;
-    private LocalDateTime createAt;
     private Integer recruitmentRequirementId;
 }

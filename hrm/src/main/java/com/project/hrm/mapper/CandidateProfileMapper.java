@@ -8,9 +8,11 @@ import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.entities.Apply;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Evaluate;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class CandidateProfileMapper {
@@ -69,4 +71,5 @@ public class CandidateProfileMapper {
                 .candidateProfileDTO(toCandidateProfileDTO(apply.getCandidateProfile()))
                 .build();
     }
+
 }

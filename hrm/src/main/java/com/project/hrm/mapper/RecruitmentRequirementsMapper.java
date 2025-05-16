@@ -49,17 +49,6 @@ public class RecruitmentRequirementsMapper {
                 .build();
     }
 
-    public RecruitmentDTO toRecruitmentDTO(Recruitment recruitment) {
-        return RecruitmentDTO.builder()
-                .id(recruitment.getId())
-                .email(recruitment.getEmail())
-                .deadline(recruitment.getDeadline())
-                .position(recruitment.getPosition())
-                .createAt(recruitment.getCreateAt()) // Sửa chỗ này: ban đầu là recruitmentDTO.getCreateAt() => lỗi logic
-                .jobDescription(recruitment.getJobDescription()) // Tương tự
-                .recruitmentRequirementsDTO(toDTO(recruitment.getRecruitmentRequirements()))
-                .build();
-    }
 
     public Page<RecruitmentRequirementsDTO> toPageEntityToPageDTO(Page<RecruitmentRequirements> recruitmentRequirementsPage){
         List<RecruitmentRequirementsDTO> recruitmentRequirementsDTOList

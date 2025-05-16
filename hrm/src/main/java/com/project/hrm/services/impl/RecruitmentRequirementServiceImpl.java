@@ -96,7 +96,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
         Departments departments = departmentService.getEntityById(recruitmentRequirementsCreateDTO.getDepartmentId());
 
-        Employees employees = employeeService.findById(recruitmentRequirementsCreateDTO.getCreatedBy());
+        Employees employees = employeeService.getEntityById(recruitmentRequirementsCreateDTO.getCreatedBy());
 
         RecruitmentRequirements recruitmentRequirements
                 = recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO, departments, employees);
@@ -142,7 +142,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         }
 
         if (recruitmentRequirementsUpdateDTO.getCreatedBy() != null) {
-            Employees employee = employeeService.findById(recruitmentRequirementsUpdateDTO.getCreatedBy());
+            Employees employee = employeeService.getEntityById(recruitmentRequirementsUpdateDTO.getCreatedBy());
             entity.setEmployees(employee);
         }
 

@@ -11,12 +11,11 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecruitmentUpdateDTO {
-    private Integer id;
+public class RecruitmentFilter {
     private String position;
-    private String contactPhone;
-    private String email;
-    private LocalDateTime deadline;
-    private String jobDescription;
-    private Integer recruitmentRequirementId;
+    private LocalDateTime deadlineFrom;
+    private LocalDateTime deadlineTo;
+    private LocalDateTime dateCreateFrom;
+    private LocalDateTime dateCreateTo;
+    private Integer recruitmentRequirementID;
 }

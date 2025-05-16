@@ -22,7 +22,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -41,20 +40,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Page<EmployeeDTO> getAll(String name, String email, String gender, String address, int page, int size) {
         Specification<Employees> spec = EmployeeSpecification.filterEmployee(name, email, gender, address);
+
         Pageable pageable = PageRequest.of(page, size);
+
         return employeeMapper.pageToEmployeeDTOList(employeeRepository.findAll(spec, pageable));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Employees findById(Integer id){
+    public Employees getEntityById(Integer id){
         return employeeRepository.findById(id)
                 .orElseThrow();
     }
 
     @Transactional(readOnly = true)
     @Override
-    public EmployeeDTO getById(Integer id) {
+    public EmployeeDTO getDTOById(Integer id) {
         return employeeMapper.toEmployeeDTO(
                 employeeRepository.findById(id)
                        .orElseThrow(() -> new RuntimeException("Employee not found"))
@@ -72,7 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     @Override
     public EmployeeDTO create(EmployeeCreateDTO employeeCreateDTO) {
-        DepartmentDTO departmentDTO = departmentService.getById(employeeCreateDTO.getDepartmentId());
+        DepartmentDTO departmentDTO = departmentService.getDTOById(employeeCreateDTO.getDepartmentId());
         Employees employee = employeeMapper.employeeCreateToEmployee(employeeCreateDTO, departmentDTO);
         employee.setId(getGenerationId());
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
@@ -82,13 +83,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     @Override
     public EmployeeDTO update(EmployeeUpdateDTO employeeUpdateDTO) {
-        Employees employees = employeeMapper.toEntity(getById(employeeUpdateDTO.getId()));
+        Employees employees = employeeMapper.toEntity(getDTOById(employeeUpdateDTO.getId()));
         if (employeeUpdateDTO.getFirstName() != null) employees.setFirstName(employeeUpdateDTO.getFirstName());
         if (employeeUpdateDTO.getLastName()!= null) employees.setLastName(employeeUpdateDTO.getLastName());
         if (employeeUpdateDTO.getDepartmentId()!= null) {
-            DepartmentDTO departmentDTO = departmentService.getById(employeeUpdateDTO.getDepartmentId());
+            DepartmentDTO departmentDTO = departmentService.getDTOById(employeeUpdateDTO.getDepartmentId());
             employees.setDepartment(departmentMapper.toDepartment(
-                    departmentService.getById(employeeUpdateDTO.getDepartmentId())
+                    departmentService.getDTOById(employeeUpdateDTO.getDepartmentId())
             ));
         }
         if(employeeUpdateDTO.getEmail() != null) employees.setEmail(employeeUpdateDTO.getEmail());
