@@ -1,12 +1,19 @@
 package com.project.hrm.mapper;
 
 import com.project.hrm.dto.recruitmentDTO.RecruitmentDTO;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
+import com.project.hrm.entities.Departments;
+import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.entities.RecruitmentRequirements;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -16,7 +23,7 @@ public class RecruitmentRequirementsMapper {
     private final EmployeeMapper employeeMapper;
 
 
-    public RecruitmentRequirementsDTO toRecruitmentRequirementsDTO(RecruitmentRequirements recruitmentRequirements) {
+    public RecruitmentRequirementsDTO toDTO(RecruitmentRequirements recruitmentRequirements) {
         return RecruitmentRequirementsDTO.builder()
                 .id(recruitmentRequirements.getId())
                 .dateRequired(recruitmentRequirements.getDateRequired())
@@ -30,6 +37,18 @@ public class RecruitmentRequirementsMapper {
                 .build();
     }
 
+    public RecruitmentRequirements convertCreateDTOtoEntity(RecruitmentRequirementsCreateDTO recruitmentRequirementsCreateDTO, Departments departments, Employees employees){
+        return RecruitmentRequirements.builder()
+                .description(recruitmentRequirementsCreateDTO.getDescription())
+                .expectedSalary(recruitmentRequirementsCreateDTO.getExpectedSalary())
+                .positions(recruitmentRequirementsCreateDTO.getPositions())
+                .quantity(recruitmentRequirementsCreateDTO.getQuantity())
+                .status(recruitmentRequirementsCreateDTO.getStatus())
+                .departments(departments)
+                .employees(employees)
+                .build();
+    }
+
     public RecruitmentDTO toRecruitmentDTO(Recruitment recruitment) {
         return RecruitmentDTO.builder()
                 .id(recruitment.getId())
@@ -38,7 +57,16 @@ public class RecruitmentRequirementsMapper {
                 .position(recruitment.getPosition())
                 .createAt(recruitment.getCreateAt()) // Sửa chỗ này: ban đầu là recruitmentDTO.getCreateAt() => lỗi logic
                 .jobDescription(recruitment.getJobDescription()) // Tương tự
-                .recruitmentRequirementsDTO(toRecruitmentRequirementsDTO(recruitment.getRecruitmentRequirements()))
+                .recruitmentRequirementsDTO(toDTO(recruitment.getRecruitmentRequirements()))
                 .build();
+    }
+
+    public Page<RecruitmentRequirementsDTO> toPageEntityToPageDTO(Page<RecruitmentRequirements> recruitmentRequirementsPage){
+        List<RecruitmentRequirementsDTO> recruitmentRequirementsDTOList
+                = recruitmentRequirementsPage.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(recruitmentRequirementsDTOList, recruitmentRequirementsPage.getPageable(), recruitmentRequirementsPage.getTotalElements());
     }
 }

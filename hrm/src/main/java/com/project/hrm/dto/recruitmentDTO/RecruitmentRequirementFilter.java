@@ -7,17 +7,14 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Builder
 @Data
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class RecruitmentRequirementsUpdateDTO {
-    private Integer id;
-    private String description;
+@NoArgsConstructor
+public class RecruitmentRequirementFilter {
     private String positions;
-    private Integer quantity;
-    private String expectedSalary;
     private String status;
+    private LocalDateTime dateFrom;
+    private LocalDateTime dateTo;
     private Integer departmentId;
-    private Integer createdBy;
 }

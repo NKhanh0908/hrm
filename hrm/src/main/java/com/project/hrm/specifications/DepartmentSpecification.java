@@ -1,5 +1,6 @@
 package com.project.hrm.specifications;
 
+import com.project.hrm.dto.departmentDTO.DepartmentFilter;
 import com.project.hrm.entities.Departments;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -8,20 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentSpecification {
-    public static Specification<Departments> filterDepartment(String departmentName, String address, String email) {
+    public static Specification<Departments> filterDepartment(DepartmentFilter departmentFilter) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (departmentName != null && !departmentName.isEmpty()) {
-                predicates.add(criteriaBuilder.like(root.get("departmentName"), "%" + departmentName + "%"));
+            if (departmentFilter.getDepartmentName() != null && !departmentFilter.getDepartmentName().isEmpty()) {
+                predicates.add(criteriaBuilder.like(root.get("departmentName"), "%" + departmentFilter.getDepartmentName() + "%"));
             }
 
-            if (address != null && !address.isEmpty()) {
-                predicates.add(criteriaBuilder.like(root.get("address"), "%" + address + "%"));
+            if (departmentFilter.getAddress() != null && !departmentFilter.getAddress().isEmpty()) {
+                predicates.add(criteriaBuilder.like(root.get("address"), "%" + departmentFilter.getAddress() + "%"));
             }
 
-            if (email != null && !email.isEmpty()) {
-                predicates.add(criteriaBuilder.like(root.get("email"), "%" + email + "%"));
+            if (departmentFilter.getEmail() != null && !departmentFilter.getEmail().isEmpty()) {
+                predicates.add(criteriaBuilder.like(root.get("email"), "%" + departmentFilter.getEmail() + "%"));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

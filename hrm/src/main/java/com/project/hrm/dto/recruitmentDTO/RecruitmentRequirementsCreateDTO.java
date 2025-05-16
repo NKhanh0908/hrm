@@ -17,7 +17,6 @@ public class RecruitmentRequirementsCreateDTO {
     private Integer quantity;
     private String expectedSalary;
     private String status;
-    private LocalDateTime dateRequired;
     private Integer departmentId;
     private Integer createdBy;
 }
