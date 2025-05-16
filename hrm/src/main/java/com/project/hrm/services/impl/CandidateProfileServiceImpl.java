@@ -30,6 +30,14 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     private final CandidateProfileRepository candidateProfileRepository;
     private final CandidateProfileMapper candidateProfileMapper;
 
+    /**
+     * Creates a new candidate profile based on the provided data.
+     * Converts the input DTO to an entity, generates a unique ID, and persists it to the database.
+     *
+     * @param candidateProfileCreateDTO the DTO containing data for the new candidate profile.
+     *                                  Must include required fields like name, email, phone, etc.
+     * @return the created candidate profile as a {@link CandidateProfileDTO}.
+     */
     @Transactional
     @Override
     public CandidateProfileDTO create(CandidateProfileCreateDTO candidateProfileCreateDTO) {
@@ -44,6 +52,15 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         );
     }
 
+    /**
+     * Updates an existing candidate profile based on the provided data.
+     * Only non-null fields in the update DTO will be applied to the entity.
+     *
+     * @param dto the DTO containing updated candidate profile data.
+     *            Must include the ID of the profile to be updated.
+     * @return the updated candidate profile as a {@link CandidateProfileDTO}.
+     * @throws RuntimeException if no profile is found with the given ID.
+     */
     @Transactional
     @Override
     public CandidateProfileDTO update(CandidateProfileUpdateDTO dto) {
@@ -86,6 +103,13 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         log.info("Delete CandidateProfile");
     }
 
+    /**
+     * Retrieves a candidate profile by its ID and returns it as a DTO.
+     *
+     * @param id the unique identifier of the candidate profile to retrieve.
+     * @return the corresponding {@link CandidateProfileDTO} if found.
+     * @throws RuntimeException if no candidate profile is found with the given ID.
+     */
     @Transactional(readOnly = true)
     @Override
     public CandidateProfileDTO getById(Integer id) {
@@ -102,6 +126,14 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
                         }));
     }
 
+    /**
+     * Filters candidate profiles based on the provided filter criteria, with pagination.
+     *
+     * @param candidateProfileFilter the filter object containing search criteria such as name, email, position, etc.
+     * @param page the zero-based page index to retrieve.
+     * @param size the number of records per page.
+     * @return a list of {@link CandidateProfileDTO} that match the filter criteria.
+     */
     @Transactional(readOnly = true)
     @Override
     public List<CandidateProfileDTO> filter(CandidateProfileFilter candidateProfileFilter, int page, int size) {
@@ -115,6 +147,14 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         return candidateProfileMapper.convertPageToList(pageResult);
     }
 
+    /**
+     * Retrieves a candidate profile entity by its ID.
+     * This method is useful when the raw entity is needed for internal logic or updates.
+     *
+     * @param id the unique identifier of the candidate profile.
+     * @return the {@link CandidateProfile} entity if found.
+     * @throws RuntimeException if no candidate profile is found with the given ID.
+     */
     @Transactional(readOnly = true)
     @Override
     public CandidateProfile getEntityById(Integer id) {

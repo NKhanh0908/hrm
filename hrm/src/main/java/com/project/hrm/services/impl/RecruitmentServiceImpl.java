@@ -32,6 +32,14 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     private final RecruitmentMapper recruitmentMapper;
     private final RecruitmentRequirementService recruitmentRequirementService;
 
+    /**
+     * Filters recruitment entries based on the given filter criteria and paginates the result.
+     *
+     * @param recruitmentFilter the object containing filter fields such as position, deadline, create at.
+     * @param page the zero-based page index.
+     * @param size the number of records to retrieve per page.
+     * @return a list of {@link RecruitmentDTO} that match the filter criteria.
+     */
     @Transactional(readOnly = true)
     @Override
     public List<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size) {
@@ -46,6 +54,13 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         return recruitmentMapper.convertPageEntityToPageDTO(recruitmentPage);
     }
 
+    /**
+     * Retrieves the recruitment entity by its ID.
+     *
+     * @param id the ID of the recruitment record to fetch.
+     * @return the {@link Recruitment} entity if found.
+     * @throws RuntimeException if no recruitment is found with the specified ID.
+     */
     @Transactional(readOnly = true)
     @Override
     public Recruitment getEntityById(Integer id) {
@@ -61,6 +76,13 @@ public class RecruitmentServiceImpl implements RecruitmentService {
                 );
     }
 
+    /**
+     * Retrieves the recruitment entry by its ID and converts it to a DTO.
+     *
+     * @param id the ID of the recruitment record to fetch.
+     * @return the {@link RecruitmentDTO} representation of the recruitment record.
+     * @throws RuntimeException if no recruitment is found with the specified ID.
+     */
     @Transactional(readOnly = true)
     @Override
     public RecruitmentDTO getDTOById(Integer id) {
@@ -81,6 +103,13 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         return null;
     }
 
+    /**
+     * Creates a new recruitment record based on the provided data.
+     * Retrieves the associated {@link RecruitmentRequirements} entity before mapping to the recruitment entity.
+     *
+     * @param recruitmentCreateDTO the DTO containing recruitment creation data such as position, contact info, and recruitmentRequirementId.
+     * @return the created {@link RecruitmentDTO}.
+     */
     @Transactional
     @Override
     public RecruitmentDTO create(RecruitmentCreateDTO recruitmentCreateDTO) {
@@ -94,6 +123,14 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
     }
 
+    /**
+     * Updates an existing recruitment record with the fields provided in the update DTO.
+     * Only non-null fields will be updated. The associated {@link RecruitmentRequirements} will also be updated if provided.
+     *
+     * @param recruitmentUpdateDTO the DTO containing the updated recruitment data. Must include the recruitment ID.
+     * @return the updated {@link RecruitmentDTO}.
+     * @throws RuntimeException if the recruitment entity is not found with the given ID.
+     */
     @Transactional
     @Override
     public RecruitmentDTO update(RecruitmentUpdateDTO recruitmentUpdateDTO) {
@@ -129,6 +166,12 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         );
     }
 
+    /**
+     * Deletes a recruitment record by its ID.
+     *
+     * @param recruitmentId the ID of the recruitment record to be deleted.
+     * @throws RuntimeException if no recruitment is found with the given ID.
+     */
     @Transactional
     @Override
     public void delete(Integer recruitmentId) {
