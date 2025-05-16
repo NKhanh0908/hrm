@@ -18,5 +18,4 @@ public class CandidateProfileCreateDTO {
     private String linkCV;
     private String skills;
     private String experience;
-    private LocalDateTime createProfileAt;
 }
