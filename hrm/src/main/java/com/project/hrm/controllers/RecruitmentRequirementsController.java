@@ -1,0 +1,125 @@
+package com.project.hrm.controllers;
+
+import com.project.hrm.services.RecruitmentRequirementService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/recruitment-requirements")
+@RequiredArgsConstructor
+@Tag(name = "Recruitment Requirements Controller", description = "Manage recruitment requirement configurations")
+public class RecruitmentRequirementsController {
+
+    private final RecruitmentRequirementService requirementService;
+
+    @PostMapping
+    @Operation(
+            summary = "Create recruitment requirement",
+            description = "Create a new recruitment requirement template for a job position",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Recruitment requirement creation data",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RecruitmentRequirementsCreateDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Requirement created successfully",
+                            content = @Content(schema = @Schema(implementation = RecruitmentRequirementsDTO.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<RecruitmentRequirementsDTO>> create(
+            @RequestBody RecruitmentRequirementsCreateDTO dto) {
+        RecruitmentRequirementsDTO result = requirementService.create(dto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new APIResponse<>(true, "Requirement created successfully", result));
+    }
+
+    @PutMapping
+    @Operation(
+            summary = "Update recruitment requirement",
+            description = "Update an existing recruitment requirement by ID",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Recruitment requirement update data",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RecruitmentRequirementsUpdateDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Requirement updated successfully",
+                            content = @Content(schema = @Schema(implementation = RecruitmentRequirementsDTO.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<RecruitmentRequirementsDTO>> update(
+            @RequestBody RecruitmentRequirementsUpdateDTO dto) {
+        RecruitmentRequirementsDTO result = requirementService.update(dto);
+        return ResponseEntity.ok(new APIResponse<>(true, "Requirement updated successfully", result));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete recruitment requirement",
+            description = "Deletes a recruitment requirement by its ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Requirement deleted successfully"),
+                    @ApiResponse(responseCode = "404", description = "Requirement not found")
+            }
+    )
+    public ResponseEntity<APIResponse<Void>> delete(@PathVariable Integer id) {
+        requirementService.delete(id);
+        return ResponseEntity.ok(new APIResponse<>(true, "Requirement deleted successfully", null));
+    }
+
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "Get recruitment requirement by ID",
+            description = "Retrieves a specific recruitment requirement using its unique identifier",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Requirement retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = RecruitmentRequirementsDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Requirement not found")
+            }
+    )
+    public ResponseEntity<APIResponse<RecruitmentRequirementsDTO>> getById(@PathVariable Integer id) {
+        RecruitmentRequirementsDTO result = requirementService.getDTOById(id);
+        return ResponseEntity.ok(new APIResponse<>(true, "Requirement retrieved successfully", result));
+    }
+
+    @GetMapping("/check-exists/{id}")
+    @Operation(
+            summary = "Check if recruitment requirement exists",
+            description = "Checks whether a recruitment requirement exists by ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Existence check result",
+                            content = @Content(schema = @Schema(implementation = Boolean.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<Boolean>> checkExists(@PathVariable Integer id) {
+        Boolean exists = requirementService.checkExists(id);
+        return ResponseEntity.ok(new APIResponse<>(true, "Existence check completed", exists));
+    }
+
+    @PostMapping("/filter")
+    @Operation(
+            summary = "Filter recruitment requirements",
+            description = "Filters recruitment requirements based on provided criteria",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Filter parameters",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RecruitmentRequirementFilter.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Filter successful",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = RecruitmentRequirementsDTO.class))))
+            }
+    )
+    public ResponseEntity<APIResponse<List<RecruitmentRequirementsDTO>>> filter(
+            @RequestBody RecruitmentRequirementFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        List<RecruitmentRequirementsDTO> result = requirementService.filterRecruitmentRequirements(filter, page, size);
+        return ResponseEntity.ok(new APIResponse<>(true, "Filter completed", result));
+    }
+}
+

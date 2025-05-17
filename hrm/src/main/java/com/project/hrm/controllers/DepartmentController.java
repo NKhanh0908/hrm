@@ -5,7 +5,6 @@ import com.project.hrm.dto.departmentDTO.DepartmentCreateDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentFilter;
 import com.project.hrm.dto.departmentDTO.DepartmentUpdateDTO;
-import com.project.hrm.entities.Departments;
 import com.project.hrm.services.DepartmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/department")
 @RequiredArgsConstructor
-@Tag(name = "Department Controller", description = "Quản lý phòng ban")
+@Tag(name = "Department Controller", description = "Department manager")
 public class DepartmentController {
     private final DepartmentService departmentService;
 
@@ -37,7 +35,7 @@ public class DepartmentController {
                     content = @Content(schema = @Schema(implementation = DepartmentCreateDTO.class))
             ),
             responses = {
-                    @ApiResponse(responseCode = "200",
+                    @ApiResponse(responseCode = "201",
                             description = "Create Department successfully",
                             content = @Content(schema = @Schema(implementation = DepartmentDTO.class))
                     )
@@ -62,9 +60,6 @@ public class DepartmentController {
                     @ApiResponse(responseCode = "200",
                             description = "Update department successfully",
                             content = @Content(schema = @Schema(implementation = DepartmentDTO.class))
-                    ),
-                    @ApiResponse(responseCode = "404",
-                            description = "Department not found"
                     )
             }
     )
@@ -83,9 +78,6 @@ public class DepartmentController {
                     @ApiResponse(responseCode = "200",
                             description = "Successfully retrieved department",
                             content = @Content(schema = @Schema(implementation = DepartmentDTO.class))
-                    ),
-                    @ApiResponse(responseCode = "404",
-                            description = "Department not found"
                     )
             }
     )
@@ -131,9 +123,6 @@ public class DepartmentController {
                     @ApiResponse(responseCode = "200",
                             description = "Dean appointed successfully",
                             content = @Content(schema = @Schema(implementation = DepartmentDTO.class))
-                    ),
-                    @ApiResponse(responseCode = "404",
-                            description = "Department or Employee not found"
                     )
             }
     )
