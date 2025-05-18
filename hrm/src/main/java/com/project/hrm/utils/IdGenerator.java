@@ -1,4 +1,4 @@
-package com.project.hrm.ultis;
+package com.project.hrm.utils;
 
 import java.util.UUID;
 
