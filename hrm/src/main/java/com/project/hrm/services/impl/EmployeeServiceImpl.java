@@ -35,27 +35,48 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentMapper departmentMapper;
 
+
+    /**
+     * Filters employees based on the given {@link EmployeeFilter} conditions with pagination.
+     *
+     * @param employeeFilter the filter conditions to apply
+     * @param page           the page number (0-based)
+     * @param size           the size of each page
+     * @return list of matching {@link EmployeeDTO}
+     */
     @Transactional(readOnly = true)
     @Override
     public List<EmployeeDTO> filter(EmployeeFilter employeeFilter, int page, int size) {
         log.info("Filter EmployeeDTO");
 
         Specification<Employees> spec = EmployeeSpecification.filterEmployee(employeeFilter);
-
         Pageable pageable = PageRequest.of(page, size);
 
         return employeeMapper.pageToEmployeeDTOList(employeeRepository.findAll(spec, pageable));
     }
 
+    /**
+     * Retrieves an {@link Employees} entity by its ID.
+     *
+     * @param id the employee ID
+     * @return the {@link Employees} entity
+     */
     @Transactional(readOnly = true)
     @Override
-    public Employees getEntityById(Integer id){
+    public Employees getEntityById(Integer id) {
         log.info("Find Employee entity by id: {}", id);
 
         return employeeRepository.findById(id)
                 .orElseThrow();
     }
 
+    /**
+     * Retrieves an {@link EmployeeDTO} by its ID.
+     *
+     * @param id the employee ID
+     * @return the corresponding {@link EmployeeDTO}
+     * @throws RuntimeException if the employee is not found
+     */
     @Transactional(readOnly = true)
     @Override
     public EmployeeDTO getDTOById(Integer id) {
@@ -63,12 +84,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return employeeMapper.toEmployeeDTO(
                 employeeRepository.findById(id)
-                       .orElseThrow(() -> new RuntimeException("Employee not found"))
+                        .orElseThrow(() -> new RuntimeException("Employee not found"))
         );
     }
 
-
-
+    /**
+     * Checks if an employee with the given ID exists.
+     *
+     * @param employeeId the employee ID
+     * @return {@code true} if exists, {@code false} otherwise
+     */
     @Transactional(readOnly = true)
     @Override
     public Boolean checkExists(Integer employeeId) {
@@ -77,21 +102,29 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findById(employeeId).isPresent();
     }
 
+    /**
+     * Creates a new employee.
+     *
+     * @param employeeCreateDTO the information used to create the employee
+     * @return the created {@link EmployeeDTO}
+     */
     @Transactional
     @Override
     public EmployeeDTO create(EmployeeCreateDTO employeeCreateDTO) {
         log.info("Create Employee");
 
         DepartmentDTO departmentDTO = departmentService.getById(employeeCreateDTO.getDepartmentId());
-
         Employees employee = employeeMapper.employeeCreateToEmployee(employeeCreateDTO, departmentDTO);
-
-        employee.setId(getGenerationId());
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
     }
 
-
+    /**
+     * Updates an existing employee based on provided {@link EmployeeUpdateDTO}.
+     *
+     * @param employeeUpdateDTO the DTO containing update data
+     * @return the updated {@link EmployeeDTO}
+     */
     @Transactional
     @Override
     public EmployeeDTO update(EmployeeUpdateDTO employeeUpdateDTO) {
@@ -99,45 +132,55 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employees employees = employeeMapper.toEntity(getDTOById(employeeUpdateDTO.getId()));
 
-        if (employeeUpdateDTO.getFirstName() != null) employees.setFirstName(employeeUpdateDTO.getFirstName());
+        if (employeeUpdateDTO.getFirstName() != null)
+            employees.setFirstName(employeeUpdateDTO.getFirstName());
 
-        if (employeeUpdateDTO.getLastName()!= null) employees.setLastName(employeeUpdateDTO.getLastName());
+        if (employeeUpdateDTO.getLastName() != null)
+            employees.setLastName(employeeUpdateDTO.getLastName());
 
-        if (employeeUpdateDTO.getDepartmentId()!= null) {
+        if (employeeUpdateDTO.getDepartmentId() != null) {
             DepartmentDTO departmentDTO = departmentService.getById(employeeUpdateDTO.getDepartmentId());
-
-            employees.setDepartment(departmentMapper.toDepartment(
-                    departmentService.getById(employeeUpdateDTO.getDepartmentId())
-            ));
+            employees.setDepartment(departmentMapper.toDepartment(departmentDTO));
         }
 
-        if(employeeUpdateDTO.getEmail() != null) employees.setEmail(employeeUpdateDTO.getEmail());
+        if (employeeUpdateDTO.getEmail() != null)
+            employees.setEmail(employeeUpdateDTO.getEmail());
 
-        if(employeeUpdateDTO.getPhone()!= null) employees.setPhone(employeeUpdateDTO.getPhone());
+        if (employeeUpdateDTO.getPhone() != null)
+            employees.setPhone(employeeUpdateDTO.getPhone());
 
-        if(employeeUpdateDTO.getGender() != null) employees.setGender(employeeUpdateDTO.getGender());
+        if (employeeUpdateDTO.getGender() != null)
+            employees.setGender(employeeUpdateDTO.getGender());
 
-        if(employeeUpdateDTO.getDateOfBirth() != null) employees.setDateOfBirth(employeeUpdateDTO.getDateOfBirth());
+        if (employeeUpdateDTO.getDateOfBirth() != null)
+            employees.setDateOfBirth(employeeUpdateDTO.getDateOfBirth());
 
-        if((employeeUpdateDTO.getCitizenIdentificationCard()) != null) employees.setCitizenIdentificationCard(employees.getCitizenIdentificationCard());
+        if (employeeUpdateDTO.getCitizenIdentificationCard() != null)
+            employees.setCitizenIdentificationCard(employeeUpdateDTO.getCitizenIdentificationCard());
 
-        if(employeeUpdateDTO.getAddress() != null) employees.setAddress(employeeUpdateDTO.getAddress());
+        if (employeeUpdateDTO.getAddress() != null)
+            employees.setAddress(employeeUpdateDTO.getAddress());
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employees));
     }
 
+    /**
+     * Deletes an employee by their ID.
+     *
+     * @param employeeId the ID of the employee to delete
+     * @throws RuntimeException if employee does not exist
+     */
     @Transactional
     @Override
-    public void delete(Integer employeeId){
+    public void delete(Integer employeeId) {
         log.info("Delete employee by id: {}", employeeId);
 
-        if(checkExists(employeeId)) employeeRepository.deleteById(employeeId);
-        else throw new RuntimeException("Employee not found");
+        if (checkExists(employeeId)) {
+            employeeRepository.deleteById(employeeId);
+        } else {
+            throw new RuntimeException("Employee not found");
+        }
     }
 
 
-    private Integer getGenerationId(){
-        UUID uuid = UUID.randomUUID();
-        return (int) (uuid.getMostSignificantBits() & 0xFFFFFFFFL);
-    }
 }

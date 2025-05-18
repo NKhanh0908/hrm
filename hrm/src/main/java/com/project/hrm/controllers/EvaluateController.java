@@ -95,20 +95,6 @@ public class EvaluateController {
         return ResponseEntity.ok(new APIResponse<>(true, "Evaluation retrieved successfully", result));
     }
 
-    @GetMapping("/check-exists/{id}")
-    @Operation(
-            summary = "Check if evaluation exists",
-            description = "Checks whether an evaluation with the given ID exists in the system",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Existence check successful",
-                            content = @Content(schema = @Schema(implementation = Boolean.class)))
-            }
-    )
-    public ResponseEntity<APIResponse<Boolean>> checkExists(@PathVariable Integer id) {
-        Boolean exists = evaluateService.checkExists(id);
-        return ResponseEntity.ok(new APIResponse<>(true, "Existence check completed", exists));
-    }
-
     @PostMapping("/filter")
     @Operation(
             summary = "Filter evaluations",

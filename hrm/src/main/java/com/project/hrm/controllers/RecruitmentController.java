@@ -95,20 +95,6 @@ public class RecruitmentController {
         return ResponseEntity.ok(new APIResponse<>(true, "Recruitment retrieved successfully", result));
     }
 
-    @GetMapping("/check-exists/{id}")
-    @Operation(
-            summary = "Check if recruitment post exists",
-            description = "Checks whether a recruitment post exists using the specified ID",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Existence check successful",
-                            content = @Content(schema = @Schema(implementation = Boolean.class)))
-            }
-    )
-    public ResponseEntity<APIResponse<Boolean>> checkExists(@PathVariable Integer id) {
-        Boolean exists = recruitmentService.checkExists(id);
-        return ResponseEntity.ok(new APIResponse<>(true, "Existence check completed", exists));
-    }
-
     @PostMapping("/filter")
     @Operation(
             summary = "Filter recruitment posts",

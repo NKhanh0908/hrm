@@ -33,24 +33,34 @@ import java.util.stream.Collectors;
 public class EvaluateServiceImpl implements EvaluateService {
     private final EvaluateMapper evaluateMapper;
     private final EvaluateRepository evaluateRepository;
-    private final EmployeeService employeeService;
     private final CandidateProfileService candidateProfileService;
 
+    /**
+     * Retrieves a paginated list of EvaluateDTOs based on filter conditions.
+     *
+     * @param evaluateFilter the filter conditions to apply.
+     * @param page           the current page number (0-based).
+     * @param size           the number of records per page.
+     * @return a list of filtered {@link EvaluateDTO}.
+     */
     @Transactional(readOnly = true)
     @Override
-    public List<EvaluateDTO> filter(EvaluateFilter evaluateFilter,int page,int size) {
+    public List<EvaluateDTO> filter(EvaluateFilter evaluateFilter, int page, int size) {
         log.info("Filter Evaluate");
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-
         Specification<Evaluate> spec = EvaluateSpecification.filter(evaluateFilter);
-
         Page<Evaluate> pageResult = evaluateRepository.findAll(spec, pageable);
 
         return evaluateMapper.convertPageToList(pageResult);
-
     }
 
+    /**
+     * Retrieves a specific EvaluateDTO by its ID.
+     *
+     * @param id the ID of the Evaluate entity to retrieve.
+     * @return the corresponding {@link EvaluateDTO}.
+     */
     @Transactional(readOnly = true)
     @Override
     public EvaluateDTO getById(Integer id) {
@@ -61,27 +71,30 @@ public class EvaluateServiceImpl implements EvaluateService {
         );
     }
 
-    @Override
-    public Boolean checkExists(Integer evaluateId) {
-        return null;
-    }
-
+    /**
+     * Creates a new Evaluate entity from the provided DTO.
+     *
+     * @param evaluateCreateDTO the DTO containing the information to create a new Evaluate.
+     * @return the created {@link EvaluateDTO} after being saved.
+     */
     @Transactional
     @Override
     public EvaluateDTO create(EvaluateCreateDTO evaluateCreateDTO) {
         log.info("Create Evaluate");
 
-        Evaluate evaluate=evaluateMapper.conventCreateToEntity(evaluateCreateDTO);
-
-        evaluate.setId(getGenerationId());
-
-        CandidateProfile candidateProfile=candidateProfileService.getEntityById(evaluateCreateDTO.getCandidateProfileId());
+        Evaluate evaluate = evaluateMapper.conventCreateToEntity(evaluateCreateDTO);
+        CandidateProfile candidateProfile = candidateProfileService.getEntityById(evaluateCreateDTO.getCandidateProfileId());
         evaluate.setCandidateProfile(candidateProfile);
-        //set employee
 
         return evaluateMapper.toEvaluateDTO(evaluateRepository.save(evaluate));
     }
 
+    /**
+     * Updates an existing Evaluate entity based on the non-null fields in the provided DTO.
+     *
+     * @param evaluateUpdateDTO the DTO containing updated values.
+     * @return the updated {@link EvaluateDTO} after persistence.
+     */
     @Transactional
     @Override
     public EvaluateDTO update(EvaluateUpdateDTO evaluateUpdateDTO) {
@@ -93,31 +106,38 @@ public class EvaluateServiceImpl implements EvaluateService {
         if (evaluateUpdateDTO.getFeedback() != null) {
             evaluate.setFeedback(evaluateUpdateDTO.getFeedback());
         }
+
         if (evaluateUpdateDTO.getFeedbackAt() != null) {
             evaluate.setFeedbackAt(evaluateUpdateDTO.getFeedbackAt());
         }
+
         if (evaluateUpdateDTO.getEvaluate() != null) {
             evaluate.setEvaluate(evaluateUpdateDTO.getEvaluate());
         }
+
         if (evaluateUpdateDTO.getCandidateId() != null) {
             CandidateProfile candidate = candidateProfileService.getEntityById(evaluateUpdateDTO.getCandidateId());
             evaluate.setCandidateProfile(candidate);
         }
-        if (evaluateUpdateDTO.getCreateBy() != null) {
 
-        }
+        // `createBy` is checked but not set in this version.
 
         return evaluateMapper.toEvaluateDTO(evaluateRepository.save(evaluate));
     }
 
-
+    /**
+     * Deletes an existing Evaluate entity by its ID.
+     *
+     * @param evaluateId the ID of the Evaluate to delete.
+     */
+    @Transactional
     @Override
     public void delete(Integer evaluateId) {
+        log.info("Delete Evaluate");
 
-    }
-    private Integer getGenerationId(){
-        UUID uuid = UUID.randomUUID();
+        Evaluate evaluate = evaluateRepository.findById(evaluateId)
+                .orElseThrow();
 
-        return (int) (uuid.getMostSignificantBits() & 0xFFFFFFFFL);
+        evaluateRepository.delete(evaluate);
     }
 }

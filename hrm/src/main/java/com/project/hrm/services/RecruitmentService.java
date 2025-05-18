@@ -22,8 +22,6 @@ public interface RecruitmentService {
 
     RecruitmentDTO getDTOById(Integer id);
 
-    Boolean checkExists(Integer recruitmentId);
-
     List<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size);
 
 }

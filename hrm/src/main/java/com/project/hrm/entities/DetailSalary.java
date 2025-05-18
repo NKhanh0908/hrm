@@ -1,5 +1,6 @@
 package com.project.hrm.entities;
 
+import com.project.hrm.ultis.IdGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class DetailSalary {
     @Id
-    private Integer id;
+    private Integer id = IdGenerator.getGenerationId();
     private Double basicSalary;
 
     @ManyToOne

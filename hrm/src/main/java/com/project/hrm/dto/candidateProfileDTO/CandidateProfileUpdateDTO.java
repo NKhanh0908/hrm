@@ -1,5 +1,6 @@
 package com.project.hrm.dto.candidateProfileDTO;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CandidateProfileUpdateDTO {
+    @NotNull(message = "Id Candidate Profiles is required")
     private Integer id;
     private String name;
     private String email;

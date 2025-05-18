@@ -1,5 +1,6 @@
 package com.project.hrm.dto.applyDTO;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApplyUpdateDTO {
+    @NotNull(message = "Apply ID is required")
     private Integer id;
     private LocalDateTime applyAt;
     private String status;

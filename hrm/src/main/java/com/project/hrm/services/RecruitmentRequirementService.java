@@ -24,7 +24,4 @@ public interface RecruitmentRequirementService {
 
     List<RecruitmentRequirementsDTO> filterRecruitmentRequirements(RecruitmentRequirementFilter recruitmentRequirementFilter, int page, int size);
 
-    Boolean checkExists(Integer requirementId);
-
-
 }

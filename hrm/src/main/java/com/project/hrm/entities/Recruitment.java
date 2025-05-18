@@ -1,5 +1,6 @@
 package com.project.hrm.entities;
 
+import com.project.hrm.ultis.IdGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Recruitment {
     @Id
-    private Integer id;
+    private Integer id = IdGenerator.getGenerationId();
     private String position;
     private String contactPhone;
     private String email;

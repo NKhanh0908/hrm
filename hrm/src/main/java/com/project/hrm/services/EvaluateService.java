@@ -14,8 +14,6 @@ public interface EvaluateService {
 
     EvaluateDTO getById(Integer id);
 
-    Boolean checkExists(Integer evaluateId);
-
     EvaluateDTO create(EvaluateCreateDTO evaluateCreateDTO);
 
     EvaluateDTO update(EvaluateUpdateDTO evaluateUpdateDTO);

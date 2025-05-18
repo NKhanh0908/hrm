@@ -1,12 +1,23 @@
 package com.project.hrm.controllers;
 
+import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementFilter;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
+import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
 import com.project.hrm.services.RecruitmentRequirementService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/recruitment-requirements")
@@ -14,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Recruitment Requirements Controller", description = "Manage recruitment requirement configurations")
 public class RecruitmentRequirementsController {
 
-    private final RecruitmentRequirementService requirementService;
+    private final RecruitmentRequirementService recruitmentRequirementService;
 
     @PostMapping
     @Operation(
@@ -32,7 +43,7 @@ public class RecruitmentRequirementsController {
     )
     public ResponseEntity<APIResponse<RecruitmentRequirementsDTO>> create(
             @RequestBody RecruitmentRequirementsCreateDTO dto) {
-        RecruitmentRequirementsDTO result = requirementService.create(dto);
+        RecruitmentRequirementsDTO result = recruitmentRequirementService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new APIResponse<>(true, "Requirement created successfully", result));
     }
@@ -53,7 +64,7 @@ public class RecruitmentRequirementsController {
     )
     public ResponseEntity<APIResponse<RecruitmentRequirementsDTO>> update(
             @RequestBody RecruitmentRequirementsUpdateDTO dto) {
-        RecruitmentRequirementsDTO result = requirementService.update(dto);
+        RecruitmentRequirementsDTO result = recruitmentRequirementService.update(dto);
         return ResponseEntity.ok(new APIResponse<>(true, "Requirement updated successfully", result));
     }
 
@@ -67,7 +78,7 @@ public class RecruitmentRequirementsController {
             }
     )
     public ResponseEntity<APIResponse<Void>> delete(@PathVariable Integer id) {
-        requirementService.delete(id);
+        recruitmentRequirementService.delete(id);
         return ResponseEntity.ok(new APIResponse<>(true, "Requirement deleted successfully", null));
     }
 
@@ -82,7 +93,7 @@ public class RecruitmentRequirementsController {
             }
     )
     public ResponseEntity<APIResponse<RecruitmentRequirementsDTO>> getById(@PathVariable Integer id) {
-        RecruitmentRequirementsDTO result = requirementService.getDTOById(id);
+        RecruitmentRequirementsDTO result = recruitmentRequirementService.getDTOById(id);
         return ResponseEntity.ok(new APIResponse<>(true, "Requirement retrieved successfully", result));
     }
 
@@ -96,7 +107,7 @@ public class RecruitmentRequirementsController {
             }
     )
     public ResponseEntity<APIResponse<Boolean>> checkExists(@PathVariable Integer id) {
-        Boolean exists = requirementService.checkExists(id);
+        Boolean exists = recruitmentRequirementService.checkExists(id);
         return ResponseEntity.ok(new APIResponse<>(true, "Existence check completed", exists));
     }
 
@@ -118,7 +129,7 @@ public class RecruitmentRequirementsController {
             @RequestBody RecruitmentRequirementFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        List<RecruitmentRequirementsDTO> result = requirementService.filterRecruitmentRequirements(filter, page, size);
+        List<RecruitmentRequirementsDTO> result = recruitmentRequirementService.filterRecruitmentRequirements(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter completed", result));
     }
 }

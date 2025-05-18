@@ -46,6 +46,8 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
     @Transactional(readOnly = true)
     @Override
     public List<RecruitmentRequirementsDTO> filterRecruitmentRequirements(RecruitmentRequirementFilter recruitmentRequirementFilter, int page, int size) {
+        log.info("Filter Recruitment Requirements");
+        
         Specification<RecruitmentRequirements> recruitmentRequirementsSpecification
                 = RecruitmentRequirementsSpecification.filter(recruitmentRequirementFilter);
 
@@ -107,12 +109,6 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
                 .toDTO(recruitmentRequirements);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Boolean checkExists(Integer requirementId) {
-        return null;
-    }
-
     /**
      * Creates a new recruitment requirement based on the provided data.
      * Fetches related department and employee entities to build the relationship before saving.
@@ -130,10 +126,9 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
         Employees employees = employeeService.getEntityById(recruitmentRequirementsCreateDTO.getCreatedBy());
 
-        RecruitmentRequirements recruitmentRequirements
-                = recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO, departments, employees);
+        RecruitmentRequirements recruitmentRequirements = new RecruitmentRequirements();
+        recruitmentRequirements = recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO, departments, employees);
 
-        recruitmentRequirements.setId(getGenerationId());
         recruitmentRequirements.setDateRequired(LocalDateTime.now());
 
         return recruitmentRequirementsMapper.toDTO(
@@ -210,9 +205,4 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         recruitmentRequirementsRepository.delete(recruitmentRequirements);
     }
 
-    private Integer getGenerationId(){
-        UUID uuid = UUID.randomUUID();
-
-        return (int) (uuid.getMostSignificantBits() & 0xFFFFFFFFL);
-    }
 }

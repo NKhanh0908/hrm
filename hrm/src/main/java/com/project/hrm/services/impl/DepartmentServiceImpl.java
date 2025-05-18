@@ -88,8 +88,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         departments = departmentMapper.convertCreateToEntity(departmentCreateDTO);
 
-        departments.setId(getGenerationId());
-
         return departmentMapper.toDepartmentDTO(
                 departmentRepository.save(departments)
         );
@@ -175,9 +173,4 @@ public class DepartmentServiceImpl implements DepartmentService {
         );
     }
 
-    private Integer getGenerationId(){
-        UUID uuid = UUID.randomUUID();
-
-        return (int) (uuid.getMostSignificantBits() & 0xFFFFFFFFL);
-    }
 }

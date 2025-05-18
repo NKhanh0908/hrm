@@ -43,6 +43,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Transactional(readOnly = true)
     @Override
     public List<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size) {
+        log.info("Filter Recruitment");
         Specification<Recruitment> recruitmentSpecification
                 = RecruitmentSpecification.filter(recruitmentFilter);
 
@@ -64,6 +65,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Transactional(readOnly = true)
     @Override
     public Recruitment getEntityById(Integer id) {
+        log.info("Find Entity Recruitment by id: {}", id);
+
         return recruitmentRepository.findById(id)
                 .orElseThrow(
                         () -> {
@@ -86,6 +89,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Transactional(readOnly = true)
     @Override
     public RecruitmentDTO getDTOById(Integer id) {
+        log.info("Find Recruitment by id: {}", id);
+
         return recruitmentMapper.toDTO(
                 recruitmentRepository.findById(id).orElseThrow(
                 () -> {
@@ -98,11 +103,6 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         ));
     }
 
-    @Override
-    public Boolean checkExists(Integer recruitmentId) {
-        return null;
-    }
-
     /**
      * Creates a new recruitment record based on the provided data.
      * Retrieves the associated {@link RecruitmentRequirements} entity before mapping to the recruitment entity.
@@ -113,11 +113,12 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Transactional
     @Override
     public RecruitmentDTO create(RecruitmentCreateDTO recruitmentCreateDTO) {
+        log.info("Create Recruitment");
+
         RecruitmentRequirements recruitmentRequirements = recruitmentRequirementService.getEntityById(recruitmentCreateDTO.getRecruitmentRequirementId());
 
-        Recruitment recruitment = recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements);
-
-        recruitment.setId(getGenerationId());
+        Recruitment recruitment = new Recruitment();
+        recruitment = recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements);
         recruitment.setCreateAt(LocalDateTime.now());
 
         return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
@@ -134,6 +135,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Transactional
     @Override
     public RecruitmentDTO update(RecruitmentUpdateDTO recruitmentUpdateDTO) {
+        log.info("Update Recruitment");
+
         Recruitment recruitment = getEntityById(recruitmentUpdateDTO.getId());
 
         if (recruitmentUpdateDTO.getPosition() != null) {
@@ -175,6 +178,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Transactional
     @Override
     public void delete(Integer recruitmentId) {
+        log.info("Delete Recruitment");
 
         Recruitment recruitment = getEntityById(recruitmentId);
 
@@ -182,9 +186,4 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
     }
 
-    private Integer getGenerationId(){
-        UUID uuid = UUID.randomUUID();
-
-        return (int) (uuid.getMostSignificantBits() & 0xFFFFFFFFL);
-    }
 }

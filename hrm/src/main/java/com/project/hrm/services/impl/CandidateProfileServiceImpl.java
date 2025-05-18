@@ -43,9 +43,8 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     public CandidateProfileDTO create(CandidateProfileCreateDTO candidateProfileCreateDTO) {
         log.info("Create CandidateProfile");
 
-        CandidateProfile candidateProfile=candidateProfileMapper.convertCreateToEntity(candidateProfileCreateDTO);
-
-        candidateProfile.setId(getGenerationId());
+        CandidateProfile candidateProfile = new CandidateProfile();
+        candidateProfile  =candidateProfileMapper.convertCreateToEntity(candidateProfileCreateDTO);
 
         return candidateProfileMapper.toCandidateProfileDTO(
                 candidateProfileRepository.save(candidateProfile)
@@ -170,9 +169,4 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
                 });
     }
 
-    private Integer getGenerationId(){
-        UUID uuid = UUID.randomUUID();
-
-        return (int) (uuid.getMostSignificantBits() & 0xFFFFFFFFL);
-    }
 }

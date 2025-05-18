@@ -53,9 +53,9 @@ public class ApplyServiceImpl implements ApplyService {
 
         CandidateProfile candidateProfile = candidateProfileService.getEntityById(applyCreateDTO.getCandidateProfileId());
 
-        Apply apply = applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment, candidateProfile);
+        Apply apply = new Apply();
+              apply  = applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment, candidateProfile);
 
-        apply.setId(getGenerationId());
         apply.setApplyAt(LocalDateTime.now());
 
         return applyMapper.toDTO(applyRepository.save(apply));
@@ -156,9 +156,4 @@ public class ApplyServiceImpl implements ApplyService {
         return applyMapper.convertPageToList(applyPage);
     }
 
-    private Integer getGenerationId(){
-        UUID uuid = UUID.randomUUID();
-
-        return (int) (uuid.getMostSignificantBits() & 0xFFFFFFFFL);
-    }
 }
