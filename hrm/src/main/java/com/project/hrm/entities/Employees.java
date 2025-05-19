@@ -30,11 +30,7 @@ public class Employees {
     @Column(nullable = false)
     private StatusEmployee status;
 
-    @ManyToOne
-    @JoinColumn
-    private Departments department;
-
-//    @JsonBackReference
-//    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Contracts> contracts;
+    public String fullName(){
+        return firstName + " " + lastName;
+    }
 }

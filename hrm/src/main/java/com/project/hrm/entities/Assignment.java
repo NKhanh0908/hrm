@@ -1,6 +1,5 @@
 package com.project.hrm.entities;
 
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.Entity;
@@ -19,19 +18,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Contracts {
+public class Assignment {
     @Id
     private Integer id = IdGenerator.getGenerationId();
-    private String title;
-    private LocalDateTime contractSigningDate;
-    private LocalDateTime startDate = LocalDateTime.now();
-    private LocalDateTime endDate;
-    private Double baseSalary;
-    private String description;
 
     @ManyToOne
     @JoinColumn
-    private Employees employee;
+    @JsonBackReference
+    private Employees employees;
 
     @ManyToOne
     @JoinColumn
@@ -42,4 +36,9 @@ public class Contracts {
     @JoinColumn
     private Role role;
 
+    private LocalDateTime startDate = LocalDateTime.now();
+
+    private LocalDateTime endDate;
+
 }
+
