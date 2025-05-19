@@ -1,4 +1,4 @@
-package com.project.hrm.dto.assignmentDTO;
+package com.project.hrm.dto.accountDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +11,11 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AssignmentFilter {
+public class AccountUpdateDTO {
+    private Integer id;
+    private String username;
+    private LocalDateTime createAt;
+    private Boolean status;
     private Integer employeeId;
-    private Integer departmentId;
     private Integer roleId;
-    private LocalDateTime fromDate;
-    private LocalDateTime toDate;
 }
