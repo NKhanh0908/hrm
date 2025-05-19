@@ -5,6 +5,7 @@ import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
 import com.project.hrm.entities.RecruitmentRequirements;
+import com.project.hrm.enums.RecruitmentRequirementsStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,8 @@ public interface RecruitmentRequirementService {
     RecruitmentRequirementsDTO create(RecruitmentRequirementsCreateDTO recruitmentRequirementsCreateDTO);
 
     RecruitmentRequirementsDTO update(RecruitmentRequirementsUpdateDTO recruitmentRequirementsUpdateDTO);
+
+    RecruitmentRequirementsDTO updateStatus(Integer id, RecruitmentRequirementsStatus status);
 
     void delete(Integer requirementId);
 

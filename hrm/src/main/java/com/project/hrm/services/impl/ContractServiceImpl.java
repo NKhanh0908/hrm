@@ -8,6 +8,7 @@ import com.project.hrm.entities.Contracts;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Role;
+import com.project.hrm.enums.ContractStatus;
 import com.project.hrm.mapper.ContractMapper;
 import com.project.hrm.repositories.ContractRepository;
 import com.project.hrm.services.ContractService;
@@ -15,6 +16,7 @@ import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.RoleService;
 import com.project.hrm.specifications.ContractSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -51,8 +53,18 @@ public class ContractServiceImpl implements ContractService {
     public ContractDTO create(ContractCreateDTO contractCreateDTO) {
         log.info("Create contract");
 
+        if(contractRepository.existsOverlappingContract(contractCreateDTO.getEmployeeId(),
+                contractCreateDTO.getRoleId(),
+                contractCreateDTO.getStartDate(),
+                contractCreateDTO.getEndDate())){
+            log.error("409: An active contract of this role already exists for employee ID:{}", contractCreateDTO.getEmployeeId());
+            return null;
+        }
+
         Employees employees = employeeService.getEntityById(contractCreateDTO.getEmployeeId());
+
         Departments departments = departmentService.getEntityById(contractCreateDTO.getDepartmentId());
+
         Role role = roleService.getEntityById(contractCreateDTO.getRoleId());
 
         Contracts contracts = new Contracts(contractMapper.convertCreateDTOToEntity(
@@ -105,6 +117,26 @@ public class ContractServiceImpl implements ContractService {
 
         Contracts saved = contractRepository.save(contracts);
         return contractMapper.toDTO(saved);
+    }
+
+    /**
+     * Change the status of an existing contract.
+     *
+     * @param id     the ID of the contract
+     * @param status the new {@link ContractStatus} to set
+     * @throws EntityNotFoundException if no contract exists with the given ID
+     */
+    @Transactional
+    public void updateStatus(Integer id, ContractStatus status) {
+        // ensure the contract exists
+        if (!contractRepository.existsById(id)) {
+            throw new EntityNotFoundException("Contract not found with ID " + id);
+        }
+        // perform the native update
+        int rows = contractRepository.updateStatus(id, status.name());
+        if (rows != 1) {
+            throw new IllegalStateException("Failed to update status for contract ID " + id);
+        }
     }
 
     /**

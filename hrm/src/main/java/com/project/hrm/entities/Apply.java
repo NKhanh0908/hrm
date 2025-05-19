@@ -2,11 +2,9 @@ package com.project.hrm.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.project.hrm.enums.ApplyStatus;
 import com.project.hrm.utils.IdGenerator;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +21,11 @@ public class Apply {
     @Id
     private Integer id = IdGenerator.getGenerationId();
     private LocalDateTime applyAt;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ApplyStatus applyStatus;
+
     private String position;
 
     @ManyToOne
@@ -39,7 +41,7 @@ public class Apply {
     public Apply(Apply apply){
         this.id = IdGenerator.getGenerationId();
         this.applyAt = LocalDateTime.now();
-        this.status = apply.getStatus();
+        this.applyStatus = apply.getApplyStatus();
         this.position = apply.getPosition();
         this.recruitment = apply.getRecruitment();
         this.candidateProfile = apply.getCandidateProfile();

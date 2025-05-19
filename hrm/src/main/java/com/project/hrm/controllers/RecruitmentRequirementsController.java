@@ -5,8 +5,10 @@ import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementFilter;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
+import com.project.hrm.enums.RecruitmentRequirementsStatus;
 import com.project.hrm.services.RecruitmentRequirementService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -121,6 +123,30 @@ public class RecruitmentRequirementsController {
             @RequestParam(defaultValue = "10") int size) {
         List<RecruitmentRequirementsDTO> result = recruitmentRequirementService.filterRecruitmentRequirements(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter completed", result));
+    }
+
+    @PutMapping("/{id}/status")
+    @Operation(
+            summary = "Update Requirement Status",
+            description = "Set a new status on an existing recruitment requirement",
+            parameters = {
+                    @Parameter(name = "id", description = "Requirement ID", required = true),
+                    @Parameter(name = "status",
+                            description = "New status",
+                            schema = @Schema(implementation = RecruitmentRequirementsStatus.class))
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Status updated successfully",
+                            content = @Content(schema = @Schema(implementation = RecruitmentRequirementsDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Requirement not found")
+            }
+    )
+    public ResponseEntity<APIResponse<RecruitmentRequirementsDTO>> updateStatus(
+            @PathVariable Integer id,
+            @RequestParam RecruitmentRequirementsStatus status) {
+        RecruitmentRequirementsDTO dto = recruitmentRequirementService.updateStatus(id, status);
+        return ResponseEntity.ok(new APIResponse<>(true,
+                "Requirement status updated to " + status, dto));
     }
 }
 

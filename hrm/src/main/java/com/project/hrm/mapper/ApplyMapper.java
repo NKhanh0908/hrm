@@ -5,6 +5,7 @@ import com.project.hrm.dto.applyDTO.ApplyDTO;
 import com.project.hrm.entities.Apply;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Recruitment;
+import com.project.hrm.enums.ApplyStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class ApplyMapper {
     public ApplyDTO toDTO(Apply apply){
         return ApplyDTO.builder()
                 .id(apply.getId())
-                .status(apply.getStatus())
+                .status(apply.getApplyStatus().toString())
                 .applyAt(apply.getApplyAt())
                 .position(apply.getPosition())
                 .recruitmentDTO(recruitmentMapper.toDTO(apply.getRecruitment()))
@@ -31,7 +32,7 @@ public class ApplyMapper {
 
     public Apply convertCreateDTOToEntity(ApplyCreateDTO applyCreateDTO, Recruitment recruitment, CandidateProfile candidateProfile){
         return Apply.builder()
-                .status(applyCreateDTO.getStatus())
+                .applyStatus(ApplyStatus.valueOf("SUBMITTED"))
                 .position(applyCreateDTO.getPosition())
                 .recruitment(recruitment)
                 .candidateProfile(candidateProfile)

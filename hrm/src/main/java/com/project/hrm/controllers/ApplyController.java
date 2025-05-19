@@ -5,6 +5,7 @@ import com.project.hrm.dto.applyDTO.ApplyCreateDTO;
 import com.project.hrm.dto.applyDTO.ApplyDTO;
 import com.project.hrm.dto.applyDTO.ApplyFilter;
 import com.project.hrm.dto.applyDTO.ApplyUpdateDTO;
+import com.project.hrm.enums.ApplyStatus;
 import com.project.hrm.services.ApplyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -113,6 +114,30 @@ public class ApplyController {
                                       @RequestParam(defaultValue = "10") int size) {
         List<ApplyDTO> applyDTOList = applyService.filter(applyFilter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter Apply successfully", applyDTOList));
+    }
+
+    @PutMapping("/{id}/status")
+    @Operation(
+            summary = "Update Apply Status",
+            description = "Set a new status on an existing application",
+            parameters = {
+                    @Parameter(name = "id", description = "Application ID", required = true),
+                    @Parameter(name = "status",
+                            description = "New status",
+                            schema = @Schema(implementation = ApplyStatus.class))
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Status updated successfully",
+                            content = @Content(schema = @Schema(implementation = ApplyDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Application not found")
+            }
+    )
+    public ResponseEntity<APIResponse<ApplyDTO>> updateStatus(
+            @PathVariable Integer id,
+            @RequestParam ApplyStatus status) {
+        ApplyDTO updated = applyService.updateStatus(id, status);
+        return ResponseEntity.ok(new APIResponse<>(true,
+                "Apply status updated to " + status, updated));
     }
 
 }

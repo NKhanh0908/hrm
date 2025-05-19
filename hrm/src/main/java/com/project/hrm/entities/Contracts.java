@@ -2,11 +2,9 @@ package com.project.hrm.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.project.hrm.enums.ContractStatus;
 import com.project.hrm.utils.IdGenerator;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +26,10 @@ public class Contracts {
     private LocalDateTime endDate;
     private Double baseSalary;
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ContractStatus contractStatus;
 
     @ManyToOne
     @JoinColumn
@@ -52,6 +54,7 @@ public class Contracts {
         this.baseSalary = contracts.getBaseSalary();
         this.endDate = contracts.getEndDate();
         this.startDate = contracts.getStartDate();
+        this.contractStatus = contracts.getContractStatus();
         this.contractSigningDate = contracts.getContractSigningDate();
         this.title = contracts.getTitle();
     }

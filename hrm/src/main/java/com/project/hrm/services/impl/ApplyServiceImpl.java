@@ -8,6 +8,7 @@ import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.entities.Apply;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Recruitment;
+import com.project.hrm.enums.ApplyStatus;
 import com.project.hrm.mapper.ApplyMapper;
 import com.project.hrm.mapper.CandidateProfileMapper;
 import com.project.hrm.repositories.ApplyRepository;
@@ -15,6 +16,7 @@ import com.project.hrm.services.ApplyService;
 import com.project.hrm.services.CandidateProfileService;
 import com.project.hrm.services.RecruitmentService;
 import com.project.hrm.specifications.ApplySpecification;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -81,7 +83,7 @@ public class ApplyServiceImpl implements ApplyService {
         }
 
         if (applyUpdateDTO.getStatus() != null) {
-            apply.setStatus(applyUpdateDTO.getStatus());
+            apply.setApplyStatus(ApplyStatus.valueOf(applyUpdateDTO.getStatus()));
         }
 
         if (applyUpdateDTO.getPosition() != null) {
@@ -100,6 +102,28 @@ public class ApplyServiceImpl implements ApplyService {
 
         Apply updated = applyRepository.save(apply);
         return applyMapper.toDTO(updated);
+    }
+
+    /**
+     * Change the status on an existing Apply.
+     *
+     * @param id     the Apply ID
+     * @param status the new {@link ApplyStatus}
+     * @return the updated {@link ApplyDTO}
+     * @throws EntityNotFoundException if no Apply with given ID exists
+     */
+    @Transactional
+    public ApplyDTO updateStatus(Integer id, ApplyStatus status) {
+        if (!applyRepository.existsById(id)) {
+            throw new EntityNotFoundException("Apply not found with ID " + id);
+        }
+        int updated = applyRepository.updateStatus(id, status.name());
+        if (updated != 1) {
+            throw new IllegalStateException("Failed to update status for Apply ID " + id);
+        }
+        // reload entity to return DTO
+        Apply apply = applyRepository.findById(id).orElseThrow();
+        return applyMapper.toDTO(apply);
     }
 
     /**

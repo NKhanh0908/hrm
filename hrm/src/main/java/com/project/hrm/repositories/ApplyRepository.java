@@ -3,8 +3,21 @@ package com.project.hrm.repositories;
 import com.project.hrm.entities.Apply;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ApplyRepository extends JpaRepository<Apply, Integer>, JpaSpecificationExecutor<Apply> {
+    @Modifying
+    @Query(value =
+            "UPDATE apply " +
+                    "SET apply_status = :status " +
+                    "WHERE id = :id",
+            nativeQuery = true)
+    int updateStatus(
+            @Param("id") Integer id,
+            @Param("status") String status
+    );
 }

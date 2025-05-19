@@ -1,11 +1,9 @@
 package com.project.hrm.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.project.hrm.enums.RecruitmentRequirementsStatus;
 import com.project.hrm.utils.IdGenerator;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +23,11 @@ public class RecruitmentRequirements {
     private String positions;
     private Integer quantity;
     private String expectedSalary;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RecruitmentRequirementsStatus status;
+    
     private LocalDateTime dateRequired;
 
     @ManyToOne

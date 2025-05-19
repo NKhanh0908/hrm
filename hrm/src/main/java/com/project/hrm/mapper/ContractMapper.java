@@ -6,6 +6,7 @@ import com.project.hrm.entities.Contracts;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Role;
+import com.project.hrm.enums.ContractStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ public class ContractMapper {
                 .startDate(contracts.getStartDate())
                 .endDate(contracts.getEndDate())
                 .description(contracts.getDescription())
+                .status(contracts.getContractStatus().toString())
                 .contractSigningDate(contracts.getContractSigningDate())
                 .employeeId(contracts.getEmployee().getId())
                 .employeeName(contracts.getEmployee().fullName())
@@ -38,6 +40,7 @@ public class ContractMapper {
                 .startDate(contractCreateDTO.getStartDate())
                 .endDate(contractCreateDTO.getEndDate())
                 .description(contractCreateDTO.getDescription())
+                .contractStatus(ContractStatus.valueOf("SIGNED"))
                 .contractSigningDate(contractCreateDTO.getContractSigningDate())
                 .employee(employees)
                 .departments(departments)

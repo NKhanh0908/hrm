@@ -5,6 +5,7 @@ import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.RecruitmentRequirements;
+import com.project.hrm.enums.RecruitmentRequirementsStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ public class RecruitmentRequirementsMapper {
                 .expectedSalary(recruitmentRequirements.getExpectedSalary())
                 .positions(recruitmentRequirements.getPositions())
                 .quantity(recruitmentRequirements.getQuantity())
-                .status(recruitmentRequirements.getStatus())
+                .status(recruitmentRequirements.getStatus().toString())
                 .departmentDTO(departmentMapper.toDepartmentDTO(recruitmentRequirements.getDepartments()))
                 .employeeDTO(employeeMapper.toEmployeeDTO(recruitmentRequirements.getEmployees()))
                 .build();
@@ -40,7 +41,7 @@ public class RecruitmentRequirementsMapper {
                 .expectedSalary(recruitmentRequirementsCreateDTO.getExpectedSalary())
                 .positions(recruitmentRequirementsCreateDTO.getPositions())
                 .quantity(recruitmentRequirementsCreateDTO.getQuantity())
-                .status(recruitmentRequirementsCreateDTO.getStatus())
+                .status(RecruitmentRequirementsStatus.valueOf(recruitmentRequirementsCreateDTO.getStatus()))
                 .departments(departments)
                 .employees(employees)
                 .build();

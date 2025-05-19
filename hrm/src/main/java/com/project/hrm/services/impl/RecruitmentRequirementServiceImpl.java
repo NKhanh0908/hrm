@@ -8,12 +8,14 @@ import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.RecruitmentRequirements;
+import com.project.hrm.enums.RecruitmentRequirementsStatus;
 import com.project.hrm.mapper.RecruitmentRequirementsMapper;
 import com.project.hrm.repositories.RecruitmentRequirementsRepository;
 import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.RecruitmentRequirementService;
 import com.project.hrm.specifications.RecruitmentRequirementsSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -175,7 +177,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         }
 
         if (recruitmentRequirementsUpdateDTO.getStatus() != null) {
-            entity.setStatus(recruitmentRequirementsUpdateDTO.getStatus());
+            entity.setStatus(RecruitmentRequirementsStatus.valueOf(recruitmentRequirementsUpdateDTO.getStatus()));
         }
 
         if (recruitmentRequirementsUpdateDTO.getDepartmentId() != null) {
@@ -197,6 +199,28 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         return recruitmentRequirementsMapper.toDTO(
                 recruitmentRequirementsRepository.save(entity)
         );
+    }
+
+    /**
+     * Change the status on an existing RecruitmentRequirements.
+     *
+     * @param id     the requirement ID
+     * @param status the new {@link RecruitmentRequirementsStatus}
+     * @return the updated {@link RecruitmentRequirementsDTO}
+     * @throws EntityNotFoundException if none exists with the given ID
+     */
+    @Transactional
+    @Override
+    public RecruitmentRequirementsDTO updateStatus(Integer id, RecruitmentRequirementsStatus status) {
+        if (!recruitmentRequirementsRepository.existsById(id)) {
+            throw new EntityNotFoundException("Requirement not found: " + id);
+        }
+        int updated = recruitmentRequirementsRepository.updateStatus(id, status.name());
+        if (updated != 1) {
+            throw new IllegalStateException("Failed to update status for requirement ID " + id);
+        }
+        RecruitmentRequirements entity = recruitmentRequirementsRepository.findById(id).orElseThrow();
+        return recruitmentRequirementsMapper.toDTO(entity);
     }
 
     /**

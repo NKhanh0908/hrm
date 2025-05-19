@@ -5,6 +5,7 @@ import com.project.hrm.dto.contractDTO.ContractCreateDTO;
 import com.project.hrm.dto.contractDTO.ContractDTO;
 import com.project.hrm.dto.contractDTO.ContractFilter;
 import com.project.hrm.dto.contractDTO.ContractUpdateDTO;
+import com.project.hrm.enums.ContractStatus;
 import com.project.hrm.services.ContractService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -128,5 +129,27 @@ public class ContractsController {
 
         List<ContractDTO> results = contractService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Contracts filtered successfully", results));
+    }
+
+    @PutMapping("/{id}/status")
+    @Operation(
+            summary = "Update Contract Status",
+            description = "Set a new status on an existing contract by ID",
+            parameters = {
+                    @Parameter(name = "id", description = "Contract ID", required = true),
+                    @Parameter(name = "status", description = "New status", required = true,
+                            schema = @Schema(implementation = ContractStatus.class))
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Status updated"),
+                    @ApiResponse(responseCode = "404", description = "Contract not found")
+            }
+    )
+    public ResponseEntity<APIResponse<Void>> updateStatus(
+            @PathVariable Integer id,
+            @RequestParam ContractStatus status) {
+        contractService.updateStatus(id, status);
+        return ResponseEntity.ok(new APIResponse<>(true,
+                "Contract status updated to " + status, null));
     }
 }

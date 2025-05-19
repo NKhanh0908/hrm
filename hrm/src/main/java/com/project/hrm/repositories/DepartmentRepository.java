@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -29,4 +30,6 @@ public interface DepartmentRepository extends JpaRepository<Departments, Integer
                     "GROUP BY d.id, d.department_name",
             nativeQuery = true)
     List<TotalEmployee> getTotalEmployee();
+
+
 }

@@ -6,6 +6,7 @@ import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeUpdateDTO;
 import com.project.hrm.entities.Contracts;
 import com.project.hrm.entities.Employees;
+import com.project.hrm.enums.EmployeeStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -53,6 +54,7 @@ public class EmployeeMapper {
         return Employees.builder()
                 .id(employeeDTO.getId())
                 .firstName(employeeDTO.getFirstName())
+                .status(EmployeeStatus.valueOf(employeeDTO.getStatus()))
                 .lastName(employeeDTO.getLastName())
                 .email(employeeDTO.getEmail())
                 .phone(employeeDTO.getPhone())
@@ -67,6 +69,7 @@ public class EmployeeMapper {
         return Employees.builder()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
+                .status(EmployeeStatus.valueOf("ACTIVE"))
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
                 .gender(dto.getGender())

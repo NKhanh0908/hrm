@@ -1,6 +1,6 @@
 package com.project.hrm.entities;
 
-import com.project.hrm.enums.StatusEmployee;
+import com.project.hrm.enums.EmployeeStatus;
 import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,7 +28,7 @@ public class Employees {
     private String citizenIdentificationCard;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusEmployee status;
+    private EmployeeStatus status;
 
     public Employees(Employees employees) {
         this.id = IdGenerator.getGenerationId();
