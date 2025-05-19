@@ -10,12 +10,9 @@ import com.project.hrm.mapper.DepartmentMapper;
 import com.project.hrm.repositories.DepartmentRepository;
 import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.DepartmentService;
-import com.project.hrm.services.EmployeeService;
 import com.project.hrm.specifications.DepartmentSpecification;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Slf4j

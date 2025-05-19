@@ -55,8 +55,8 @@ public class ContractServiceImpl implements ContractService {
         Departments departments = departmentService.getEntityById(contractCreateDTO.getDepartmentId());
         Role role = roleService.getEntityById(contractCreateDTO.getRoleId());
 
-        Contracts contracts = contractMapper.convertCreateDTOToEntity(
-                contractCreateDTO, employees, departments, role);
+        Contracts contracts = new Contracts(contractMapper.convertCreateDTOToEntity(
+                contractCreateDTO, employees, departments, role));
 
         return contractMapper.toDTO(contractRepository.save(contracts));
     }

@@ -4,8 +4,11 @@ import com.project.hrm.dto.departmentDTO.DepartmentCreateDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentFilter;
 import com.project.hrm.dto.departmentDTO.DepartmentUpdateDTO;
+import com.project.hrm.dto.statisticsDTO.TotalEmployee;
 import com.project.hrm.entities.Departments;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,4 +26,6 @@ public interface DepartmentService {
     List<DepartmentDTO> filter(DepartmentFilter departmentFilter, int page, int size);
 
     DepartmentDTO appointmentOfDean(Integer departmentId, Integer employeeId);
+
+
 }

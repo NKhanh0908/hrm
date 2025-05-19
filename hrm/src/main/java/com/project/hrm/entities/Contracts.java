@@ -43,4 +43,16 @@ public class Contracts {
     @JoinColumn
     private Role role;
 
+    public Contracts(Contracts contracts) {
+        this.id = IdGenerator.getGenerationId();
+        this.role = contracts.getRole();
+        this.departments = contracts.getDepartments();
+        this.employee = contracts.getEmployee();
+        this.description = contracts.getDescription();
+        this.baseSalary = contracts.getBaseSalary();
+        this.endDate = contracts.getEndDate();
+        this.startDate = contracts.getStartDate();
+        this.contractSigningDate = contracts.getContractSigningDate();
+        this.title = contracts.getTitle();
+    }
 }

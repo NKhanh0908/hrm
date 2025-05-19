@@ -5,6 +5,7 @@ import com.project.hrm.dto.applyDTO.ApplyCreateDTO;
 import com.project.hrm.dto.applyDTO.ApplyDTO;
 import com.project.hrm.dto.applyDTO.ApplyFilter;
 import com.project.hrm.dto.applyDTO.ApplyUpdateDTO;
+import com.project.hrm.dto.candidateProfileDTO.CandidateProfileCreateDTO;
 import com.project.hrm.services.ApplyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,6 +36,7 @@ public class ApplyController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = ApplyCreateDTO.class))
             ),
+
             responses = {
                     @ApiResponse(responseCode = "201",
                             description = "Create Apply successfully",

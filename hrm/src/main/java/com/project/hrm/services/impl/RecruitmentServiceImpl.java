@@ -117,9 +117,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         RecruitmentRequirements recruitmentRequirements = recruitmentRequirementService.getEntityById(recruitmentCreateDTO.getRecruitmentRequirementId());
 
-        Recruitment recruitment = new Recruitment();
-        recruitment = recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements);
-        recruitment.setCreateAt(LocalDateTime.now());
+        Recruitment recruitment = new Recruitment(recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements));
 
         return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
     }

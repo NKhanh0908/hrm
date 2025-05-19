@@ -19,15 +19,11 @@ import lombok.NoArgsConstructor;
 public class Departments {
     @Id
     private Integer id = IdGenerator.getGenerationId();
+
     private String departmentName;
     private String description;
     private String address;
     private String email;
     private String phone;
 
-
-    @OneToOne
-    @JoinColumn
-    @JsonBackReference
-    private Employees dean;
 }

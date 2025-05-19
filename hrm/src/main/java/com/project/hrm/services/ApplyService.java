@@ -4,6 +4,7 @@ import com.project.hrm.dto.applyDTO.ApplyCreateDTO;
 import com.project.hrm.dto.applyDTO.ApplyDTO;
 import com.project.hrm.dto.applyDTO.ApplyFilter;
 import com.project.hrm.dto.applyDTO.ApplyUpdateDTO;
+import com.project.hrm.dto.candidateProfileDTO.CandidateProfileCreateDTO;
 import com.project.hrm.entities.Apply;
 import org.springframework.stereotype.Service;
 

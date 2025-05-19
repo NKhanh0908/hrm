@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 public class EvaluateCreateDTO {
     private String feedback;
     private LocalDateTime feedbackAt;
-    private String evaluate;
     private Integer candidateProfileId;
     private Integer createBy;
 }

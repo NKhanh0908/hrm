@@ -126,8 +126,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
         Employees employees = employeeService.getEntityById(recruitmentRequirementsCreateDTO.getCreatedBy());
 
-        RecruitmentRequirements recruitmentRequirements = new RecruitmentRequirements();
-        recruitmentRequirements = recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO, departments, employees);
+        RecruitmentRequirements recruitmentRequirements = new RecruitmentRequirements(recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO, departments, employees));
 
         recruitmentRequirements.setDateRequired(LocalDateTime.now());
 

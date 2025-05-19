@@ -36,4 +36,12 @@ public class Apply {
     @JsonBackReference
     private CandidateProfile candidateProfile;
 
+    public Apply(Apply apply){
+        this.id = IdGenerator.getGenerationId();
+        this.applyAt = LocalDateTime.now();
+        this.status = apply.getStatus();
+        this.position = apply.getPosition();
+        this.recruitment = apply.getRecruitment();
+        this.candidateProfile = apply.getCandidateProfile();
+    }
 }

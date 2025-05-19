@@ -1,8 +1,5 @@
 package com.project.hrm.specifications;
 
-
-
-
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileFilter;
 import com.project.hrm.entities.Apply;
 import com.project.hrm.entities.CandidateProfile;

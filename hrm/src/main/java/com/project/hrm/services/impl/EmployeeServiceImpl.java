@@ -113,7 +113,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO create(EmployeeCreateDTO employeeCreateDTO) {
         log.info("Create Employee");
 
-        Employees employee = employeeMapper.employeeCreateToEmployee(employeeCreateDTO);
+        Employees employee = new Employees(employeeMapper.employeeCreateToEmployee(employeeCreateDTO));
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
     }

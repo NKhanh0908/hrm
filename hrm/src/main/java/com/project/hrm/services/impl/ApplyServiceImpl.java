@@ -4,6 +4,8 @@ import com.project.hrm.dto.applyDTO.ApplyCreateDTO;
 import com.project.hrm.dto.applyDTO.ApplyDTO;
 import com.project.hrm.dto.applyDTO.ApplyFilter;
 import com.project.hrm.dto.applyDTO.ApplyUpdateDTO;
+import com.project.hrm.dto.candidateProfileDTO.CandidateProfileCreateDTO;
+import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.entities.Apply;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Recruitment;
@@ -32,9 +34,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ApplyServiceImpl implements ApplyService {
     private final ApplyRepository applyRepository;
+
     private final ApplyMapper applyMapper;
+
     private final RecruitmentService recruitmentService;
     private final CandidateProfileService candidateProfileService;
+
+
+
 
     /**
      * Creates a new Apply entity using the provided creation DTO.
@@ -49,14 +56,13 @@ public class ApplyServiceImpl implements ApplyService {
     public ApplyDTO create(ApplyCreateDTO applyCreateDTO) {
         log.info("Create Apply");
 
+        CandidateProfileDTO candidateProfileDTO = candidateProfileService.create(applyCreateDTO.getCandidateProfileCreateDTO());
+
         Recruitment recruitment = recruitmentService.getEntityById(applyCreateDTO.getRecruitmentId());
 
-        CandidateProfile candidateProfile = candidateProfileService.getEntityById(applyCreateDTO.getCandidateProfileId());
+        CandidateProfile candidateProfile = candidateProfileService.getEntityById(candidateProfileDTO.getId());
 
-        Apply apply = new Apply();
-              apply  = applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment, candidateProfile);
-
-        apply.setApplyAt(LocalDateTime.now());
+        Apply apply = new Apply(applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment, candidateProfile));
 
         return applyMapper.toDTO(applyRepository.save(apply));
     }
@@ -122,7 +128,7 @@ public class ApplyServiceImpl implements ApplyService {
      * Retrieves the Apply entity by its ID.
      *
      * @param id the ID of the Apply entity to retrieve.
-     * @return the corresponding Apply entity.
+     * @return the corresponding to Apply entity.
      * @throws RuntimeException if no Apply entity is found with the given ID.
      */
     @Transactional(readOnly = true)

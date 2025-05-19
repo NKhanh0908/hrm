@@ -43,8 +43,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     public CandidateProfileDTO create(CandidateProfileCreateDTO candidateProfileCreateDTO) {
         log.info("Create CandidateProfile");
 
-        CandidateProfile candidateProfile = new CandidateProfile();
-        candidateProfile  =candidateProfileMapper.convertCreateToEntity(candidateProfileCreateDTO);
+        CandidateProfile candidateProfile = new CandidateProfile(candidateProfileMapper.convertCreateToEntity(candidateProfileCreateDTO));
 
         return candidateProfileMapper.toCandidateProfileDTO(
                 candidateProfileRepository.save(candidateProfile)

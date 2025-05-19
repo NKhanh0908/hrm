@@ -1,5 +1,7 @@
 package com.project.hrm.dto.applyDTO;
 
+import com.project.hrm.dto.candidateProfileDTO.CandidateProfileCreateDTO;
+import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,6 @@ public class ApplyCreateDTO {
     @NotNull(message = "Recruitment ID is required")
     private Integer recruitmentId;
 
-    @NotNull(message = "Candidate Profile ID is required")
-    private Integer candidateProfileId;
+    @NotNull(message = "Candidate Profile is required")
+    private CandidateProfileCreateDTO candidateProfileCreateDTO;
 }

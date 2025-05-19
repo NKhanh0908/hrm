@@ -30,4 +30,15 @@ public class Recruitment {
     @OneToOne
     @JoinColumn
     private RecruitmentRequirements recruitmentRequirements;
+
+    public Recruitment(Recruitment recruitment) {
+        this.id = IdGenerator.getGenerationId();
+        this.position = recruitment.getPosition();
+        this.contactPhone = recruitment.getContactPhone();
+        this.email = recruitment.getEmail();
+        this.deadline = recruitment.getDeadline();
+        this.createAt = LocalDateTime.now();
+        this.jobDescription = recruitment.getJobDescription();
+        this.recruitmentRequirements = recruitment.getRecruitmentRequirements();
+    }
 }

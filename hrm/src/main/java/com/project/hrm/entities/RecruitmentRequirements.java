@@ -37,4 +37,16 @@ public class RecruitmentRequirements {
     @JoinColumn(name = "on_upload")
     @JsonBackReference
     private Employees employees;
+
+    public RecruitmentRequirements(RecruitmentRequirements recruitmentRequirements) {
+        this.id = IdGenerator.getGenerationId();
+        this.description = recruitmentRequirements.getDescription();
+        this.positions = recruitmentRequirements.getPositions();
+        this.status = recruitmentRequirements.getStatus();
+        this.expectedSalary = recruitmentRequirements.getExpectedSalary();
+        this.quantity = recruitmentRequirements.getQuantity();
+        this.dateRequired = recruitmentRequirements.getDateRequired();
+        this.departments = recruitmentRequirements.getDepartments();
+        this.employees = recruitmentRequirements.getEmployees();
+    }
 }

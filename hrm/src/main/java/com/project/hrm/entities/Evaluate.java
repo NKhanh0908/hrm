@@ -23,7 +23,6 @@ public class Evaluate {
     private Integer id = IdGenerator.getGenerationId();
     private String feedback;
     private LocalDateTime feedbackAt;
-    private String evaluate;
 
     @ManyToOne
     @JoinColumn
@@ -32,4 +31,12 @@ public class Evaluate {
     @ManyToOne
     @JoinColumn
     private Employees createBy;
+
+    public Evaluate(Evaluate evaluate) {
+        this.id = IdGenerator.getGenerationId();
+        this.feedback = evaluate.getFeedback();
+        this.feedbackAt = LocalDateTime.now();
+        this.candidateProfile = evaluate.getCandidateProfile();
+        this.createBy = evaluate.getCreateBy();
+    }
 }

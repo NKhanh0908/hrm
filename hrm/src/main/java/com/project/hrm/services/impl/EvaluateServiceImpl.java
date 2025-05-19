@@ -82,8 +82,8 @@ public class EvaluateServiceImpl implements EvaluateService {
     public EvaluateDTO create(EvaluateCreateDTO evaluateCreateDTO) {
         log.info("Create Evaluate");
 
-        Evaluate evaluate = evaluateMapper.conventCreateToEntity(evaluateCreateDTO);
-        CandidateProfile candidateProfile = candidateProfileService.getEntityById(evaluateCreateDTO.getCandidateProfileId());
+        Evaluate evaluate = new Evaluate(evaluateMapper.conventCreateToEntity(evaluateCreateDTO));
+        CandidateProfile candidateProfile = new CandidateProfile(candidateProfileService.getEntityById(evaluateCreateDTO.getCandidateProfileId()));
         evaluate.setCandidateProfile(candidateProfile);
 
         return evaluateMapper.toEvaluateDTO(evaluateRepository.save(evaluate));
@@ -109,10 +109,6 @@ public class EvaluateServiceImpl implements EvaluateService {
 
         if (evaluateUpdateDTO.getFeedbackAt() != null) {
             evaluate.setFeedbackAt(evaluateUpdateDTO.getFeedbackAt());
-        }
-
-        if (evaluateUpdateDTO.getEvaluate() != null) {
-            evaluate.setEvaluate(evaluateUpdateDTO.getEvaluate());
         }
 
         if (evaluateUpdateDTO.getCandidateId() != null) {
