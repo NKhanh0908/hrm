@@ -4,6 +4,7 @@ import com.project.hrm.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateFilter;
 import com.project.hrm.dto.evaluateDTO.EvaluateUpdateDTO;
+import com.project.hrm.entities.Account;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Evaluate;
 import com.project.hrm.mapper.EvaluateMapper;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,7 +81,13 @@ public class EvaluateServiceImpl implements EvaluateService {
     public EvaluateDTO create(EvaluateCreateDTO evaluateCreateDTO) {
         log.info("Create Evaluate");
 
-        Evaluate evaluate = new Evaluate(evaluateMapper.conventCreateToEntity(evaluateCreateDTO));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        Account account = (Account) authentication.getPrincipal();
+
+        Evaluate evaluate = new Evaluate(evaluateMapper.conventCreateToEntity(evaluateCreateDTO, account.getEmployees()));
         CandidateProfile candidateProfile = new CandidateProfile(candidateProfileService.getEntityById(evaluateCreateDTO.getCandidateProfileId()));
         evaluate.setCandidateProfile(candidateProfile);
 

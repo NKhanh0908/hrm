@@ -4,10 +4,13 @@ import com.project.hrm.dto.recruitmentDTO.RecruitmentCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentFilter;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentUpdateDTO;
+import com.project.hrm.entities.Account;
+import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.entities.RecruitmentRequirements;
 import com.project.hrm.mapper.RecruitmentMapper;
 import com.project.hrm.repositories.RecruitmentRepository;
+import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.RecruitmentRequirementService;
 import com.project.hrm.services.RecruitmentService;
 import com.project.hrm.specifications.RecruitmentSpecification;
@@ -17,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +32,11 @@ import java.util.List;
 @AllArgsConstructor
 public class RecruitmentServiceImpl implements RecruitmentService {
     private final RecruitmentRepository recruitmentRepository;
+
     private final RecruitmentMapper recruitmentMapper;
+
     private final RecruitmentRequirementService recruitmentRequirementService;
+    private final EmployeeService employeeService;
 
     /**
      * Filters recruitment entries based on the given filter criteria and paginates the result.
@@ -89,16 +97,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     public RecruitmentDTO getDTOById(Integer id) {
         log.info("Find Recruitment by id: {}", id);
 
-        return recruitmentMapper.toDTO(
-                recruitmentRepository.findById(id).orElseThrow(
-                () -> {
-                    String message = "Find RecruitmentDTO with id " + id + " not found";
-
-                    log.error(message);
-
-                    return new RuntimeException(message);
-                }
-        ));
+        return recruitmentMapper.toDTO(getEntityById(id));
     }
 
     /**
@@ -115,7 +114,13 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         RecruitmentRequirements recruitmentRequirements = recruitmentRequirementService.getEntityById(recruitmentCreateDTO.getRecruitmentRequirementId());
 
-        Recruitment recruitment = new Recruitment(recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+         Account principal = (Account) authentication.getPrincipal();
+
+        Recruitment recruitment = new Recruitment(recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements, principal.getEmployees()));
 
         return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
     }

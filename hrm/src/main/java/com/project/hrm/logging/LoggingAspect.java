@@ -17,7 +17,7 @@ public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Before("execution(* com.project.hrm.controllers.*(..))")
+    @Before("execution(* com.project.hrm.controllers..*(..))")
     public void logBeforeMethodExecution(JoinPoint joinPoint) {
         logger.info("Before method execution: {}", joinPoint.getSignature().getName());
         logger.info("Arguments: {}", Arrays.toString(joinPoint.getArgs()));

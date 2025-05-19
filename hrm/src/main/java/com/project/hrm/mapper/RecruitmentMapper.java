@@ -2,6 +2,7 @@ package com.project.hrm.mapper;
 
 import com.project.hrm.dto.recruitmentDTO.RecruitmentCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentDTO;
+import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.entities.RecruitmentRequirements;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,8 @@ public class RecruitmentMapper {
                 .createAt(recruitment.getCreateAt())
                 .jobDescription(recruitment.getJobDescription())
                 .recruitmentRequirementsDTO(recruitmentRequirementsMapper.toDTO(recruitment.getRecruitmentRequirements()))
+                .employeeApproveId(recruitment.getEmployees().getId())
+                .employeeApproveName(recruitment.getEmployees().fullName())
                 .build();
     }
 
@@ -37,7 +40,7 @@ public class RecruitmentMapper {
                 .collect(Collectors.toList());
     }
 
-    public Recruitment convertCreateToEntity(RecruitmentCreateDTO recruitmentCreateDTO, RecruitmentRequirements recruitmentRequirements){
+    public Recruitment convertCreateToEntity(RecruitmentCreateDTO recruitmentCreateDTO, RecruitmentRequirements recruitmentRequirements, Employees employees){
         return Recruitment.builder()
                 .position(recruitmentCreateDTO.getPosition())
                 .contactPhone(recruitmentCreateDTO.getContactPhone())
@@ -45,6 +48,7 @@ public class RecruitmentMapper {
                 .deadline(recruitmentCreateDTO.getDeadline())
                 .jobDescription(recruitmentCreateDTO.getJobDescription())
                 .recruitmentRequirements(recruitmentRequirements)
+                .employees(employees)
                 .build();
     }
 

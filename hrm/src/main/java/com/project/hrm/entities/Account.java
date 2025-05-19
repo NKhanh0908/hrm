@@ -28,7 +28,7 @@ public class Account implements UserDetails {
     private Integer id = IdGenerator.getGenerationId();
     private String username;
     private String password;
-    private LocalDateTime createAt;
+    private LocalDateTime createAt = LocalDateTime.now();
     private Boolean status = true;
 
     @OneToOne

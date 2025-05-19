@@ -4,6 +4,7 @@ import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementFilter;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
+import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.RecruitmentRequirements;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -123,9 +126,13 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
         Departments departments = departmentService.getEntityById(recruitmentRequirementsCreateDTO.getDepartmentId());
 
-        Employees employees = employeeService.getEntityById(recruitmentRequirementsCreateDTO.getCreatedBy());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        Account account = (Account) authentication.getPrincipal();
 
-        RecruitmentRequirements recruitmentRequirements = new RecruitmentRequirements(recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO, departments, employees));
+        RecruitmentRequirements recruitmentRequirements = new RecruitmentRequirements(recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO, departments, account.getEmployees()));
 
         recruitmentRequirements.setDateRequired(LocalDateTime.now());
 
@@ -177,8 +184,13 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         }
 
         if (recruitmentRequirementsUpdateDTO.getCreatedBy() != null) {
-            Employees employee = employeeService.getEntityById(recruitmentRequirementsUpdateDTO.getCreatedBy());
-            entity.setEmployees(employee);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return null;
+            }
+            Account account = (Account) authentication.getPrincipal();
+
+            entity.setEmployees(account.getEmployees());
         }
 
         return recruitmentRequirementsMapper.toDTO(

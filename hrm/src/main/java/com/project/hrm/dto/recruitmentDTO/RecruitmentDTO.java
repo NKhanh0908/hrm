@@ -22,5 +22,7 @@ public class RecruitmentDTO {
     private String jobDescription;
     private LocalDateTime createAt;
     private RecruitmentRequirementsDTO recruitmentRequirementsDTO;
+    private Integer employeeApproveId;
+    private String employeeApproveName;
     private List<ApplyDTO> applyDTOList;
 }

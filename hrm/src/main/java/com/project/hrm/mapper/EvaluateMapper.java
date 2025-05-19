@@ -2,6 +2,7 @@ package com.project.hrm.mapper;
 
 import com.project.hrm.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
+import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Evaluate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,11 +18,12 @@ public class EvaluateMapper {
     private final CandidateProfileMapper candidateProfileMapper;
     private final EmployeeMapper employeeMapper;
 
-    public Evaluate conventCreateToEntity(EvaluateCreateDTO evaluateCreateDTO){
+    public Evaluate conventCreateToEntity(EvaluateCreateDTO evaluateCreateDTO, Employees employees){
         return Evaluate.builder()
                 .evaluate(evaluateCreateDTO.getEvaluate())
                 .feedbackAt(LocalDateTime.now())
                 .feedback(evaluateCreateDTO.getFeedback())
+                .createBy(employees)
                 .build();
     }
 

@@ -26,12 +26,12 @@ public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    private AccountMapper accountMapper;
+    private final AccountMapper accountMapper;
 
-    private EmployeeService employeeService;
-    private RoleService roleService;
+    private final EmployeeService employeeService;
+    private final RoleService roleService;
 
 
     @Override
@@ -39,13 +39,15 @@ public class AccountServiceImpl implements AccountService {
         try {
             String name = formLoginDTO.getUsername().trim().toLowerCase();
 
-            Account account = accountRepository.findByUsername(formLoginDTO.getUsername())
+            Account account = accountRepository.findByUsername(name)
                     .orElseThrow(
                             () -> new RuntimeException("Username is exists")
                     );
 
-            if (!passwordEncoder.matches(account.getPassword(), formLoginDTO.getPassword())) {
-                throw new RuntimeException("TAIKHOAN INVALID PASSWORD");
+            log.info("Account: {}", account);
+
+            if (!passwordEncoder.matches(formLoginDTO.getPassword(), account.getPassword())) {
+                throw new RuntimeException("ACCOUNT INVALID PASSWORD");
             }
 
             UserDetails userDetails = (UserDetails) account;
@@ -80,12 +82,12 @@ public class AccountServiceImpl implements AccountService {
         Role role = roleService.getEntityById(accountCreateDTO.getRoleId());
 
         Account account = new Account();
-        account.setUsername(account.getUsername());
-        account.setPassword(accountCreateDTO.getPassword());
+        account.setUsername(accountCreateDTO.getUsername());
+        account.setPassword(passwordEncoder.encode(accountCreateDTO.getUsername()));
         account.setEmployees(employees);
         account.setRole(role);
 
-        return accountMapper.toDTO(account);
+        return accountMapper.toDTO(accountRepository.save(account));
     }
 
     private boolean usernameExists(String username) {

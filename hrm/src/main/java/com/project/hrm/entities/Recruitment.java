@@ -1,10 +1,8 @@
 package com.project.hrm.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.hrm.utils.IdGenerator;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +29,11 @@ public class Recruitment {
     @JoinColumn
     private RecruitmentRequirements recruitmentRequirements;
 
+    @ManyToOne
+    @JoinColumn(name = "on_approve")
+    @JsonBackReference
+    private Employees employees;
+
     public Recruitment(Recruitment recruitment) {
         this.id = IdGenerator.getGenerationId();
         this.position = recruitment.getPosition();
@@ -40,5 +43,6 @@ public class Recruitment {
         this.createAt = LocalDateTime.now();
         this.jobDescription = recruitment.getJobDescription();
         this.recruitmentRequirements = recruitment.getRecruitmentRequirements();
+        this.employees = recruitment.getEmployees();
     }
 }

@@ -38,6 +38,7 @@ public class RecruitmentRequirements {
     @JsonBackReference
     private Employees employees;
 
+
     public RecruitmentRequirements(RecruitmentRequirements recruitmentRequirements) {
         this.id = IdGenerator.getGenerationId();
         this.description = recruitmentRequirements.getDescription();
