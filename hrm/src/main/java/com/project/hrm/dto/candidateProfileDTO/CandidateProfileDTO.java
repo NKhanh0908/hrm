@@ -22,5 +22,4 @@ public class CandidateProfileDTO {
     private String skills;
     private String experience;
     private LocalDateTime createProfileAt;
-    private List<EvaluateDTO> evaluateDTOList;
 }

@@ -17,4 +17,5 @@ public class EvaluateUpdateDTO {
     private LocalDateTime feedbackAt;
     private Integer candidateId;
     private Integer createBy;
+    private String evaluate;
 }

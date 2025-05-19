@@ -1,15 +1,12 @@
 package com.project.hrm.mapper;
 
-import com.project.hrm.dto.recruitmentDTO.RecruitmentDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
-import com.project.hrm.entities.Recruitment;
 import com.project.hrm.entities.RecruitmentRequirements;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

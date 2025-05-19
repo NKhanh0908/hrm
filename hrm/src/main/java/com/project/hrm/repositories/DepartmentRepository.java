@@ -26,8 +26,7 @@ public interface DepartmentRepository extends JpaRepository<Departments, Integer
                     "FROM departments d " +
                     " JOIN contracts c ON d.id = c.department_id " +
                     " JOIN employees e ON c.employee_id = e.id " +
-                    "WHERE d.id = :departmentId " +
                     "GROUP BY d.id, d.department_name",
             nativeQuery = true)
-    List<TotalEmployee> getTotalEmployee(@Param("departmentId") Integer departmentId);
+    List<TotalEmployee> getTotalEmployee();
 }

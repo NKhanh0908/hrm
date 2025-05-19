@@ -1,7 +1,6 @@
 package com.project.hrm.dto.applyDTO;
 
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileCreateDTO;
-import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

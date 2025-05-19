@@ -16,4 +16,5 @@ public class EvaluateCreateDTO {
     private LocalDateTime feedbackAt;
     private Integer candidateProfileId;
     private Integer createBy;
+    private String evaluate;
 }

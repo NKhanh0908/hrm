@@ -1,6 +1,5 @@
 package com.project.hrm.mapper;
 
-import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import com.project.hrm.dto.contractDTO.ContractDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeDTO;
@@ -8,9 +7,7 @@ import com.project.hrm.dto.employeeDTO.EmployeeUpdateDTO;
 import com.project.hrm.entities.Contracts;
 import com.project.hrm.entities.Employees;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

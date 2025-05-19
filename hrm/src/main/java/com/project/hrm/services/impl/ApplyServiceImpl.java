@@ -4,12 +4,12 @@ import com.project.hrm.dto.applyDTO.ApplyCreateDTO;
 import com.project.hrm.dto.applyDTO.ApplyDTO;
 import com.project.hrm.dto.applyDTO.ApplyFilter;
 import com.project.hrm.dto.applyDTO.ApplyUpdateDTO;
-import com.project.hrm.dto.candidateProfileDTO.CandidateProfileCreateDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.entities.Apply;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.mapper.ApplyMapper;
+import com.project.hrm.mapper.CandidateProfileMapper;
 import com.project.hrm.repositories.ApplyRepository;
 import com.project.hrm.services.ApplyService;
 import com.project.hrm.services.CandidateProfileService;
@@ -25,9 +25,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -36,12 +34,10 @@ public class ApplyServiceImpl implements ApplyService {
     private final ApplyRepository applyRepository;
 
     private final ApplyMapper applyMapper;
+    private final CandidateProfileMapper candidateProfileMapper;
 
     private final RecruitmentService recruitmentService;
     private final CandidateProfileService candidateProfileService;
-
-
-
 
     /**
      * Creates a new Apply entity using the provided creation DTO.
@@ -60,9 +56,8 @@ public class ApplyServiceImpl implements ApplyService {
 
         Recruitment recruitment = recruitmentService.getEntityById(applyCreateDTO.getRecruitmentId());
 
-        CandidateProfile candidateProfile = candidateProfileService.getEntityById(candidateProfileDTO.getId());
-
-        Apply apply = new Apply(applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment, candidateProfile));
+        Apply apply = new Apply(applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment,
+                candidateProfileMapper.toEntity(candidateProfileDTO)));
 
         return applyMapper.toDTO(applyRepository.save(apply));
     }

@@ -4,9 +4,7 @@ import com.project.hrm.dto.departmentDTO.DepartmentCreateDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentUpdateDTO;
 import com.project.hrm.entities.Departments;
-import com.project.hrm.entities.Employees;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

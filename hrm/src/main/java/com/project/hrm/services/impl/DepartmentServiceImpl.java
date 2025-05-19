@@ -80,9 +80,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public DepartmentDTO create(DepartmentCreateDTO departmentCreateDTO) {
         log.info("Create Department");
 
-        Departments departments = new Departments();
-
-        departments = departmentMapper.convertCreateToEntity(departmentCreateDTO);
+        Departments departments = new Departments(departmentMapper.convertCreateToEntity(departmentCreateDTO));
 
         return departmentMapper.toDepartmentDTO(
                 departmentRepository.save(departments)

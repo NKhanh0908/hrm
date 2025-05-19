@@ -1,6 +1,5 @@
 package com.project.hrm.dto.employeeDTO;
 
-import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

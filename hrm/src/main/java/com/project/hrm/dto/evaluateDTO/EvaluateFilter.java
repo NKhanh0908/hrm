@@ -1,7 +1,5 @@
 package com.project.hrm.dto.evaluateDTO;
 
-
-
 import lombok.Data;
 
 @Data

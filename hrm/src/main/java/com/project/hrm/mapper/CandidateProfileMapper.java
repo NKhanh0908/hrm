@@ -31,6 +31,19 @@ public class CandidateProfileMapper {
                 .build();
     }
 
+    public CandidateProfile toEntity(CandidateProfileDTO candidateProfileDTO){
+        return CandidateProfile.builder()
+                .id(candidateProfileDTO.getId())
+                .createProfileAt(candidateProfileDTO.getCreateProfileAt())
+                .email(candidateProfileDTO.getEmail())
+                .phone(candidateProfileDTO.getPhone())
+                .experience(candidateProfileDTO.getExperience())
+                .name(candidateProfileDTO.getName())
+                .linkCV(candidateProfileDTO.getLinkCV())
+                .skills(candidateProfileDTO.getSkills())
+                .build();
+    }
+
     public CandidateProfile convertCreateToEntity(CandidateProfileCreateDTO candidateProfileCreateDTO){
         return CandidateProfile.builder()
                 .email(candidateProfileCreateDTO.getEmail())
@@ -57,7 +70,6 @@ public class CandidateProfileMapper {
     public EvaluateDTO toEvaluateDTO(Evaluate evaluate) {
         return EvaluateDTO.builder()
                 .id(evaluate.getId())
-                .evaluate(evaluate.getEvaluate())
                 .feedback(evaluate.getFeedback())
                 .feedbackAt(evaluate.getFeedbackAt())
                 .build();

@@ -1,7 +1,6 @@
 package com.project.hrm.services.impl;
 
 
-import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeFilter;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Slf4j

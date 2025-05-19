@@ -3,7 +3,7 @@ package com.project.hrm.mapper;
 import com.project.hrm.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.entities.Evaluate;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class EvaluateMapper {
-    @Autowired
-    private CandidateProfileMapper candidateProfileMapper;
-    @Autowired
-    private EmployeeMapper employeeMapper;
+    private final CandidateProfileMapper candidateProfileMapper;
+    private final EmployeeMapper employeeMapper;
+
     public Evaluate conventCreateToEntity(EvaluateCreateDTO evaluateCreateDTO){
         return Evaluate.builder()
                 .evaluate(evaluateCreateDTO.getEvaluate())

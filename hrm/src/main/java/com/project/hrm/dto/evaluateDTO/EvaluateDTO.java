@@ -17,6 +17,7 @@ public class EvaluateDTO {
     private Integer id;
     private String feedback;
     private LocalDateTime feedbackAt;
+    private String evaluate;
     private EmployeeDTO employeeDTO;
     private CandidateProfileDTO candidateProfileDTO;
 }

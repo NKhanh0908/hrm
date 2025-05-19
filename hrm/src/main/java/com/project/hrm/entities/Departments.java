@@ -1,11 +1,8 @@
 package com.project.hrm.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,4 +23,12 @@ public class Departments {
     private String email;
     private String phone;
 
+    public Departments(Departments departments) {
+        this.id = IdGenerator.getGenerationId();
+        this.departmentName = departments.getDepartmentName();
+        this.description = departments.getDescription();
+        this.email = departments.getEmail();
+        this.address = departments.getAddress();
+        this.phone = departments.getPhone();
+    }
 }
