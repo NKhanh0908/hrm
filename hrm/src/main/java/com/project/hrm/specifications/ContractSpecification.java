@@ -20,19 +20,19 @@ public class ContractSpecification {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (filter.getEmployeeId() != null) {
+            if (filter.getEmployeeId() != 0) {
                 predicates.add(
                         cb.equal(root.get("employee").get("id"), filter.getEmployeeId())
                 );
             }
 
-            if (filter.getDepartmentId() != null) {
+            if (filter.getDepartmentId() != 0) {
                 predicates.add(
                         cb.equal(root.get("departments").get("id"), filter.getDepartmentId())
                 );
             }
 
-            if (filter.getRoleId() != null) {
+            if (filter.getRoleId() != 0) {
                 predicates.add(
                         cb.equal(root.get("role").get("id"), filter.getRoleId())
                 );

@@ -23,6 +23,7 @@ public class RecruitmentMapper {
         return RecruitmentDTO.builder()
                 .id(recruitment.getId())
                 .email(recruitment.getEmail())
+                .contactPhone(recruitment.getContactPhone())
                 .deadline(recruitment.getDeadline())
                 .position(recruitment.getPosition())
                 .createAt(recruitment.getCreateAt())

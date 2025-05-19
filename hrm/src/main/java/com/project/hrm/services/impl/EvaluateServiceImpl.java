@@ -88,7 +88,7 @@ public class EvaluateServiceImpl implements EvaluateService {
         Account account = (Account) authentication.getPrincipal();
 
         Evaluate evaluate = new Evaluate(evaluateMapper.conventCreateToEntity(evaluateCreateDTO, account.getEmployees()));
-        CandidateProfile candidateProfile = new CandidateProfile(candidateProfileService.getEntityById(evaluateCreateDTO.getCandidateProfileId()));
+        CandidateProfile candidateProfile = candidateProfileService.getEntityById(evaluateCreateDTO.getCandidateProfileId());
         evaluate.setCandidateProfile(candidateProfile);
 
         return evaluateMapper.toEvaluateDTO(evaluateRepository.save(evaluate));

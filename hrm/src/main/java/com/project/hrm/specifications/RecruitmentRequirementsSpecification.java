@@ -14,7 +14,7 @@ public class RecruitmentRequirementsSpecification {
         return ((root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (recruitmentRequirementFilter.getDepartmentId() != null) {
+            if (recruitmentRequirementFilter.getDepartmentId() != 0) {
                 predicates.add(cb.equal(
                         root.get("departments").get("id"),
                         recruitmentRequirementFilter.getDepartmentId()

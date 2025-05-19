@@ -17,6 +17,5 @@ public class DepartmentDTO {
     private String address;
     private String email;
     private String phone;
-    private EmployeeDTO deanDTO;
     //private List<EmployeeDTO> employeeDTOList;
 }

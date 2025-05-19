@@ -42,12 +42,11 @@ public class WebSecurityConfiguration {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .authorizeHttpRequests((auth) -> auth    .requestMatchers("/**",  "/swagger-ui/**",
-                                "/v3/api-docs/**","/accounts/signup","/accounts/signin",
+                                "/v3/api-docs/**","/accounts","/accounts/sign-in",
                                 "/swagger-ui.html").permitAll()
                         .anyRequest()
                         .authenticated()
                 ).httpBasic(withDefaults())
-
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

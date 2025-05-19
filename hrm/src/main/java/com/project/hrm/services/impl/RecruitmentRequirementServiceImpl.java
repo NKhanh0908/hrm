@@ -183,15 +183,16 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
             entity.setDepartments(department);
         }
 
-        if (recruitmentRequirementsUpdateDTO.getCreatedBy() != null) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || !authentication.isAuthenticated()) {
-                return null;
-            }
-            Account account = (Account) authentication.getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            log.info("if auth");
+            return null;
+        }
+
+        log.info("authentication.getPrincipal(): {}", authentication.getPrincipal());
+        Account account = (Account) authentication.getPrincipal();
 
             entity.setEmployees(account.getEmployees());
-        }
 
         return recruitmentRequirementsMapper.toDTO(
                 recruitmentRequirementsRepository.save(entity)

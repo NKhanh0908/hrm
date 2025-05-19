@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequestMapping("/recruitment-requirements")
 @RequiredArgsConstructor
 @Tag(name = "Recruitment Requirements Controller", description = "Manage recruitment requirement configurations")
+@SecurityRequirement(name = "bearerAuth")
 public class RecruitmentRequirementsController {
 
     private final RecruitmentRequirementService recruitmentRequirementService;

@@ -22,13 +22,7 @@ public class ContractUpdateDTO {
     private LocalDateTime endDate;
     private Double baseSalary;
     private String description;
-
-    @NotNull(message = "Contract id is required")
     private Integer employeeId;
-
-    @NotNull(message = "Contract id is required")
     private Integer departmentId;
-
-    @NotNull(message = "Contract id is required")
     private Integer roleId;
 }

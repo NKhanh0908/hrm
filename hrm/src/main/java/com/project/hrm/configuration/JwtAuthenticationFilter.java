@@ -44,31 +44,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            jwtToken = authHeader.substring(7); // cắt "Bearer "
-
-            // ✅ Có thể ném ra ExpiredJwtException, MalformedJwtException,...
+            jwtToken = authHeader.substring(7); // "Bearer " -> lấy token
             userEmail = jwtTokenUtil.extractTokenGetUsername(jwtToken);
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = ourUserDetailsService.loadUserByUsername(userEmail);
 
                 if (!jwtTokenUtil.isTokenValid(jwtToken, userDetails)) {
-                    throw new RuntimeException("Token is valid");
+                    throw new RuntimeException("Token is INVALID");
                 }
 
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                securityContext.setAuthentication(token);
-                SecurityContextHolder.setContext(securityContext);
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
+                context.setAuthentication(authentication);
+                SecurityContextHolder.setContext(context);
             }
 
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
-
             throw new RuntimeException("Token is EXPIRED");
         } catch (MalformedJwtException | IllegalArgumentException e) {
             throw new RuntimeException("Token is MALFORMED");

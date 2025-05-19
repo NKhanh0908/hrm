@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -33,7 +34,23 @@ public class AccountServiceImpl implements AccountService {
     private final EmployeeService employeeService;
     private final RoleService roleService;
 
-
+    /**
+     * Authenticates a user based on the provided credentials and generates JWT tokens.
+     *
+     * <p>Process:
+     * <ol>
+     *   <li>Normalize the username (trim and lowercase).</li>
+     *   <li>Retrieve the {@link com.project.hrm.entities.Account} by username.</li>
+     *   <li>Validate the provided password against the stored hashed password.</li>
+     *   <li>If valid, generate an access token and a refresh token via {@link com.project.hrm.utils.JwtTokenUtil}.</li>
+     * </ol>
+     *
+     * @param formLoginDTO the login request containing username and password
+     * @return an {@link AuthenticationDTO} containing the JWT access token, refresh token, and role name
+     * @throws RuntimeException if the username does not exist, the password is invalid,
+     *                          or token generation fails
+     */
+    @Transactional(readOnly = true)
     @Override
     public AuthenticationDTO signIn(FormLoginDTO formLoginDTO) {
         try {
@@ -50,11 +67,9 @@ public class AccountServiceImpl implements AccountService {
                 throw new RuntimeException("ACCOUNT INVALID PASSWORD");
             }
 
-            UserDetails userDetails = (UserDetails) account;
-
             try {
-                String jwtToken = jwtTokenUtil.generateToken(userDetails);
-                String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
+                String jwtToken = jwtTokenUtil.generateToken((UserDetails) account);
+                String refreshToken = jwtTokenUtil.generateRefreshToken((UserDetails) account);
                 return AuthenticationDTO.builder()
                         .token(jwtToken)
                         .refreshToken(refreshToken)
@@ -70,6 +85,24 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    /**
+     * Creates a new user account in the system.
+     *
+     * <p>Process:
+     * <ol>
+     *   <li>Check if the requested username already exists.</li>
+     *   <li>Retrieve associated {@link com.project.hrm.entities.Employees} by ID.</li>
+     *   <li>Retrieve associated {@link com.project.hrm.entities.Role} by ID.</li>
+     *   <li>Encode the password and populate account entity fields.</li>
+     *   <li>Persist the new account via {@link com.project.hrm.repositories.AccountRepository}.</li>
+     * </ol>
+     *
+     * @param accountCreateDTO the DTO containing the new account details, including username,
+     *                         plain-text password, employeeId, and roleId
+     * @return an {@link AccountDTO} representing the newly created account
+     * @throws RuntimeException if the username already exists or referenced employee/role not found
+     */
+    @Transactional
     @Override
     public AccountDTO create(AccountCreateDTO accountCreateDTO) {
 

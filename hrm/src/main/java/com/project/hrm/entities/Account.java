@@ -2,10 +2,7 @@ package com.project.hrm.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.hrm.utils.IdGenerator;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,7 +32,7 @@ public class Account implements UserDetails {
     @JoinColumn
     private Employees employees;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn
     private Role role;
 

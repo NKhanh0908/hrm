@@ -18,5 +18,4 @@ public class RecruitmentRequirementsCreateDTO {
     private String expectedSalary;
     private String status;
     private Integer departmentId;
-    private Integer createdBy;
 }

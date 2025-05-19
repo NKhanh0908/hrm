@@ -29,6 +29,9 @@ public class EmployeeMapper {
                 .dateOfBirth(employees.getDateOfBirth())
                 .citizenIdentificationCard(employees.getCitizenIdentificationCard())
                 .address(employees.getAddress())
+                .position(employees.getPosition())
+                .image(employees.getImage())
+                .status(employees.getStatus().toString())
                 .build();
     }
 
