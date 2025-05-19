@@ -20,9 +20,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class EmployeeMapper {
 
-    private final DepartmentMapper departmentMapper;
-
-
     // Convert entity to DTO
     public EmployeeDTO toEmployeeDTO(Employees employees) {
         return EmployeeDTO.builder()
@@ -35,7 +32,6 @@ public class EmployeeMapper {
                 .dateOfBirth(employees.getDateOfBirth())
                 .citizenIdentificationCard(employees.getCitizenIdentificationCard())
                 .address(employees.getAddress())
-                .departmentDTO(departmentMapper.toDepartmentDTO(employees.getDepartment()))
                 .build();
     }
 
@@ -64,11 +60,10 @@ public class EmployeeMapper {
                 .dateOfBirth(employeeDTO.getDateOfBirth())
                 .citizenIdentificationCard(employeeDTO.getCitizenIdentificationCard())
                 .address(employeeDTO.getAddress())
-                .department(departmentMapper.toDepartment(employeeDTO.getDepartmentDTO()))
                 .build();
     }
 
-    public Employees employeeCreateToEmployee(EmployeeCreateDTO dto, DepartmentDTO departmentDTO) {
+    public Employees employeeCreateToEmployee(EmployeeCreateDTO dto) {
         return Employees.builder()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
@@ -78,11 +73,10 @@ public class EmployeeMapper {
                 .dateOfBirth(dto.getDateOfBirth())
                 .citizenIdentificationCard(dto.getCitizenIdentificationCard())
                 .address(dto.getAddress())
-                .department(departmentMapper.toDepartment(departmentDTO))
                 .build();
     }
 
-    public Employees employeeUpdateToEmployee(EmployeeUpdateDTO dto, DepartmentDTO departmentDTO) {
+    public Employees employeeUpdateToEmployee(EmployeeUpdateDTO dto) {
         return Employees.builder()
                 .id(dto.getId())
                 .firstName(dto.getFirstName())
@@ -93,11 +87,9 @@ public class EmployeeMapper {
                 .dateOfBirth(dto.getDateOfBirth())
                 .citizenIdentificationCard(dto.getCitizenIdentificationCard())
                 .address(dto.getAddress())
-                .department(departmentMapper.toDepartment(departmentDTO))
                 .build();
     }
 
-    // Convert contract entity to DTO (không dùng builder)
     public ContractDTO toContactDTO(Contracts contracts) {
         return ContractDTO.builder()
                 .id(contracts.getId())
@@ -107,7 +99,6 @@ public class EmployeeMapper {
                 .contractSigningDate(contracts.getContractSigningDate())
                 .startDate(contracts.getStartDate())
                 .endDate(contracts.getEndDate())
-                .employeeDTO(toEmployeeDTO(contracts.getEmployee()))
                 .build();
     }
 }

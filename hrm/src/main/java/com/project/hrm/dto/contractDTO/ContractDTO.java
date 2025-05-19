@@ -20,5 +20,9 @@ public class ContractDTO {
     private LocalDateTime endDate;
     private Double baseSalary;
     private String description;
-    private EmployeeDTO employeeDTO;
+    private Integer employeeId;
+    private String employeeName;
+    private Integer departmentId;
+    private String departmentName;
+    private String roleName;
 }

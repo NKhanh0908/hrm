@@ -22,5 +22,4 @@ public class EmployeeUpdateDTO {
     private String image;
     private String citizenIdentificationCard;
     private String status;
-    private Integer departmentId;
 }

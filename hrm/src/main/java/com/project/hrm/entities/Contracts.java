@@ -24,13 +24,14 @@ public class Contracts {
     private Integer id = IdGenerator.getGenerationId();
     private String title;
     private LocalDateTime contractSigningDate;
-    private LocalDateTime startDate = LocalDateTime.now();
+    private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Double baseSalary;
     private String description;
 
     @ManyToOne
     @JoinColumn
+    @JsonBackReference
     private Employees employee;
 
     @ManyToOne

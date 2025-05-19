@@ -2,7 +2,9 @@ package com.project.hrm.services;
 
 import com.project.hrm.dto.contractDTO.ContractCreateDTO;
 import com.project.hrm.dto.contractDTO.ContractDTO;
+import com.project.hrm.dto.contractDTO.ContractFilter;
 import com.project.hrm.dto.contractDTO.ContractUpdateDTO;
+import com.project.hrm.entities.Contracts;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +19,10 @@ public interface ContractService {
 
     ContractDTO getById(Integer id);
 
-    Boolean checkExists(Integer contractId);
+    Contracts getEntityById(Integer id);
 
-    List<ContractDTO> getAll();
+    List<ContractDTO> filter(ContractFilter contractFilter, int page, int size);
+
+
 
 }

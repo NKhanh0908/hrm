@@ -113,8 +113,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO create(EmployeeCreateDTO employeeCreateDTO) {
         log.info("Create Employee");
 
-        DepartmentDTO departmentDTO = departmentService.getById(employeeCreateDTO.getDepartmentId());
-        Employees employee = employeeMapper.employeeCreateToEmployee(employeeCreateDTO, departmentDTO);
+        Employees employee = employeeMapper.employeeCreateToEmployee(employeeCreateDTO);
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
     }
@@ -138,10 +137,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeUpdateDTO.getLastName() != null)
             employees.setLastName(employeeUpdateDTO.getLastName());
 
-        if (employeeUpdateDTO.getDepartmentId() != null) {
-            DepartmentDTO departmentDTO = departmentService.getById(employeeUpdateDTO.getDepartmentId());
-            employees.setDepartment(departmentMapper.toDepartment(departmentDTO));
-        }
 
         if (employeeUpdateDTO.getEmail() != null)
             employees.setEmail(employeeUpdateDTO.getEmail());

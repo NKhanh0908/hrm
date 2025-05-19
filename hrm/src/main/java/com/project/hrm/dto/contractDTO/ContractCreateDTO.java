@@ -1,5 +1,6 @@
 package com.project.hrm.dto.contractDTO;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,5 +19,13 @@ public class ContractCreateDTO {
     private LocalDateTime endDate;
     private Double baseSalary;
     private String description;
+
+    @NotNull(message = "Contract id is required")
     private Integer employeeId;
+
+    @NotNull(message = "Contract id is required")
+    private Integer departmentId;
+
+    @NotNull(message = "Contract id is required")
+    private Integer roleId;
 }
