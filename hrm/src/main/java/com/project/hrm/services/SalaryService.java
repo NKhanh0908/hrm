@@ -3,6 +3,8 @@ package com.project.hrm.services;
 import com.project.hrm.dto.salaryDTO.SalaryCreateDTO;
 import com.project.hrm.dto.salaryDTO.SalaryDTO;
 import com.project.hrm.dto.salaryDTO.SalaryUpdateDTO;
+import com.project.hrm.entities.Salary;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +14,8 @@ public interface SalaryService {
     List<SalaryDTO> getAll();
 
     SalaryDTO getById(Integer id);
+
+    Salary getEntityById(Integer id);
 
     Boolean checkExists(Integer salaryId);
 
