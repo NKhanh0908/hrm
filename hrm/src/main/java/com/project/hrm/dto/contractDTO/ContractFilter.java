@@ -20,4 +20,5 @@ public class ContractFilter {
     private LocalDateTime contractSigningDateTo;
     private LocalDateTime periodStart;
     private LocalDateTime periodEnd;
+    private String status;
 }

@@ -36,7 +36,6 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
     private final RecruitmentRequirementsRepository recruitmentRequirementsRepository;
     private final RecruitmentRequirementsMapper recruitmentRequirementsMapper;
     private final DepartmentService departmentService;
-    private final EmployeeService employeeService;
 
     /**
      * Filters recruitment requirements based on the provided filter criteria with pagination support.

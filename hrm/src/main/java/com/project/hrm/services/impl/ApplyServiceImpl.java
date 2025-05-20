@@ -8,6 +8,7 @@ import com.project.hrm.entities.Apply;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.enums.ApplyStatus;
+import com.project.hrm.enums.RecruitmentStatus;
 import com.project.hrm.mapper.ApplyMapper;
 import com.project.hrm.mapper.CandidateProfileMapper;
 import com.project.hrm.repositories.ApplyRepository;
@@ -58,6 +59,12 @@ public class ApplyServiceImpl implements ApplyService {
         CandidateProfileDTO candidateProfileDTO = candidateProfileService.create(applyCreateDTO.getCandidateProfileCreateDTO());
 
         Recruitment recruitment = recruitmentService.getEntityById(applyCreateDTO.getRecruitmentId());
+
+        if (recruitment.getStatus() != RecruitmentStatus.OPEN) {
+            throw new IllegalStateException(
+                    "Cannot apply: recruitment ID " + applyCreateDTO.getRecruitmentId() + " is not open"
+            );
+        }
 
         Apply apply = new Apply(applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment,
                 candidateProfileMapper.toEntity(candidateProfileDTO)));

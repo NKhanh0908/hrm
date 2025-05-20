@@ -24,6 +24,13 @@ public class EmployeeSpecification {
                 predicates.add(criteriaBuilder.like(root.get("email"), "%" + employeeFilter.getEmail()+ "%" ));
             }
 
+            if(employeeFilter.getStatus() != null && !employeeFilter.getStatus().isEmpty()){
+                predicates.add(criteriaBuilder.like(
+                        (root.get("status")),
+                        "%" + employeeFilter.getStatus() + "%"
+                ));
+            }
+
             if(!employeeFilter.getGender().isEmpty()){
                 predicates.add(criteriaBuilder.equal(root.get("gender"), employeeFilter.getGender()));
             }

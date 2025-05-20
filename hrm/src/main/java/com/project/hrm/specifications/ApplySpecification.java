@@ -20,8 +20,8 @@ public class ApplySpecification {
 
             if (filter.getStatus() != null && !filter.getStatus().isEmpty()) {
                 predicates.add(criteriaBuilder.like(
-                        criteriaBuilder.lower(root.get("status")),
-                        "%" + filter.getStatus().toLowerCase() + "%"
+                        (root.get("status")),
+                        "%" + filter.getStatus() + "%"
                 ));
             }
 

@@ -122,15 +122,46 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
     }
 
+    /**
+     * Approves an internal {@link RecruitmentRequirements} record and
+     * publishes it publicly by creating a corresponding {@link Recruitment}.
+     *
+     * <p>Process:
+     * <ol>
+     *   <li>Fetch the requirement entity via {@link RecruitmentRequirementService#getEntityById(Integer)}</li>
+     *   <li>Create a new {@link Recruitment} using positions from the requirement and
+     *       contact details from {@link RecruitmentRequirementsApproved}.</li>
+     *   <li>Retrieve the current authenticated {@link Account} principal to set the creator.</li>
+     *   <li>Save and return the newly created {@link RecruitmentDTO}.</li>
+     * </ol>
+     *
+     * @param recruitmentRequirementsApproved DTO containing approval details
+     * @return the {@link RecruitmentDTO} of the newly published position
+     * @throws RuntimeException if authentication is missing or any entity is not found
+     */
+    @Transactional
     @Override
     public RecruitmentDTO approved(RecruitmentRequirementsApproved recruitmentRequirementsApproved) {
         RecruitmentRequirements recruitmentRequirements
                 = recruitmentRequirementService.getEntityById(recruitmentRequirementsApproved.getRecruitmentRequirementId());
 
         Recruitment recruitment = new Recruitment();
+        recruitment.setPosition(recruitmentRequirements.getPositions());
+        recruitment.setContactPhone(recruitmentRequirementsApproved.getContactPhone());
+        recruitment.setEmail(recruitmentRequirementsApproved.getEmail());
+        recruitment.setDeadline(recruitmentRequirementsApproved.getDeadline());
+        recruitment.setJobDescription(recruitmentRequirementsApproved.getJobDescription());
+        recruitment.setRecruitmentRequirements(recruitmentRequirements);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        Account account = (Account) authentication.getPrincipal();
 
-        return null;
+        recruitment.setEmployees(account.getEmployees());
+
+        return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
     }
 
     /**

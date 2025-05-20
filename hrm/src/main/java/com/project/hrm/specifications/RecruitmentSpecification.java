@@ -26,6 +26,13 @@ public class RecruitmentSpecification {
                 ));
             }
 
+            if(filter.getStatus() != null && !filter.getStatus().isEmpty()){
+                predicates.add(criteriaBuilder.like(
+                        (root.get("status")),
+                        "%" + filter.getStatus() + "%"
+                ));
+            }
+
             if (filter.getDeadlineTo() != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(
                         root.get("deadline"), filter.getDeadlineTo()

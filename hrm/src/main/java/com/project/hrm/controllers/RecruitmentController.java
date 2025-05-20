@@ -1,10 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
-import com.project.hrm.dto.recruitmentDTO.RecruitmentCreateDTO;
-import com.project.hrm.dto.recruitmentDTO.RecruitmentDTO;
-import com.project.hrm.dto.recruitmentDTO.RecruitmentFilter;
-import com.project.hrm.dto.recruitmentDTO.RecruitmentUpdateDTO;
+import com.project.hrm.dto.recruitmentDTO.*;
 import com.project.hrm.services.RecruitmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -115,5 +112,28 @@ public class RecruitmentController {
             @RequestParam(defaultValue = "10") int size) {
         List<RecruitmentDTO> results = recruitmentService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Recruitments filtered successfully", results));
+    }
+
+    @PostMapping("/approve")
+    @Operation(
+            summary = "Approve Recruitment Requirement",
+            description = "Create a public Recruitment from an approved internal RecruitmentRequirement",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Approval details and posting information",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RecruitmentRequirementsApproved.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Recruitment published successfully",
+                            content = @Content(schema = @Schema(implementation = RecruitmentDTO.class))),
+                    @ApiResponse(responseCode = "401", description = "User not authenticated"),
+                    @ApiResponse(responseCode = "404", description = "RecruitmentRequirement not found")
+            }
+    )
+    public ResponseEntity<APIResponse<RecruitmentDTO>> approve(
+            @RequestBody RecruitmentRequirementsApproved dto) {
+        RecruitmentDTO result = recruitmentService.approved(dto);
+        return ResponseEntity.ok(new APIResponse<>(true,
+                "Recruitment requirement approved and published", result));
     }
 }

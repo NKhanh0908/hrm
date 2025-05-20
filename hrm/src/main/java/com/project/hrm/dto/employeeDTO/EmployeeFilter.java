@@ -14,4 +14,5 @@ public class EmployeeFilter {
     private String email;
     private String gender;
     private String address;
+    private String status;
 }

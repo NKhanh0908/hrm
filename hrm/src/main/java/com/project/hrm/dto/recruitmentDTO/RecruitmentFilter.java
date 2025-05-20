@@ -18,4 +18,5 @@ public class RecruitmentFilter {
     private LocalDateTime dateCreateFrom;
     private LocalDateTime dateCreateTo;
     private Integer recruitmentRequirementID;
+    private String status;
 }

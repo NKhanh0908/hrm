@@ -163,7 +163,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Employees employee = employeeRepository.findById(employeeId).orElseThrow();
 
         return departmentMapper.toDepartmentDTO(
-                departmentRepository.updateDean(employeeId, departmentId)
+                departmentRepository.updateDean(employee.getId(), departmentId)
         );
     }
 

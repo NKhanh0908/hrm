@@ -10,12 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContractSpecification {
-    /**
-     * Builds a dynamic specification for {@link Contracts} based on {@link ContractFilter}.
-     *
-     * @param filter the filter criteria
-     * @return a Specification for querying Contracts
-     */
+
     public static Specification<Contracts> filter(ContractFilter filter) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -45,6 +40,13 @@ public class ContractSpecification {
                                 "%" + filter.getTitle().toLowerCase() + "%"
                         )
                 );
+            }
+
+            if(filter.getStatus() != null && !filter.getStatus().isEmpty()){
+                predicates.add(cb.like(
+                        (root.get("contract_status")),
+                        "%" + filter.getStatus() + "%"
+                ));
             }
 
             if (filter.getContractSigningDateFrom() != null) {
