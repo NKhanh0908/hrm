@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.hrm.dto.APIResponse;
-import com.project.hrm.dto.employeeDTO.EmployeeDTO;
-import com.project.hrm.dto.employeeDTO.EmployeeFilter;
 import com.project.hrm.dto.salaryDTO.SalaryCreateDTO;
 import com.project.hrm.dto.salaryDTO.SalaryDTO;
 import com.project.hrm.dto.salaryDTO.SalaryUpdateDTO;
