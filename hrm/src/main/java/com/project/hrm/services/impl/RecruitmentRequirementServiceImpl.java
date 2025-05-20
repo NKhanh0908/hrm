@@ -6,7 +6,6 @@ import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
 import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Departments;
-import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.RecruitmentRequirements;
 import com.project.hrm.enums.RecruitmentRequirementsStatus;
 import com.project.hrm.mapper.RecruitmentRequirementsMapper;

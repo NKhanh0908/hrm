@@ -4,7 +4,5 @@ public enum RecruitmentRequirementsStatus {
     PENDING,
     APPROVED,
     REJECTED,
-    OPEN,
-    CLOSE,
     FILLED
 }

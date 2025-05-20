@@ -1,10 +1,9 @@
 package com.project.hrm.services.impl;
 
-import com.project.hrm.dto.applyDTO.ApplyCreateDTO;
-import com.project.hrm.dto.applyDTO.ApplyDTO;
-import com.project.hrm.dto.applyDTO.ApplyFilter;
-import com.project.hrm.dto.applyDTO.ApplyUpdateDTO;
+import com.project.hrm.dto.applyDTO.*;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
+import com.project.hrm.dto.othersDTO.InfoApply;
+import com.project.hrm.dto.othersDTO.InterviewLetter;
 import com.project.hrm.entities.Apply;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Recruitment;
@@ -14,6 +13,7 @@ import com.project.hrm.mapper.CandidateProfileMapper;
 import com.project.hrm.repositories.ApplyRepository;
 import com.project.hrm.services.ApplyService;
 import com.project.hrm.services.CandidateProfileService;
+import com.project.hrm.services.MailService;
 import com.project.hrm.services.RecruitmentService;
 import com.project.hrm.specifications.ApplySpecification;
 import jakarta.persistence.EntityNotFoundException;
@@ -40,6 +40,7 @@ public class ApplyServiceImpl implements ApplyService {
 
     private final RecruitmentService recruitmentService;
     private final CandidateProfileService candidateProfileService;
+    private final MailService mailService;
 
     /**
      * Creates a new Apply entity using the provided creation DTO.
@@ -105,6 +106,38 @@ public class ApplyServiceImpl implements ApplyService {
     }
 
     /**
+     * Marks the given application as invited to interview, sends an interview notification,
+     * and returns the updated application DTO.
+     *
+     * <p>Process:
+     * <ol>
+     *   <li>Retrieve the {@link Apply} entity by the ID in {@link InterviewLetter}.</li>
+     *   <li>Update its status to {@link ApplyStatus#INTERVIEW} via {@link #updateStatus(Integer, ApplyStatus)}</li>
+     *   <li>Fetch applicant contact info via {@link InfoApply} projection.</li>
+     *   <li>Send an email notification with interview details using {@link MailService#notificationInterview(InfoApply, InterviewLetter)}</li>
+     * </ol>
+     *
+     * @param interviewLetter the details of the interview, including applyId, address, and interviewTime
+     * @return the updated {@link ApplyDTO} reflecting the new INTERVIEW status
+     * @throws RuntimeException if the applyId is not found or notification fails
+     */
+    @Transactional
+    @Override
+    public ApplyDTO interview(InterviewLetter interviewLetter) {
+        log.info("Interview");
+
+        Apply apply = getEntityById(interviewLetter.getApplyId());
+
+        ApplyDTO applyDTO = updateStatus(apply.getId(), ApplyStatus.INTERVIEW);
+
+        InfoApply infoApply = applyRepository.getInfoApply(apply.getId());
+
+        mailService.notificationInterview(infoApply, interviewLetter);
+
+        return applyDTO;
+    }
+
+    /**
      * Change the status on an existing Apply.
      *
      * @param id     the Apply ID
@@ -138,8 +171,7 @@ public class ApplyServiceImpl implements ApplyService {
     public ApplyDTO getById(Integer id) {
         log.info("Find Apply by id: {}", id);
 
-        return applyMapper.toDTO(applyRepository.findById(id)
-                .orElseThrow()
+        return applyMapper.toDTO(getEntityById(id)
         );
     }
 

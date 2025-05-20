@@ -18,6 +18,7 @@ public class RecruitmentDTO {
     private String position;
     private String contactPhone;
     private String email;
+    private String status;
     private LocalDateTime deadline;
     private String jobDescription;
     private LocalDateTime createAt;

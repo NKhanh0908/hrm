@@ -1,9 +1,7 @@
 package com.project.hrm.services;
 
-import com.project.hrm.dto.applyDTO.ApplyCreateDTO;
-import com.project.hrm.dto.applyDTO.ApplyDTO;
-import com.project.hrm.dto.applyDTO.ApplyFilter;
-import com.project.hrm.dto.applyDTO.ApplyUpdateDTO;
+import com.project.hrm.dto.applyDTO.*;
+import com.project.hrm.dto.othersDTO.InterviewLetter;
 import com.project.hrm.entities.Apply;
 import com.project.hrm.enums.ApplyStatus;
 import org.springframework.stereotype.Service;
@@ -15,6 +13,8 @@ public interface ApplyService {
     ApplyDTO create(ApplyCreateDTO applyCreateDTO);
 
     ApplyDTO update(ApplyUpdateDTO applyUpdateDTO);
+
+    ApplyDTO interview(InterviewLetter interviewLetter);
 
     ApplyDTO updateStatus(Integer id, ApplyStatus status);
 

@@ -5,6 +5,7 @@ import com.project.hrm.dto.recruitmentDTO.RecruitmentDTO;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.entities.RecruitmentRequirements;
+import com.project.hrm.enums.RecruitmentStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,6 +28,7 @@ public class RecruitmentMapper {
                 .deadline(recruitment.getDeadline())
                 .position(recruitment.getPosition())
                 .createAt(recruitment.getCreateAt())
+                .status(recruitment.getStatus().name())
                 .jobDescription(recruitment.getJobDescription())
                 .recruitmentRequirementsDTO(recruitmentRequirementsMapper.toDTO(recruitment.getRecruitmentRequirements()))
                 .employeeApproveId(recruitment.getEmployees().getId())
@@ -47,6 +49,7 @@ public class RecruitmentMapper {
                 .contactPhone(recruitmentCreateDTO.getContactPhone())
                 .email(recruitmentCreateDTO.getEmail())
                 .deadline(recruitmentCreateDTO.getDeadline())
+                .status(RecruitmentStatus.ARCHIVED)
                 .jobDescription(recruitmentCreateDTO.getJobDescription())
                 .recruitmentRequirements(recruitmentRequirements)
                 .employees(employees)

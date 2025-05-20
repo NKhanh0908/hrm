@@ -32,7 +32,7 @@ public class ApplyMapper {
 
     public Apply convertCreateDTOToEntity(ApplyCreateDTO applyCreateDTO, Recruitment recruitment, CandidateProfile candidateProfile){
         return Apply.builder()
-                .applyStatus(ApplyStatus.valueOf("SUBMITTED"))
+                .applyStatus(ApplyStatus.SUBMITTED)
                 .position(applyCreateDTO.getPosition())
                 .recruitment(recruitment)
                 .candidateProfile(candidateProfile)

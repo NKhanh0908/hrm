@@ -1,6 +1,7 @@
 package com.project.hrm.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.project.hrm.enums.RecruitmentStatus;
 import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,11 @@ public class Recruitment {
     private String email;
     private LocalDateTime deadline;
     private String jobDescription;
-    private LocalDateTime createAt;
+    private LocalDateTime createAt = LocalDateTime.now();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RecruitmentStatus status = RecruitmentStatus.ARCHIVED;
 
     @OneToOne
     @JoinColumn
@@ -41,6 +46,7 @@ public class Recruitment {
         this.email = recruitment.getEmail();
         this.deadline = recruitment.getDeadline();
         this.createAt = LocalDateTime.now();
+        this.status = RecruitmentStatus.ARCHIVED;
         this.jobDescription = recruitment.getJobDescription();
         this.recruitmentRequirements = recruitment.getRecruitmentRequirements();
         this.employees = recruitment.getEmployees();

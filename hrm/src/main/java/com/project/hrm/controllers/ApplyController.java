@@ -5,6 +5,7 @@ import com.project.hrm.dto.applyDTO.ApplyCreateDTO;
 import com.project.hrm.dto.applyDTO.ApplyDTO;
 import com.project.hrm.dto.applyDTO.ApplyFilter;
 import com.project.hrm.dto.applyDTO.ApplyUpdateDTO;
+import com.project.hrm.dto.othersDTO.InterviewLetter;
 import com.project.hrm.enums.ApplyStatus;
 import com.project.hrm.services.ApplyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -138,6 +139,29 @@ public class ApplyController {
         ApplyDTO updated = applyService.updateStatus(id, status);
         return ResponseEntity.ok(new APIResponse<>(true,
                 "Apply status updated to " + status, updated));
+    }
+
+    @PostMapping("/interview")
+    @Operation(
+            summary = "Invite to Interview",
+            description = "Update application status to INTERVIEW and send an interview invitation email",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Interview scheduling details",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = InterviewLetter.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Interview invitation sent and status updated",
+                            content = @Content(schema = @Schema(implementation = ApplyDTO.class))
+                    )
+            }
+    )
+    public ResponseEntity<APIResponse<ApplyDTO>> interview(
+            @RequestBody InterviewLetter interviewLetter) {
+        ApplyDTO updated = applyService.interview(interviewLetter);
+        return ResponseEntity.ok(new APIResponse<>(true,
+                "Interview invitation sent successfully", updated));
     }
 
 }

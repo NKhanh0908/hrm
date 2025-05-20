@@ -1,9 +1,6 @@
 package com.project.hrm.services.impl;
 
-import com.project.hrm.dto.recruitmentDTO.RecruitmentCreateDTO;
-import com.project.hrm.dto.recruitmentDTO.RecruitmentDTO;
-import com.project.hrm.dto.recruitmentDTO.RecruitmentFilter;
-import com.project.hrm.dto.recruitmentDTO.RecruitmentUpdateDTO;
+import com.project.hrm.dto.recruitmentDTO.*;
 import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Recruitment;
@@ -123,6 +120,17 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         Recruitment recruitment = new Recruitment(recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements, principal.getEmployees()));
 
         return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
+    }
+
+    @Override
+    public RecruitmentDTO approved(RecruitmentRequirementsApproved recruitmentRequirementsApproved) {
+        RecruitmentRequirements recruitmentRequirements
+                = recruitmentRequirementService.getEntityById(recruitmentRequirementsApproved.getRecruitmentRequirementId());
+
+        Recruitment recruitment = new Recruitment();
+
+
+        return null;
     }
 
     /**

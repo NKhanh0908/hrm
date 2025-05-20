@@ -1,9 +1,6 @@
 package com.project.hrm.services;
 
-import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementFilter;
-import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
-import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
-import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
+import com.project.hrm.dto.recruitmentDTO.*;
 import com.project.hrm.entities.RecruitmentRequirements;
 import com.project.hrm.enums.RecruitmentRequirementsStatus;
 import org.springframework.stereotype.Service;
@@ -13,6 +10,7 @@ import java.util.List;
 @Service
 public interface RecruitmentRequirementService {
     RecruitmentRequirementsDTO create(RecruitmentRequirementsCreateDTO recruitmentRequirementsCreateDTO);
+
 
     RecruitmentRequirementsDTO update(RecruitmentRequirementsUpdateDTO recruitmentRequirementsUpdateDTO);
 
