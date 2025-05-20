@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DetailSalaryCreateDTO {
-    private Double basicSalary;
-    private Integer salaryId;
+
+public class DeductionDTO {
+    private Integer id;
+    private String typeDeduction;
+    private Double amount;
+    private SalaryDTO salaryDTO;
 }

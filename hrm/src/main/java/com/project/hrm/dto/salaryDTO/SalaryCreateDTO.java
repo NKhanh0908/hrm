@@ -13,6 +13,5 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SalaryCreateDTO {
     private LocalDateTime time;
-    private Double totalAmount;
     private Integer employeeId;
 }
