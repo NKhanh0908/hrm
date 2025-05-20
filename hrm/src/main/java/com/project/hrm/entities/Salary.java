@@ -21,7 +21,6 @@ public class Salary {
     @Id
     private Integer id = IdGenerator.getGenerationId();
     private LocalDateTime time;
-    private Double totalAmount;
 
     @ManyToOne
     @JoinColumn

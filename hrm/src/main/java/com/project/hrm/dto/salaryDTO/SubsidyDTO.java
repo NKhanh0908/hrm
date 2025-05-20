@@ -13,4 +13,5 @@ public class SubsidyDTO {
     private Integer id;
     private String typeSubsidy;
     private Double amount;
+    private SalaryDTO salaryDTO;
 }

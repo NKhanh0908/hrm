@@ -14,6 +14,5 @@ import java.time.LocalDateTime;
 public class SalaryUpdateDTO {
     private Integer id;
     private LocalDateTime time;
-    private Double totalAmount;
     private Integer employeeId;
 }

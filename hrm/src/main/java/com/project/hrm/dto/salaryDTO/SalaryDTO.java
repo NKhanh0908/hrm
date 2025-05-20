@@ -6,7 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
+import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 
 @Data
 @Builder
@@ -15,8 +16,5 @@ import java.util.List;
 public class SalaryDTO {
     private Integer id;
     private LocalDateTime time;
-    private Double totalAmount;
-    //private EmployeeDTO employeeDTO;
-    private DetailSalaryDTO detailSalaryDTO;
-    private List<SubsidyDTO> subsidyDTOList;
+    private EmployeeDTO employeeDTO;
 }
