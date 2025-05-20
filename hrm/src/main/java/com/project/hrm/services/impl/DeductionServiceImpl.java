@@ -4,14 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import com.project.hrm.controllers.AccountController;
 import com.project.hrm.dto.salaryDTO.DeductionCreateDTO;
 import com.project.hrm.dto.salaryDTO.DeductionDTO;
 import com.project.hrm.dto.salaryDTO.DeductionUpdateDTO;
 import com.project.hrm.entities.Deduction;
 import com.project.hrm.entities.Salary;
 import com.project.hrm.mapper.DeductionMapper;
-import com.project.hrm.mapper.SalaryMapper;
 import com.project.hrm.repositories.DeductionRepository;
 import com.project.hrm.services.DeductionService;
 import com.project.hrm.services.SalaryService;
@@ -25,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 public class DeductionServiceImpl implements DeductionService{
 
     private final DeductionRepository deductionRepository;
-    private final SalaryMapper salaryMapper;
     private final DeductionMapper deductionMapper;
     private final SalaryService salaryService;
 

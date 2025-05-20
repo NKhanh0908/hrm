@@ -1,5 +1,7 @@
 package com.project.hrm.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.project.hrm.dto.salaryDTO.DeductionCreateDTO;
 import com.project.hrm.dto.salaryDTO.DeductionDTO;
 import com.project.hrm.entities.Deduction;
@@ -8,6 +10,7 @@ import com.project.hrm.entities.Salary;
 
 import lombok.AllArgsConstructor;
 
+@Component
 @AllArgsConstructor
 public class DeductionMapper {
     private final SalaryMapper salaryMapper;

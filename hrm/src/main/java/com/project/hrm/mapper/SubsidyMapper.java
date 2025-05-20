@@ -1,5 +1,7 @@
 package com.project.hrm.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.project.hrm.dto.salaryDTO.SubsidyCreateDTO;
 import com.project.hrm.dto.salaryDTO.SubsidyDTO;
 import com.project.hrm.entities.Salary;
@@ -7,6 +9,7 @@ import com.project.hrm.entities.Subsidy;
 
 import lombok.AllArgsConstructor;
 
+@Component
 @AllArgsConstructor
 public class SubsidyMapper {
 
