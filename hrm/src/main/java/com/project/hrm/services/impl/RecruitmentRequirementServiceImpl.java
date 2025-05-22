@@ -8,10 +8,11 @@ import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.RecruitmentRequirements;
 import com.project.hrm.enums.RecruitmentRequirementsStatus;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.RecruitmentRequirementsMapper;
 import com.project.hrm.repositories.RecruitmentRequirementsRepository;
 import com.project.hrm.services.DepartmentService;
-import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.RecruitmentRequirementService;
 import com.project.hrm.specifications.RecruitmentRequirementsSpecification;
 import com.project.hrm.utils.IdGenerator;
@@ -27,7 +28,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -77,13 +77,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         log.info("Find RecruitmentRequirements by id: {}", id);
 
         return recruitmentRequirementsRepository.findById(id)
-                .orElseThrow(() -> {
-                    String message = "Find RecruitmentRequirements with id " + id + " not found";
-
-                    log.error(message);
-
-                    return new RuntimeException(message);
-                });
+                .orElseThrow(() -> new CustomException(Error.RECRUITMENT_REQUIREMENTS_NOT_FOUND));
     }
 
     /**
@@ -98,18 +92,8 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
     public RecruitmentRequirementsDTO getDTOById(Integer id) {
         log.info("Find RecruitmentRequirementsDTO by id: {}", id);
 
-        RecruitmentRequirements recruitmentRequirements
-                = recruitmentRequirementsRepository.findById(id)
-                .orElseThrow(() -> {
-                    String message = "Find RecruitmentRequirementsDTO with id " + id + " not found";
-
-                    log.error(message);
-
-                    return new RuntimeException(message);
-                });
-
         return recruitmentRequirementsMapper
-                .toDTO(recruitmentRequirements);
+                .toDTO(getEntityById(id));
     }
 
     /**
@@ -137,8 +121,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         recruitmentRequirements.setId(IdGenerator.getGenerationId());
 
         return recruitmentRequirementsMapper.toDTO(
-                recruitmentRequirementsRepository.save(recruitmentRequirements)
-        );
+                recruitmentRequirementsRepository.save(recruitmentRequirements));
     }
 
     /**
@@ -185,18 +168,14 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            log.info("if auth");
             return null;
         }
-
-        log.info("authentication.getPrincipal(): {}", authentication.getPrincipal());
         Account account = (Account) authentication.getPrincipal();
 
             entity.setEmployees(account.getEmployees());
 
         return recruitmentRequirementsMapper.toDTO(
-                recruitmentRequirementsRepository.save(entity)
-        );
+                recruitmentRequirementsRepository.save(entity));
     }
 
     /**
@@ -213,11 +192,15 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         if (!recruitmentRequirementsRepository.existsById(id)) {
             throw new EntityNotFoundException("Requirement not found: " + id);
         }
+
         int updated = recruitmentRequirementsRepository.updateStatus(id, status.name());
+
         if (updated != 1) {
             throw new IllegalStateException("Failed to update status for requirement ID " + id);
         }
-        RecruitmentRequirements entity = recruitmentRequirementsRepository.findById(id).orElseThrow();
+
+        RecruitmentRequirements entity = getEntityById(id);
+
         return recruitmentRequirementsMapper.toDTO(entity);
     }
 

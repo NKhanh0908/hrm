@@ -5,6 +5,8 @@ import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.entities.RecruitmentRequirements;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.RecruitmentMapper;
 import com.project.hrm.repositories.RecruitmentRepository;
 import com.project.hrm.services.EmployeeService;
@@ -73,15 +75,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         log.info("Find Entity Recruitment by id: {}", id);
 
         return recruitmentRepository.findById(id)
-                .orElseThrow(
-                        () -> {
-                            String message = "Find Recruitment with id " + id + " not found";
-
-                            log.error(message);
-
-                            return new RuntimeException(message);
-                        }
-                );
+                .orElseThrow(() -> new CustomException(Error.RECRUITMENT_NOT_FOUND));
     }
 
     /**

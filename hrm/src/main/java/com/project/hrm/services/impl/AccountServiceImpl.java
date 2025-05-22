@@ -60,14 +60,12 @@ public class AccountServiceImpl implements AccountService {
             String name = formLoginDTO.getUsername().trim().toLowerCase();
 
             Account account = accountRepository.findByUsername(name)
-                    .orElseThrow(
-                            () -> new CustomException(Error.ACCOUNT_NOT_FOUND)
-                    );
+                    .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND));
 
             log.info("Account: {}", account);
 
             if (!passwordEncoder.matches(formLoginDTO.getPassword(), account.getPassword())) {
-                throw new RuntimeException("ACCOUNT INVALID PASSWORD");
+                throw new CustomException(Error.ACCOUNT_INVALID_PASSWORD);
             }
 
             try {
@@ -81,8 +79,6 @@ public class AccountServiceImpl implements AccountService {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -110,7 +106,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountDTO create(AccountCreateDTO accountCreateDTO) {
 
         if (usernameExists(accountCreateDTO.getUsername())) {
-            throw new RuntimeException("Account ALREADY_EXISTS");
+            throw new CustomException(Error.ACCOUNT_ALREADY_EXISTS);
         }
 
         Employees employees = employeeService.getEntityById(accountCreateDTO.getEmployeeId());

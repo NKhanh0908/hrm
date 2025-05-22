@@ -111,6 +111,7 @@ public enum Error {
     APPLY_UNABLE_TO_DELETE(9005, "Unable to delete application", HttpStatus.INTERNAL_SERVER_ERROR),
     APPLY_INVALID_STATUS(9006, "Invalid application status", HttpStatus.BAD_REQUEST),
     APPLY_ALREADY_SUBMITTED(9007, "Application already submitted for this position", HttpStatus.CONFLICT),
+    APPLY_NOT_OPEN(9008, "Cannot apply recruitment is not open", HttpStatus.BAD_REQUEST),
 
     // Evaluate-related errors
     EVALUATE_NOT_FOUND(10001, "Evaluation not found", HttpStatus.NOT_FOUND),

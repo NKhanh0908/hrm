@@ -9,6 +9,8 @@ import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Role;
 import com.project.hrm.enums.ContractStatus;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.ContractMapper;
 import com.project.hrm.repositories.ContractRepository;
 import com.project.hrm.services.ContractService;
@@ -129,15 +131,18 @@ public class ContractServiceImpl implements ContractService {
      * @throws EntityNotFoundException if no contract exists with the given ID
      */
     @Transactional
+    @Override
     public void updateStatus(Integer id, ContractStatus status) {
-        // ensure the contract exists
+        log.info("Update status contract id: {}", id);
+
         if (!contractRepository.existsById(id)) {
-            throw new EntityNotFoundException("Contract not found with ID " + id);
+            throw new CustomException(Error.CONTRACT_NOT_FOUND);
         }
-        // perform the native update
+
         int rows = contractRepository.updateStatus(id, status.name());
+
         if (rows != 1) {
-            throw new IllegalStateException("Failed to update status for contract ID " + id);
+            throw new CustomException(Error.CONTRACT_UNABLE_TO_UPDATE);
         }
     }
 
@@ -180,7 +185,7 @@ public class ContractServiceImpl implements ContractService {
     public Contracts getEntityById(Integer id) {
         log.info("Get contract entity by id: {}", id);
         return contractRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Contract not found"));
+                .orElseThrow(() -> new CustomException(Error.CONTRACT_NOT_FOUND));
     }
 
     /**

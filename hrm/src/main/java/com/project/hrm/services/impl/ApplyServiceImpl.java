@@ -9,6 +9,8 @@ import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.enums.ApplyStatus;
 import com.project.hrm.enums.RecruitmentStatus;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.ApplyMapper;
 import com.project.hrm.mapper.CandidateProfileMapper;
 import com.project.hrm.repositories.ApplyRepository;
@@ -62,9 +64,7 @@ public class ApplyServiceImpl implements ApplyService {
         Recruitment recruitment = recruitmentService.getEntityById(applyCreateDTO.getRecruitmentId());
 
         if (recruitment.getStatus() != RecruitmentStatus.OPEN) {
-            throw new IllegalStateException(
-                    "Cannot apply: recruitment ID " + applyCreateDTO.getRecruitmentId() + " is not open"
-            );
+            throw new CustomException(Error.APPLY_NOT_OPEN);
         }
 
         Apply apply = applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment,
@@ -155,15 +155,20 @@ public class ApplyServiceImpl implements ApplyService {
      * @throws EntityNotFoundException if no Apply with given ID exists
      */
     @Transactional
+    @Override
     public ApplyDTO updateStatus(Integer id, ApplyStatus status) {
+        log.info("Update status apply");
+
         if (!applyRepository.existsById(id)) {
-            throw new EntityNotFoundException("Apply not found with ID " + id);
+            throw new CustomException(Error.APPLY_NOT_FOUND);
         }
+
         int updated = applyRepository.updateStatus(id, status.name());
+
         if (updated != 1) {
-            throw new IllegalStateException("Failed to update status for Apply ID " + id);
+            throw new CustomException(Error.APPLY_UNABLE_TO_UPDATE);
         }
-        // reload entity to return DTO
+
         Apply apply = applyRepository.findById(id).orElseThrow();
         return applyMapper.toDTO(apply);
     }
@@ -197,7 +202,7 @@ public class ApplyServiceImpl implements ApplyService {
         log.info("Find Apply entity by id: {}", id);
 
         return applyRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(()-> new CustomException(Error.APPLY_NOT_FOUND));
     }
 
     /**

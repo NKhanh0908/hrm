@@ -7,6 +7,8 @@ import com.project.hrm.dto.evaluateDTO.EvaluateUpdateDTO;
 import com.project.hrm.entities.Account;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Evaluate;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.EvaluateMapper;
 import com.project.hrm.repositories.EvaluateRepository;
 import com.project.hrm.services.CandidateProfileService;
@@ -66,9 +68,8 @@ public class EvaluateServiceImpl implements EvaluateService {
     public EvaluateDTO getById(Integer id) {
         log.info("Find Evaluate by id: {}", id);
 
-        return evaluateMapper.toEvaluateDTO(
-                evaluateRepository.findById(id).orElseThrow()
-        );
+        return evaluateMapper.toEvaluateDTO(evaluateRepository.findById(id)
+                .orElseThrow(()-> new CustomException(Error.EVALUATE_NOT_FOUND)));
     }
 
     /**

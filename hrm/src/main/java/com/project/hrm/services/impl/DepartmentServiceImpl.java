@@ -6,6 +6,8 @@ import com.project.hrm.dto.departmentDTO.DepartmentFilter;
 import com.project.hrm.dto.departmentDTO.DepartmentUpdateDTO;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.DepartmentMapper;
 import com.project.hrm.repositories.DepartmentRepository;
 import com.project.hrm.repositories.EmployeeRepository;
@@ -40,14 +42,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional(readOnly = true)
     @Override
     public Departments getEntityById(Integer id) {
+        log.info("Get entity department by id: {}", id);
+
         return departmentRepository.findById(id)
-                .orElseThrow(() -> {
-                    String message = "Find Departments with id " + id + " not found";
-
-                    log.error(message);
-
-                    return new RuntimeException(message);
-                });
+                .orElseThrow(() -> new CustomException(Error.DEPARTMENT_NOT_FOUND));
     }
 
     /**
@@ -60,14 +58,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional(readOnly = true)
     @Override
     public DepartmentDTO getById(Integer id) {
-        return departmentMapper.toDepartmentDTO(departmentRepository.findById(id)
-                .orElseThrow(() -> {
-                    String message = "Find DepartmentsDTO with id " + id + " not found";
+        log.info("Get department by id: {}", id);
 
-                    log.error(message);
-
-                    return new RuntimeException(message);
-                }));
+        return departmentMapper.toDepartmentDTO(getEntityById(id));
     }
 
     /**
@@ -85,9 +78,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Departments departments = departmentMapper.convertCreateToEntity(departmentCreateDTO);
         departments.setId(IdGenerator.getGenerationId());
 
-        return departmentMapper.toDepartmentDTO(
-                departmentRepository.save(departments)
-        );
+        return departmentMapper.toDepartmentDTO(departmentRepository.save(departments));
     }
 
     /**
@@ -148,8 +139,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Pageable pageable = PageRequest.of(page, size);
 
         return departmentMapper.convertPageEntityToPageDTO(
-                departmentRepository.findAll(departmentsSpecification, pageable)
-        );
+                departmentRepository.findAll(departmentsSpecification, pageable));
     }
 
     /**
@@ -167,8 +157,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Employees employee = employeeRepository.findById(employeeId).orElseThrow();
 
         return departmentMapper.toDepartmentDTO(
-                departmentRepository.updateDean(employee.getId(), departmentId)
-        );
+                departmentRepository.updateDean(employee.getId(), departmentId));
     }
 
 }

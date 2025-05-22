@@ -6,6 +6,8 @@ import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeFilter;
 import com.project.hrm.dto.employeeDTO.EmployeeUpdateDTO;
 import com.project.hrm.entities.Employees;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.DepartmentMapper;
 import com.project.hrm.mapper.EmployeeMapper;
 import com.project.hrm.repositories.EmployeeRepository;
@@ -66,7 +68,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("Find Employee entity by id: {}", id);
 
         return employeeRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new CustomException(Error.EMPLOYEE_NOT_FOUND));
     }
 
     /**
@@ -79,12 +81,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional(readOnly = true)
     @Override
     public EmployeeDTO getDTOById(Integer id) {
-        log.info("Find Employee DTO by id: {}", id);
+        log.info("Find Employee by id: {}", id);
 
-        return employeeMapper.toEmployeeDTO(
-                employeeRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Employee not found"))
-        );
+        return employeeMapper.toEmployeeDTO(getEntityById(id));
     }
 
     /**
@@ -173,7 +172,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (checkExists(employeeId)) {
             employeeRepository.deleteById(employeeId);
         } else {
-            throw new RuntimeException("Employee not found");
+            throw new CustomException(Error.EMPLOYEE_NOT_FOUND);
         }
     }
 

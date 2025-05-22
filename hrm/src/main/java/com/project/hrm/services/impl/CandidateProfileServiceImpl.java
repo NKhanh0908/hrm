@@ -5,6 +5,8 @@ import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileFilter;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileUpdateDTO;
 import com.project.hrm.entities.CandidateProfile;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.CandidateProfileMapper;
 import com.project.hrm.repositories.CandidateProfileRepository;
 import com.project.hrm.services.CandidateProfileService;
@@ -113,15 +115,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     public CandidateProfileDTO getById(Integer id) {
         log.info("Find CandidateProfile by id: {}", id);
 
-        return candidateProfileMapper.toCandidateProfileDTO(
-                candidateProfileRepository.findById(id)
-                        .orElseThrow(() -> {
-                            String message = "Find CandidateProfileDTO with id " + id + " not found";
-
-                            log.error(message);
-
-                            return new RuntimeException(message);
-                        }));
+        return candidateProfileMapper.toCandidateProfileDTO(getEntityById(id));
     }
 
     /**
@@ -159,13 +153,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         log.info("Find Entity CandidateProfile by id: {}", id);
 
         return candidateProfileRepository.findById(id)
-                .orElseThrow(() -> {
-                    String message = "Find CandidateProfile with id " + id + " not found";
-
-                    log.error(message);
-
-                    return new RuntimeException(message);
-                });
+                .orElseThrow(() -> new CustomException(Error.CANDIDATE_PROFILE_NOT_FOUND));
     }
 
 }

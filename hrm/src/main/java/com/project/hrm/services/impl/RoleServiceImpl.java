@@ -1,6 +1,8 @@
 package com.project.hrm.services.impl;
 
 import com.project.hrm.entities.Role;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.repositories.RoleRepository;
 import com.project.hrm.services.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +23,6 @@ public class RoleServiceImpl implements RoleService {
         log.info("Find role entity by id: {}", id);
 
         return roleRepository.findById(id)
-                .orElseThrow(
-                        ()->{
-                            log.info("Error not found by id: {}", id);
-
-                            return new RuntimeException("Role not found");
-                        }
-                );
+                .orElseThrow(()-> new CustomException(Error.ROLE_NOT_FOUND));
     }
 }
