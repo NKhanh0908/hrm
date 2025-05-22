@@ -40,7 +40,7 @@ public class ContractMapper {
                 .startDate(contractCreateDTO.getStartDate())
                 .endDate(contractCreateDTO.getEndDate())
                 .description(contractCreateDTO.getDescription())
-                .contractStatus(ContractStatus.valueOf("SIGNED"))
+                .contractStatus(ContractStatus.SIGNED)
                 .contractSigningDate(contractCreateDTO.getContractSigningDate())
                 .employee(employees)
                 .departments(departments)

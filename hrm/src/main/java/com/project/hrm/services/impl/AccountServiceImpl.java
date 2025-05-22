@@ -7,11 +7,14 @@ import com.project.hrm.dto.accountDTO.FormLoginDTO;
 import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Role;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.AccountMapper;
 import com.project.hrm.repositories.AccountRepository;
 import com.project.hrm.services.AccountService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.RoleService;
+import com.project.hrm.utils.IdGenerator;
 import com.project.hrm.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
 
             Account account = accountRepository.findByUsername(name)
                     .orElseThrow(
-                            () -> new RuntimeException("Username is exists")
+                            () -> new CustomException(Error.ACCOUNT_NOT_FOUND)
                     );
 
             log.info("Account: {}", account);
@@ -114,11 +117,9 @@ public class AccountServiceImpl implements AccountService {
 
         Role role = roleService.getEntityById(accountCreateDTO.getRoleId());
 
-        Account account = new Account();
-        account.setUsername(accountCreateDTO.getUsername());
+        Account account = accountMapper.convertCreateDTOToEntity(accountCreateDTO, employees, role);
+        account.setId(IdGenerator.getGenerationId());
         account.setPassword(passwordEncoder.encode(accountCreateDTO.getUsername()));
-        account.setEmployees(employees);
-        account.setRole(role);
 
         return accountMapper.toDTO(accountRepository.save(account));
     }

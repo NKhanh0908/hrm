@@ -14,6 +14,7 @@ import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.RecruitmentRequirementService;
 import com.project.hrm.specifications.RecruitmentRequirementsSpecification;
+import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -132,9 +133,8 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         }
         Account account = (Account) authentication.getPrincipal();
 
-        RecruitmentRequirements recruitmentRequirements = new RecruitmentRequirements(recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO, departments, account.getEmployees()));
-
-        recruitmentRequirements.setDateRequired(LocalDateTime.now());
+        RecruitmentRequirements recruitmentRequirements = recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO, departments, account.getEmployees());
+        recruitmentRequirements.setId(IdGenerator.getGenerationId());
 
         return recruitmentRequirementsMapper.toDTO(
                 recruitmentRequirementsRepository.save(recruitmentRequirements)

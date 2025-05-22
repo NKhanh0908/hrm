@@ -22,11 +22,11 @@ import java.util.List;
 @Entity
 public class Account implements UserDetails {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private String username;
     private String password;
-    private LocalDateTime createAt = LocalDateTime.now();
-    private Boolean status = true;
+    private LocalDateTime createAt;
+    private Boolean status;
 
     @OneToOne
     @JoinColumn
@@ -35,16 +35,6 @@ public class Account implements UserDetails {
     @ManyToOne
     @JoinColumn
     private Role role;
-
-    public Account(Account account) {
-        this.id = IdGenerator.getGenerationId();
-        this.username = account.getUsername();
-        this.password = account.getPassword();
-        this.createAt = LocalDateTime.now();
-        this.status = true;
-        this.employees = account.getEmployees();
-        this.role = account.getRole();
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -17,6 +17,7 @@ import com.project.hrm.services.CandidateProfileService;
 import com.project.hrm.services.MailService;
 import com.project.hrm.services.RecruitmentService;
 import com.project.hrm.specifications.ApplySpecification;
+import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,8 +67,9 @@ public class ApplyServiceImpl implements ApplyService {
             );
         }
 
-        Apply apply = new Apply(applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment,
-                candidateProfileMapper.toEntity(candidateProfileDTO)));
+        Apply apply = applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment,
+                candidateProfileMapper.toEntity(candidateProfileDTO));
+        apply.setId(IdGenerator.getGenerationId());
 
         return applyMapper.toDTO(applyRepository.save(apply));
     }

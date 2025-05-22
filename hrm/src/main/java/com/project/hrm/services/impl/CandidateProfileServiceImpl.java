@@ -9,6 +9,7 @@ import com.project.hrm.mapper.CandidateProfileMapper;
 import com.project.hrm.repositories.CandidateProfileRepository;
 import com.project.hrm.services.CandidateProfileService;
 import com.project.hrm.specifications.CandidateProfileSpecification;
+import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -41,7 +42,8 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     public CandidateProfileDTO create(CandidateProfileCreateDTO candidateProfileCreateDTO) {
         log.info("Create CandidateProfile");
 
-        CandidateProfile candidateProfile = new CandidateProfile(candidateProfileMapper.convertCreateToEntity(candidateProfileCreateDTO));
+        CandidateProfile candidateProfile = candidateProfileMapper.convertCreateToEntity(candidateProfileCreateDTO);
+        candidateProfile.setId(IdGenerator.getGenerationId());
 
         return candidateProfileMapper.toCandidateProfileDTO(
                 candidateProfileRepository.save(candidateProfile)

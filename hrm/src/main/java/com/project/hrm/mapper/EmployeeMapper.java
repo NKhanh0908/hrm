@@ -62,6 +62,8 @@ public class EmployeeMapper {
                 .dateOfBirth(employeeDTO.getDateOfBirth())
                 .citizenIdentificationCard(employeeDTO.getCitizenIdentificationCard())
                 .address(employeeDTO.getAddress())
+                .position(employeeDTO.getPosition())
+                .image(employeeDTO.getImage())
                 .build();
     }
 
@@ -69,13 +71,15 @@ public class EmployeeMapper {
         return Employees.builder()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
-                .status(EmployeeStatus.valueOf("ACTIVE"))
+                .status(EmployeeStatus.ACTIVE)
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
                 .gender(dto.getGender())
                 .dateOfBirth(dto.getDateOfBirth())
                 .citizenIdentificationCard(dto.getCitizenIdentificationCard())
                 .address(dto.getAddress())
+                .position(dto.getPosition())
+                .image(dto.getImage())
                 .build();
     }
 

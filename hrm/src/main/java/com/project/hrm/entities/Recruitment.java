@@ -18,13 +18,13 @@ import java.time.LocalDateTime;
 @Entity
 public class Recruitment {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private String position;
     private String contactPhone;
     private String email;
     private LocalDateTime deadline;
     private String jobDescription;
-    private LocalDateTime createAt = LocalDateTime.now();
+    private LocalDateTime createAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -39,16 +39,4 @@ public class Recruitment {
     @JsonBackReference
     private Employees employees;
 
-    public Recruitment(Recruitment recruitment) {
-        this.id = IdGenerator.getGenerationId();
-        this.position = recruitment.getPosition();
-        this.contactPhone = recruitment.getContactPhone();
-        this.email = recruitment.getEmail();
-        this.deadline = recruitment.getDeadline();
-        this.createAt = LocalDateTime.now();
-        this.status = RecruitmentStatus.ARCHIVED;
-        this.jobDescription = recruitment.getJobDescription();
-        this.recruitmentRequirements = recruitment.getRecruitmentRequirements();
-        this.employees = recruitment.getEmployees();
-    }
 }

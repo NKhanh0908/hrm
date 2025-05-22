@@ -1,16 +1,30 @@
 package com.project.hrm.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+import java.time.Instant;
+import java.util.List;
+
+@Getter
+@Setter
 public class APIResponse<T> {
     private boolean success;
     private String message;
     private T data;
+    private List<String> errors;
+    private String timestamp;
+    private String path;
+
+    public APIResponse() {
+        this.timestamp = Instant.now().toString();
+    }
+
+    public APIResponse(boolean success, String message, T data, List<String> errors, String path) {
+        this.success = success;
+        this.message = message;
+        this.data = data;
+        this.errors = errors;
+        this.timestamp = Instant.now().toString();
+        this.path = path;
+    }
 }

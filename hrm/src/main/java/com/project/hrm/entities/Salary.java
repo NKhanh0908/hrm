@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Salary {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private LocalDateTime time;
 
     @ManyToOne

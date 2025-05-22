@@ -2,6 +2,7 @@ package com.project.hrm.mapper;
 
 import com.project.hrm.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
+import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Evaluate;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,12 @@ public class EvaluateMapper {
     private final CandidateProfileMapper candidateProfileMapper;
     private final EmployeeMapper employeeMapper;
 
-    public Evaluate conventCreateToEntity(EvaluateCreateDTO evaluateCreateDTO, Employees employees){
+    public Evaluate conventCreateToEntity(EvaluateCreateDTO evaluateCreateDTO, Employees employees, CandidateProfile candidateProfile){
         return Evaluate.builder()
                 .evaluate(evaluateCreateDTO.getEvaluate())
                 .feedbackAt(LocalDateTime.now())
                 .feedback(evaluateCreateDTO.getFeedback())
+                .evaluate(evaluateCreateDTO.getEvaluate())
                 .createBy(employees)
                 .build();
     }

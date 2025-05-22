@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,9 +44,14 @@ public class AccountController {
                     @ApiResponse(responseCode = "401", description = "Invalid credentials")
             }
     )
-    public ResponseEntity<APIResponse<AuthenticationDTO>> signIn(@RequestBody FormLoginDTO formLoginDTO) {
+    public ResponseEntity<APIResponse<AuthenticationDTO>> signIn(@RequestBody FormLoginDTO formLoginDTO, HttpServletRequest request) {
         AuthenticationDTO authDTO = accountService.signIn(formLoginDTO);
-        return ResponseEntity.ok(new APIResponse<>(true, "Authentication successful", authDTO));
+        return ResponseEntity.ok(new APIResponse<>(
+                true,
+                "Authentication successful",
+                authDTO,
+                null,
+                request.getRequestURI()));
     }
 
     @PostMapping
@@ -64,10 +70,15 @@ public class AccountController {
                     )
             }
     )
-    public ResponseEntity<APIResponse<AccountDTO>> create(@RequestBody AccountCreateDTO accountCreateDTO) {
+    public ResponseEntity<APIResponse<AccountDTO>> create(@RequestBody AccountCreateDTO accountCreateDTO, HttpServletRequest request) {
         AccountDTO accountDTO = accountService.create(accountCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new APIResponse<>(true, "Account created successfully", accountDTO));
+                .body(new APIResponse<>(
+                        true,
+                        "Account created successfully",
+                        accountDTO,
+                        null,
+                        request.getRequestURI()));
     }
 
 }

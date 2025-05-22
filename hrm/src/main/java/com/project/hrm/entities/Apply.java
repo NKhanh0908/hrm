@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Apply {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private LocalDateTime applyAt;
 
     @Enumerated(EnumType.STRING)
@@ -38,12 +38,4 @@ public class Apply {
     @JsonBackReference
     private CandidateProfile candidateProfile;
 
-    public Apply(Apply apply){
-        this.id = IdGenerator.getGenerationId();
-        this.applyAt = LocalDateTime.now();
-        this.applyStatus = apply.getApplyStatus();
-        this.position = apply.getPosition();
-        this.recruitment = apply.getRecruitment();
-        this.candidateProfile = apply.getCandidateProfile();
-    }
 }

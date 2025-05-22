@@ -1,13 +1,9 @@
 package com.project.hrm.mapper;
 
-import com.project.hrm.dto.applyDTO.ApplyDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileCreateDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileUpdateDTO;
-import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
-import com.project.hrm.entities.Apply;
 import com.project.hrm.entities.CandidateProfile;
-import com.project.hrm.entities.Evaluate;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +27,7 @@ public class CandidateProfileMapper {
                 .build();
     }
 
-    public CandidateProfile toEntity(CandidateProfileDTO candidateProfileDTO){
+    public CandidateProfile toEntity(CandidateProfileDTO candidateProfileDTO) {
         return CandidateProfile.builder()
                 .id(candidateProfileDTO.getId())
                 .createProfileAt(candidateProfileDTO.getCreateProfileAt())
@@ -44,7 +40,7 @@ public class CandidateProfileMapper {
                 .build();
     }
 
-    public CandidateProfile convertCreateToEntity(CandidateProfileCreateDTO candidateProfileCreateDTO){
+    public CandidateProfile convertCreateToEntity(CandidateProfileCreateDTO candidateProfileCreateDTO) {
         return CandidateProfile.builder()
                 .email(candidateProfileCreateDTO.getEmail())
                 .phone(candidateProfileCreateDTO.getPhone())
@@ -56,7 +52,7 @@ public class CandidateProfileMapper {
                 .build();
     }
 
-    public CandidateProfile convertUpdateToEntity(CandidateProfileUpdateDTO candidateProfileUpdateDTO){
+    public CandidateProfile convertUpdateToEntity(CandidateProfileUpdateDTO candidateProfileUpdateDTO) {
         return CandidateProfile.builder()
                 .id(candidateProfileUpdateDTO.getId())
                 .email(candidateProfileUpdateDTO.getEmail())
@@ -67,25 +63,8 @@ public class CandidateProfileMapper {
                 .skills(candidateProfileUpdateDTO.getSkills())
                 .build();
     }
-    public EvaluateDTO toEvaluateDTO(Evaluate evaluate) {
-        return EvaluateDTO.builder()
-                .id(evaluate.getId())
-                .feedback(evaluate.getFeedback())
-                .feedbackAt(evaluate.getFeedbackAt())
-                .build();
-    }
 
-    public ApplyDTO toApplyDTO(Apply apply) {
-        return ApplyDTO.builder()
-                .id(apply.getId())
-                .applyAt(apply.getApplyAt())
-                .status(apply.getStatus())
-                .position(apply.getPosition())
-                .candidateProfileDTO(toCandidateProfileDTO(apply.getCandidateProfile()))
-                .build();
-    }
-
-    public List<CandidateProfileDTO> convertPageToList(Page<CandidateProfile> candidateProfilePage){
+    public List<CandidateProfileDTO> convertPageToList(Page<CandidateProfile> candidateProfilePage) {
         return candidateProfilePage.getContent().stream()
                 .map(this::toCandidateProfileDTO)
                 .collect(Collectors.toList());

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -52,6 +53,7 @@ public class RecruitmentMapper {
                 .status(RecruitmentStatus.ARCHIVED)
                 .jobDescription(recruitmentCreateDTO.getJobDescription())
                 .recruitmentRequirements(recruitmentRequirements)
+                .createAt(LocalDateTime.now())
                 .employees(employees)
                 .build();
     }

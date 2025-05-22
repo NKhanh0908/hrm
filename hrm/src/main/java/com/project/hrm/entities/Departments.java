@@ -15,20 +15,11 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Departments {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
-
+    private Integer id;
     private String departmentName;
     private String description;
     private String address;
     private String email;
     private String phone;
 
-    public Departments(Departments departments) {
-        this.id = IdGenerator.getGenerationId();
-        this.departmentName = departments.getDepartmentName();
-        this.description = departments.getDescription();
-        this.email = departments.getEmail();
-        this.address = departments.getAddress();
-        this.phone = departments.getPhone();
-    }
 }

@@ -3,6 +3,7 @@ package com.project.hrm.services.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.project.hrm.utils.IdGenerator;
 import org.springframework.stereotype.Service;
 
 import com.project.hrm.dto.salaryDTO.SalaryCreateDTO;
@@ -56,7 +57,9 @@ public class SalaryServiceImpl implements SalaryService{
         log.info("Create salary");
 
         Employees employee = employeeService.getEntityById(salaryCreateDTO.getEmployeeId());
+
         Salary salary = salaryMapper.toSalaryFromCreateDTO(salaryCreateDTO, employee);
+        salary.setId(IdGenerator.getGenerationId());
 
         return salaryMapper.toSalaryDTO(salaryRepository.save(salary));
     }

@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Contracts {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private String title;
     private LocalDateTime contractSigningDate;
     private LocalDateTime startDate;
@@ -45,17 +45,4 @@ public class Contracts {
     @JoinColumn
     private Role role;
 
-    public Contracts(Contracts contracts) {
-        this.id = IdGenerator.getGenerationId();
-        this.role = contracts.getRole();
-        this.departments = contracts.getDepartments();
-        this.employee = contracts.getEmployee();
-        this.description = contracts.getDescription();
-        this.baseSalary = contracts.getBaseSalary();
-        this.endDate = contracts.getEndDate();
-        this.startDate = contracts.getStartDate();
-        this.contractStatus = contracts.getContractStatus();
-        this.contractSigningDate = contracts.getContractSigningDate();
-        this.title = contracts.getTitle();
-    }
 }

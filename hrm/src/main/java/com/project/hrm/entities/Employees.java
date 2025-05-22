@@ -30,21 +30,6 @@ public class Employees {
     @Column(nullable = false)
     private EmployeeStatus status;
 
-    public Employees(Employees employees) {
-        this.id = IdGenerator.getGenerationId();
-        this.firstName = employees.getFirstName();
-        this.lastName = employees.getLastName();
-        this.phone = employees.getPhone();
-        this.gender = employees.getGender();
-        this.position = employees.getPosition();
-        this.image = employees.getImage();
-        this.citizenIdentificationCard = employees.getCitizenIdentificationCard();
-        this.status = employees.getStatus();
-        this.address = employees.getAddress();
-        this.dateOfBirth = employees.getDateOfBirth();
-        this.email = employees.getEmail();
-    }
-
     public String fullName(){
         return firstName + " " + lastName;
     }

@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Evaluate {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private String feedback;
     private LocalDateTime feedbackAt;
     private String evaluate;
@@ -33,12 +33,4 @@ public class Evaluate {
     @JoinColumn
     private Employees createBy;
 
-    public Evaluate(Evaluate evaluate) {
-        this.id = IdGenerator.getGenerationId();
-        this.feedback = evaluate.getFeedback();
-        this.feedbackAt = LocalDateTime.now();
-        this.evaluate = evaluate.getEvaluate();
-        this.candidateProfile = evaluate.getCandidateProfile();
-        this.createBy = evaluate.getCreateBy();
-    }
 }

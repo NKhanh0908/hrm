@@ -42,7 +42,6 @@ public class DepartmentMapper {
                 .email(departmentCreateDTO.getEmail())
                 .departmentName(departmentCreateDTO.getDepartmentName())
                 .description(departmentCreateDTO.getDescription())
-                .description(departmentCreateDTO.getDescription())
                 .build();
     }
 

@@ -16,6 +16,7 @@ import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.RoleService;
 import com.project.hrm.specifications.ContractSpecification;
+import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,8 +68,9 @@ public class ContractServiceImpl implements ContractService {
 
         Role role = roleService.getEntityById(contractCreateDTO.getRoleId());
 
-        Contracts contracts = new Contracts(contractMapper.convertCreateDTOToEntity(
-                contractCreateDTO, employees, departments, role));
+        Contracts contracts = contractMapper.convertCreateDTOToEntity(
+                contractCreateDTO, employees, departments, role);
+        contracts.setId(IdGenerator.getGenerationId());
 
         return contractMapper.toDTO(contractRepository.save(contracts));
     }

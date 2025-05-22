@@ -11,8 +11,10 @@ import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.RecruitmentRequirementService;
 import com.project.hrm.services.RecruitmentService;
 import com.project.hrm.specifications.RecruitmentSpecification;
+import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.id.insert.IdentifierGeneratingInsert;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -117,7 +119,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         }
          Account principal = (Account) authentication.getPrincipal();
 
-        Recruitment recruitment = new Recruitment(recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements, principal.getEmployees()));
+        Recruitment recruitment = recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements, principal.getEmployees());
+        recruitment.setId(IdGenerator.getGenerationId());
 
         return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
     }

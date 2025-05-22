@@ -12,6 +12,7 @@ import com.project.hrm.repositories.EvaluateRepository;
 import com.project.hrm.services.CandidateProfileService;
 import com.project.hrm.services.EvaluateService;
 import com.project.hrm.specifications.EvaluateSpecification;
+import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -87,9 +88,10 @@ public class EvaluateServiceImpl implements EvaluateService {
         }
         Account account = (Account) authentication.getPrincipal();
 
-        Evaluate evaluate = new Evaluate(evaluateMapper.conventCreateToEntity(evaluateCreateDTO, account.getEmployees()));
         CandidateProfile candidateProfile = candidateProfileService.getEntityById(evaluateCreateDTO.getCandidateProfileId());
-        evaluate.setCandidateProfile(candidateProfile);
+
+        Evaluate evaluate = evaluateMapper.conventCreateToEntity(evaluateCreateDTO, account.getEmployees(), candidateProfile);
+        evaluate.setId(IdGenerator.getGenerationId());
 
         return evaluateMapper.toEvaluateDTO(evaluateRepository.save(evaluate));
     }

@@ -11,6 +11,7 @@ import com.project.hrm.repositories.DepartmentRepository;
 import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.DepartmentService;
 import com.project.hrm.specifications.DepartmentSpecification;
+import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -76,11 +77,13 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @param departmentCreateDTO the DTO containing the details of the department to be created
      * @return a {@link DepartmentDTO} representing the newly created department
      */
+    @Transactional
     @Override
     public DepartmentDTO create(DepartmentCreateDTO departmentCreateDTO) {
         log.info("Create Department");
 
-        Departments departments = new Departments(departmentMapper.convertCreateToEntity(departmentCreateDTO));
+        Departments departments = departmentMapper.convertCreateToEntity(departmentCreateDTO);
+        departments.setId(IdGenerator.getGenerationId());
 
         return departmentMapper.toDepartmentDTO(
                 departmentRepository.save(departments)
@@ -94,6 +97,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @param departmentUpdateDTO the DTO containing the updated department details
      * @return a {@link DepartmentDTO} representing the department after the update
      */
+    @Transactional
     @Override
     public DepartmentDTO update(DepartmentUpdateDTO departmentUpdateDTO) {
         log.info("Update Department");

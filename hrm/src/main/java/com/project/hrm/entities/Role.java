@@ -15,6 +15,6 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Role {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private String name;
 }

@@ -12,6 +12,7 @@ import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.specifications.EmployeeSpecification;
+import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -111,7 +112,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO create(EmployeeCreateDTO employeeCreateDTO) {
         log.info("Create Employee");
 
-        Employees employee = new Employees(employeeMapper.employeeCreateToEmployee(employeeCreateDTO));
+        Employees employee = employeeMapper.employeeCreateToEmployee(employeeCreateDTO);
+        employee.setId(IdGenerator.getGenerationId());
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
     }

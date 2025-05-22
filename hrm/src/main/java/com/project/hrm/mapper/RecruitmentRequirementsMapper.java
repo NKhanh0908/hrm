@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,8 @@ public class RecruitmentRequirementsMapper {
                 .expectedSalary(recruitmentRequirementsCreateDTO.getExpectedSalary())
                 .positions(recruitmentRequirementsCreateDTO.getPositions())
                 .quantity(recruitmentRequirementsCreateDTO.getQuantity())
-                .status(RecruitmentRequirementsStatus.valueOf(recruitmentRequirementsCreateDTO.getStatus()))
+                .dateRequired(LocalDateTime.now())
+                .status(RecruitmentRequirementsStatus.PENDING)
                 .departments(departments)
                 .employees(employees)
                 .build();
