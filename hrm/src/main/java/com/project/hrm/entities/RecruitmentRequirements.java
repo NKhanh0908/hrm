@@ -2,7 +2,6 @@ package com.project.hrm.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.hrm.enums.RecruitmentRequirementsStatus;
-import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 public class RecruitmentRequirements {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private String description;
     private String positions;
     private Integer quantity;
@@ -27,7 +26,7 @@ public class RecruitmentRequirements {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RecruitmentRequirementsStatus status;
-    
+
     private LocalDateTime dateRequired;
 
     @ManyToOne

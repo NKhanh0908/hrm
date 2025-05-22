@@ -1,7 +1,5 @@
 package com.project.hrm.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

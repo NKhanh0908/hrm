@@ -1,6 +1,5 @@
 package com.project.hrm.entities;
 
-import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 public class CandidateProfile {
 
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private String name;
     private String email;
     private String phone;

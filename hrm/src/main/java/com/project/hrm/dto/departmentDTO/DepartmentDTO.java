@@ -1,6 +1,5 @@
 package com.project.hrm.dto.departmentDTO;
 
-import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +16,5 @@ public class DepartmentDTO {
     private String address;
     private String email;
     private String phone;
-    //private List<EmployeeDTO> employeeDTOList;
+    // private List<EmployeeDTO> employeeDTOList;
 }

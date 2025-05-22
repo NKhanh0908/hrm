@@ -16,6 +16,7 @@ import com.project.hrm.mapper.SubsidyMapper;
 import com.project.hrm.repositories.SubsidyRepository;
 import com.project.hrm.services.SalaryService;
 import com.project.hrm.services.SubsidyService;
+import com.project.hrm.utils.IdGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class SubsidyServiceImpl implements SubsidyService{
+public class SubsidyServiceImpl implements SubsidyService {
 
     private final SubsidyRepository subsidyRepository;
     private final SubsidyMapper subsidyMapper;
@@ -86,6 +87,7 @@ public class SubsidyServiceImpl implements SubsidyService{
 
         Salary salary = salaryService.getEntityById(subsidyCreateDTO.getSalaryId());
         Subsidy subsidy = subsidyMapper.toSubsidyFromCreateDTO(subsidyCreateDTO, salary);
+        subsidy.setId(IdGenerator.getGenerationId());
 
         Subsidy saved = subsidyRepository.save(subsidy);
         log.info("Subsidy created with ID: {}", saved.getId());
@@ -94,7 +96,8 @@ public class SubsidyServiceImpl implements SubsidyService{
     }
 
     /**
-     * Updates an existing {@link Subsidy} entity with values from {@link SubsidyUpdateDTO}.
+     * Updates an existing {@link Subsidy} entity with values from
+     * {@link SubsidyUpdateDTO}.
      *
      * @param subsidyUpdateDTO the DTO containing updated values
      * @return the updated {@link SubsidyDTO}
@@ -143,5 +146,5 @@ public class SubsidyServiceImpl implements SubsidyService{
             throw new CustomException(Error.SUBSIDY_NOT_FOUND);
         }
     }
-    
+
 }

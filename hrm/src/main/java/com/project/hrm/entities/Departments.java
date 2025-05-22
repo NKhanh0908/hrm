@@ -1,6 +1,5 @@
 package com.project.hrm.entities;
 
-import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;

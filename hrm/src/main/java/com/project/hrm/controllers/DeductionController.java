@@ -19,8 +19,8 @@ import com.project.hrm.dto.salaryDTO.DeductionUpdateDTO;
 import com.project.hrm.services.DeductionService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-
 
 @RestController
 @RequestMapping("/deduction")
@@ -30,45 +30,52 @@ public class DeductionController {
     private final DeductionService deductionService;
 
     @PostMapping
-    public ResponseEntity<APIResponse<DeductionDTO>> create(@RequestBody DeductionCreateDTO deductionCreateDTO) {
-        //TODO: process POST request
+    public ResponseEntity<APIResponse<DeductionDTO>> create(@RequestBody DeductionCreateDTO deductionCreateDTO,
+            HttpServletRequest request) {
+        // TODO: process POST request
         DeductionDTO deductionDTO = deductionService.create(deductionCreateDTO);
 
-        return ResponseEntity.ok(new APIResponse<>(true, "Create Deduction successfully", deductionDTO));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Create Deduction successfully", deductionDTO, null, request.getRequestURI()));
     }
 
     @PutMapping()
-    public ResponseEntity<APIResponse<DeductionDTO>> update(@RequestBody DeductionUpdateDTO deductionUpdateDTO) {
+    public ResponseEntity<APIResponse<DeductionDTO>> update(@RequestBody DeductionUpdateDTO deductionUpdateDTO,
+            HttpServletRequest request) {
         DeductionDTO deductionDTO = deductionService.update(deductionUpdateDTO);
 
-        return ResponseEntity.ok(new APIResponse<>(true, "Update Deduction successfully", deductionDTO));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Update Deduction successfully", deductionDTO, null, request.getRequestURI()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<APIResponse<DeductionDTO>> getById(@PathVariable Integer id) {
+    public ResponseEntity<APIResponse<DeductionDTO>> getById(@PathVariable Integer id, HttpServletRequest request) {
         DeductionDTO deductionDTO = deductionService.getById(id);
 
-        return ResponseEntity.ok(new APIResponse<>(true, "Get By Id Deduction successfully", deductionDTO));
+        return ResponseEntity.ok(new APIResponse<>(true, "Get By Id Deduction successfully", deductionDTO, null,
+                request.getRequestURI()));
     }
 
-     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> delete(@PathVariable Integer id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<APIResponse<Void>> delete(@PathVariable Integer id, HttpServletRequest request) {
         deductionService.delete(id);
 
-        return ResponseEntity.ok(new APIResponse<>(true, "Deduction deleted successfully", null));
+        return ResponseEntity
+                .ok(new APIResponse<>(true, "Deduction deleted successfully", null, null, request.getRequestURI()));
     }
 
     @GetMapping("/check-exists/{id}")
-    public ResponseEntity<APIResponse<Boolean>> checkExists(@PathVariable Integer id) {
+    public ResponseEntity<APIResponse<Boolean>> checkExists(@PathVariable Integer id, HttpServletRequest request) {
         Boolean exists = deductionService.checkExists(id);
-        
-        return ResponseEntity.ok(new APIResponse<>(true, "Check completed", exists));
+
+        return ResponseEntity.ok(new APIResponse<>(true, "Check completed", exists, null, request.getRequestURI()));
     }
-    
+
     @GetMapping("/getAll")
-    public ResponseEntity<APIResponse<List<DeductionDTO>>> getAll() {
+    public ResponseEntity<APIResponse<List<DeductionDTO>>> getAll(HttpServletRequest request) {
 
         List<DeductionDTO> results = deductionService.getAll();
-        return ResponseEntity.ok(new APIResponse<>(true, "Deduction Get All successfully", results));
+        return ResponseEntity
+                .ok(new APIResponse<>(true, "Deduction Get All successfully", results, null, request.getRequestURI()));
     }
 }

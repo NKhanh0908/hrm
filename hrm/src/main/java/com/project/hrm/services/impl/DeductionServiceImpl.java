@@ -15,6 +15,7 @@ import com.project.hrm.mapper.DeductionMapper;
 import com.project.hrm.repositories.DeductionRepository;
 import com.project.hrm.services.DeductionService;
 import com.project.hrm.services.SalaryService;
+import com.project.hrm.utils.IdGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,8 +60,7 @@ public class DeductionServiceImpl implements DeductionService {
 
         return deductionMapper.toDeductionDTO(
                 deductionRepository.findById(id)
-                        .orElseThrow(() -> new CustomException(Error.DEDUCTION_NOT_FOUND))
-        );
+                        .orElseThrow(() -> new CustomException(Error.DEDUCTION_NOT_FOUND)));
     }
 
     /**
@@ -77,9 +77,11 @@ public class DeductionServiceImpl implements DeductionService {
     }
 
     /**
-     * Creates a new {@link Deduction} entity from the provided {@link DeductionCreateDTO}.
+     * Creates a new {@link Deduction} entity from the provided
+     * {@link DeductionCreateDTO}.
      *
-     * @param deductionCreateDTO the DTO containing data required to create a deduction
+     * @param deductionCreateDTO the DTO containing data required to create a
+     *                           deduction
      * @return the created {@link DeductionDTO} after being persisted
      */
     @Transactional
@@ -89,6 +91,7 @@ public class DeductionServiceImpl implements DeductionService {
 
         Salary salary = salaryService.getEntityById(deductionCreateDTO.getSalaryId());
         Deduction deduction = deductionMapper.toDeductionFromCreateDTO(deductionCreateDTO, salary);
+        deduction.setId(IdGenerator.getGenerationId());
 
         Deduction saved = deductionRepository.save(deduction);
         log.info("Deduction created with ID: {}", saved.getId());
@@ -97,7 +100,8 @@ public class DeductionServiceImpl implements DeductionService {
     }
 
     /**
-     * Updates an existing {@link Deduction} entity with data from {@link DeductionUpdateDTO}.
+     * Updates an existing {@link Deduction} entity with data from
+     * {@link DeductionUpdateDTO}.
      *
      * @param deductionUpdateDTO the DTO containing fields to update
      * @return the updated {@link DeductionDTO}

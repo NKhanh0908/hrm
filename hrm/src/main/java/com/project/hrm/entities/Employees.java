@@ -1,7 +1,6 @@
 package com.project.hrm.entities;
 
 import com.project.hrm.enums.EmployeeStatus;
-import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Employees {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private String firstName;
     private String lastName;
     private String email;
@@ -30,7 +29,7 @@ public class Employees {
     @Column(nullable = false)
     private EmployeeStatus status;
 
-    public String fullName(){
+    public String fullName() {
         return firstName + " " + lastName;
     }
 }

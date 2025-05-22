@@ -1,7 +1,5 @@
 package com.project.hrm.entities;
 
-import com.project.hrm.utils.IdGenerator;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -12,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Builder
 @Data
 @NoArgsConstructor
@@ -20,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Deduction {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private String typeDeduction;
     private Double amount;
 

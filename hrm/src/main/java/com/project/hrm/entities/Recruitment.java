@@ -2,7 +2,6 @@ package com.project.hrm.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.hrm.enums.RecruitmentStatus;
-import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +27,7 @@ public class Recruitment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RecruitmentStatus status = RecruitmentStatus.ARCHIVED;
+    private RecruitmentStatus status;
 
     @OneToOne
     @JoinColumn

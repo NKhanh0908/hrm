@@ -2,21 +2,18 @@ package com.project.hrm.services.impl;
 
 import com.project.hrm.dto.recruitmentDTO.*;
 import com.project.hrm.entities.Account;
-import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.entities.RecruitmentRequirements;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.RecruitmentMapper;
 import com.project.hrm.repositories.RecruitmentRepository;
-import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.RecruitmentRequirementService;
 import com.project.hrm.services.RecruitmentService;
 import com.project.hrm.specifications.RecruitmentSpecification;
 import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.id.insert.IdentifierGeneratingInsert;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,27 +34,26 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     private final RecruitmentMapper recruitmentMapper;
 
     private final RecruitmentRequirementService recruitmentRequirementService;
-    private final EmployeeService employeeService;
 
     /**
-     * Filters recruitment entries based on the given filter criteria and paginates the result.
+     * Filters recruitment entries based on the given filter criteria and paginates
+     * the result.
      *
-     * @param recruitmentFilter the object containing filter fields such as position, deadline, create at.
-     * @param page the zero-based page index.
-     * @param size the number of records to retrieve per page.
+     * @param recruitmentFilter the object containing filter fields such as
+     *                          position, deadline, create at.
+     * @param page              the zero-based page index.
+     * @param size              the number of records to retrieve per page.
      * @return a list of {@link RecruitmentDTO} that match the filter criteria.
      */
     @Transactional(readOnly = true)
     @Override
     public List<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size) {
         log.info("Filter Recruitment");
-        Specification<Recruitment> recruitmentSpecification
-                = RecruitmentSpecification.filter(recruitmentFilter);
+        Specification<Recruitment> recruitmentSpecification = RecruitmentSpecification.filter(recruitmentFilter);
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Recruitment> recruitmentPage
-                = recruitmentRepository.findAll(recruitmentSpecification, pageable);
+        Page<Recruitment> recruitmentPage = recruitmentRepository.findAll(recruitmentSpecification, pageable);
 
         return recruitmentMapper.convertPageEntityToPageDTO(recruitmentPage);
     }
@@ -95,9 +91,12 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
     /**
      * Creates a new recruitment record based on the provided data.
-     * Retrieves the associated {@link RecruitmentRequirements} entity before mapping to the recruitment entity.
+     * Retrieves the associated {@link RecruitmentRequirements} entity before
+     * mapping to the recruitment entity.
      *
-     * @param recruitmentCreateDTO the DTO containing recruitment creation data such as position, contact info, and recruitmentRequirementId.
+     * @param recruitmentCreateDTO the DTO containing recruitment creation data such
+     *                             as position, contact info, and
+     *                             recruitmentRequirementId.
      * @return the created {@link RecruitmentDTO}.
      */
     @Transactional
@@ -105,15 +104,17 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     public RecruitmentDTO create(RecruitmentCreateDTO recruitmentCreateDTO) {
         log.info("Create Recruitment");
 
-        RecruitmentRequirements recruitmentRequirements = recruitmentRequirementService.getEntityById(recruitmentCreateDTO.getRecruitmentRequirementId());
+        RecruitmentRequirements recruitmentRequirements = recruitmentRequirementService
+                .getEntityById(recruitmentCreateDTO.getRecruitmentRequirementId());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
-         Account principal = (Account) authentication.getPrincipal();
+        Account principal = (Account) authentication.getPrincipal();
 
-        Recruitment recruitment = recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements, principal.getEmployees());
+        Recruitment recruitment = recruitmentMapper.convertCreateToEntity(recruitmentCreateDTO, recruitmentRequirements,
+                principal.getEmployees());
         recruitment.setId(IdGenerator.getGenerationId());
 
         return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
@@ -123,24 +124,28 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      * Approves an internal {@link RecruitmentRequirements} record and
      * publishes it publicly by creating a corresponding {@link Recruitment}.
      *
-     * <p>Process:
+     * <p>
+     * Process:
      * <ol>
-     *   <li>Fetch the requirement entity via {@link RecruitmentRequirementService#getEntityById(Integer)}</li>
-     *   <li>Create a new {@link Recruitment} using positions from the requirement and
-     *       contact details from {@link RecruitmentRequirementsApproved}.</li>
-     *   <li>Retrieve the current authenticated {@link Account} principal to set the creator.</li>
-     *   <li>Save and return the newly created {@link RecruitmentDTO}.</li>
+     * <li>Fetch the requirement entity via
+     * {@link RecruitmentRequirementService#getEntityById(Integer)}</li>
+     * <li>Create a new {@link Recruitment} using positions from the requirement and
+     * contact details from {@link RecruitmentRequirementsApproved}.</li>
+     * <li>Retrieve the current authenticated {@link Account} principal to set the
+     * creator.</li>
+     * <li>Save and return the newly created {@link RecruitmentDTO}.</li>
      * </ol>
      *
      * @param recruitmentRequirementsApproved DTO containing approval details
      * @return the {@link RecruitmentDTO} of the newly published position
-     * @throws RuntimeException if authentication is missing or any entity is not found
+     * @throws RuntimeException if authentication is missing or any entity is not
+     *                          found
      */
     @Transactional
     @Override
     public RecruitmentDTO approved(RecruitmentRequirementsApproved recruitmentRequirementsApproved) {
-        RecruitmentRequirements recruitmentRequirements
-                = recruitmentRequirementService.getEntityById(recruitmentRequirementsApproved.getRecruitmentRequirementId());
+        RecruitmentRequirements recruitmentRequirements = recruitmentRequirementService
+                .getEntityById(recruitmentRequirementsApproved.getRecruitmentRequirementId());
 
         Recruitment recruitment = new Recruitment();
         recruitment.setPosition(recruitmentRequirements.getPositions());
@@ -162,12 +167,16 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     /**
-     * Updates an existing recruitment record with the fields provided in the update DTO.
-     * Only non-null fields will be updated. The associated {@link RecruitmentRequirements} will also be updated if provided.
+     * Updates an existing recruitment record with the fields provided in the update
+     * DTO.
+     * Only non-null fields will be updated. The associated
+     * {@link RecruitmentRequirements} will also be updated if provided.
      *
-     * @param recruitmentUpdateDTO the DTO containing the updated recruitment data. Must include the recruitment ID.
+     * @param recruitmentUpdateDTO the DTO containing the updated recruitment data.
+     *                             Must include the recruitment ID.
      * @return the updated {@link RecruitmentDTO}.
-     * @throws RuntimeException if the recruitment entity is not found with the given ID.
+     * @throws RuntimeException if the recruitment entity is not found with the
+     *                          given ID.
      */
     @Transactional
     @Override
@@ -196,14 +205,14 @@ public class RecruitmentServiceImpl implements RecruitmentService {
             recruitment.setJobDescription(recruitmentUpdateDTO.getJobDescription());
         }
 
-        if (recruitmentUpdateDTO.getRecruitmentRequirementId() != null){
-            RecruitmentRequirements recruitmentRequirements = recruitmentRequirementService.getEntityById(recruitmentUpdateDTO.getRecruitmentRequirementId());
+        if (recruitmentUpdateDTO.getRecruitmentRequirementId() != null) {
+            RecruitmentRequirements recruitmentRequirements = recruitmentRequirementService
+                    .getEntityById(recruitmentUpdateDTO.getRecruitmentRequirementId());
             recruitment.setRecruitmentRequirements(recruitmentRequirements);
         }
 
         return recruitmentMapper.toDTO(
-                recruitmentRepository.save(recruitment)
-        );
+                recruitmentRepository.save(recruitment));
     }
 
     /**

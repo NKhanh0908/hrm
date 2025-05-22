@@ -8,12 +8,10 @@ import com.project.hrm.entities.RecruitmentRequirements;
 import com.project.hrm.enums.RecruitmentStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,20 +29,22 @@ public class RecruitmentMapper {
                 .createAt(recruitment.getCreateAt())
                 .status(recruitment.getStatus().name())
                 .jobDescription(recruitment.getJobDescription())
-                .recruitmentRequirementsDTO(recruitmentRequirementsMapper.toDTO(recruitment.getRecruitmentRequirements()))
+                .recruitmentRequirementsDTO(
+                        recruitmentRequirementsMapper.toDTO(recruitment.getRecruitmentRequirements()))
                 .employeeApproveId(recruitment.getEmployees().getId())
                 .employeeApproveName(recruitment.getEmployees().fullName())
                 .build();
     }
 
-    public List<RecruitmentDTO> convertPageEntityToPageDTO(Page<Recruitment> recruitmentPage){
+    public List<RecruitmentDTO> convertPageEntityToPageDTO(Page<Recruitment> recruitmentPage) {
         return recruitmentPage.getContent()
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public Recruitment convertCreateToEntity(RecruitmentCreateDTO recruitmentCreateDTO, RecruitmentRequirements recruitmentRequirements, Employees employees){
+    public Recruitment convertCreateToEntity(RecruitmentCreateDTO recruitmentCreateDTO,
+            RecruitmentRequirements recruitmentRequirements, Employees employees) {
         return Recruitment.builder()
                 .position(recruitmentCreateDTO.getPosition())
                 .contactPhone(recruitmentCreateDTO.getContactPhone())

@@ -1,6 +1,5 @@
 package com.project.hrm.services.impl;
 
-
 import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeFilter;
@@ -8,7 +7,6 @@ import com.project.hrm.dto.employeeDTO.EmployeeUpdateDTO;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
-import com.project.hrm.mapper.DepartmentMapper;
 import com.project.hrm.mapper.EmployeeMapper;
 import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.DepartmentService;
@@ -34,11 +32,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeMapper employeeMapper;
     private final @Lazy DepartmentService departmentService;
     private final EmployeeRepository employeeRepository;
-    private final DepartmentMapper departmentMapper;
-
 
     /**
-     * Filters employees based on the given {@link EmployeeFilter} conditions with pagination.
+     * Filters employees based on the given {@link EmployeeFilter} conditions with
+     * pagination.
      *
      * @param employeeFilter the filter conditions to apply
      * @param page           the page number (0-based)
@@ -136,7 +133,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeUpdateDTO.getLastName() != null)
             employees.setLastName(employeeUpdateDTO.getLastName());
 
-
         if (employeeUpdateDTO.getEmail() != null)
             employees.setEmail(employeeUpdateDTO.getEmail());
 
@@ -175,6 +171,5 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new CustomException(Error.EMPLOYEE_NOT_FOUND);
         }
     }
-
 
 }

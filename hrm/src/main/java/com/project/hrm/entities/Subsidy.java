@@ -1,6 +1,5 @@
 package com.project.hrm.entities;
 
-import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Subsidy {
     @Id
-    private Integer id = IdGenerator.getGenerationId();
+    private Integer id;
     private String typeSubsidy;
     private Double amount;
 
