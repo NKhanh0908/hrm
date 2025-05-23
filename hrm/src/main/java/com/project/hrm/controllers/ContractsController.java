@@ -108,6 +108,6 @@ public class ContractsController {
                         @RequestParam ContractStatus status, HttpServletRequest request) {
                 contractService.updateStatus(id, status);
                 return ResponseEntity.ok(new APIResponse<>(true,
-                                "Contract status updated to " + status, null, null, request.getRequestURI()));
+                                "Contract status updated to " + status + " is successfully", null, null, request.getRequestURI()));
         }
 }

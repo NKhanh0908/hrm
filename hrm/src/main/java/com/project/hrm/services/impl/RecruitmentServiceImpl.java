@@ -4,6 +4,8 @@ import com.project.hrm.dto.recruitmentDTO.*;
 import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.entities.RecruitmentRequirements;
+import com.project.hrm.enums.RecruitmentRequirementsStatus;
+import com.project.hrm.enums.RecruitmentStatus;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.RecruitmentMapper;
@@ -121,49 +123,22 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     /**
-     * Approves an internal {@link RecruitmentRequirements} record and
+     * Approves an internal {@link RecruitmentCreateDTO} record and
      * publishes it publicly by creating a corresponding {@link Recruitment}.
      *
-     * <p>
-     * Process:
-     * <ol>
-     * <li>Fetch the requirement entity via
-     * {@link RecruitmentRequirementService#getEntityById(Integer)}</li>
-     * <li>Create a new {@link Recruitment} using positions from the requirement and
-     * contact details from {@link RecruitmentRequirementsApproved}.</li>
-     * <li>Retrieve the current authenticated {@link Account} principal to set the
-     * creator.</li>
-     * <li>Save and return the newly created {@link RecruitmentDTO}.</li>
-     * </ol>
-     *
-     * @param recruitmentRequirementsApproved DTO containing approval details
+     * @param recruitmentCreateDTO DTO containing approval details
      * @return the {@link RecruitmentDTO} of the newly published position
      * @throws RuntimeException if authentication is missing or any entity is not
      *                          found
      */
     @Transactional
     @Override
-    public RecruitmentDTO approved(RecruitmentRequirementsApproved recruitmentRequirementsApproved) {
-        RecruitmentRequirements recruitmentRequirements = recruitmentRequirementService
-                .getEntityById(recruitmentRequirementsApproved.getRecruitmentRequirementId());
+    public RecruitmentDTO approved(RecruitmentCreateDTO recruitmentCreateDTO) {
+        log.info("Create Requirement after approved Recruitment Requirement");
 
-        Recruitment recruitment = new Recruitment();
-        recruitment.setPosition(recruitmentRequirements.getPositions());
-        recruitment.setContactPhone(recruitmentRequirementsApproved.getContactPhone());
-        recruitment.setEmail(recruitmentRequirementsApproved.getEmail());
-        recruitment.setDeadline(recruitmentRequirementsApproved.getDeadline());
-        recruitment.setJobDescription(recruitmentRequirementsApproved.getJobDescription());
-        recruitment.setRecruitmentRequirements(recruitmentRequirements);
+        recruitmentRequirementService.updateStatus(recruitmentCreateDTO.getRecruitmentRequirementId(), RecruitmentRequirementsStatus.APPROVED);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
-        Account account = (Account) authentication.getPrincipal();
-
-        recruitment.setEmployees(account.getEmployees());
-
-        return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
+        return create(recruitmentCreateDTO);
     }
 
     /**
@@ -213,6 +188,24 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         return recruitmentMapper.toDTO(
                 recruitmentRepository.save(recruitment));
+    }
+
+    @Transactional
+    @Override
+    public RecruitmentDTO updateStatus(Integer id, RecruitmentStatus recruitmentStatus) {
+        log.info("Update status recruitment status, id: {}, {}", recruitmentStatus.name(), id);
+
+        if(!recruitmentRepository.existsById(id)){
+            throw new CustomException(Error.RECRUITMENT_NOT_FOUND);
+        }
+
+        int update = recruitmentRepository.updateStatus(id, recruitmentStatus.name());
+
+        if(update!=1){
+            throw new CustomException(Error.RECRUITMENT_UNABLE_TO_UPDATE);
+        }
+
+        return getDTOById(id);
     }
 
     /**

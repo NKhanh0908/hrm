@@ -2,12 +2,15 @@ package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
 import com.project.hrm.dto.recruitmentDTO.*;
+import com.project.hrm.enums.RecruitmentStatus;
 import com.project.hrm.services.RecruitmentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -85,16 +88,61 @@ public class RecruitmentController {
         }
 
         @PostMapping("/approve")
-        @Operation(summary = "Approve Recruitment Requirement", description = "Create a public Recruitment from an approved internal RecruitmentRequirement", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Approval details and posting information", required = true, content = @Content(schema = @Schema(implementation = RecruitmentRequirementsApproved.class))), responses = {
-                        @ApiResponse(responseCode = "200", description = "Recruitment published successfully", content = @Content(schema = @Schema(implementation = RecruitmentDTO.class))),
-                        @ApiResponse(responseCode = "401", description = "User not authenticated"),
-                        @ApiResponse(responseCode = "404", description = "RecruitmentRequirement not found")
+        @Operation(
+                summary = "Approve Recruitment Requirement",
+                description = "Create a public Recruitment from an approved internal RecruitmentRequirement"
+        )
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                description = "Approval details and posting information",
+                required = true,
+                content = @Content(schema = @Schema(implementation = RecruitmentCreateDTO.class))
+        )
+        @ApiResponses({
+                @ApiResponse(responseCode = "200",
+                        description = "Recruitment published successfully",
+                        content = @Content(schema = @Schema(implementation = RecruitmentDTO.class))),
+                @ApiResponse(responseCode = "401", description = "User not authenticated"),
+                @ApiResponse(responseCode = "404", description = "RecruitmentRequirement not found")
         })
         public ResponseEntity<APIResponse<RecruitmentDTO>> approve(
-                        @RequestBody RecruitmentRequirementsApproved dto, HttpServletRequest request) {
-                RecruitmentDTO result = recruitmentService.approved(dto);
+                @RequestBody RecruitmentCreateDTO recruitmentCreateDTO,
+                HttpServletRequest request) {
+
+                RecruitmentDTO result = recruitmentService.approved(recruitmentCreateDTO);
                 return ResponseEntity.ok(new APIResponse<>(true,
-                                "Recruitment requirement approved and published", result, null,
-                                request.getRequestURI()));
+                        "Recruitment requirement approved and published", result, null,
+                        request.getRequestURI()));
+        }
+
+        @PutMapping("/update-status")
+        @Operation(
+                summary = "Update recruitment status",
+                description = "Update the status of a recruitment by its ID. Status can be OPEN, CLOSE, etc.",
+                parameters = {
+                        @Parameter(name = "id", description = "Recruitment ID", required = true),
+                        @Parameter(name = "status", description = "New status for the recruitment", required = true)
+                },
+                responses = {
+                        @ApiResponse(
+                                responseCode = "200",
+                                description = "Recruitment status updated successfully",
+                                content = @Content(schema = @Schema(implementation = RecruitmentDTO.class))
+                        ),
+                        @ApiResponse(
+                                responseCode = "404",
+                                description = "Recruitment not found"
+                        )
+                }
+        )
+        public ResponseEntity<APIResponse<RecruitmentDTO>> updateStatus(
+                @RequestParam Integer id,
+                @RequestParam RecruitmentStatus status,
+                HttpServletRequest request
+        ) {
+                RecruitmentDTO result = recruitmentService.updateStatus(id, status);
+                return ResponseEntity.ok(
+                        new APIResponse<>(true, "Recruitment status updated successfully", result, null, request.getRequestURI())
+                );
         }
 }
+

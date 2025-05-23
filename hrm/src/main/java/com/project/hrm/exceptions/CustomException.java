@@ -3,6 +3,7 @@ package com.project.hrm.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,13 +11,15 @@ import java.util.stream.Collectors;
 @Getter
 public class CustomException extends RuntimeException {
     private final List<Error> errors;
-    private final String additionalDetail; // Lưu trữ ID hoặc thông tin bổ sung cho thông báo lỗi
+    private final String additionalDetail;
+    private final HttpStatusCode status;
 
     // Constructor sử dụng danh sách lỗi và không có additionalDetail
     public CustomException(List<Error> errors) {
         super(errors.stream().map(Error::getMessage).collect(Collectors.joining(", ")));
         this.errors = errors;
         this.additionalDetail = null; // Đặt null vì không có additionalDetail
+        this.status = null;
     }
 
     // Constructor sử dụng một lỗi duy nhất và không có additionalDetail
@@ -24,6 +27,7 @@ public class CustomException extends RuntimeException {
         super(error.getMessage());
         this.errors = List.of(error);
         this.additionalDetail = null; // Đặt null vì không có additionalDetail
+        this.status = error.getStatusCode();
     }
 
     // Constructor với danh sách lỗi và thêm thông tin chi tiết (additionalDetail)
@@ -33,6 +37,7 @@ public class CustomException extends RuntimeException {
                 .collect(Collectors.joining(", ")));
         this.errors = errors;
         this.additionalDetail = additionalDetail; // Lưu additionalDetail để sử dụng khi cần
+        this.status = null;
     }
 
     // Phương thức gốc không thay đổi, trả về danh sách thông báo lỗi không có ID

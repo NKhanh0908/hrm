@@ -2,6 +2,7 @@ package com.project.hrm.services;
 
 import com.project.hrm.dto.recruitmentDTO.*;
 import com.project.hrm.entities.Recruitment;
+import com.project.hrm.enums.RecruitmentStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,9 +11,11 @@ import java.util.List;
 public interface RecruitmentService {
     RecruitmentDTO create(RecruitmentCreateDTO recruitmentCreateDTO);
 
-    RecruitmentDTO approved(RecruitmentRequirementsApproved recruitmentRequirementsApproved);
+    RecruitmentDTO approved(RecruitmentCreateDTO recruitmentCreateDTO);
 
     RecruitmentDTO update(RecruitmentUpdateDTO recruitmentUpdateDTO);
+
+    RecruitmentDTO updateStatus(Integer id, RecruitmentStatus recruitmentStatus);
 
     void delete(Integer recruitmentId);
 

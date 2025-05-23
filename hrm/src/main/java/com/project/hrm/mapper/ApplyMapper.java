@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,7 @@ public class ApplyMapper {
 
     public Apply convertCreateDTOToEntity(ApplyCreateDTO applyCreateDTO, Recruitment recruitment, CandidateProfile candidateProfile){
         return Apply.builder()
+                .applyAt(LocalDateTime.now())
                 .applyStatus(ApplyStatus.SUBMITTED)
                 .position(applyCreateDTO.getPosition())
                 .recruitment(recruitment)

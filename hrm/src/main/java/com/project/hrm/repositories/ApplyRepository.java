@@ -28,7 +28,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Integer>, JpaSpeci
             SELECT cp.name, cp.email, a.position as position_apply
             FROM apply a
                 inner join candidate_profile cp
-                    on a.candicate_profile_id = cp.id
+                    on a.candidate_profile_id = cp.id
                 inner join recruitment rm
                     on a.recruitment_id = rm.id
             WHERE a.id = :id

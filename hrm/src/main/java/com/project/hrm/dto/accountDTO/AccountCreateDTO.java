@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 public class AccountCreateDTO {
     private String username;
     private String password;
-    private LocalDateTime createAt;
-    private Boolean status;
 
     @NotNull(message = "Employee id account is required")
     private Integer employeeId;

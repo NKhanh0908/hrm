@@ -168,7 +168,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
+            throw new CustomException(Error.UNAUTHORIZED);
         }
         Account account = (Account) authentication.getPrincipal();
 
@@ -189,14 +189,16 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
     @Transactional
     @Override
     public RecruitmentRequirementsDTO updateStatus(Integer id, RecruitmentRequirementsStatus status) {
+        log.info("Update status recruitment id, status: {}, {}", id, status.name());
+
         if (!recruitmentRequirementsRepository.existsById(id)) {
-            throw new EntityNotFoundException("Requirement not found: " + id);
+            throw new CustomException(Error.RECRUITMENT_REQUIREMENTS_NOT_FOUND);
         }
 
         int updated = recruitmentRequirementsRepository.updateStatus(id, status.name());
 
         if (updated != 1) {
-            throw new IllegalStateException("Failed to update status for requirement ID " + id);
+            throw new CustomException(Error.RECRUITMENT_REQUIREMENTS_UNABLE_TO_UPDATE_STATUS);
         }
 
         RecruitmentRequirements entity = getEntityById(id);

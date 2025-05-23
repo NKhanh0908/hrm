@@ -61,7 +61,7 @@ public class ContractServiceImpl implements ContractService {
                 contractCreateDTO.getStartDate(),
                 contractCreateDTO.getEndDate())){
             log.error("409: An active contract of this role already exists for employee ID:{}", contractCreateDTO.getEmployeeId());
-            return null;
+            throw new CustomException(Error.CONTRACT_ALREADY_EXISTS);
         }
 
         Employees employees = employeeService.getEntityById(contractCreateDTO.getEmployeeId());
@@ -100,7 +100,7 @@ public class ContractServiceImpl implements ContractService {
         if (contractUpdateDTO.getRoleId() != null) {
             contracts.setRole(roleService.getEntityById(contractUpdateDTO.getRoleId()));
         }
-        if (contractUpdateDTO.getTitle() != null) {
+        if (contractUpdateDTO.getTitle() != null && !contractUpdateDTO.getTitle().trim().isEmpty()) {
             contracts.setTitle(contractUpdateDTO.getTitle());
         }
         if (contractUpdateDTO.getContractSigningDate() != null) {
@@ -115,7 +115,7 @@ public class ContractServiceImpl implements ContractService {
         if (contractUpdateDTO.getBaseSalary() != null) {
             contracts.setBaseSalary(contractUpdateDTO.getBaseSalary());
         }
-        if (contractUpdateDTO.getDescription() != null) {
+        if (contractUpdateDTO.getDescription() != null && contractUpdateDTO.getDescription().trim().isEmpty()) {
             contracts.setDescription(contractUpdateDTO.getDescription());
         }
 

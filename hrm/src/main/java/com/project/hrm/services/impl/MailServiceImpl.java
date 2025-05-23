@@ -23,6 +23,8 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void notificationInterview(InfoApply infoApply, InterviewLetter interviewLetter) {
+        log.info("Sending to email...: {}", infoApply.getEmail());
+
         String emailTo = infoApply.getEmail();
         String subject = "Interview invitation letter";
         String content = getContentNotificationForInterview(infoApply, interviewLetter);
@@ -67,17 +69,23 @@ public class MailServiceImpl implements MailService {
     }
 
 
-    private void sendMail(final String recipientEmail, final String subject, final String content){
+    private void sendMail(final String recipientEmail, final String subject, final String content) {
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(recipientEmail);
             helper.setSubject(subject);
-            helper.setText(content, true); // true indicates HTML
+            helper.setFrom("khanhnq0908@gmail.com");
+            helper.setText(content, true); // true = HTML content
 
             javaMailSender.send(message);
+            log.info("Email successfully sent to {}", recipientEmail);
+
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            log.error("Failed to send email to {}: {}", recipientEmail, e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error while sending email: {}", e.getMessage(), e);
         }
     }
+
 }

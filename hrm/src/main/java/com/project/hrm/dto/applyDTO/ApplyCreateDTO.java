@@ -15,9 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApplyCreateDTO {
-    private LocalDateTime applyAt;
-
-    private String status;
 
     @NotBlank(message = "Position must not be blank")
     private String position;

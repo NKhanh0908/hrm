@@ -64,7 +64,7 @@ public enum Error {
 
     // Contract-related errors
     CONTRACT_NOT_FOUND(5001, "Contract not found", HttpStatus.NOT_FOUND),
-    CONTRACT_ALREADY_EXISTS(5002, "Contract already exists", HttpStatus.CONFLICT),
+    CONTRACT_ALREADY_EXISTS(5002, "An active contract of this role already exists for employee", HttpStatus.CONFLICT),
     CONTRACT_UNABLE_TO_SAVE(5003, "Unable to save contract", HttpStatus.INTERNAL_SERVER_ERROR),
     CONTRACT_UNABLE_TO_UPDATE(5004, "Unable to update contract", HttpStatus.INTERNAL_SERVER_ERROR),
     CONTRACT_UNABLE_TO_DELETE(5005, "Unable to delete contract", HttpStatus.INTERNAL_SERVER_ERROR),
@@ -92,6 +92,7 @@ public enum Error {
     RECRUITMENT_REQUIREMENTS_UNABLE_TO_DELETE(7005, "Unable to delete recruitment requirements", HttpStatus.INTERNAL_SERVER_ERROR),
     RECRUITMENT_REQUIREMENTS_INVALID_QUANTITY(7006, "Invalid recruitment quantity", HttpStatus.BAD_REQUEST),
     RECRUITMENT_REQUIREMENTS_INVALID_SALARY(7007, "Invalid expected salary", HttpStatus.BAD_REQUEST),
+    RECRUITMENT_REQUIREMENTS_UNABLE_TO_UPDATE_STATUS(7008, "Unable to update recruitment requirements status", HttpStatus.INTERNAL_SERVER_ERROR),
 
     // Candidate Profile-related errors
     CANDIDATE_PROFILE_NOT_FOUND(8001, "Candidate profile not found", HttpStatus.NOT_FOUND),
