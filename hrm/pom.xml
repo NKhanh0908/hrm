@@ -129,6 +129,10 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<jvmArguments>
+						-Djdk.instrument.traceUsage
+						-XX:+EnableDynamicAgentLoading
+					</jvmArguments>
 				</configuration>
 			</plugin>
 		</plugins>
