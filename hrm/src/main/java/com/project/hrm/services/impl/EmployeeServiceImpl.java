@@ -11,6 +11,7 @@ import com.project.hrm.mapper.EmployeeMapper;
 import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
+import com.project.hrm.services.ImageEmployeeService;
 import com.project.hrm.specifications.EmployeeSpecification;
 import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
@@ -21,17 +22,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
+    private final EmployeeRepository employeeRepository;
+
+    private final ImageEmployeeService imageEmployeeService;
 
     private final EmployeeMapper employeeMapper;
-    private final @Lazy DepartmentService departmentService;
-    private final EmployeeRepository employeeRepository;
 
     /**
      * Filters employees based on the given {@link EmployeeFilter} conditions with
@@ -108,8 +112,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO create(EmployeeCreateDTO employeeCreateDTO) {
         log.info("Create Employee");
 
+        List<Error> errors = new ArrayList<>();
+
         Employees employee = employeeMapper.employeeCreateToEmployee(employeeCreateDTO);
+
         employee.setId(IdGenerator.getGenerationId());
+        employee.setImage(imageEmployeeService.saveImage(employeeCreateDTO.getImage()));
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
     }
@@ -124,6 +132,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDTO update(EmployeeUpdateDTO employeeUpdateDTO) {
         log.info("Update Employee");
+
+        List<Error> errors = new ArrayList<>();
 
         Employees employees = employeeMapper.toEntity(getDTOById(employeeUpdateDTO.getId()));
 
@@ -150,6 +160,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (employeeUpdateDTO.getAddress() != null)
             employees.setAddress(employeeUpdateDTO.getAddress());
+
+        if (employeeUpdateDTO.getImage() != null && !employeeUpdateDTO.getImage().isEmpty()){
+            employees.setImage(imageEmployeeService.saveImage(employeeUpdateDTO.getImage()));
+        }
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employees));
     }

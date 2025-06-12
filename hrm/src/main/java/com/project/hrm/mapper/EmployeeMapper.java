@@ -79,7 +79,6 @@ public class EmployeeMapper {
                 .citizenIdentificationCard(dto.getCitizenIdentificationCard())
                 .address(dto.getAddress())
                 .position(dto.getPosition())
-                .image(dto.getImage())
                 .build();
     }
 

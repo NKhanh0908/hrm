@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
@@ -19,7 +20,7 @@ public class EmployeeUpdateDTO {
     private String dateOfBirth;
     private String address;
     private String position;
-    private String image;
+    private MultipartFile image;
     private String citizenIdentificationCard;
     private String status;
 }

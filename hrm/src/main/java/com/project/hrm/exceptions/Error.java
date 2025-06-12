@@ -32,6 +32,9 @@ public enum Error {
     ACCOUNT_INVALID_USERNAME(1006, "Invalid username", HttpStatus.BAD_REQUEST),
     ACCOUNT_INVALID_PASSWORD(1007, "Invalid password", HttpStatus.BAD_REQUEST),
     ACCOUNT_LOCKED(1008, "Account is locked", HttpStatus.FORBIDDEN),
+    ACCOUNT_USERNAME_TO_SHORT(1008, "Username account to short", HttpStatus.BAD_REQUEST),
+    ACCOUNT_USERNAME_TO_LONG(1008, "Username account to long", HttpStatus.BAD_REQUEST),
+    ACCOUNT_PASSWORD_TO_SHORT(1008, "Password account to short", HttpStatus.BAD_REQUEST),
 
     // Employee-related errors
     EMPLOYEE_NOT_FOUND(2001, "Employee not found", HttpStatus.NOT_FOUND),
@@ -157,7 +160,9 @@ public enum Error {
     FILE_UPLOAD_FAILED(15001, "File upload failed", HttpStatus.INTERNAL_SERVER_ERROR),
     FILE_INVALID_FORMAT(15002, "Invalid file format", HttpStatus.BAD_REQUEST),
     FILE_TOO_LARGE(15003, "File size too large", HttpStatus.BAD_REQUEST),
-    FILE_NOT_FOUND(15004, "File not found", HttpStatus.NOT_FOUND);
+    FILE_NOT_FOUND(15004, "File not found", HttpStatus.NOT_FOUND),
+    FILE_SIZE_EXCEEDED(15005, "File size to less than 5MB", HttpStatus.BAD_REQUEST),
+    INVALID_FILE_TYPE(15006, "File type invalid", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;
