@@ -169,8 +169,7 @@ public class ApplyServiceImpl implements ApplyService {
             throw new CustomException(Error.APPLY_UNABLE_TO_UPDATE);
         }
 
-        Apply apply = applyRepository.findById(id).orElseThrow();
-        return applyMapper.toDTO(apply);
+        return applyMapper.toDTO(getEntityById(id));
     }
 
     /**

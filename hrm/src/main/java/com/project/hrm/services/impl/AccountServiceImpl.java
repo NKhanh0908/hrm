@@ -110,7 +110,6 @@ public class AccountServiceImpl implements AccountService {
         if(usernameRegister.length()> 25){throw new CustomException(Error.ACCOUNT_USERNAME_TO_LONG);}
         if(accountCreateDTO.getPassword().length()<5){throw new CustomException(Error.ACCOUNT_PASSWORD_TO_SHORT);}
 
-
         if (usernameExists(accountCreateDTO.getUsername())) {
             throw new CustomException(Error.ACCOUNT_ALREADY_EXISTS);
         }
