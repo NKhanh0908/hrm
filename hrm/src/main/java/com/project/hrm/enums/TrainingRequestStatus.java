@@ -1,5 +1,5 @@
 package com.project.hrm.enums;
 
 public enum TrainingRequestStatus {
-    PENDING, APPROVED, REJECTED
+    PENDING, APPROVED, REJECTED, FULFILLED
 }
