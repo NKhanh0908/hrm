@@ -18,6 +18,8 @@ import com.project.hrm.utils.IdGenerator;
 import com.project.hrm.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -123,6 +125,16 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(passwordEncoder.encode(accountCreateDTO.getUsername()));
 
         return accountMapper.toDTO(accountRepository.save(account));
+    }
+
+    @Override
+    public Employees getPrincipal() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new CustomException(Error.UNAUTHORIZED);
+        }
+        Account account = (Account) authentication.getPrincipal();
+        return account.getEmployees();
     }
 
     private boolean usernameExists(String username) {
