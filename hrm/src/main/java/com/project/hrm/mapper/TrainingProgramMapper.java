@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,13 +19,10 @@ public class TrainingProgramMapper {
         return TrainingProgram.builder()
                 .title(trainingProgramCreateDTO.getTitle())
                 .description(trainingProgramCreateDTO.getDescription())
-                .durationHours(trainingProgramCreateDTO.getDurationHours())
-                .cost(trainingProgramCreateDTO.getCost())
-                .createAt(LocalDate.now())
-                .location(trainingProgramCreateDTO.getLocation())
+                .createAt(LocalDateTime.now())
                 .materials(trainingProgramCreateDTO.getMaterials())
-                .trainingStatus(TrainingStatus.ARCHIVED)
-                .trainingType(TrainingType.valueOf(trainingProgramCreateDTO.getTrainingType()))
+                .prerequisites(trainingProgramCreateDTO.getPrerequisites())
+                .isMandatory(trainingProgramCreateDTO.getIsMandatory())
                 .build();
     }
 
@@ -33,15 +31,13 @@ public class TrainingProgramMapper {
                 .id(trainingProgram.getId())
                 .title(trainingProgram.getTitle())
                 .description(trainingProgram.getDescription())
-                .durationHours(trainingProgram.getDurationHours())
-                .cost(trainingProgram.getCost())
                 .createAt(trainingProgram.getCreateAt())
-                .location(trainingProgram.getLocation())
                 .materials(trainingProgram.getMaterials())
-                .trainingStatus(trainingProgram.getTrainingStatus().name())
-                .trainingType(trainingProgram.getTrainingType().name())
+                .prerequisites(trainingProgram.getPrerequisites())
+                .isMandatory(trainingProgram.getIsMandatory())
                 .departmentId(trainingProgram.getDepartments().getId())
                 .departmentName(trainingProgram.getDepartments().getDepartmentName())
+                .roleName(trainingProgram.getTargetRole().getName())
                 .employeeId(trainingProgram.getCreateBy().getId())
                 .employeeName(trainingProgram.getCreateBy().fullName())
                 .build();

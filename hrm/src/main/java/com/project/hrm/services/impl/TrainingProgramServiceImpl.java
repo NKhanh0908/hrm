@@ -5,6 +5,7 @@ import com.project.hrm.dto.trainingProgramDTO.TrainingProgramDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramFilter;
 import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Departments;
+import com.project.hrm.entities.Role;
 import com.project.hrm.entities.TrainingProgram;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
@@ -12,6 +13,7 @@ import com.project.hrm.mapper.TrainingProgramMapper;
 import com.project.hrm.repositories.TrainingProgramRepository;
 import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
+import com.project.hrm.services.RoleService;
 import com.project.hrm.services.TrainingProgramService;
 import com.project.hrm.specifications.TrainingProgramSpecification;
 import com.project.hrm.utils.IdGenerator;
@@ -36,6 +38,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
     private final EmployeeService employeeService;
     private final DepartmentService departmentService;
+    private final RoleService roleService;
 
     private final TrainingProgramMapper trainingProgramMapper;
 
@@ -59,9 +62,12 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
         TrainingProgram trainingProgram = trainingProgramMapper.convertCreateDTOToEntity(trainingProgramCreateDTO);
 
+        Role role = roleService.getEntityById(trainingProgramCreateDTO.getRoleId());
+
         trainingProgram.setId(IdGenerator.getGenerationId());
         trainingProgram.setCreateBy(account.getEmployees());
         trainingProgram.setDepartments(departments);
+        trainingProgram.setTargetRole(role);
 
         return trainingProgramMapper.convertToDTO(trainingProgramRepository.save(trainingProgram));
     }
@@ -76,7 +82,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Override
     public TrainingProgram getEntityById(Integer id) {
         return trainingProgramRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new CustomException(Error.TRAINING_PROGRAM_NOT_FOUND));
     }
 
     /**

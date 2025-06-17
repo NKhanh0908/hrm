@@ -162,7 +162,27 @@ public enum Error {
     FILE_TOO_LARGE(15003, "File size too large", HttpStatus.BAD_REQUEST),
     FILE_NOT_FOUND(15004, "File not found", HttpStatus.NOT_FOUND),
     FILE_SIZE_EXCEEDED(15005, "File size to less than 5MB", HttpStatus.BAD_REQUEST),
-    INVALID_FILE_TYPE(15006, "File type invalid", HttpStatus.BAD_REQUEST);
+    INVALID_FILE_TYPE(15006, "File type invalid", HttpStatus.BAD_REQUEST),
+
+    // Training Program
+    TRAINING_PROGRAM_NOT_FOUND(16001, "Training program not found", HttpStatus.NOT_FOUND),
+    TRAINING_PROGRAM_ALREADY_EXISTS(16002, "Training program already exists", HttpStatus.CONFLICT),
+    TRAINING_PROGRAM_UNABLE_TO_SAVE(16003, "Unable to save Training program", HttpStatus.INTERNAL_SERVER_ERROR),
+    TRAINING_PROGRAM_UNABLE_TO_UPDATE(16004, "Unable to update Training program", HttpStatus.INTERNAL_SERVER_ERROR),
+    TRAINING_PROGRAM_UNABLE_TO_DELETE(16005, "Unable to delete Training program", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    // Training Program
+    TRAINING_SESSION_NOT_FOUND(17001, "Training session not found", HttpStatus.NOT_FOUND),
+    TRAINING_SESSION_ALREADY_EXISTS(17002, "Training session already exists", HttpStatus.CONFLICT),
+    TRAINING_SESSION_UNABLE_TO_SAVE(17003, "Unable to save Training session", HttpStatus.INTERNAL_SERVER_ERROR),
+    TRAINING_SESSION_UNABLE_TO_UPDATE(17004, "Unable to update Training session", HttpStatus.INTERNAL_SERVER_ERROR),
+    TRAINING_SESSION_UNABLE_TO_DELETE(17005, "Unable to delete Training session", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    //Training enrollment
+    TRAINING_ENROLLMENT_NOT_FOUND(18001, "Training enrollment not found", HttpStatus.NOT_FOUND),
+
+    // Training Request
+    TRAINING_REQUEST_NOT_FOUND(18001, "Training Request not found", HttpStatus.NOT_FOUND);
 
     private final int code;
     private final String message;

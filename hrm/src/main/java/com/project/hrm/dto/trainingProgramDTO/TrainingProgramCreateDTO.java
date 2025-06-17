@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -14,10 +15,10 @@ import java.time.LocalDate;
 public class TrainingProgramCreateDTO {
     private String title;
     private String description;
-    private Integer durationHours;
-    private Double cost;
-    private String location;
+    private LocalDateTime createAt;
     private String materials;
-    private String trainingType;
+    private String prerequisites;
+    private Boolean isMandatory;
     private Integer departmentId;
+    private Integer roleId;
 }

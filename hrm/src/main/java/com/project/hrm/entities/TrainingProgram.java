@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -20,21 +20,18 @@ public class TrainingProgram {
     private Integer id;
     private String title;
     private String description;
-    private Integer durationHours;
-    private Double cost;
-    private LocalDate createAt;
-    private String location;
+    private LocalDateTime createAt;
     private String materials;
-
-    @Enumerated(EnumType.STRING)
-    private TrainingStatus trainingStatus;
-
-    @Enumerated(EnumType.STRING)
-    private TrainingType trainingType;
+    private String prerequisites;
+    private Boolean isMandatory;
 
     @ManyToOne
     @JoinColumn
     private Departments departments;
+
+    @ManyToOne
+    @JoinColumn
+    private Role targetRole;
 
     @ManyToOne
     @JoinColumn

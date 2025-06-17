@@ -9,14 +9,10 @@ import java.time.LocalDate;
 @Data
 public class TrainingProgramFilter {
     private String title;
-    private Integer durationMin;
-    private Integer durationMax;
-    private Double costMin;
-    private Double costMax;
     private LocalDate createdFrom;
     private LocalDate createdTo;
-    private TrainingStatus trainingStatus;
-    private TrainingType trainingType;
+    private Boolean isMandatory;
     private Integer departmentId;
+    private Integer roleId;
     private Integer createdById;
 }
