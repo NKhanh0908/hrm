@@ -160,10 +160,6 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         Recruitment recruitment = getEntityById(recruitmentUpdateDTO.getId());
 
-        if (recruitmentUpdateDTO.getPosition() != null) {
-            recruitment.setPosition(recruitmentUpdateDTO.getPosition());
-        }
-
         if (recruitmentUpdateDTO.getContactPhone() != null) {
             recruitment.setContactPhone(recruitmentUpdateDTO.getContactPhone());
         }

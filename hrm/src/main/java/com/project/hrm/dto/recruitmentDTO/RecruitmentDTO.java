@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class RecruitmentDTO {
     private Integer id;
-    private String position;
     private String contactPhone;
     private String email;
     private String status;

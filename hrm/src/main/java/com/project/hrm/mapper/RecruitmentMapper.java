@@ -25,7 +25,6 @@ public class RecruitmentMapper {
                 .email(recruitment.getEmail())
                 .contactPhone(recruitment.getContactPhone())
                 .deadline(recruitment.getDeadline())
-                .position(recruitment.getPosition())
                 .createAt(recruitment.getCreateAt())
                 .status(recruitment.getStatus().name())
                 .jobDescription(recruitment.getJobDescription())
@@ -46,7 +45,6 @@ public class RecruitmentMapper {
     public Recruitment convertCreateToEntity(RecruitmentCreateDTO recruitmentCreateDTO,
             RecruitmentRequirements recruitmentRequirements, Employees employees) {
         return Recruitment.builder()
-                .position(recruitmentCreateDTO.getPosition())
                 .contactPhone(recruitmentCreateDTO.getContactPhone())
                 .email(recruitmentCreateDTO.getEmail())
                 .deadline(recruitmentCreateDTO.getDeadline())

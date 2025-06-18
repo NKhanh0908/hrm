@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecruitmentFilter {
-    private String position;
     private LocalDateTime deadlineFrom;
     private LocalDateTime deadlineTo;
     private LocalDateTime dateCreateFrom;

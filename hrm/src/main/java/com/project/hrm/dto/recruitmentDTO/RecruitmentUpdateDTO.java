@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RecruitmentUpdateDTO {
     private Integer id;
-    private String position;
     private String contactPhone;
     private String email;
     private LocalDateTime deadline;

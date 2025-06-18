@@ -13,13 +13,6 @@ public class RecruitmentSpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (filter.getPosition() != null && !filter.getPosition().isBlank()) {
-                predicates.add(criteriaBuilder.like(
-                        criteriaBuilder.lower(root.get("position")),
-                        "%" + filter.getPosition().toLowerCase() + "%"
-                ));
-            }
-
             if (filter.getDeadlineFrom() != null) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(
                         root.get("deadline"), filter.getDeadlineFrom()

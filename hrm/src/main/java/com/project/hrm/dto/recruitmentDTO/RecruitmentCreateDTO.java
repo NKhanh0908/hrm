@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecruitmentCreateDTO {
-    private String position;
     private String contactPhone;
     private String email;
     private LocalDateTime deadline;
