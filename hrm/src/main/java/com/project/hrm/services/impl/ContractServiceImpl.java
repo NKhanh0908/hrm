@@ -5,7 +5,6 @@ import com.project.hrm.dto.contractDTO.ContractDTO;
 import com.project.hrm.dto.contractDTO.ContractFilter;
 import com.project.hrm.dto.contractDTO.ContractUpdateDTO;
 import com.project.hrm.entities.Contracts;
-import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Role;
 import com.project.hrm.enums.ContractStatus;
@@ -14,7 +13,6 @@ import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.ContractMapper;
 import com.project.hrm.repositories.ContractRepository;
 import com.project.hrm.services.ContractService;
-import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.RoleService;
 import com.project.hrm.specifications.ContractSpecification;
@@ -40,7 +38,6 @@ public class ContractServiceImpl implements ContractService {
     private final ContractMapper contractMapper;
 
     private final EmployeeService employeeService;
-    private final DepartmentService departmentService;
     private final RoleService roleService;
 
 
@@ -66,12 +63,10 @@ public class ContractServiceImpl implements ContractService {
 
         Employees employees = employeeService.getEntityById(contractCreateDTO.getEmployeeId());
 
-        Departments departments = departmentService.getEntityById(contractCreateDTO.getDepartmentId());
-
         Role role = roleService.getEntityById(contractCreateDTO.getRoleId());
 
         Contracts contracts = contractMapper.convertCreateDTOToEntity(
-                contractCreateDTO, employees, departments, role);
+                contractCreateDTO, employees, role);
         contracts.setId(IdGenerator.getGenerationId());
 
         return contractMapper.toDTO(contractRepository.save(contracts));
@@ -93,9 +88,6 @@ public class ContractServiceImpl implements ContractService {
 
         if (contractUpdateDTO.getEmployeeId() != null) {
             contracts.setEmployee(employeeService.getEntityById(contractUpdateDTO.getEmployeeId()));
-        }
-        if (contractUpdateDTO.getDepartmentId() != null) {
-            contracts.setDepartments(departmentService.getEntityById(contractUpdateDTO.getDepartmentId()));
         }
         if (contractUpdateDTO.getRoleId() != null) {
             contracts.setRole(roleService.getEntityById(contractUpdateDTO.getRoleId()));

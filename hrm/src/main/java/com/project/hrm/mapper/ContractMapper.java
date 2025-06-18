@@ -3,7 +3,6 @@ package com.project.hrm.mapper;
 import com.project.hrm.dto.contractDTO.ContractCreateDTO;
 import com.project.hrm.dto.contractDTO.ContractDTO;
 import com.project.hrm.entities.Contracts;
-import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Role;
 import com.project.hrm.enums.ContractStatus;
@@ -27,13 +26,13 @@ public class ContractMapper {
                 .contractSigningDate(contracts.getContractSigningDate())
                 .employeeId(contracts.getEmployee().getId())
                 .employeeName(contracts.getEmployee().fullName())
-                .departmentId(contracts.getDepartments().getId())
-                .departmentName(contracts.getDepartments().getDepartmentName())
+                .departmentId(contracts.getRole().getDepartments().getId())
+                .departmentName(contracts.getRole().getDepartments().getDepartmentName())
                 .roleName(contracts.getRole().getName())
                 .build();
     }
 
-    public Contracts convertCreateDTOToEntity(ContractCreateDTO contractCreateDTO, Employees employees, Departments departments, Role role){
+    public Contracts convertCreateDTOToEntity(ContractCreateDTO contractCreateDTO, Employees employees, Role role){
         return Contracts.builder()
                 .title(contractCreateDTO.getTitle())
                 .baseSalary(contractCreateDTO.getBaseSalary())
@@ -43,7 +42,6 @@ public class ContractMapper {
                 .contractStatus(ContractStatus.SIGNED)
                 .contractSigningDate(contractCreateDTO.getContractSigningDate())
                 .employee(employees)
-                .departments(departments)
                 .role(role)
                 .build();
     }

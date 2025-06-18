@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 public class ContractUpdateDTO {
     @NotNull(message = "Contract id is required")
     private Integer id;
-
     private String title;
     private LocalDateTime contractSigningDate;
     private LocalDateTime startDate;
@@ -23,6 +22,5 @@ public class ContractUpdateDTO {
     private Double baseSalary;
     private String description;
     private Integer employeeId;
-    private Integer departmentId;
     private Integer roleId;
 }

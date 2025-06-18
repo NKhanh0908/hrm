@@ -23,7 +23,7 @@ public class ContractSpecification {
 
             if (filter.getDepartmentId() != 0) {
                 predicates.add(
-                        cb.equal(root.get("departments").get("id"), filter.getDepartmentId())
+                        cb.equal(root.get("role").get("departments").get("id"), filter.getDepartmentId())
                 );
             }
 

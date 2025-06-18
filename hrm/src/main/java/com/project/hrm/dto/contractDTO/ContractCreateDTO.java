@@ -24,8 +24,5 @@ public class ContractCreateDTO {
     private Integer employeeId;
 
     @NotNull(message = "Contract id is required")
-    private Integer departmentId;
-
-    @NotNull(message = "Contract id is required")
     private Integer roleId;
 }

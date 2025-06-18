@@ -36,11 +36,5 @@ public class Contracts {
 
     @ManyToOne
     @JoinColumn
-    @JsonBackReference
-    private Departments departments;
-
-    @ManyToOne
-    @JoinColumn
     private Role role;
-
 }
