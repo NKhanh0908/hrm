@@ -16,11 +16,13 @@ import java.time.LocalDateTime;
 public class RecruitmentRequirementsDTO {
     private Integer id;
     private String description;
-    private String positions;
     private Integer quantity;
     private String expectedSalary;
     private String status;
     private LocalDateTime dateRequired;
-    private DepartmentDTO departmentDTO;
-    private EmployeeDTO employeeDTO;
+    private String roleName;
+    private Integer departmentId;
+    private String departmentName;
+    private Integer employeeId;
+    private String employeeName;
 }

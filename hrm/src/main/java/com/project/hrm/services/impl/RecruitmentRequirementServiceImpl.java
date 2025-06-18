@@ -7,13 +7,16 @@ import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
 import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.RecruitmentRequirements;
+import com.project.hrm.entities.Role;
 import com.project.hrm.enums.RecruitmentRequirementsStatus;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.RecruitmentRequirementsMapper;
 import com.project.hrm.repositories.RecruitmentRequirementsRepository;
+import com.project.hrm.services.AccountService;
 import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.RecruitmentRequirementService;
+import com.project.hrm.services.RoleService;
 import com.project.hrm.specifications.RecruitmentRequirementsSpecification;
 import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,8 +38,12 @@ import java.util.List;
 @AllArgsConstructor
 public class RecruitmentRequirementServiceImpl implements RecruitmentRequirementService {
     private final RecruitmentRequirementsRepository recruitmentRequirementsRepository;
+
     private final RecruitmentRequirementsMapper recruitmentRequirementsMapper;
+
     private final DepartmentService departmentService;
+    private final AccountService accountService;
+    private final RoleService roleService;
 
     /**
      * Filters recruitment requirements based on the provided filter criteria with pagination support.
@@ -109,16 +116,12 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
     public RecruitmentRequirementsDTO create(RecruitmentRequirementsCreateDTO recruitmentRequirementsCreateDTO) {
         log.info("Create RecruitmentRequirements");
 
-        Departments departments = departmentService.getEntityById(recruitmentRequirementsCreateDTO.getDepartmentId());
+        Role role = roleService.getEntityById(recruitmentRequirementsCreateDTO.getRoleId());
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
-        Account account = (Account) authentication.getPrincipal();
-
-        RecruitmentRequirements recruitmentRequirements = recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO, departments, account.getEmployees());
+        RecruitmentRequirements recruitmentRequirements = recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO);
         recruitmentRequirements.setId(IdGenerator.getGenerationId());
+        recruitmentRequirements.setRole(role);
+        recruitmentRequirements.setEmployees(accountService.getPrincipal());
 
         return recruitmentRequirementsMapper.toDTO(
                 recruitmentRequirementsRepository.save(recruitmentRequirements));
@@ -145,10 +148,6 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
             entity.setDescription(recruitmentRequirementsUpdateDTO.getDescription());
         }
 
-        if (recruitmentRequirementsUpdateDTO.getPositions() != null) {
-            entity.setPositions(recruitmentRequirementsUpdateDTO.getPositions());
-        }
-
         if (recruitmentRequirementsUpdateDTO.getQuantity() != null) {
             entity.setQuantity(recruitmentRequirementsUpdateDTO.getQuantity());
         }
@@ -161,9 +160,9 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
             entity.setStatus(RecruitmentRequirementsStatus.valueOf(recruitmentRequirementsUpdateDTO.getStatus()));
         }
 
-        if (recruitmentRequirementsUpdateDTO.getDepartmentId() != null) {
-            Departments department = departmentService.getEntityById(recruitmentRequirementsUpdateDTO.getDepartmentId());
-            entity.setDepartments(department);
+        if (recruitmentRequirementsUpdateDTO.getRoleId() != null) {
+            Role role = roleService.getEntityById(recruitmentRequirementsUpdateDTO.getRoleId());
+            entity.setRole(role);
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

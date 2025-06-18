@@ -19,7 +19,6 @@ public class RecruitmentRequirements {
     @Id
     private Integer id;
     private String description;
-    private String positions;
     private Integer quantity;
     private String expectedSalary;
 
@@ -31,8 +30,7 @@ public class RecruitmentRequirements {
 
     @ManyToOne
     @JoinColumn
-    @JsonBackReference
-    private Departments departments;
+    private Role role;
 
     @ManyToOne
     @JoinColumn(name = "on_upload")

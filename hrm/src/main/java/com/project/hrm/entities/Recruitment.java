@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 public class Recruitment {
     @Id
     private Integer id;
-    private String position;
     private String contactPhone;
     private String email;
     private LocalDateTime deadline;

@@ -12,9 +12,8 @@ import lombok.NoArgsConstructor;
 public class RecruitmentRequirementsUpdateDTO {
     private Integer id;
     private String description;
-    private String positions;
     private Integer quantity;
     private String expectedSalary;
     private String status;
-    private Integer departmentId;
+    private Integer roleId;
 }

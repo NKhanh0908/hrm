@@ -25,27 +25,26 @@ public class RecruitmentRequirementsMapper {
     public RecruitmentRequirementsDTO toDTO(RecruitmentRequirements recruitmentRequirements) {
         return RecruitmentRequirementsDTO.builder()
                 .id(recruitmentRequirements.getId())
-                .dateRequired(recruitmentRequirements.getDateRequired())
                 .description(recruitmentRequirements.getDescription())
-                .expectedSalary(recruitmentRequirements.getExpectedSalary())
-                .positions(recruitmentRequirements.getPositions())
                 .quantity(recruitmentRequirements.getQuantity())
+                .expectedSalary(recruitmentRequirements.getExpectedSalary())
                 .status(recruitmentRequirements.getStatus().toString())
-                .departmentDTO(departmentMapper.toDepartmentDTO(recruitmentRequirements.getDepartments()))
-                .employeeDTO(employeeMapper.toEmployeeDTO(recruitmentRequirements.getEmployees()))
+                .dateRequired(recruitmentRequirements.getDateRequired())
+                .roleName(recruitmentRequirements.getRole().getName())
+                .departmentId(recruitmentRequirements.getRole().getDepartments().getId())
+                .departmentName(recruitmentRequirements.getRole().getDepartments().getDepartmentName())
+                .employeeId(recruitmentRequirements.getEmployees().getId())
+                .employeeName(recruitmentRequirements.getEmployees().fullName())
                 .build();
     }
 
-    public RecruitmentRequirements convertCreateDTOtoEntity(RecruitmentRequirementsCreateDTO recruitmentRequirementsCreateDTO, Departments departments, Employees employees){
+    public RecruitmentRequirements convertCreateDTOtoEntity(RecruitmentRequirementsCreateDTO recruitmentRequirementsCreateDTO){
         return RecruitmentRequirements.builder()
                 .description(recruitmentRequirementsCreateDTO.getDescription())
                 .expectedSalary(recruitmentRequirementsCreateDTO.getExpectedSalary())
-                .positions(recruitmentRequirementsCreateDTO.getPositions())
                 .quantity(recruitmentRequirementsCreateDTO.getQuantity())
                 .dateRequired(LocalDateTime.now())
                 .status(RecruitmentRequirementsStatus.PENDING)
-                .departments(departments)
-                .employees(employees)
                 .build();
     }
 

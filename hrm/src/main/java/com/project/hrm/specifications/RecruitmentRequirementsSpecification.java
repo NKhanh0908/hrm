@@ -16,8 +16,14 @@ public class RecruitmentRequirementsSpecification {
 
             if (recruitmentRequirementFilter.getDepartmentId() != 0) {
                 predicates.add(cb.equal(
-                        root.get("departments").get("id"),
+                        root.get("role").get("departments").get("id"),
                         recruitmentRequirementFilter.getDepartmentId()));
+            }
+
+            if (recruitmentRequirementFilter.getRoleId() != 0) {
+                predicates.add(cb.equal(
+                        root.get("role").get("id"),
+                        recruitmentRequirementFilter.getRoleId()));
             }
 
             if (recruitmentRequirementFilter.getPositions() != null

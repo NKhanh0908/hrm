@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RecruitmentRequirementsCreateDTO {
     private String description;
-    private String positions;
     private Integer quantity;
     private String expectedSalary;
     private String status;
-    private Integer departmentId;
+    private Integer roleId;
 }
