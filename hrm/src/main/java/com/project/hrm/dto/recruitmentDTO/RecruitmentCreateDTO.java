@@ -17,5 +17,4 @@ public class RecruitmentCreateDTO {
     private LocalDateTime deadline;
     private String jobDescription;
     private Integer recruitmentRequirementId;
-    private Integer employeeApproveId;
 }

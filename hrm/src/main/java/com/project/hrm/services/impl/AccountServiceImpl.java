@@ -134,6 +134,8 @@ public class AccountServiceImpl implements AccountService {
             throw new CustomException(Error.UNAUTHORIZED);
         }
         Account account = (Account) authentication.getPrincipal();
+
+        log.info("User principal: {}", account.getEmployees());
         return account.getEmployees();
     }
 

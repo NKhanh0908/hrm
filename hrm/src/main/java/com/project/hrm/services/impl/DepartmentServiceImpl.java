@@ -108,7 +108,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         if(departmentUpdateDTO.getEmail()!=null){
-            department.setAddress(departmentUpdateDTO.getAddress());
+            department.setEmail(departmentUpdateDTO.getAddress());
         }
 
         if(departmentUpdateDTO.getDescription()!=null){

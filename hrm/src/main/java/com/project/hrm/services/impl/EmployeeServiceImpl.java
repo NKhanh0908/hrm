@@ -112,12 +112,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO create(EmployeeCreateDTO employeeCreateDTO) {
         log.info("Create Employee");
 
-        List<Error> errors = new ArrayList<>();
-
         Employees employee = employeeMapper.employeeCreateToEmployee(employeeCreateDTO);
 
         employee.setId(IdGenerator.getGenerationId());
-        employee.setImage(imageEmployeeService.saveImage(employeeCreateDTO.getImage()));
+        if(employeeCreateDTO.getImage()!= null){
+            employee.setImage(imageEmployeeService.saveImage(employeeCreateDTO.getImage()));
+        }
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
     }

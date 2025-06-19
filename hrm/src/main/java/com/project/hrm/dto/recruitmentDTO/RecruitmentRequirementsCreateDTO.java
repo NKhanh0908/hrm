@@ -13,6 +13,5 @@ public class RecruitmentRequirementsCreateDTO {
     private String description;
     private Integer quantity;
     private String expectedSalary;
-    private String status;
     private Integer roleId;
 }
