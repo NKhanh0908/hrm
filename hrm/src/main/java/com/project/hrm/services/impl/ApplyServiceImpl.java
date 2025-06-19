@@ -2,6 +2,9 @@ package com.project.hrm.services.impl;
 
 import com.project.hrm.dto.applyDTO.*;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
+import com.project.hrm.dto.contractDTO.ContractCreateDTO;
+import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
+import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.dto.othersDTO.InfoApply;
 import com.project.hrm.dto.othersDTO.InterviewLetter;
 import com.project.hrm.entities.Apply;
@@ -14,10 +17,7 @@ import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.ApplyMapper;
 import com.project.hrm.mapper.CandidateProfileMapper;
 import com.project.hrm.repositories.ApplyRepository;
-import com.project.hrm.services.ApplyService;
-import com.project.hrm.services.CandidateProfileService;
-import com.project.hrm.services.MailService;
-import com.project.hrm.services.RecruitmentService;
+import com.project.hrm.services.*;
 import com.project.hrm.specifications.ApplySpecification;
 import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
@@ -44,6 +44,8 @@ public class ApplyServiceImpl implements ApplyService {
 
     private final RecruitmentService recruitmentService;
     private final CandidateProfileService candidateProfileService;
+    private final EmployeeService employeeService;
+    private final ContractService contractService;
     private final MailService mailService;
 
     /**
@@ -147,6 +149,59 @@ public class ApplyServiceImpl implements ApplyService {
     }
 
     /**
+     * Rejects an application and notifies the candidate via email.
+     *
+     * @param applyId the ID of the application to be rejected
+     * @return the updated {@link ApplyDTO} with status set to REJECTED
+     */
+    @Transactional
+    @Override
+    public ApplyDTO rejectApply(Integer applyId) {
+        ApplyDTO applyDTO = updateStatus(applyId, ApplyStatus.REJECTED);
+
+        InfoApply infoApply = applyRepository.getInfoApply(applyId);
+
+        mailService.notificationForRejection(infoApply);
+
+        return applyDTO;
+    }
+
+    /**
+     * Marks an application as hired, creates an employee profile,
+     * and generates a virtual contract for the candidate.
+     *
+     * @param applyId the ID of the hired application
+     * @param details
+     * @return the updated {@link ApplyDTO} with status set to HIRED
+     */
+    @Transactional
+    @Override
+    public ApplyDTO hiredApply(Integer applyId, JobOfferDetailsDTO details) {
+        ApplyDTO applyDTO = updateStatus(applyId, ApplyStatus.HIRED);
+
+        CandidateProfile candidateProfile = candidateProfileService.getEntityByApplyId(applyId);
+
+        EmployeeCreateDTO employeeCreateDTO = new EmployeeCreateDTO();
+        employeeCreateDTO.setFirstName(candidateProfile.getName());
+        employeeCreateDTO.setEmail(candidateProfile.getEmail());
+        employeeCreateDTO.setPhone(candidateProfile.getPhone());
+
+        EmployeeDTO employeeDTO = employeeService.create(employeeCreateDTO);
+
+        ContractCreateDTO contractCreateDTO = new ContractCreateDTO();
+        contractCreateDTO.setTitle("Virtual Contract");
+        contractCreateDTO.setDescription("Temporary contract after candidate has passed the interview round");
+        contractCreateDTO.setEmployeeId(employeeDTO.getId());
+        contractCreateDTO.setRoleId(getRoleIdByApplyId(applyId));
+        contractService.create(contractCreateDTO);
+
+        InfoApply infoApply = applyRepository.getInfoApply(applyId);
+        mailService.notificationForHired(infoApply, details);
+
+        return applyDTO;
+    }
+
+    /**
      * Change the status on an existing Apply.
      *
      * @param id     the Apply ID
@@ -202,6 +257,11 @@ public class ApplyServiceImpl implements ApplyService {
 
         return applyRepository.findById(id)
                 .orElseThrow(()-> new CustomException(Error.APPLY_NOT_FOUND));
+    }
+
+    @Override
+    public Integer getRoleIdByApplyId(Integer applyId) {
+        return applyRepository.getRoleIdByApplyId(applyId);
     }
 
     /**

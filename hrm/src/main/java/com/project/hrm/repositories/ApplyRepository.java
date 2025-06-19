@@ -25,13 +25,31 @@ public interface ApplyRepository extends JpaRepository<Apply, Integer>, JpaSpeci
 
     @Transactional(readOnly = true)
     @Query(value = """
-            SELECT cp.name, cp.email, a.position as position_apply
-            FROM apply a
-                inner join candidate_profile cp
-                    on a.candidate_profile_id = cp.id
-                inner join recruitment rm
-                    on a.recruitment_id = rm.id
-            WHERE a.id = :id
+            SELECT cp.name, cp.email, rl.name as position_apply
+                        FROM (
+                            SELECT candidate_profile_id, recruitment_id
+                            FROM apply
+                            WHERE id = :id
+                        ) a
+                            INNER JOIN candidate_profile cp
+                                ON a.candidate_profile_id = cp.id
+                            INNER JOIN recruitment rm
+                                ON a.recruitment_id = rm.id
+                        INNER JOIN recruitment_requirements rr ON rm.recruitment_requirements_id = rr.id
+                        INNER JOIN role rl ON rr.role_id = rl.id
         """, nativeQuery = true)
     InfoApply getInfoApply(@Param("id") Integer id);
+
+    @Query(value = """
+            SELECT rl.id
+            FROM (
+                SELECT recruitment_id
+                FROM apply\s
+                WHERE id = :applyId
+            ) a\s
+            INNER JOIN recruitment r ON a.recruitment_id = r.id\s
+            INNER JOIN recruitment_requirements rr ON r.recruitment_requirements_id = rr.id
+            INNER JOIN role rl ON rr.role_id = rl.id;
+            """, nativeQuery = true)
+    Integer getRoleIdByApplyId(@Param("applyId") Integer applyId);
 }

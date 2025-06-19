@@ -16,11 +16,17 @@ public interface ApplyService {
 
     ApplyDTO interview(InterviewLetter interviewLetter);
 
+    ApplyDTO rejectApply(Integer applyId);
+
+    ApplyDTO hiredApply(Integer applyId, JobOfferDetailsDTO details);
+
     ApplyDTO updateStatus(Integer id, ApplyStatus status);
 
     ApplyDTO getById(Integer id);
 
     Apply getEntityById(Integer id);
+
+    Integer getRoleIdByApplyId(Integer applyId);
 
     List<ApplyDTO> filter(ApplyFilter applyFilter, int page, int size);
 
