@@ -1,10 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
-import com.project.hrm.dto.applyDTO.ApplyCreateDTO;
-import com.project.hrm.dto.applyDTO.ApplyDTO;
-import com.project.hrm.dto.applyDTO.ApplyFilter;
-import com.project.hrm.dto.applyDTO.ApplyUpdateDTO;
+import com.project.hrm.dto.applyDTO.*;
 import com.project.hrm.dto.othersDTO.InterviewLetter;
 import com.project.hrm.enums.ApplyStatus;
 import com.project.hrm.services.ApplyService;
@@ -111,5 +108,47 @@ public class ApplyController {
                 return ResponseEntity.ok(new APIResponse<>(true,
                                 "Interview invitation sent successfully", updated, null, request.getRequestURI()));
         }
+
+    @PutMapping("/reject")
+    @Operation(summary = "Reject application",
+            description = "Rejects an application by ID and sends a rejection notification email.",
+            parameters = @Parameter(name = "applyId", description = "ID of the application to reject", required = true),
+            responses = @ApiResponse(responseCode = "200", description = "Application rejected successfully", content = @Content(schema = @Schema(implementation = ApplyDTO.class)))
+    )
+    public ResponseEntity<APIResponse<ApplyDTO>> rejectApply(
+            @RequestParam Integer applyId,
+            HttpServletRequest request) {
+
+        ApplyDTO result = applyService.rejectApply(applyId);
+        return ResponseEntity.ok(new APIResponse<>(true, "Reject application successfully", result, null, request.getRequestURI()));
+    }
+
+    @PutMapping("/hire")
+    @Operation(
+            summary = "Hire candidate",
+            description = """
+        Marks an application as HIRED, creates an employee, 
+        generates a virtual contract, and sends a job offer email with reporting details.
+        """,
+            parameters = {
+                    @Parameter(name = "applyId", description = "ID of the application to mark as hired", required = true)
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Job offer details including report date, location, and contact info",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = JobOfferDetailsDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Candidate hired successfully", content = @Content(schema = @Schema(implementation = ApplyDTO.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<ApplyDTO>> hiredApply(
+            @RequestParam Integer applyId,
+            @RequestBody JobOfferDetailsDTO details,
+            HttpServletRequest request) {
+
+        ApplyDTO result = applyService.hiredApply(applyId, details);
+        return ResponseEntity.ok(new APIResponse<>(true, "Hire application successfully", result, null, request.getRequestURI()));
+    }
 
 }
