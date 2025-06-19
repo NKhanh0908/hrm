@@ -156,4 +156,10 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
                 .orElseThrow(() -> new CustomException(Error.CANDIDATE_PROFILE_NOT_FOUND));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public CandidateProfile getEntityByApplyId(Integer applyId) {
+        return candidateProfileRepository.findByApplyId(applyId);
+    }
+
 }

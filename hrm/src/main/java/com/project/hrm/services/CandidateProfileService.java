@@ -16,6 +16,8 @@ public interface CandidateProfileService {
 
     CandidateProfile getEntityById(Integer id);
 
+    CandidateProfile getEntityByApplyId(Integer applyId);
+
     List<CandidateProfileDTO> filter(CandidateProfileFilter candidateProfileFilter, int page, int size);
 
 }
