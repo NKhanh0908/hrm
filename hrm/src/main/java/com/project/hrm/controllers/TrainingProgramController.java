@@ -4,6 +4,7 @@ import com.project.hrm.dto.APIResponse;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramCreateDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramFilter;
+import com.project.hrm.dto.trainingProgramDTO.TrainingProgramUpdateDTO;
 import com.project.hrm.services.TrainingProgramService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -42,6 +43,23 @@ public class TrainingProgramController {
         TrainingProgramDTO result = trainingProgramService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new APIResponse<>(true, "Training program created successfully", result, null, request.getRequestURI()));
+    }
+
+    @PutMapping
+    @Operation(summary = "Update a training program",
+            description = "Updates an existing training program based on provided data. Only non-null fields will be changed.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Training program update data", required = true,
+                    content = @Content(schema = @Schema(implementation = TrainingProgramUpdateDTO.class))),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Training program updated successfully",
+                            content = @Content(schema = @Schema(implementation = TrainingProgramDTO.class)))
+            })
+    public ResponseEntity<APIResponse<TrainingProgramDTO>> update(
+            @RequestBody TrainingProgramUpdateDTO dto,
+            HttpServletRequest request) {
+        TrainingProgramDTO result = trainingProgramService.update(dto);
+        return ResponseEntity.ok(new APIResponse<>(true, "Training program updated successfully", result, null, request.getRequestURI()));
     }
 
     @GetMapping("/{id}")

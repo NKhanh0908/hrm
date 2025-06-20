@@ -3,6 +3,7 @@ package com.project.hrm.services.impl;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramCreateDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramFilter;
+import com.project.hrm.dto.trainingProgramDTO.TrainingProgramUpdateDTO;
 import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Role;
@@ -11,10 +12,7 @@ import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.TrainingProgramMapper;
 import com.project.hrm.repositories.TrainingProgramRepository;
-import com.project.hrm.services.DepartmentService;
-import com.project.hrm.services.EmployeeService;
-import com.project.hrm.services.RoleService;
-import com.project.hrm.services.TrainingProgramService;
+import com.project.hrm.services.*;
 import com.project.hrm.specifications.TrainingProgramSpecification;
 import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
@@ -36,9 +34,8 @@ import java.util.List;
 public class TrainingProgramServiceImpl implements TrainingProgramService {
     private final TrainingProgramRepository trainingProgramRepository;
 
-    private final EmployeeService employeeService;
-    private final DepartmentService departmentService;
     private final RoleService roleService;
+    private final AccountService accountService;
 
     private final TrainingProgramMapper trainingProgramMapper;
 
@@ -52,24 +49,52 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Override
     public TrainingProgramDTO create(TrainingProgramCreateDTO trainingProgramCreateDTO) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new CustomException(Error.UNAUTHORIZED);
-        }
-        Account account = (Account) authentication.getPrincipal();
-
-        Departments departments = departmentService.getEntityById(trainingProgramCreateDTO.getDepartmentId());
-
         TrainingProgram trainingProgram = trainingProgramMapper.convertCreateDTOToEntity(trainingProgramCreateDTO);
 
         Role role = roleService.getEntityById(trainingProgramCreateDTO.getRoleId());
 
         trainingProgram.setId(IdGenerator.getGenerationId());
-        trainingProgram.setCreateBy(account.getEmployees());
-        trainingProgram.setDepartments(departments);
+        trainingProgram.setCreateBy(accountService.getPrincipal());
         trainingProgram.setTargetRole(role);
 
         return trainingProgramMapper.convertToDTO(trainingProgramRepository.save(trainingProgram));
+    }
+
+    /**
+     * Updates an existing training program based on the information provided in {@link TrainingProgramUpdateDTO}.
+     * This method retrieves the entity, applies non-null changes from the DTO, and persists the updated entity.
+     *
+     * @param trainingProgramUpdateDTO the DTO containing the fields to be updated (must include the program ID)
+     * @return a {@link TrainingProgramDTO} representing the training program after the update
+     */
+    @Transactional
+    @Override
+    public TrainingProgramDTO update(TrainingProgramUpdateDTO trainingProgramUpdateDTO) {
+        log.info("Updating TrainingProgram with ID: {}", trainingProgramUpdateDTO.getId());
+
+        TrainingProgram program = getEntityById(trainingProgramUpdateDTO.getId());
+
+        if (trainingProgramUpdateDTO.getTitle() != null) {
+            program.setTitle(trainingProgramUpdateDTO.getTitle());
+        }
+        if (trainingProgramUpdateDTO.getDescription() != null) {
+            program.setDescription(trainingProgramUpdateDTO.getDescription());
+        }
+        if (trainingProgramUpdateDTO.getCreateAt() != null) {
+            program.setCreateAt(trainingProgramUpdateDTO.getCreateAt());
+        }
+        if (trainingProgramUpdateDTO.getMaterials() != null) {
+            program.setMaterials(trainingProgramUpdateDTO.getMaterials());
+        }
+        if (trainingProgramUpdateDTO.getPrerequisites() != null) {
+            program.setPrerequisites(trainingProgramUpdateDTO.getPrerequisites());
+        }
+        if (trainingProgramUpdateDTO.getIsMandatory() != null) {
+            program.setIsMandatory(trainingProgramUpdateDTO.getIsMandatory());
+        }
+
+        TrainingProgram updated = trainingProgramRepository.save(program);
+        return trainingProgramMapper.convertToDTO(updated);
     }
 
     /**
