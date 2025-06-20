@@ -4,6 +4,7 @@ import com.project.hrm.dto.APIResponse;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestCreateDTO;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestDTO;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestFilter;
+import com.project.hrm.dto.trainingRequestDTO.TrainingRequestUpdateDTO;
 import com.project.hrm.services.TrainingRequestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,6 +45,43 @@ public class TrainingRequestController {
             HttpServletRequest request) {
         TrainingRequestDTO result = trainingRequestService.create(dto);
         return ResponseEntity.ok(new APIResponse<>(true, "Create TrainingRequest successfully", result, null, request.getRequestURI()));
+    }
+
+    @PutMapping
+    @Operation(summary = "Update a training request",
+            description = "Updates an existing training request using provided data. Only non-null fields will be applied.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Training request update data",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = TrainingRequestUpdateDTO.class))),
+            responses = @ApiResponse(responseCode = "200", description = "Training request updated successfully",
+                    content = @Content(schema = @Schema(implementation = TrainingRequestDTO.class))))
+    public ResponseEntity<APIResponse<TrainingRequestDTO>> update(
+            @RequestBody TrainingRequestUpdateDTO dto,
+            HttpServletRequest request) {
+        TrainingRequestDTO result = trainingRequestService.update(dto);
+        return ResponseEntity.ok(new APIResponse<>(true, "Training request updated successfully", result, null, request.getRequestURI()));
+    }
+
+    @PutMapping("/update-status")
+    @Operation(
+            summary = "Update training request status",
+            description = "Updates the status of a specific training request by its ID.",
+            parameters = {
+                    @Parameter(name = "id", description = "ID of the training request", required = true),
+                    @Parameter(name = "status", description = "New status (e.g., PENDING, APPROVED, REJECTED)", required = true)
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Training request status updated successfully",
+                            content = @Content(schema = @Schema(implementation = TrainingRequestDTO.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<TrainingRequestDTO>> updateStatus(
+            @RequestParam Integer id,
+            @RequestParam String status,
+            HttpServletRequest request) {
+        TrainingRequestDTO result = trainingRequestService.updateStatus(id, status);
+        return ResponseEntity.ok(new APIResponse<>(true, "Training request status updated successfully", result, null, request.getRequestURI()));
     }
 
     @Operation(summary = "Get training request by ID", description = "Retrieve a training request by its ID",
