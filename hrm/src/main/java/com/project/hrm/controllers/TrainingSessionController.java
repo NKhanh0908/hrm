@@ -3,6 +3,7 @@ package com.project.hrm.controllers;
 import com.project.hrm.dto.APIResponse;
 import com.project.hrm.dto.trainingSession.TrainingSessionCreateDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionDTO;
+import com.project.hrm.dto.trainingSession.TrainingSessionUpdateDTO;
 import com.project.hrm.services.TrainingSessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,6 +49,28 @@ public class TrainingSessionController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new APIResponse<>(true, "Training session created successfully", result, null, request.getRequestURI()));
     }
+
+    @PutMapping
+    @Operation(
+            summary = "Update training session",
+            description = "Updates an existing training session based on provided fields. Only non-null fields will be applied.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Training session update data",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = TrainingSessionUpdateDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Training session updated successfully",
+                            content = @Content(schema = @Schema(implementation = TrainingSessionDTO.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<TrainingSessionDTO>> update(
+            @RequestBody TrainingSessionUpdateDTO dto,
+            HttpServletRequest request) {
+        TrainingSessionDTO result = trainingSessionService.update(dto);
+        return ResponseEntity.ok(new APIResponse<>(true, "Training session updated successfully", result, null, request.getRequestURI()));
+    }
+
 
     /**
      * Retrieves a training session by ID.

@@ -3,6 +3,7 @@ package com.project.hrm.services.impl;
 import com.project.hrm.dto.trainingSession.TrainingSessionCreateDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionFilter;
+import com.project.hrm.dto.trainingSession.TrainingSessionUpdateDTO;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.TrainingProgram;
 import com.project.hrm.entities.TrainingSession;
@@ -60,6 +61,58 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
         log.info("Successfully created training session with ID: {}", savedSession.getId());
 
         return trainingSessionMapper.convertEntityToDTO(savedSession);
+    }
+
+    /**
+     * Updates an existing training session with the provided update DTO.
+     * Only non-null fields will be applied to the entity.
+     *
+     * @param trainingSessionUpdateDTO the DTO containing the new training session information
+     * @return a {@link TrainingSessionDTO} representing the updated training session
+     */
+    @Transactional
+    @Override
+    public TrainingSessionDTO update(TrainingSessionUpdateDTO trainingSessionUpdateDTO) {
+        log.info("Update TrainingSession: {}", trainingSessionUpdateDTO);
+
+        TrainingSession session = getEntityById(trainingSessionUpdateDTO.getId());
+
+        if (trainingSessionUpdateDTO.getSessionName() != null) {
+            session.setSessionName(trainingSessionUpdateDTO.getSessionName());
+        }
+
+        if (trainingSessionUpdateDTO.getDurationHours() != null) {
+            session.setDurationHours(trainingSessionUpdateDTO.getDurationHours());
+        }
+
+        if (trainingSessionUpdateDTO.getCost() != null) {
+            session.setCost(trainingSessionUpdateDTO.getCost());
+        }
+
+        if (trainingSessionUpdateDTO.getLocation() != null) {
+            session.setLocation(trainingSessionUpdateDTO.getLocation());
+        }
+
+        if (trainingSessionUpdateDTO.getMaxParticipants() != null) {
+            session.setMaxParticipants(trainingSessionUpdateDTO.getMaxParticipants());
+        }
+
+        if (trainingSessionUpdateDTO.getCurrentParticipants() != null) {
+            session.setCurrentParticipants(trainingSessionUpdateDTO.getCurrentParticipants());
+        }
+
+        if (trainingSessionUpdateDTO.getTrainingProgramId() != null) {
+            TrainingProgram trainingProgram = trainingProgramService.getEntityById(trainingSessionUpdateDTO.getTrainingProgramId());
+            session.setTrainingProgram(trainingProgram);
+        }
+
+        if (trainingSessionUpdateDTO.getCoordinatorId() != null) {
+            Employees coordinator = employeeService.getEntityById(trainingSessionUpdateDTO.getCoordinatorId());
+            session.setCoordinator(coordinator);
+        }
+
+        TrainingSession saved = trainingSessionRepository.save(session);
+        return trainingSessionMapper.convertEntityToDTO(saved);
     }
 
     /**
