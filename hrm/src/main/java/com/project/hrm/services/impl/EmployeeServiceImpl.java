@@ -17,6 +17,7 @@ import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -56,6 +57,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return employeeMapper.pageToEmployeeDTOList(employeeRepository.findAll(spec, pageable));
     }
+
+    /**
+     * Retrieves a paginated list of employees associated with a given department ID
+     * through their contracts and roles.
+     *
+     * @param departmentId the ID of the department to filter employees by
+     * @param page         the page number (0-based)
+     * @param size         the page size
+     * @return a list of {@link EmployeeDTO} representing the employees in the department
+     */
+    @Override
+    public List<EmployeeDTO> filterByDepartmentID(Integer departmentId, int page, int size) {
+        log.info("Filtering employees by department ID: {}, page: {}, size: {}", departmentId, page, size);
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Employees> employeesPage = employeeRepository.findByDepartmentId(departmentId, pageable);
+
+        log.info("Found {} employees in department {}", employeesPage.getTotalElements(), departmentId);
+
+        return employeeMapper.toEmployeeDTOList(employeesPage.getContent());
+    }
+
 
     /**
      * Retrieves an {@link Employees} entity by its ID.

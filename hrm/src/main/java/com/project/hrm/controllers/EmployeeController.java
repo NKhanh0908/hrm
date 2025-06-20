@@ -7,6 +7,7 @@ import com.project.hrm.dto.employeeDTO.EmployeeFilter;
 import com.project.hrm.dto.employeeDTO.EmployeeUpdateDTO;
 import com.project.hrm.services.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -95,5 +96,35 @@ public class EmployeeController {
                 List<EmployeeDTO> results = employeeService.filter(employeeFilter, page, size);
                 return ResponseEntity.ok(new APIResponse<>(true, "Employees filtered successfully", results, null,
                                 request.getRequestURI()));
+        }
+
+        @GetMapping("/filter-by-department")
+        @Operation(
+                summary = "Filter employees by department",
+                description = "Retrieve a paginated list of employees who belong to the given department ID",
+                parameters = {
+                        @Parameter(name = "departmentId", description = "ID of the department to filter", required = true),
+                        @Parameter(name = "page", description = "Page number (0-based)", example = "0"),
+                        @Parameter(name = "size", description = "Page size", example = "10")
+                },
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Successfully retrieved employee list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = EmployeeDTO.class))))
+                }
+        )
+        public ResponseEntity<APIResponse<List<EmployeeDTO>>> filterByDepartmentId(
+                @RequestParam Integer departmentId,
+                @RequestParam(defaultValue = "0") int page,
+                @RequestParam(defaultValue = "10") int size,
+                HttpServletRequest request) {
+
+                List<EmployeeDTO> employees = employeeService.filterByDepartmentID(departmentId, page, size);
+
+                return ResponseEntity.ok(new APIResponse<>(
+                        true,
+                        "Filter employees by department successfully",
+                        employees,
+                        null,
+                        request.getRequestURI()
+                ));
         }
 }
