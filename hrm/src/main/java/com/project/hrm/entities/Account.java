@@ -1,5 +1,6 @@
 package com.project.hrm.entities;
 
+import com.project.hrm.enums.AccountRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,13 +31,13 @@ public class Account implements UserDetails {
     @JoinColumn
     private Employees employees;
 
-    @ManyToOne
-    @JoinColumn
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountRole role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getName()));
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

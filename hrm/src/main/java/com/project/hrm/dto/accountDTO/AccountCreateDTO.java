@@ -20,5 +20,5 @@ public class AccountCreateDTO {
     private Integer employeeId;
 
     @NotNull(message = "Role id account is required")
-    private Integer roleId;
+    private String role;
 }

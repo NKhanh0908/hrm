@@ -76,7 +76,7 @@ public class AccountServiceImpl implements AccountService {
                 return AuthenticationDTO.builder()
                         .token(jwtToken)
                         .refreshToken(refreshToken)
-                        .role(account.getRole().getName())
+                        .role(account.getRole().name())
                         .build();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -118,9 +118,7 @@ public class AccountServiceImpl implements AccountService {
 
         Employees employees = employeeService.getEntityById(accountCreateDTO.getEmployeeId());
 
-        Role role = roleService.getEntityById(accountCreateDTO.getRoleId());
-
-        Account account = accountMapper.convertCreateDTOToEntity(accountCreateDTO, employees, role);
+        Account account = accountMapper.convertCreateDTOToEntity(accountCreateDTO, employees);
         account.setId(IdGenerator.getGenerationId());
         account.setPassword(passwordEncoder.encode(accountCreateDTO.getUsername()));
 
