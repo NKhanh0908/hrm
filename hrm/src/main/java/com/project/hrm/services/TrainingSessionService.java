@@ -19,5 +19,7 @@ public interface TrainingSessionService {
 
     TrainingSession getEntityById(Integer id);
 
+    List<TrainingSessionDTO> getAllByTrainingProgramId(Integer trainingProgramId);
+
     List<TrainingSessionDTO> filter(TrainingSessionFilter trainingSessionFilter, int page, int size);
 }

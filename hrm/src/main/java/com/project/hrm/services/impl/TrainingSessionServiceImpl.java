@@ -143,6 +143,15 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
                 });
     }
 
+    @Override
+    public List<TrainingSessionDTO> getAllByTrainingProgramId(Integer trainingProgramId) {
+        log.info("Get all training session by training program id: {}", trainingProgramId);
+
+        return trainingSessionMapper.convertListEntityToListDTO(
+                trainingSessionRepository.findAllByTrainingProgramId(trainingProgramId)
+        );
+    }
+
     /**
      * Filters training sessions based on provided filter and pagination parameters.
      *
@@ -154,12 +163,13 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
     @Override
     public List<TrainingSessionDTO> filter(TrainingSessionFilter trainingSessionFilter, int page, int size) {
         log.info("Filtering training sessions with filter: {}, page: {}, size: {}", trainingSessionFilter, page, size);
+
         Specification<TrainingSession> trainingSessionSpecification = TrainingSessionSpecification.filter(trainingSessionFilter);
 
         Pageable pageable = PageRequest.of(page, size);
 
         Page<TrainingSession> trainingSessionPage = trainingSessionRepository.findAll(trainingSessionSpecification, pageable);
 
-        return trainingSessionMapper.convertPageToListDTO(trainingSessionPage);
+        return trainingSessionMapper.convertListEntityToListDTO(trainingSessionPage.getContent());
     }
 }
