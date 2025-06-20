@@ -32,7 +32,7 @@ public class TrainingProgramSpecification {
             }
 
             if (f.getDepartmentId() != null) {
-                predicates.add(cb.equal(root.get("departments").get("id"), f.getDepartmentId()));
+                predicates.add(cb.equal(root.get("targetRole").get("departments").get("id"), f.getDepartmentId()));
             }
 
             if (f.getRoleId() != null) {

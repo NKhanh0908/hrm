@@ -19,6 +19,5 @@ public class TrainingProgramCreateDTO {
     private String materials;
     private String prerequisites;
     private Boolean isMandatory;
-    private Integer departmentId;
     private Integer roleId;
 }

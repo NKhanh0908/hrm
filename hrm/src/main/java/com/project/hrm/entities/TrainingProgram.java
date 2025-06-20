@@ -27,10 +27,6 @@ public class TrainingProgram {
 
     @ManyToOne
     @JoinColumn
-    private Departments departments;
-
-    @ManyToOne
-    @JoinColumn
     private Role targetRole;
 
     @ManyToOne
