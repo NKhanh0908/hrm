@@ -11,6 +11,8 @@ import java.util.List;
 public interface RoleService {
     Role getEntityById(Integer id);
 
+    RoleDTO getDTOById(Integer id);
+
     RoleDTO create(RoleCreateDTO roleCreateDTO);
 
     List<RoleDTO> getAllByDepartmentId(Integer departmentId);

@@ -37,6 +37,12 @@ public class RoleServiceImpl implements RoleService {
                 .orElseThrow(()-> new CustomException(Error.ROLE_NOT_FOUND));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public RoleDTO getDTOById(Integer id) {
+        return roleMapper.convertEntityToDTO(getEntityById(id));
+    }
+
     @Override
     public RoleDTO create(RoleCreateDTO roleCreateDTO) {
         Departments departments = departmentService.getEntityById(roleCreateDTO.getDepartmentId());
