@@ -12,6 +12,8 @@ import java.util.List;
 public interface TrainingEnrollmentService {
     TrainingEnrollmentDTO create(TrainingEnrollmentCreateDTO trainingEnrollmentCreateDTO);
 
+    List<TrainingEnrollmentDTO> generateTrainingEnroll(Integer requestedProgramId, Integer trainingRequest);
+
     TrainingEnrollment getEntityById(Integer id);
 
     TrainingEnrollmentDTO getDTOById(Integer id);

@@ -3,6 +3,7 @@ package com.project.hrm.services.impl;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentCreateDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentFilter;
+import com.project.hrm.dto.trainingSession.TrainingSessionDTO;
 import com.project.hrm.entities.TrainingEnrollment;
 import com.project.hrm.entities.TrainingRequest;
 import com.project.hrm.entities.TrainingSession;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -60,6 +62,23 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
         log.info("Successfully created TrainingEnrollment with ID: {}", saved.getId());
 
         return trainingEnrollmentMapper.convertEntityToDTO(saved);
+    }
+
+    @Transactional
+    @Override
+    public List<TrainingEnrollmentDTO> generateTrainingEnroll(Integer requestedProgramId, Integer trainingRequest) {
+        List<TrainingSessionDTO> trainingSessionDTOS = trainingSessionService.getAllByTrainingProgramId(requestedProgramId);
+
+        return trainingSessionDTOS.stream()
+                .map(trainingSessionDTO -> {
+                    TrainingEnrollmentCreateDTO trainingEnrollmentCreateDTO = new TrainingEnrollmentCreateDTO();
+                    trainingEnrollmentCreateDTO.setTrainingRequestId(trainingRequest);
+                    trainingEnrollmentCreateDTO.setTrainingSessionId(trainingSessionDTO.getTrainingProgramId());
+                    trainingEnrollmentCreateDTO.setStatus("ENROLLED");
+
+                    return create(trainingEnrollmentCreateDTO);
+                })
+                .toList();
     }
 
     /**

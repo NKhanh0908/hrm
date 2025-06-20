@@ -12,14 +12,13 @@ import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.TrainingRequestMapper;
 import com.project.hrm.repositories.TrainingRequestRepository;
-import com.project.hrm.services.AccountService;
-import com.project.hrm.services.EmployeeService;
-import com.project.hrm.services.TrainingProgramService;
-import com.project.hrm.services.TrainingRequestService;
+import com.project.hrm.services.*;
 import com.project.hrm.specifications.TrainingRequestSpecification;
 import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,15 +31,32 @@ import java.util.List;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class TrainingRequestServiceImpl implements TrainingRequestService {
     private final TrainingRequestRepository trainingRequestRepository;
 
     private final EmployeeService employeeService;
     private final TrainingProgramService trainingProgramService;
     private final AccountService accountService;
+    private final TrainingEnrollmentService trainingEnrollmentService;
 
     private final TrainingRequestMapper trainingRequestMapper;
+
+    public TrainingRequestServiceImpl(
+            TrainingRequestRepository trainingRequestRepository,
+            EmployeeService employeeService,
+            TrainingProgramService trainingProgramService,
+            AccountService accountService,
+            TrainingRequestMapper trainingRequestMapper,
+            @Lazy TrainingEnrollmentService trainingEnrollmentService
+    ){
+        this.trainingRequestRepository = trainingRequestRepository;
+        this.employeeService = employeeService;
+        this.trainingProgramService = trainingProgramService;
+        this.accountService = accountService;
+        this.trainingEnrollmentService = trainingEnrollmentService;
+        this.trainingRequestMapper = trainingRequestMapper;
+
+    }
 
     /**
      * Creates a new training request based on the provided data.
@@ -113,7 +129,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
 
     /**
     *
-    * Update status training request
+    * Update status training request. If Status equal APPROVED then generate Training Enroll with Training session created by id Training program
     * @param id, status. Id training request, status update and add employee update
     * @return a {@link TrainingRequestDTO} representing the updated training request
     *
@@ -127,6 +143,12 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
         trainingRequest.setStatus(TrainingRequestStatus.valueOf(status));
         trainingRequest.setApprovedDate(LocalDateTime.now());
         trainingRequest.setApprovedBy(accountService.getPrincipal());
+
+        TrainingRequestDTO trainingRequestDTO = trainingRequestMapper.convertEntityToDTO(trainingRequestRepository.save(trainingRequest));
+
+        if (trainingRequestDTO.getStatus().name().equals(TrainingRequestStatus.APPROVED.name())){
+            trainingEnrollmentService.generateTrainingEnroll(trainingRequestDTO.getRequestedProgramId(), trainingRequest.getId());
+        }
 
         return trainingRequestMapper.convertEntityToDTO(trainingRequestRepository.save(trainingRequest));
     }
