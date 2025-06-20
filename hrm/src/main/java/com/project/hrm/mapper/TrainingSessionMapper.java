@@ -3,7 +3,6 @@ package com.project.hrm.mapper;
 import com.project.hrm.dto.trainingSession.TrainingSessionCreateDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionDTO;
 import com.project.hrm.entities.TrainingSession;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -39,8 +38,8 @@ public class TrainingSessionMapper {
                 .build();
     }
 
-    public List<TrainingSessionDTO> convertPageToListDTO(Page<TrainingSession> trainingSessionPage){
-        return trainingSessionPage.getContent()
+    public List<TrainingSessionDTO> convertListEntityToListDTO(List<TrainingSession> trainingSessionPage){
+        return trainingSessionPage
                 .stream()
                 .map(this::convertEntityToDTO)
                 .collect(Collectors.toList());
