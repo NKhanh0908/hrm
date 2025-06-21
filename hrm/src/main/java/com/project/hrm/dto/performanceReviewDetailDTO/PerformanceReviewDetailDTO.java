@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,5 +18,6 @@ public class PerformanceReviewDetailDTO {
     private String reviewerName;
     private String comment;
     private Float score;
+    private LocalDateTime reviewDate;
     private Integer performanceReviewId;
 }

@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -29,4 +31,6 @@ public class PerformanceReviewDetail {
     @JoinColumn(nullable = false)
     @JsonBackReference
     private PerformanceReview performanceReview;
+
+    private LocalDateTime reviewDate;
 }
