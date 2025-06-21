@@ -45,7 +45,7 @@ public class ApplyController {
         }
 
         @PutMapping
-        @Operation(summary = "Update Apply", description = "Update Apply in Job upload by Recruitment", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Apply update information", required = true, content = @Content(schema = @Schema(implementation = ApplyUpdateDTO.class))), responses = {
+        @Operation(summary = "Update Apply", description = "Update Apply in Job upload by Recruitment with Status: INTERVIEW, REJECTED, HIRED", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Apply update information", required = true, content = @Content(schema = @Schema(implementation = ApplyUpdateDTO.class))), responses = {
                         @ApiResponse(responseCode = "201", description = "Update Apply successfully", content = @Content(schema = @Schema(implementation = ApplyDTO.class)))
         })
         public ResponseEntity<APIResponse<ApplyDTO>> update(@RequestBody ApplyUpdateDTO applyUpdateDTO,
