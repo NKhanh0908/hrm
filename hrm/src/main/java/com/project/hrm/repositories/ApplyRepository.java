@@ -42,14 +42,14 @@ public interface ApplyRepository extends JpaRepository<Apply, Integer>, JpaSpeci
 
     @Query(value = """
             SELECT rl.id
-            FROM (
-                SELECT recruitment_id
-                FROM apply\s
-                WHERE id = :applyId
-            ) a\s
-            INNER JOIN recruitment r ON a.recruitment_id = r.id\s
-            INNER JOIN recruitment_requirements rr ON r.recruitment_requirements_id = rr.id
-            INNER JOIN role rl ON rr.role_id = rl.id;
+FROM (
+         SELECT recruitment_id
+         FROM apply
+         WHERE id = :applyId
+     ) a
+            INNER JOIN recruitment r ON a.recruitment_id = r.id
+    INNER JOIN recruitment_requirements rr ON r.recruitment_requirements_id = rr.id
+    INNER JOIN role rl ON rr.role_id = rl.id
             """, nativeQuery = true)
     Integer getRoleIdByApplyId(@Param("applyId") Integer applyId);
 }
