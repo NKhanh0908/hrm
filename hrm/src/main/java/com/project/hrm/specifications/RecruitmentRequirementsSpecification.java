@@ -14,13 +14,13 @@ public class RecruitmentRequirementsSpecification {
         return ((root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (recruitmentRequirementFilter.getDepartmentId() != 0) {
+            if (recruitmentRequirementFilter.getDepartmentId()!= null && recruitmentRequirementFilter.getDepartmentId() != 0) {
                 predicates.add(cb.equal(
                         root.get("role").get("departments").get("id"),
                         recruitmentRequirementFilter.getDepartmentId()));
             }
 
-            if (recruitmentRequirementFilter.getRoleId() != 0) {
+            if (recruitmentRequirementFilter.getRoleId()!= null && recruitmentRequirementFilter.getRoleId() != 0) {
                 predicates.add(cb.equal(
                         root.get("role").get("id"),
                         recruitmentRequirementFilter.getRoleId()));

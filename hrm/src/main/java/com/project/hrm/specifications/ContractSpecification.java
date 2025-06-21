@@ -15,19 +15,19 @@ public class ContractSpecification {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (filter.getEmployeeId() != 0) {
+            if (filter.getEmployeeId() != null && filter.getEmployeeId() != 0) {
                 predicates.add(
                         cb.equal(root.get("employee").get("id"), filter.getEmployeeId())
                 );
             }
 
-            if (filter.getDepartmentId() != 0) {
+            if (filter.getDepartmentId() != null && filter.getDepartmentId() != 0) {
                 predicates.add(
                         cb.equal(root.get("role").get("departments").get("id"), filter.getDepartmentId())
                 );
             }
 
-            if (filter.getRoleId() != 0) {
+            if (filter.getRoleId()!= null && filter.getRoleId() != 0) {
                 predicates.add(
                         cb.equal(root.get("role").get("id"), filter.getRoleId())
                 );
@@ -65,7 +65,6 @@ public class ContractSpecification {
                 );
             }
 
-            // Filter contracts whose period covers the specified range
             if (filter.getPeriodStart() != null && filter.getPeriodEnd() != null) {
                 predicates.add(
                         cb.and(
