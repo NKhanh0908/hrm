@@ -180,9 +180,17 @@ public enum Error {
 
     //Training enrollment
     TRAINING_ENROLLMENT_NOT_FOUND(18001, "Training enrollment not found", HttpStatus.NOT_FOUND),
+    TRAINING_ENROLLMENT_ALREADY_EXISTS(18002, "Training enrollment already exists", HttpStatus.CONFLICT),
+    TRAINING_ENROLLMENT_UNABLE_TO_SAVE(18003, "Unable to save Training enrollment", HttpStatus.INTERNAL_SERVER_ERROR),
+    TRAINING_ENROLLMENT_UNABLE_TO_UPDATE(18004, "Unable to update Training enrollment", HttpStatus.INTERNAL_SERVER_ERROR),
+    TRAINING_ENROLLMENT_UNABLE_TO_DELETE(18005, "Unable to delete Training enrollment", HttpStatus.INTERNAL_SERVER_ERROR),
 
     // Training Request
-    TRAINING_REQUEST_NOT_FOUND(18001, "Training Request not found", HttpStatus.NOT_FOUND);
+    TRAINING_REQUEST_NOT_FOUND(19001, "Training Request not found", HttpStatus.NOT_FOUND),
+    TRAINING_REQUEST_ALREADY_EXISTS(19002, "Training Request already exists", HttpStatus.CONFLICT),
+    TRAINING_REQUEST_UNABLE_TO_SAVE(19003, "Unable to save Training Request", HttpStatus.INTERNAL_SERVER_ERROR),
+    TRAINING_REQUEST_UNABLE_TO_UPDATE(19004, "Unable to update Training Request", HttpStatus.INTERNAL_SERVER_ERROR),
+    TRAINING_REQUEST_UNABLE_TO_DELETE(19005, "Unable to delete Training Request", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final int code;
     private final String message;
