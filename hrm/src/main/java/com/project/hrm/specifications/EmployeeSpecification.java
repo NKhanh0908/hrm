@@ -13,14 +13,14 @@ public class EmployeeSpecification {
     public static Specification<Employees> filterEmployee(EmployeeFilter employeeFilter){
         return(root, query, criteriaBuilder) ->{
             List<Predicate> predicates = new ArrayList<>();
-            if(!employeeFilter.getName().isEmpty()){
+            if(employeeFilter.getName() != null && !employeeFilter.getName().isEmpty()){
                 predicates.add(criteriaBuilder.and(
                         criteriaBuilder.like(root.get("firstName"), "%"+ employeeFilter.getName()+ "%"),
                         criteriaBuilder.like(root.get("lastName"),"%" + employeeFilter.getName()+ "%")
                         )
                 );
             }
-            if(!employeeFilter.getEmail().isEmpty()){
+            if(employeeFilter.getEmail() !=null && !employeeFilter.getEmail().isEmpty()){
                 predicates.add(criteriaBuilder.like(root.get("email"), "%" + employeeFilter.getEmail()+ "%" ));
             }
 
@@ -31,11 +31,11 @@ public class EmployeeSpecification {
                 ));
             }
 
-            if(!employeeFilter.getGender().isEmpty()){
+            if(employeeFilter.getGender()!= null && !employeeFilter.getGender().isEmpty()){
                 predicates.add(criteriaBuilder.equal(root.get("gender"), employeeFilter.getGender()));
             }
 
-            if(!employeeFilter.getAddress().isEmpty()){
+            if(employeeFilter.getAddress() != null && !employeeFilter.getAddress().isEmpty()){
                 predicates.add(criteriaBuilder.equal(root.get("address"), employeeFilter.getAddress()));
             }
 
