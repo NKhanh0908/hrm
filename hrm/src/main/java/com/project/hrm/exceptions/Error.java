@@ -16,6 +16,7 @@ public enum Error {
 
     // Server Error
     UNCATEGORIZED_EXCEPTION(9999, "Unclassified error", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_ENUM_VALUE(9998, "Invalid enum value", HttpStatus.INTERNAL_SERVER_ERROR),
 
     // Database Error
     DATABASE_ACCESS_ERROR(9998, "Database access error", HttpStatus.INTERNAL_SERVER_ERROR),
@@ -190,7 +191,11 @@ public enum Error {
     TRAINING_REQUEST_ALREADY_EXISTS(19002, "Training Request already exists", HttpStatus.CONFLICT),
     TRAINING_REQUEST_UNABLE_TO_SAVE(19003, "Unable to save Training Request", HttpStatus.INTERNAL_SERVER_ERROR),
     TRAINING_REQUEST_UNABLE_TO_UPDATE(19004, "Unable to update Training Request", HttpStatus.INTERNAL_SERVER_ERROR),
-    TRAINING_REQUEST_UNABLE_TO_DELETE(19005, "Unable to delete Training Request", HttpStatus.INTERNAL_SERVER_ERROR);
+    TRAINING_REQUEST_UNABLE_TO_DELETE(19005, "Unable to delete Training Request", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    // Performance review
+    PERFORMANCE_REVIEW_NOT_FOUND(20001, "Performance review not found", HttpStatus.NOT_FOUND),
+    PERFORMANCE_REVIEW_UNABLE_TO_UPDATE(20002, "Must update Performance review with status SCHEDULED", HttpStatus.NOT_FOUND),;
 
     private final int code;
     private final String message;
