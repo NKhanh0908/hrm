@@ -16,16 +16,30 @@ import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employees, Integer>, JpaSpecificationExecutor<Employees> {
-    @Query(value = "SELECT d.id, d.department_name, count(*) as total FROM employees e INNER JOIN contracts c on e.id = c.employee_id INNER JOIN departments d on c.departments_id = d.id\n" +
-            "GROUP BY d.id", nativeQuery = true)
+    @Query(value = """
+            SELECT d.id, d.department_name, count(*) as total
+            FROM employees e
+                INNER JOIN contracts c on e.id = c.employee_id
+                INNER JOIN role r on c.role_id = r.id
+                INNER JOIN departments d on r.departments_id = d.id
+                        GROUP BY d.id""", nativeQuery = true)
     List<TotalEmployeeByDepartment> getTotalEmployeeByDepartment();
 
-    @Query(value = "SELECT r.id, r.name, count(*) as total FROM employees e INNER JOIN contracts c on e.id = c.employee_id INNER JOIN role r on c.role_id = r.id\n" +
-            "GROUP BY r.id", nativeQuery = true)
+    @Query(value = """
+            SELECT r.id, r.name, count(*) as total
+            FROM employees e
+                INNER JOIN contracts c on e.id = c.employee_id
+                INNER JOIN role r on c.role_id = r.id
+                    GROUP BY r.id""", nativeQuery = true)
     List<TotalEmployeeByRole> getTotalEmployeeByRole();
 
-    @Query(value = "SELECT r.id,  r.name, d.id, d.department_name, count(*) as total FROM employees e INNER JOIN contracts c on e.id = c.employee_id INNER JOIN departments d on c.departments_id = d.id INNER JOIN role r on c.role_id = r.id\n" +
-            "GROUP BY r.id, d.id, d.department_name", nativeQuery = true)
+    @Query(value = """
+            SELECT r.id,  r.name, d.id, d.department_name, count(*) as total
+            FROM employees e
+                INNER JOIN contracts c on e.id = c.employee_id
+                INNER JOIN role r on c.role_id = r.id
+                INNER JOIN departments d on r.departments_id = d.id
+                        GROUP BY r.id, d.id, d.department_name""", nativeQuery = true)
     List<TotalEmployeeByDepartmentAndRole> getTotalEmployeeByDepartmentAndRole();
 
     @Query(
