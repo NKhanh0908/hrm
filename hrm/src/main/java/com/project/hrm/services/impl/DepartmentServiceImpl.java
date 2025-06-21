@@ -5,12 +5,10 @@ import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentFilter;
 import com.project.hrm.dto.departmentDTO.DepartmentUpdateDTO;
 import com.project.hrm.entities.Departments;
-import com.project.hrm.entities.Employees;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.DepartmentMapper;
 import com.project.hrm.repositories.DepartmentRepository;
-import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.DepartmentService;
 import com.project.hrm.specifications.DepartmentSpecification;
 import com.project.hrm.utils.IdGenerator;
@@ -30,7 +28,6 @@ import java.util.List;
 public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
-    private final EmployeeRepository employeeRepository;
 
     /**
      * Finds a department by its unique identifier.
@@ -48,9 +45,16 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .orElseThrow(() -> new CustomException(Error.DEPARTMENT_NOT_FOUND));
     }
 
+    /**
+     * Finds a department by employee Id
+     *
+     * @param employeeId the ID of the department
+     * @return the {@link DepartmentDTO} entity if found
+     * returns the raw DTO for use by controller required
+     */
     @Override
     public DepartmentDTO getDepartmentDTOByEmployeeId(Integer employeeId) {
-        return null;
+        return departmentMapper.toDepartmentDTO(departmentRepository.getDepartmentsByEmployeeId(employeeId));
     }
 
     /**
