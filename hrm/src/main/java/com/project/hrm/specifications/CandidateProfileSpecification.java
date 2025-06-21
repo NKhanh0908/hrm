@@ -10,9 +10,9 @@ public class CandidateProfileSpecification {
 
     public static Specification<CandidateProfile> filter(CandidateProfileFilter dto) {
         return (root, query, cb) -> {
+            assert query != null;
             query.distinct(true);
 
-            // Join với Apply
             Join<CandidateProfile, Apply> applyJoin = root.join("apply", JoinType.LEFT);
 
             Predicate predicate = cb.conjunction();
