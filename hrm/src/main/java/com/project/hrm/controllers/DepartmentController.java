@@ -76,18 +76,4 @@ public class DepartmentController {
                 return ResponseEntity.ok(new APIResponse<>(true, "Filter Departments successfully", filteredDepartments,
                                 null, request.getRequestURI()));
         }
-
-        @PutMapping("/appointment-of-dean")
-        @Operation(summary = "Appoint department dean", description = "Appoint a dean (head) for a department by specifying department ID and employee ID.", parameters = {
-                        @Parameter(name = "departmentId", description = "ID of the department to update", required = true),
-                        @Parameter(name = "employeeId", description = "ID of the employee to appoint as dean", required = true)
-        }, responses = {
-                        @ApiResponse(responseCode = "200", description = "Dean appointed successfully", content = @Content(schema = @Schema(implementation = DepartmentDTO.class)))
-        })
-        public ResponseEntity<APIResponse<DepartmentDTO>> appointmentOfDean(@RequestParam Integer departmentId,
-                        @RequestParam Integer employeeId, HttpServletRequest request) {
-                DepartmentDTO departmentDTO = departmentService.appointmentOfDean(departmentId, employeeId);
-                return ResponseEntity.ok(new APIResponse<>(true, "Appointment of Dean successfully", departmentDTO,
-                                null, request.getRequestURI()));
-        }
 }

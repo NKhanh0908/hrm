@@ -19,9 +19,8 @@ public interface DepartmentService {
 
     Departments getEntityById(Integer id);
 
+    DepartmentDTO getDepartmentDTOByEmployeeId(Integer employeeId);
+
     List<DepartmentDTO> filter(DepartmentFilter departmentFilter, int page, int size);
-
-    DepartmentDTO appointmentOfDean(Integer departmentId, Integer employeeId);
-
 
 }

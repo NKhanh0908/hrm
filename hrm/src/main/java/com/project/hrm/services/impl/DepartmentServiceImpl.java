@@ -48,6 +48,11 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .orElseThrow(() -> new CustomException(Error.DEPARTMENT_NOT_FOUND));
     }
 
+    @Override
+    public DepartmentDTO getDepartmentDTOByEmployeeId(Integer employeeId) {
+        return null;
+    }
+
     /**
      * Finds a department by its unique identifier.
      *
@@ -140,24 +145,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         return departmentMapper.convertPageEntityToPageDTO(
                 departmentRepository.findAll(departmentsSpecification, pageable));
-    }
-
-    /**
-     * Assigns an employee as the head of a department.
-     *
-     * @param departmentId the ID of the department
-     * @param employeeId   the ID of the employee to be assigned as head
-     * @return a {@link DepartmentDTO} representing the department with the updated head assignment
-     */
-    @Transactional
-    @Override
-    public DepartmentDTO appointmentOfDean(Integer departmentId, Integer employeeId) {
-        log.info("Appointment of Dean Department");
-
-        Employees employee = employeeRepository.findById(employeeId).orElseThrow();
-
-        return departmentMapper.toDepartmentDTO(
-                departmentRepository.updateDean(employee.getId(), departmentId));
     }
 
 }
