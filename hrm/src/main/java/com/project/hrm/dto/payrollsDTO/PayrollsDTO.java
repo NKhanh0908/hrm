@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParollsDTO {
+public class PayrollsDTO {
     private Integer id;
     private Integer employeeId;
     private Integer payPeriodId;

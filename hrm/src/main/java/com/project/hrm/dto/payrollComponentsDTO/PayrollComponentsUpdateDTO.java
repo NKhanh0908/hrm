@@ -1,4 +1,4 @@
-package com.project.hrm.dto.payrollComponentDTO;
+package com.project.hrm.dto.payrollComponentsDTO;
 
 import com.project.hrm.enums.PayrollComponentType;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayrollComponentDTO {
+public class PayrollComponentsUpdateDTO {
     private Integer id;
     private String name;
     private PayrollComponentType type;

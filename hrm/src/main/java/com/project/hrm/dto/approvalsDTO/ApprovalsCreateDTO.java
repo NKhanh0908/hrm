@@ -1,4 +1,4 @@
-package com.project.hrm.dto.approvalDTO;
+package com.project.hrm.dto.approvalsDTO;
 
 import com.project.hrm.enums.PayrollStatus;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApprovalUpdateDTO {
-    private Integer id;
+public class ApprovalsCreateDTO {
     private Integer employeeReviewId;
     private Integer payrollId;
     private LocalDateTime approvalDate;

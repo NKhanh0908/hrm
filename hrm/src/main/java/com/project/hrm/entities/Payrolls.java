@@ -23,6 +23,7 @@ public class Payrolls {
 
     @ManyToOne
     @JoinColumn
+    @JsonBackReference
     private Employees employee;
 
     @ManyToOne

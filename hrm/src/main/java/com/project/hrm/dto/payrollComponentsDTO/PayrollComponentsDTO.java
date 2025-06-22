@@ -1,5 +1,6 @@
-package com.project.hrm.dto.payrollDetailDTO;
+package com.project.hrm.dto.payrollComponentsDTO;
 
+import com.project.hrm.enums.PayrollComponentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +12,11 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayrollDetailDTO {
+public class PayrollComponentsDTO {
     private Integer id;
+    private String name;
+    private PayrollComponentType type;
     private BigDecimal amount;
-    private Boolean isPercentage;
     private Float percentage;
-    private Integer payrollId;
-    private Integer payrollComponentId;
+    private Integer regulationId;
 }

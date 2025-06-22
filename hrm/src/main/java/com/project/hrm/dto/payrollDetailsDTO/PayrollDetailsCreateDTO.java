@@ -1,4 +1,4 @@
-package com.project.hrm.dto.payrollDetailDTO;
+package com.project.hrm.dto.payrollDetailsDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayrollDetailUpdateDTO {
-    private Integer id;
+public class PayrollDetailsCreateDTO {
     private BigDecimal amount;
     private Boolean isPercentage;
     private Float percentage;

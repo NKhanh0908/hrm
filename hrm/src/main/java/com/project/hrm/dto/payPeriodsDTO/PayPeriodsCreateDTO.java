@@ -1,4 +1,4 @@
-package com.project.hrm.dto.payPeriodDTO;
+package com.project.hrm.dto.payPeriodsDTO;
 
 import com.project.hrm.enums.PayPeriodStatus;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayPeriodCreateDTO {
+public class PayPeriodsCreateDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String payPeriodCode;
