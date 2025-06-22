@@ -3,9 +3,12 @@ package com.project.hrm.controllers;
 import com.project.hrm.dto.APIResponse;
 import com.project.hrm.dto.trainingSession.TrainingSessionCreateDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionDTO;
+import com.project.hrm.dto.trainingSession.TrainingSessionFilter;
 import com.project.hrm.dto.trainingSession.TrainingSessionUpdateDTO;
 import com.project.hrm.services.TrainingSessionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/training-session")
@@ -93,5 +98,50 @@ public class TrainingSessionController {
 
         TrainingSessionDTO result = trainingSessionService.getDTOById(id);
         return ResponseEntity.ok(new APIResponse<>(true, "Training session retrieved successfully", result, null, request.getRequestURI()));
+    }
+
+    @GetMapping("/by-training-program/{trainingProgramId}")
+    @Operation(summary = "Get all training sessions by training program ID",
+            description = "Retrieves all training sessions associated with a specific training program.",
+            parameters = @Parameter(name = "trainingProgramId", description = "ID of the training program", required = true),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "List of training sessions",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = TrainingSessionDTO.class))))
+            })
+    public ResponseEntity<APIResponse<List<TrainingSessionDTO>>> getAllByTrainingProgramId(
+            @PathVariable Integer trainingProgramId,
+            HttpServletRequest request) {
+
+        List<TrainingSessionDTO> result = trainingSessionService.getAllByTrainingProgramId(trainingProgramId);
+        return ResponseEntity.ok(new APIResponse<>(true,
+                "Training sessions by training program retrieved successfully",
+                result, null, request.getRequestURI()));
+    }
+
+    @PostMapping("/filter")
+    @Operation(summary = "Filter training sessions",
+            description = "Filters training sessions based on location, cost, coordinator, etc.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Filter conditions",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = TrainingSessionFilter.class))),
+            parameters = {
+                    @Parameter(name = "page", description = "Page number (0-based)", required = false),
+                    @Parameter(name = "size", description = "Page size", required = false)
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Filtered list of training sessions",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = TrainingSessionDTO.class))))
+            })
+    public ResponseEntity<APIResponse<List<TrainingSessionDTO>>> filterTrainingSessions(
+            @RequestBody TrainingSessionFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
+        List<TrainingSessionDTO> result = trainingSessionService.filter(filter, page, size);
+        return ResponseEntity.ok(new APIResponse<>(true,
+                "Filtered training sessions retrieved successfully",
+                result, null, request.getRequestURI()));
     }
 }
