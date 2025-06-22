@@ -88,8 +88,8 @@ public class LoggingAspect {
             stopWatch.stop();
 
             // Log successful exit
-            log.info("[{}] Successfully executed {}.{} in {}ms",
-                    layer, className, methodName, stopWatch.getTotalTimeMillis());
+            log.info("[{}] {}.{} executed in {}ms", layer, className, methodName, stopWatch.getTotalTimeMillis());
+
 
             return result;
 
