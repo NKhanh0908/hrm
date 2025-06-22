@@ -14,7 +14,7 @@ public class EmployeeSpecification {
         return(root, query, criteriaBuilder) ->{
             List<Predicate> predicates = new ArrayList<>();
             if(employeeFilter.getName() != null && !employeeFilter.getName().isEmpty()){
-                predicates.add(criteriaBuilder.and(
+                predicates.add(criteriaBuilder.or(
                         criteriaBuilder.like(root.get("firstName"), "%"+ employeeFilter.getName()+ "%"),
                         criteriaBuilder.like(root.get("lastName"),"%" + employeeFilter.getName()+ "%")
                         )
