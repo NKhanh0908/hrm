@@ -4,8 +4,6 @@ import com.project.hrm.dto.trainingProgramDTO.TrainingProgramCreateDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramFilter;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramUpdateDTO;
-import com.project.hrm.entities.Account;
-import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.Role;
 import com.project.hrm.entities.TrainingProgram;
 import com.project.hrm.exceptions.CustomException;
@@ -21,8 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +44,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Transactional
     @Override
     public TrainingProgramDTO create(TrainingProgramCreateDTO trainingProgramCreateDTO) {
+        log.info("Creating TrainingProgram with ID");
 
         TrainingProgram trainingProgram = trainingProgramMapper.convertCreateDTOToEntity(trainingProgramCreateDTO);
 
@@ -106,6 +103,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Transactional(readOnly = true)
     @Override
     public TrainingProgram getEntityById(Integer id) {
+        log.info("Get training program by id: {}", id);
+
         return trainingProgramRepository.findById(id)
                 .orElseThrow(() -> new CustomException(Error.TRAINING_PROGRAM_NOT_FOUND));
     }
@@ -133,6 +132,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Transactional(readOnly = true)
     @Override
     public List<TrainingProgramDTO> filter(TrainingProgramFilter trainingProgramFilter, int page, int size) {
+        log.info("Filtering training programs: {}", trainingProgramFilter);
+
         Specification<TrainingProgram> trainingProgramSpecification = TrainingProgramSpecification.filter((trainingProgramFilter));
 
         Pageable pageable = PageRequest.of(page, size);

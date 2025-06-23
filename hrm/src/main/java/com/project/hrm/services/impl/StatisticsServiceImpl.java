@@ -6,7 +6,6 @@ import com.project.hrm.repositories.ContractRepository;
 import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.StatisticsService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

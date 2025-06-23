@@ -11,7 +11,6 @@ import java.util.List;
 public interface RecruitmentRequirementService {
     RecruitmentRequirementsDTO create(RecruitmentRequirementsCreateDTO recruitmentRequirementsCreateDTO);
 
-
     RecruitmentRequirementsDTO update(RecruitmentRequirementsUpdateDTO recruitmentRequirementsUpdateDTO);
 
     RecruitmentRequirementsDTO updateStatus(Integer id, RecruitmentRequirementsStatus status);

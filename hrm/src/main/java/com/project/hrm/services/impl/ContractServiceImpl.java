@@ -40,7 +40,6 @@ public class ContractServiceImpl implements ContractService {
     private final EmployeeService employeeService;
     private final RoleService roleService;
 
-
     /**
      * Creates a new {@link Contracts} entity from the provided {@link ContractCreateDTO}.
      *

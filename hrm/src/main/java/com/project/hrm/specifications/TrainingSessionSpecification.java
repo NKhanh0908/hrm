@@ -1,6 +1,5 @@
 package com.project.hrm.specifications;
 
-
 import com.project.hrm.dto.trainingSession.TrainingSessionFilter;
 import com.project.hrm.entities.TrainingSession;
 import jakarta.persistence.criteria.Predicate;

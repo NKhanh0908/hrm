@@ -21,7 +21,12 @@ import java.util.Locale;
 public class MailServiceImpl implements MailService {
     private final JavaMailSender javaMailSender;
 
-
+    /**
+     * Sends an interview invitation email to the applicant.
+     *
+     * @param infoApply       information of the applicant
+     * @param interviewLetter the interview letter details including time and location
+     */
     @Override
     public void notificationInterview(InfoApply infoApply, InterviewLetter interviewLetter) {
         log.info("Sending interview to email...: {}", infoApply.getEmail());
@@ -33,6 +38,12 @@ public class MailServiceImpl implements MailService {
         sendMail(emailTo, subject, content);
     }
 
+    /**
+     * Sends a job offer email to the selected candidate after being hired.
+     *
+     * @param infoApply           information of the applicant
+     * @param jobOfferDetailsDTO  the details of the job offer such as department, start date, etc.
+     */
     @Override
     public void notificationForHired(InfoApply infoApply, JobOfferDetailsDTO jobOfferDetailsDTO) {
         log.info("Sending hired to email...: {}", infoApply.getEmail());
@@ -44,6 +55,11 @@ public class MailServiceImpl implements MailService {
         sendMail(emailTo, subject, content);
     }
 
+    /**
+     * Sends a rejection email to the applicant.
+     *
+     * @param infoApply information of the applicant
+     */
     @Override
     public void notificationForRejection(InfoApply infoApply) {
         log.info("Sending reject to email...: {}", infoApply.getEmail());
@@ -55,6 +71,13 @@ public class MailServiceImpl implements MailService {
         sendMail(emailTo, subject, content);
     }
 
+    /**
+     * Generates the HTML content for an interview invitation email.
+     *
+     * @param infoApply       applicant info
+     * @param interviewLetter interview schedule and location
+     * @return HTML content for the interview invitation
+     */
     private String getContentNotificationForInterview(InfoApply infoApply, InterviewLetter interviewLetter) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a, dd MMMM yyyy", Locale.ENGLISH);
         String formattedTime = interviewLetter.getInterviewTime().format(formatter);
@@ -91,6 +114,13 @@ public class MailServiceImpl implements MailService {
         );
     }
 
+    /**
+     * Generates the HTML content for a job offer email after being hired.
+     *
+     * @param infoApply          applicant info
+     * @param details job offer details
+     * @return HTML content for the job offer
+     */
     private String getContentNotificationForJobOffer(InfoApply infoApply, JobOfferDetailsDTO details) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a, dd MMMM yyyy", Locale.ENGLISH);
         String formattedTime = details.getReportDateTime().format(formatter);
@@ -99,36 +129,36 @@ public class MailServiceImpl implements MailService {
         <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6;">
             <h2 style="color: #2c3e50;">Official Job Offer</h2>
-            
+           \s
             <p>Dear <strong>%s</strong>,</p>
-            
+           \s
             <p>We are delighted to inform you that you have been selected for the <strong>%s</strong> position at our organization.</p>
-            
+           \s
             <p>We were truly impressed with your background and performance during the interview process, and we believe you will be a valuable addition to our team.</p>
-            
+           \s
             <p>Please be present to complete the onboarding process and receive your job assignment at the following time and location:</p>
-            
+           \s
             <ul>
                 <li><strong>Date & Time:</strong> %s</li>
                 <li><strong>Location:</strong> %s</li>
             </ul>
-            
+           \s
             <p>If you have any questions or are unable to attend at the specified time, please reach out to our HR representative below:</p>
-            
+           \s
             <ul>
                 <li><strong>Contact Person:</strong> %s</li>
                 <li><strong>Email:</strong> <a href="mailto:%s">%s</a></li>
                 <li><strong>Phone:</strong> %s</li>
             </ul>
-            
+           \s
             <p>We look forward to welcoming you to our team and starting a successful journey together.</p>
-            
+           \s
             <p>Warm regards,<br/>
             Recruitment Team<br/>
             SGU Enterprise Information System</p>
         </body>
         </html>
-    """.formatted(
+   \s""".formatted(
                 infoApply.getName(),
                 infoApply.getPositionApply(),
                 formattedTime,
@@ -140,6 +170,12 @@ public class MailServiceImpl implements MailService {
         );
     }
 
+    /**
+     * Generates the HTML content for a rejection email.
+     *
+     * @param infoApply applicant info
+     * @return HTML content for rejection notification
+     */
     private String getContentNotificationForRejection(InfoApply infoApply) {
         return """
         <html>
@@ -171,20 +207,27 @@ public class MailServiceImpl implements MailService {
         );
     }
 
-    private void sendMail(final String recipientEmail, final String subject, final String content) {
+    /**
+     * Sends an HTML email using the provided recipient, subject, and HTML content.
+     *
+     * @param toEmail     recipient email address
+     * @param subject     email subject
+     * @param htmlContent email body in HTML format
+     */
+    private void sendMail(final String toEmail, final String subject, final String htmlContent) {
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(recipientEmail);
+            helper.setTo(toEmail);
             helper.setSubject(subject);
             helper.setFrom("khanhnq0908@gmail.com");
-            helper.setText(content, true); // true = HTML content
+            helper.setText(htmlContent, true);
 
             javaMailSender.send(message);
-            log.info("Email successfully sent to {}", recipientEmail);
+            log.info("Email successfully sent to {}", toEmail);
 
         } catch (MessagingException e) {
-            log.error("Failed to send email to {}: {}", recipientEmail, e.getMessage(), e);
+            log.error("Failed to send email to {}: {}", toEmail, e.getMessage(), e);
         } catch (Exception e) {
             log.error("Unexpected error while sending email: {}", e.getMessage(), e);
         }

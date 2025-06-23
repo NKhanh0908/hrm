@@ -9,21 +9,18 @@ import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.EmployeeMapper;
 import com.project.hrm.repositories.EmployeeRepository;
-import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.ImageEmployeeService;
 import com.project.hrm.specifications.EmployeeSpecification;
 import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +75,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return employeeMapper.toEmployeeDTOList(employeesPage.getContent());
     }
-
 
     /**
      * Retrieves an {@link Employees} entity by its ID.

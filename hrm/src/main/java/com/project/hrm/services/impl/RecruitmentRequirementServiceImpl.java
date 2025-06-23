@@ -5,7 +5,6 @@ import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
 import com.project.hrm.entities.Account;
-import com.project.hrm.entities.Departments;
 import com.project.hrm.entities.RecruitmentRequirements;
 import com.project.hrm.entities.Role;
 import com.project.hrm.enums.RecruitmentRequirementsStatus;
@@ -39,11 +38,10 @@ import java.util.List;
 public class RecruitmentRequirementServiceImpl implements RecruitmentRequirementService {
     private final RecruitmentRequirementsRepository recruitmentRequirementsRepository;
 
-    private final RecruitmentRequirementsMapper recruitmentRequirementsMapper;
-
-    private final DepartmentService departmentService;
     private final AccountService accountService;
     private final RoleService roleService;
+
+    private final RecruitmentRequirementsMapper recruitmentRequirementsMapper;
 
     /**
      * Filters recruitment requirements based on the provided filter criteria with pagination support.

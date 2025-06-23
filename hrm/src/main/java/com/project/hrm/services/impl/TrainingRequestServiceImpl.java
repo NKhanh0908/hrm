@@ -15,8 +15,6 @@ import com.project.hrm.repositories.TrainingRequestRepository;
 import com.project.hrm.services.*;
 import com.project.hrm.specifications.TrainingRequestSpecification;
 import com.project.hrm.utils.IdGenerator;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -178,7 +176,6 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
      */
     @Override
     public TrainingRequestDTO getDTOById(Integer id) {
-        log.info("Fetching TrainingRequestDTO with ID: {}", id);
         return trainingRequestMapper.convertEntityToDTO(getEntityById(id));
     }
 

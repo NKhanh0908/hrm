@@ -29,6 +29,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CandidateProfileServiceImpl implements CandidateProfileService {
     private final CandidateProfileRepository candidateProfileRepository;
+
     private final CandidateProfileMapper candidateProfileMapper;
 
     /**

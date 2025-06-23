@@ -33,9 +33,11 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 public class EvaluateServiceImpl implements EvaluateService {
-    private final EvaluateMapper evaluateMapper;
     private final EvaluateRepository evaluateRepository;
+
     private final CandidateProfileService candidateProfileService;
+
+    private final EvaluateMapper evaluateMapper;
 
     /**
      * Retrieves a paginated list of EvaluateDTOs based on filter conditions.

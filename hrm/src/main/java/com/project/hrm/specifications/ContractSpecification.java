@@ -1,6 +1,5 @@
 package com.project.hrm.specifications;
 
-
 import com.project.hrm.dto.contractDTO.ContractFilter;
 import com.project.hrm.entities.Contracts;
 import jakarta.persistence.criteria.Predicate;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContractSpecification {
-
     public static Specification<Contracts> filter(ContractFilter filter) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();

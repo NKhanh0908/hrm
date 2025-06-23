@@ -7,7 +7,6 @@ import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 public class CandidateProfileSpecification {
-
     public static Specification<CandidateProfile> filter(CandidateProfileFilter dto) {
         return (root, query, cb) -> {
             assert query != null;

@@ -27,6 +27,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
+
     private final DepartmentMapper departmentMapper;
 
     /**

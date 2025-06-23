@@ -28,6 +28,13 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleMapper roleMapper;
 
+    /**
+     * Retrieves a {@link Role} entity by its ID.
+     *
+     * @param id the ID of the role
+     * @return the {@link Role} entity
+     * @throws CustomException if the role is not found
+     */
     @Transactional(readOnly = true)
     @Override
     public Role getEntityById(Integer id) {
@@ -37,12 +44,24 @@ public class RoleServiceImpl implements RoleService {
                 .orElseThrow(()-> new CustomException(Error.ROLE_NOT_FOUND));
     }
 
+    /**
+     * Retrieves a {@link RoleDTO} by role ID.
+     *
+     * @param id the ID of the role
+     * @return a {@link RoleDTO} representing the role
+     */
     @Transactional(readOnly = true)
     @Override
     public RoleDTO getDTOById(Integer id) {
         return roleMapper.convertEntityToDTO(getEntityById(id));
     }
 
+    /**
+     * Creates a new role based on the provided {@link RoleCreateDTO}.
+     *
+     * @param roleCreateDTO the DTO containing information to create a role
+     * @return a {@link RoleDTO} representing the newly created role
+     */
     @Override
     public RoleDTO create(RoleCreateDTO roleCreateDTO) {
         Departments departments = departmentService.getEntityById(roleCreateDTO.getDepartmentId());
@@ -55,6 +74,12 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.convertEntityToDTO(roleRepository.save(role));
     }
 
+    /**
+     * Retrieves all roles that belong to a specific department.
+     *
+     * @param departmentId the ID of the department
+     * @return a list of {@link RoleDTO} representing the roles in the department
+     */
     @Override
     public List<RoleDTO> getAllByDepartmentId(Integer departmentId) {
         List<Role> roles = roleRepository.findAllByDepartments_Id(departmentId);

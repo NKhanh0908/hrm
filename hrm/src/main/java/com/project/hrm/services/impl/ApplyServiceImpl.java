@@ -171,7 +171,7 @@ public class ApplyServiceImpl implements ApplyService {
      * and generates a virtual contract for the candidate.
      *
      * @param applyId the ID of the hired application
-     * @param details
+     * @param details detail jd
      * @return the updated {@link ApplyDTO} with status set to HIRED
      */
     @Transactional
@@ -239,8 +239,7 @@ public class ApplyServiceImpl implements ApplyService {
     public ApplyDTO getById(Integer id) {
         log.info("Find Apply by id: {}", id);
 
-        return applyMapper.toDTO(getEntityById(id)
-        );
+        return applyMapper.toDTO(getEntityById(id));
     }
 
     /**

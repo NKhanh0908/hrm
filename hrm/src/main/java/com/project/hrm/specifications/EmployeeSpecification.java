@@ -1,6 +1,5 @@
 package com.project.hrm.specifications;
 
-
 import com.project.hrm.dto.employeeDTO.EmployeeFilter;
 import com.project.hrm.entities.Employees;
 import jakarta.persistence.criteria.Predicate;
