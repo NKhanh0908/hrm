@@ -47,8 +47,7 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
     public PayrollComponentsDTO update(PayrollComponentsUpdateDTO payrollComponentsUpdateDTO) {
         log.info("Update PayrollComponentsDTO");
 
-        PayrollComponents payrollComponents = payrollComponentsRepository.findById(payrollComponentsUpdateDTO.getId())
-                .orElseThrow(() -> new EntityNotFoundException("PayrollComponents not found with id: " + payrollComponentsUpdateDTO.getId()));
+        PayrollComponents payrollComponents = getEntityById(payrollComponentsUpdateDTO.getId());
         if(payrollComponentsUpdateDTO.getName() != null){
             payrollComponents.setName(payrollComponentsUpdateDTO.getName());
         }
