@@ -198,7 +198,10 @@ public enum Error {
     PERFORMANCE_REVIEW_UNABLE_TO_UPDATE(20002, "Must update Performance review with status SCHEDULED", HttpStatus.NOT_FOUND),
 
     // Performance review detail
-    PERFORMANCE_REVIEW_DETAIL_NOT_FOUND(21001, "Performance review detail not found", HttpStatus.NOT_FOUND),;
+    PERFORMANCE_REVIEW_DETAIL_NOT_FOUND(21001, "Performance review detail not found", HttpStatus.NOT_FOUND),
+
+    // Feedback employee
+    FEEDBACK_NOT_FOUND(22001, "Feedback employee not found", HttpStatus.NOT_FOUND),;
 
     private final int code;
     private final String message;

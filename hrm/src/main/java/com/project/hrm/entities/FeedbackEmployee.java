@@ -29,10 +29,6 @@ public class FeedbackEmployee {
     private Boolean isAnonymous;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employees employee;
-
-    @ManyToOne
     @JoinColumn(name = "feedback_provider_id")
     private Employees feedbackProvider;
 
