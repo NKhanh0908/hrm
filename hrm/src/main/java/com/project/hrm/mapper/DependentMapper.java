@@ -4,6 +4,7 @@ import com.project.hrm.dto.dependentDTO.DependentCreateDTO;
 import com.project.hrm.dto.dependentDTO.DependentDTO;
 import com.project.hrm.entities.Dependent;
 import com.project.hrm.repositories.EmployeeRepository;
+import com.project.hrm.services.EmployeeService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,16 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class DependentMapper {
-    private final EmployeeRepository employeeRepository;
-
+    private final EmployeeService employeeService;
     public Dependent toEntity(DependentDTO dependentDTO) {
         return Dependent.builder()
                 .id(dependentDTO.getId())
                 .name(dependentDTO.getName())
                 .relationship(dependentDTO.getRelationship())
                 .birthDate(dependentDTO.getBirthDate())
-                .employee(employeeRepository.findById(dependentDTO.getEmployeeId())
-                        .orElseThrow(() -> new EntityNotFoundException("Employee not found with id: " + dependentDTO.getEmployeeId())))
+                .employee(employeeService.getEntityById(dependentDTO.getEmployeeId()))
                 .build();
     }
 
@@ -39,8 +38,7 @@ public class DependentMapper {
                 .name(dependentCreateDTO.getName())
                 .relationship(dependentCreateDTO.getRelationship())
                 .birthDate(dependentCreateDTO.getBirthDate())
-                .employee(employeeRepository.findById(dependentCreateDTO.getEmployeeId())
-                        .orElseThrow(() -> new EntityNotFoundException("Employee not found with id: " + dependentCreateDTO.getEmployeeId())))
+                .employee(employeeService.getEntityById(dependentCreateDTO.getEmployeeId()))
                 .build();
     }
 }

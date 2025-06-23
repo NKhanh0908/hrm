@@ -3,8 +3,8 @@ package com.project.hrm.mapper;
 import com.project.hrm.dto.approvalsDTO.ApprovalsCreateDTO;
 import com.project.hrm.dto.approvalsDTO.ApprovalsDTO;
 import com.project.hrm.entities.Approvals;
-import com.project.hrm.repositories.EmployeeRepository;
-import com.project.hrm.repositories.PayrollsRepository;
+import com.project.hrm.services.EmployeeService;
+import com.project.hrm.services.PayrollsService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,15 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class ApprovalsMapper {
-    private final EmployeeRepository employeeRepository;
-    private final PayrollsRepository payrollsRepository;
+    private final EmployeeService employeeService;
+    private final PayrollsService payrollsService;
 
     public Approvals toEntity(ApprovalsDTO approvalsDTO){
         return Approvals.builder()
                 .id(approvalsDTO.getId())
-                .employeeReview(employeeRepository.findById(approvalsDTO.getEmployeeReviewId()).orElse(null))
-                .payroll(payrollsRepository.findById(approvalsDTO.getPayrollId())
-                        .orElseThrow(() -> new EntityNotFoundException("Payroll not found with ID = " + approvalsDTO.getPayrollId())))
+                .employeeReview(employeeService.getEntityById(approvalsDTO.getEmployeeReviewId()))
+                .payroll(payrollsService.getEntityById(approvalsDTO.getPayrollId()))
                 .approvalDate(approvalsDTO.getApprovalDate())
                 .comment(approvalsDTO.getComment())
                 .status(approvalsDTO.getStatus())
@@ -40,9 +39,8 @@ public class ApprovalsMapper {
 
     public Approvals toEntityFromCreateDTO(ApprovalsCreateDTO approvalsCreateDTO){
         return Approvals.builder()
-                .employeeReview(employeeRepository.findById(approvalsCreateDTO.getEmployeeReviewId()).orElse(null))
-                .payroll(payrollsRepository.findById(approvalsCreateDTO.getPayrollId())
-                        .orElseThrow(() -> new EntityNotFoundException("Payroll not found with ID = " + approvalsCreateDTO.getPayrollId())))
+                .employeeReview(employeeService.getEntityById(approvalsCreateDTO.getEmployeeReviewId()))
+                .payroll(payrollsService.getEntityById(approvalsCreateDTO.getPayrollId()))
                 .approvalDate(approvalsCreateDTO.getApprovalDate())
                 .comment(approvalsCreateDTO.getComment())
                 .status(approvalsCreateDTO.getStatus())

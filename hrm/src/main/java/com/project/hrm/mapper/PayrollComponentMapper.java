@@ -4,6 +4,7 @@ import com.project.hrm.dto.payrollComponentsDTO.PayrollComponentsCreateDTO;
 import com.project.hrm.dto.payrollComponentsDTO.PayrollComponentsDTO;
 import com.project.hrm.entities.PayrollComponents;
 import com.project.hrm.repositories.RegulationsRepository;
+import com.project.hrm.services.RegulationsService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class PayrollComponentMapper {
-    private RegulationsRepository regulationsRepository;
+    private RegulationsService regulationsService;
 
     //Convert entities to DTOs
     public PayrollComponentsDTO toPayrollComponentsDTO(PayrollComponents payrollComponents) {
@@ -38,7 +39,11 @@ public class PayrollComponentMapper {
                 .type(payrollComponentDTO.getType())
                 .amount(payrollComponentDTO.getAmount())
                 .percentage(payrollComponentDTO.getPercentage())
-                .regulation(regulationsRepository.findById(payrollComponentDTO.getRegulationId()).orElse(null))
+                .regulation(
+                        payrollComponentDTO.getRegulationId() != null
+                                ? regulationsService.getEntityById(payrollComponentDTO.getRegulationId())
+                                : null
+                )
                 .build();
     }
 
@@ -48,7 +53,11 @@ public class PayrollComponentMapper {
                 .type(payrollComponentsCreateDTO.getType())
                 .amount(payrollComponentsCreateDTO.getAmount())
                 .percentage(payrollComponentsCreateDTO.getPercentage())
-                .regulation(regulationsRepository.findById(payrollComponentsCreateDTO.getRegulationId()).orElse(null))
+                .regulation(
+                        payrollComponentsCreateDTO.getRegulationId() != null
+                        ? regulationsService.getEntityById(payrollComponentsCreateDTO.getRegulationId())
+                        : null
+                )
                 .build();
     }
 

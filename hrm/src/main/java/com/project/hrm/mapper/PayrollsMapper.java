@@ -6,6 +6,8 @@ import com.project.hrm.entities.Payrolls;
 import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.repositories.PayPeriodsRepository;
 import com.project.hrm.repositories.PayrollsRepository;
+import com.project.hrm.services.EmployeeService;
+import com.project.hrm.services.PayPeriodsService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,17 +15,15 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class PayrollsMapper {
-    private final EmployeeRepository employeeRepository;
-    private final PayPeriodsRepository payPeriodsRepository;
+    private final EmployeeService employeeService;
+    private final PayPeriodsService payPeriodsService;
 
 
     public Payrolls toPayrolls(PayrollsDTO payrollsDTO) {
         return Payrolls.builder()
                 .id(payrollsDTO.getId())
-                .employee(employeeRepository.findById(payrollsDTO.getEmployeeId())
-                        .orElseThrow(() -> new EntityNotFoundException("Employee not found with ID = " + payrollsDTO.getEmployeeId())))
-                .payPeriod(payPeriodsRepository.findById(payrollsDTO.getPayPeriodId())
-                        .orElseThrow(() -> new EntityNotFoundException("Pay Period not found with ID = " + payrollsDTO.getPayPeriodId())))
+                .employee(employeeService.getEntityById(payrollsDTO.getEmployeeId()))
+                .payPeriod(payPeriodsService.getEntityById(payrollsDTO.getPayPeriodId()))
                 .total_income(payrollsDTO.getTotalIncome())
                 .total_deduction(payrollsDTO.getTotalDeduction())
                 .net_salary(payrollsDTO.getNetSalary())
@@ -45,10 +45,8 @@ public class PayrollsMapper {
 
     public Payrolls toPayrrollsFromCreateDTO(PayrollsCreateDTO payrollsCreateDTO) {
         return Payrolls.builder()
-                .employee(employeeRepository.findById(payrollsCreateDTO.getEmployeeId())
-                        .orElseThrow(() -> new EntityNotFoundException("Employee not found with ID = " + payrollsCreateDTO.getEmployeeId())))
-                .payPeriod(payPeriodsRepository.findById(payrollsCreateDTO.getPayPeriodId())
-                        .orElseThrow(() -> new EntityNotFoundException("Pay Period not found with ID = " + payrollsCreateDTO.getPayPeriodId())))
+                .employee(employeeService.getEntityById(payrollsCreateDTO.getEmployeeId()))
+                .payPeriod(payPeriodsService.getEntityById(payrollsCreateDTO.getPayPeriodId()))
                 .total_income(payrollsCreateDTO.getTotalIncome())
                 .total_deduction(payrollsCreateDTO.getTotalDeduction())
                 .net_salary(payrollsCreateDTO.getNetSalary())
