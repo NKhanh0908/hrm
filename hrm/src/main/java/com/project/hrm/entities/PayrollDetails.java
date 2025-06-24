@@ -30,9 +30,4 @@ public class PayrollDetails {
     private BigDecimal amount;
     private Boolean is_percentage; // Nếu dúng thì tính bằng phần trăm, sai thì chỉ tính bằng amount
     private Float percentage; // Có thể NULL
-
-
-
-
-
 }

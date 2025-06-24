@@ -4,7 +4,11 @@ import com.project.hrm.dto.payPeriodsDTO.PayPeriodsCreateDTO;
 import com.project.hrm.dto.payPeriodsDTO.PayPeriodsDTO;
 import com.project.hrm.entities.PayPeriods;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -38,5 +42,12 @@ public class PayPeriodMapper {
                 .endDate(payPeriodCreateDTO.getEndDate())
                 .status(payPeriodCreateDTO.getStatus())
                 .build();
+    }
+
+    public List<PayPeriodsDTO> convertPageEntityToPageDTO(Page<PayPeriods> payPeriodsPage) {
+        return payPeriodsPage.getContent()
+                .stream()
+                .map(this::toPayPeriodDTO)
+                .collect(Collectors.toList());
     }
 }
