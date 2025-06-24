@@ -201,7 +201,10 @@ public enum Error {
     PERFORMANCE_REVIEW_DETAIL_NOT_FOUND(21001, "Performance review detail not found", HttpStatus.NOT_FOUND),
 
     // Feedback employee
-    FEEDBACK_NOT_FOUND(22001, "Feedback employee not found", HttpStatus.NOT_FOUND),;
+    FEEDBACK_NOT_FOUND(22001, "Feedback employee not found", HttpStatus.NOT_FOUND),
+
+    // AssignedWorkPerson
+    ASSIGNED_WORK_PERSON(23001, "AssignedWorkPerson not found", HttpStatus.NOT_FOUND),;
 
     private final int code;
     private final String message;

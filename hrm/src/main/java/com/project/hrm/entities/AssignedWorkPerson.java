@@ -22,11 +22,9 @@ public class AssignedWorkPerson {
     private Integer id;
     private String title;
     private String description;
-    private String measurableOutcome;
     private LocalDateTime startDate;
     private LocalDateTime targetDate;
     private LocalDateTime completedDate;
-
     private Integer progressPercentage;
     private String progressNotes;
 
