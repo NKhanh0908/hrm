@@ -1,0 +1,136 @@
+package com.project.hrm.services.impl;
+
+import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsCreateDTO;
+import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsDTO;
+import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsFilter;
+import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsUpdateDTO;
+import com.project.hrm.entities.PayrollDetails;
+import com.project.hrm.mapper.PayrollDetailsMapper;
+import com.project.hrm.repositories.PayrollDetailsRepository;
+import com.project.hrm.services.PayrollComponentsService;
+import com.project.hrm.services.PayrollDetailsService;
+import com.project.hrm.services.PayrollsService;
+import com.project.hrm.specifications.PayrollDetailsSpecifications;
+import com.project.hrm.utils.IdGenerator;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Service
+@AllArgsConstructor
+public class PayrollDetailsServiceImpl implements PayrollDetailsService {
+    private final PayrollDetailsRepository payrollDetailsRepository;
+    private final PayrollDetailsMapper payrollDetailsMapper;;
+    private final PayrollsService payrollsService;
+    private final PayrollComponentsService payrollComponentsService;
+
+    @Transactional
+    @Override
+    public PayrollDetailsDTO create(PayrollDetailsCreateDTO payrollDetailsCreateDTO) {
+        log.info("Create payroll details");
+        PayrollDetails payrollDetails = payrollDetailsMapper.toPayrollDetailsFromCreateDTO(payrollDetailsCreateDTO);
+        payrollDetails.setId(IdGenerator.getGenerationId());
+        return payrollDetailsMapper.toDTO(payrollDetailsRepository.save(payrollDetails));
+    }
+
+    @Transactional
+    @Override
+    public PayrollDetailsDTO update(PayrollDetailsUpdateDTO payrollDetailsUpdateDTO) {
+        log.info("Update payroll details");
+        PayrollDetails payrollDetails = getEntityById(payrollDetailsUpdateDTO.getId());
+
+        if (payrollDetailsUpdateDTO.getPayrollId() != null && payrollsService.checkExistence(payrollDetailsUpdateDTO.getPayrollId())) {
+            payrollDetails.setId(payrollDetailsUpdateDTO.getId());
+        }
+
+        if (payrollDetailsUpdateDTO.getPayrollComponentId() != null && payrollComponentsService.checkExistence(payrollDetailsUpdateDTO.getPayrollComponentId())) {
+            payrollDetails.setId(payrollDetailsUpdateDTO.getId());
+        }
+
+        if (payrollDetailsUpdateDTO.getAmount() != null && payrollDetailsUpdateDTO.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+            payrollDetails.setAmount(payrollDetailsUpdateDTO.getAmount());
+        }
+
+        if (payrollDetailsUpdateDTO.getIsPercentage() != null) {
+            payrollDetails.setIs_percentage(payrollDetailsUpdateDTO.getIsPercentage());
+        }
+
+        if (payrollDetailsUpdateDTO.getPercentage() != null && payrollDetailsUpdateDTO.getPercentage() > 0) {
+            payrollDetails.setPercentage(payrollDetailsUpdateDTO.getPercentage());
+        }
+
+        return payrollDetailsMapper.toDTO(payrollDetailsRepository.save(payrollDetails));
+    }
+
+    @Transactional
+    @Override
+    public void delete(Integer Id) {
+        log.info("Delete payroll details by id: {}", Id);
+        if(checkExistence(Id)){
+            payrollDetailsRepository.deleteById(Id);
+        }else {
+            throw new EntityNotFoundException("Payroll details not found with id: " + Id);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Boolean checkExistence(Integer Id) {
+        log.info("Checking existense if PayrollDetails with Id: {} ", Id);
+        return payrollDetailsRepository.existsById(Id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PayrollDetailsDTO getById(Integer id) {
+        log.info("Get PayrollDetails by id: {}", id);
+        return payrollDetailsMapper.toDTO(getEntityById(id));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PayrollDetails getEntityById(Integer id) {
+        log.info("Get payroll details by id: {}", id);
+        return payrollDetailsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Payroll details not found with id: " + id));
+    }
+
+    @Override
+    public List<PayrollDetailsDTO> filter(PayrollDetailsFilter payrollComponentFilter, int page, int size) {
+        log.info("Filter payroll details by filter: {}", payrollComponentFilter);
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Specification<PayrollDetails> specification = PayrollDetailsSpecifications.filter(payrollComponentFilter);
+
+        return payrollDetailsRepository.findAll(specification, pageable)
+                .getContent()
+                .stream()
+                .map(payrollDetailsMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PayrollDetailsDTO> filterWithRange(BigDecimal minAmount, BigDecimal maxAmount, Float minPercentage, Float maxPercentage, int page, int size) {
+        log.info("Filter payroll details with range");
+        Pageable pageable = PageRequest.of(page, size);
+
+        Specification<PayrollDetails> specification = PayrollDetailsSpecifications.filterWithRange(minAmount, maxAmount, minPercentage, maxPercentage);
+
+        return payrollDetailsRepository.findAll(specification, pageable)
+                .getContent()
+                .stream()
+                .map(payrollDetailsMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+}
