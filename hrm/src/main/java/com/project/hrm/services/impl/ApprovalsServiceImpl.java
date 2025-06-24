@@ -36,6 +36,13 @@ public class ApprovalsServiceImpl implements ApprovalsService {
     private final EmployeeService employeeService;
     private final PayrollsService payrollsService;
 
+
+    /**
+     * Creates a new {@link Approvals} entity based on the provided {@link ApprovalsCreateDTO}.
+     *
+     * @param approvalsCreateDTO the DTO containing information to create an approval
+     * @return the created {@link ApprovalsDTO} after being persisted
+     */
     @Transactional
     @Override
     public ApprovalsDTO create(ApprovalsCreateDTO approvalsCreateDTO) {
@@ -50,6 +57,14 @@ public class ApprovalsServiceImpl implements ApprovalsService {
         return approvalsMapper.toDTO(approvalsRepository.save(approvals));
     }
 
+
+    /**
+     * Updates an existing {@link Approvals} entity using the fields from the provided {@link ApprovalsUpdateDTO}.
+     *
+     * @param approvalsUpdateDTO the DTO containing update information, must include the approval ID
+     * @return the updated {@link ApprovalsDTO} after being saved
+     * @throws EntityNotFoundException if the approval or related entities do not exist
+     */
     @Transactional
     @Override
     public ApprovalsDTO update(ApprovalsUpdateDTO approvalsUpdateDTO) {
@@ -76,6 +91,13 @@ public class ApprovalsServiceImpl implements ApprovalsService {
         return approvalsMapper.toDTO(approvalsRepository.save(approvals));
     }
 
+
+    /**
+     * Deletes an existing {@link Approvals} entity by its ID.
+     *
+     * @param Id the ID of the approval to delete
+     * @throws EntityNotFoundException if no approval is found with the given ID
+     */
     @Transactional
     @Override
     public void delete(Integer Id) {
@@ -87,12 +109,28 @@ public class ApprovalsServiceImpl implements ApprovalsService {
         }
     }
 
+
+    /**
+     * Checks whether an {@link Approvals} entity exists with the specified ID.
+     *
+     * @param Id the ID of the approval to check
+     * @return true if the approval exists, false otherwise
+     */
+    @Transactional(readOnly = true)
     @Override
     public Boolean checkExistence(Integer Id) {
         log.info("checkExistence with Id: {}", Id);
         return approvalsRepository.existsById(Id);
     }
 
+
+    /**
+     * Retrieves an {@link ApprovalsDTO} by its unique ID.
+     *
+     * @param id the ID of the approval to retrieve
+     * @return the corresponding {@link ApprovalsDTO}
+     * @throws EntityNotFoundException if no approval is found with the given ID
+     */
     @Transactional(readOnly = true)
     @Override
     public ApprovalsDTO getById(Integer id) {
@@ -100,6 +138,14 @@ public class ApprovalsServiceImpl implements ApprovalsService {
         return approvalsMapper.toDTO(getEntityById(id));
     }
 
+
+    /**
+     * Retrieves an {@link Approvals} entity by its unique ID.
+     *
+     * @param id the ID of the approval to retrieve
+     * @return the corresponding {@link Approvals} entity
+     * @throws EntityNotFoundException if no approval is found with the given ID
+     */
     @Transactional(readOnly = true)
     @Override
     public Approvals getEntityById(Integer id) {
@@ -108,6 +154,15 @@ public class ApprovalsServiceImpl implements ApprovalsService {
                 .orElseThrow(() -> new EntityNotFoundException("No approvals found with id: " + id));
     }
 
+    /**
+     * Filters the list of {@link Approvals} entities using the given {@link ApprovalsFilter},
+     * returning paginated {@link ApprovalsDTO} results.
+     *
+     * @param approvalsFilter the filter criteria
+     * @param page            the zero-based page index
+     * @param size            the number of records per page
+     * @return a list of {@link ApprovalsDTO} matching the filter
+     */
     @Transactional(readOnly = true)
     @Override
     public List<ApprovalsDTO> filter(ApprovalsFilter approvalsFilter, int page, int size) {
@@ -124,6 +179,15 @@ public class ApprovalsServiceImpl implements ApprovalsService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Filters {@link Approvals} entities by approval date range.
+     *
+     * @param fromDate the start of the approval date range (inclusive)
+     * @param toDate   the end of the approval date range (inclusive)
+     * @param page     the zero-based page index
+     * @param size     the number of records per page
+     * @return a list of {@link ApprovalsDTO} within the specified date range
+     */
     @Transactional(readOnly = true)
     @Override
     public List<ApprovalsDTO> filterByApprovalDateRange(LocalDateTime fromDate, LocalDateTime toDate, int page, int size) {
