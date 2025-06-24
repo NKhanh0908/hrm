@@ -26,15 +26,12 @@ CREATE TABLE `account` (
   `id` int NOT NULL,
   `create_at` datetime(6) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
+  `role` enum('ADMIN','EMPLOYEE','HR','MANAGER','SUPERVISOR') NOT NULL,
   `status` bit(1) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `employees_id` int DEFAULT NULL,
-  `role_id` int DEFAULT NULL,
-  `role` enum('ADMIN','EMPLOYEE','HR','MANAGER','SUPERVISOR') NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UKtl8b0eq1pfw9nm5omaywo7mai` (`employees_id`),
-  KEY `FKd4vb66o896tay3yy52oqxr9w0` (`role_id`),
-  CONSTRAINT `FKd4vb66o896tay3yy52oqxr9w0` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
   CONSTRAINT `FKswklbxvh98gh6kfd4pikn2ll6` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -44,7 +41,7 @@ CREATE TABLE `account` (
 --
 
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (1,'2024-01-15 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'hr_manager',1,1,'ADMIN'),(2,'2024-01-15 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'hr_specialist',2,2,'ADMIN'),(3,'2024-01-15 09:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'recruiter',3,3,'ADMIN'),(4,'2024-01-16 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'it_manager',4,4,'ADMIN'),(5,'2024-01-16 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'senior_dev',5,5,'ADMIN'),(6,'2024-01-16 09:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'junior_dev',6,6,'ADMIN'),(7,'2024-01-17 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'devops',7,7,'ADMIN'),(8,'2024-01-17 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'qa_engineer',8,8,'ADMIN'),(9,'2024-01-18 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'marketing_mgr',9,9,'ADMIN'),(10,'2024-01-18 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'digital_mkt',10,10,'ADMIN'),(11,'2024-01-19 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'content_creator',11,11,'ADMIN'),(12,'2024-01-19 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'finance_mgr',12,12,'ADMIN'),(13,'2024-01-20 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'accountant',13,13,'ADMIN'),(14,'2024-01-20 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'financial_analyst',14,14,'ADMIN'),(15,'2024-01-21 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',0x01,'ops_manager',15,15,'ADMIN'),(664355682,'2025-06-19 04:18:42.491318','$2a$10$CyLJQ2j2.ZuXNhzH0y0EI.lGxqfMJwVQV.encxr1Eda40E87BJcm2',0x01,'k123456',16,16,'ADMIN');
+INSERT INTO `account` VALUES (1,'2024-01-15 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'hr_manager',1),(2,'2024-01-15 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'hr_specialist',2),(3,'2024-01-15 09:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'recruiter',3),(4,'2024-01-16 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'it_manager',4),(5,'2024-01-16 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'senior_dev',5),(6,'2024-01-16 09:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'junior_dev',6),(7,'2024-01-17 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'devops',7),(8,'2024-01-17 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'qa_engineer',8),(9,'2024-01-18 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'marketing_mgr',9),(10,'2024-01-18 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'digital_mkt',10),(11,'2024-01-19 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'content_creator',11),(12,'2024-01-19 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'finance_mgr',12),(13,'2024-01-20 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'accountant',13),(14,'2024-01-20 08:30:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'financial_analyst',14),(15,'2024-01-21 08:00:00.000000','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy','ADMIN',0x01,'ops_manager',15),(664355682,'2025-06-19 04:18:42.491318','$2a$10$CyLJQ2j2.ZuXNhzH0y0EI.lGxqfMJwVQV.encxr1Eda40E87BJcm2','ADMIN',0x01,'k123456',16);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 
 --
@@ -88,7 +85,7 @@ CREATE TABLE `approvals` (
   `id` int NOT NULL,
   `approval_date` datetime(6) DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
-  `status` enum('Approved','Paid','Pending','Rejected') NOT NULL,
+  `status` enum('APPROVED','PAID','PENDING','REJECTED') NOT NULL,
   `employee_review_id` int DEFAULT NULL,
   `payroll_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -104,7 +101,7 @@ CREATE TABLE `approvals` (
 --
 
 /*!40000 ALTER TABLE `approvals` DISABLE KEYS */;
-INSERT INTO `approvals` VALUES (1,'2025-06-01 10:00:00.000000','Looks good.','Approved',1,1),(3,'2025-06-23 13:43:26.201000','string3','Pending',3,3),(4,'2025-06-04 14:20:00.000000','Approved after revision.','Approved',4,4),(5,'2025-06-05 08:15:00.000000','Awaiting HR review.','Pending',5,5),(6,'2025-06-06 13:00:00.000000','All clear.','Paid',6,6),(7,'2025-06-07 10:10:00.000000','Missing bonus entry.','Rejected',7,7),(8,'2025-06-08 15:45:00.000000','Approved by finance.','Approved',8,8),(9,'2025-06-09 12:00:00.000000','Waiting for signature.','Pending',9,9),(10,'2025-06-10 09:30:00.000000','Finalized and paid.','Paid',10,10),(11,'2025-06-11 11:00:00.000000','Reviewed and approved.','Approved',1,11),(12,'2025-06-12 14:10:00.000000','Needs correction.','Rejected',2,12),(13,'2025-06-13 08:50:00.000000','Approved.','Approved',3,13),(14,'2025-06-14 10:25:00.000000','Still under review.','Pending',4,14),(15,'2025-06-15 13:40:00.000000','Paid on time.','Paid',5,15),(16,'2025-06-16 09:05:00.000000','Bonus miscalculated.','Rejected',6,16),(17,'2025-06-17 15:15:00.000000','Approved after adjustment.','Approved',7,17),(18,'2025-06-18 10:50:00.000000','Waiting for approval.','Pending',8,18),(19,'2025-06-19 12:30:00.000000','Paid with delay.','Paid',9,19),(20,'2025-06-20 11:20:00.000000','All good.','Approved',10,20),(977420859,'2025-06-23 13:43:06.347000','string','Pending',3,2);
+INSERT INTO `approvals` VALUES (1,'2025-06-01 10:00:00.000000','Looks good.','APPROVED',1,1),(3,'2025-06-23 13:43:26.201000','string3','PENDING',3,3),(4,'2025-06-04 14:20:00.000000','Approved after revision.','APPROVED',4,4),(5,'2025-06-05 08:15:00.000000','Awaiting HR review.','PENDING',5,5),(6,'2025-06-06 13:00:00.000000','All clear.','PAID',6,6),(7,'2025-06-07 10:10:00.000000','Missing bonus entry.','REJECTED',7,7),(8,'2025-06-08 15:45:00.000000','Approved by finance.','APPROVED',8,8),(9,'2025-06-09 12:00:00.000000','Waiting for signature.','PENDING',9,9),(10,'2025-06-10 09:30:00.000000','Finalized and paid.','PAID',10,10),(11,'2025-06-11 11:00:00.000000','Reviewed and approved.','APPROVED',1,11),(12,'2025-06-12 14:10:00.000000','Needs correction.','REJECTED',2,12),(13,'2025-06-13 08:50:00.000000','Approved.','APPROVED',3,13),(14,'2025-06-14 10:25:00.000000','Still under review.','PENDING',4,14),(15,'2025-06-15 13:40:00.000000','Paid on time.','PAID',5,15),(16,'2025-06-16 09:05:00.000000','Bonus miscalculated.','REJECTED',6,16),(17,'2025-06-17 15:15:00.000000','Approved after adjustment.','APPROVED',7,17),(18,'2025-06-18 10:50:00.000000','Waiting for approval.','PENDING',8,18),(19,'2025-06-19 12:30:00.000000','Paid with delay.','PAID',9,19),(20,'2025-06-20 11:20:00.000000','All good.','APPROVED',10,20),(977420859,'2025-06-23 13:43:06.347000','string','PENDING',3,2);
 /*!40000 ALTER TABLE `approvals` ENABLE KEYS */;
 
 --
@@ -119,7 +116,6 @@ CREATE TABLE `assigned_work_person` (
   `completed_date` datetime(6) DEFAULT NULL,
   `created_at` datetime(6) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `measurable_outcome` varchar(255) DEFAULT NULL,
   `progress_notes` varchar(255) DEFAULT NULL,
   `progress_percentage` int DEFAULT NULL,
   `start_date` datetime(6) DEFAULT NULL,
@@ -141,18 +137,19 @@ CREATE TABLE `assigned_work_person` (
 --
 
 /*!40000 ALTER TABLE `assigned_work_person` DISABLE KEYS */;
+INSERT INTO `assigned_work_person` VALUES (1,NULL,'2024-06-01 08:00:00.000000','Chuẩn bị tài liệu đào tạo cho chương trình onboarding','Tài liệu cơ bản đã hoàn tất',60,'2024-06-01 08:00:00.000000','2024-06-10 17:00:00.000000','Chuẩn bị tài liệu onboarding','2024-06-05 10:30:00.000000',1,2),(2,NULL,'2024-06-02 09:00:00.000000','Tìm kiếm ứng viên cho vị trí Backend Developer','Đã lọc được 15 hồ sơ phù hợp',40,'2024-06-02 09:00:00.000000','2024-06-12 17:00:00.000000','Sourcing Backend Developer','2024-06-06 11:00:00.000000',2,3),(3,NULL,'2024-06-03 08:30:00.000000','Cập nhật firewall và kiểm tra bảo mật hệ thống','Đã cập nhật rule mới',80,'2024-06-03 08:30:00.000000','2024-06-07 17:00:00.000000','Bảo trì bảo mật hệ thống','2024-06-05 14:45:00.000000',1,4),(4,'2024-06-10 18:00:00.000000','2024-05-25 08:00:00.000000','Hoàn thành module API xử lý hợp đồng lao động','Đã merge vào nhánh main',100,'2024-05-25 08:00:00.000000','2024-06-10 17:00:00.000000','API hợp đồng lao động','2024-06-10 18:00:00.000000',4,5),(5,NULL,'2024-06-04 10:00:00.000000','Kiểm thử tự động module chấm công','Chưa phát hiện lỗi nghiêm trọng',55,'2024-06-04 10:00:00.000000','2024-06-15 17:00:00.000000','Test automation chấm công','2024-06-06 09:00:00.000000',4,8),(6,NULL,'2024-06-01 09:30:00.000000','Lên kế hoạch chiến dịch quảng bá tuyển dụng mùa hè','Đã thống nhất kênh quảng bá',70,'2024-06-01 09:30:00.000000','2024-06-20 17:00:00.000000','Chiến dịch quảng bá tuyển dụng','2024-06-08 13:30:00.000000',9,10),(7,'2024-06-15 15:00:00.000000','2024-06-01 08:00:00.000000','Tổng hợp và phân tích chi phí đào tạo quý 1','Hoàn tất báo cáo gửi quản lý',100,'2024-06-01 08:00:00.000000','2024-06-15 17:00:00.000000','Báo cáo chi phí đào tạo Q1','2024-06-15 15:00:00.000000',12,14),(8,NULL,'2024-06-03 08:00:00.000000','Tư vấn khách hàng về gói dịch vụ nhân sự doanh nghiệp','Đang trao đổi với khách hàng A',30,'2024-06-03 08:00:00.000000','2024-06-10 17:00:00.000000','Tư vấn gói HR Business','2024-06-06 12:00:00.000000',17,18);
 /*!40000 ALTER TABLE `assigned_work_person` ENABLE KEYS */;
 
 --
--- Table structure for table `attendence`
+-- Table structure for table `attendance`
 --
 
-DROP TABLE IF EXISTS `attendence`;
+DROP TABLE IF EXISTS `attendance`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `attendence` (
+CREATE TABLE `attendance` (
   `id` int NOT NULL,
-  `attendence_date` datetime(6) DEFAULT NULL,
+  `attendance_date` datetime(6) DEFAULT NULL,
   `check_in` datetime(6) DEFAULT NULL,
   `check_out` datetime(6) DEFAULT NULL,
   `other_time` float DEFAULT NULL,
@@ -160,17 +157,17 @@ CREATE TABLE `attendence` (
   `shift_type` enum('FLEX','HOLIDAY','NIGHT','OVERTIME','REGULAR','REMOTE','WEEKEND') NOT NULL,
   `employee_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK1pfpgsotyedijx93qmd3c25io` (`employee_id`),
-  CONSTRAINT `FK1pfpgsotyedijx93qmd3c25io` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
+  KEY `FKb48lmkou5j4rvde9sr88bqgjw` (`employee_id`),
+  CONSTRAINT `FKb48lmkou5j4rvde9sr88bqgjw` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `attendence`
+-- Dumping data for table `attendance`
 --
 
-/*!40000 ALTER TABLE `attendence` DISABLE KEYS */;
-/*!40000 ALTER TABLE `attendence` ENABLE KEYS */;
+/*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
+/*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
 
 --
 -- Table structure for table `candidate_profile`
@@ -262,32 +259,6 @@ CREATE TABLE `day_off` (
 /*!40000 ALTER TABLE `day_off` DISABLE KEYS */;
 INSERT INTO `day_off` VALUES (-734968626,'2025-06-23 10:54:01.355000','string','2025-06-23 10:54:01.355000','2025-06-23 10:54:01.355000','PENDING',1),(1,'2025-06-23 10:56:57.998000','hihihihihihihihihih','2025-06-23 10:56:57.998000','2025-06-23 10:56:57.998000','string',1),(2,'2025-06-16 00:00:00.000000','Medical checkup','2025-06-03 14:30:00.000000','2025-06-15 00:00:00.000000','PENDING',2),(3,'2025-06-22 00:00:00.000000','Personal matters','2025-06-05 08:45:00.000000','2025-06-20 00:00:00.000000','REJECTED',3),(4,'2025-06-26 00:00:00.000000','Child’s school event','2025-06-06 10:00:00.000000','2025-06-25 00:00:00.000000','APPROVED',4),(5,'2025-07-03 00:00:00.000000','Family emergency','2025-06-07 11:15:00.000000','2025-07-01 00:00:00.000000','APPROVED',5),(6,'2025-07-06 00:00:00.000000','Mental health day','2025-06-08 09:30:00.000000','2025-07-05 00:00:00.000000','PENDING',6),(7,'2025-07-12 00:00:00.000000','Travel','2025-06-09 13:00:00.000000','2025-07-10 00:00:00.000000','APPROVED',7),(8,'2025-07-16 00:00:00.000000','Moving house','2025-06-10 15:45:00.000000','2025-07-15 00:00:00.000000','REJECTED',8),(9,'2025-07-21 00:00:00.000000','Wedding','2025-06-11 08:00:00.000000','2025-07-20 00:00:00.000000','APPROVED',9),(11,'2025-08-02 00:00:00.000000','Sick leave','2025-06-13 09:15:00.000000','2025-08-01 00:00:00.000000','APPROVED',1),(12,'2025-08-06 00:00:00.000000','Family visit','2025-06-14 14:00:00.000000','2025-08-05 00:00:00.000000','APPROVED',2),(13,'2025-08-11 00:00:00.000000','Religious holiday','2025-06-15 11:45:00.000000','2025-08-10 00:00:00.000000','PENDING',3),(14,'2025-08-16 00:00:00.000000','Volunteer work','2025-06-16 13:30:00.000000','2025-08-15 00:00:00.000000','APPROVED',4),(15,'2025-08-21 00:00:00.000000','Conference','2025-06-17 10:00:00.000000','2025-08-20 00:00:00.000000','APPROVED',5);
 /*!40000 ALTER TABLE `day_off` ENABLE KEYS */;
-
---
--- Table structure for table `deduction`
---
-
-DROP TABLE IF EXISTS `deduction`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `deduction` (
-  `id` int NOT NULL,
-  `amount` double DEFAULT NULL,
-  `type_deduction` varchar(255) DEFAULT NULL,
-  `salary_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK1snthcbhy5l95w7wg2f4ogppr` (`salary_id`),
-  CONSTRAINT `FK1snthcbhy5l95w7wg2f4ogppr` FOREIGN KEY (`salary_id`) REFERENCES `salary` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `deduction`
---
-
-/*!40000 ALTER TABLE `deduction` DISABLE KEYS */;
-INSERT INTO `deduction` VALUES (1,2500000,'BHXH',1),(2,1250000,'BHYT',1),(3,500000,'BHTN',1),(4,2000000,'Thuế TNCN',1),(5,1800000,'BHXH',6),(6,900000,'BHYT',6),(7,360000,'BHTN',6),(8,1200000,'Thuế TNCN',6),(9,1500000,'BHXH',11),(10,750000,'BHYT',11),(11,300000,'BHTN',11),(12,800000,'Thuế TNCN',11),(13,3000000,'BHXH',16),(14,1500000,'BHYT',16),(15,600000,'BHTN',16),(16,2500000,'Thuế TNCN',16),(17,2200000,'BHXH',21),(18,1100000,'BHYT',21),(19,440000,'BHTN',21),(20,1500000,'Thuế TNCN',21),(21,1200000,'BHXH',26),(22,600000,'BHYT',26),(23,240000,'BHTN',26),(24,600000,'Thuế TNCN',26),(25,2000000,'BHXH',31),(26,1000000,'BHYT',31),(27,400000,'BHTN',31),(28,1300000,'Thuế TNCN',31),(29,1600000,'BHXH',36),(30,800000,'BHYT',36),(31,320000,'BHTN',36),(32,1000000,'Thuế TNCN',36),(33,2300000,'BHXH',41),(34,1150000,'BHYT',41),(35,460000,'BHTN',41),(36,1600000,'Thuế TNCN',41),(37,1700000,'BHXH',46),(38,850000,'BHYT',46),(39,340000,'BHTN',46),(40,1100000,'Thuế TNCN',46),(41,1300000,'BHXH',51),(42,650000,'BHYT',51),(43,260000,'BHTN',51),(44,700000,'Thuế TNCN',51),(45,2600000,'BHXH',56),(46,1300000,'BHYT',56),(47,520000,'BHTN',56),(48,2100000,'Thuế TNCN',56),(49,1900000,'BHXH',61),(50,950000,'BHYT',61),(51,380000,'BHTN',61),(52,1300000,'Thuế TNCN',61),(53,2100000,'BHXH',66),(54,1050000,'BHYT',66),(55,420000,'BHTN',66),(56,1400000,'Thuế TNCN',66),(57,2400000,'BHXH',71),(58,1200000,'BHYT',71),(59,480000,'BHTN',71),(60,1800000,'Thuế TNCN',71),(61,1600000,'BHXH',76),(62,800000,'BHYT',76),(63,320000,'BHTN',76),(64,1000000,'Thuế TNCN',76),(65,2700000,'BHXH',81),(66,1350000,'BHYT',81),(67,540000,'BHTN',81),(68,2200000,'Thuế TNCN',81),(69,1400000,'BHXH',86),(70,700000,'BHYT',86),(71,280000,'BHTN',86),(72,800000,'Thuế TNCN',86),(73,1800000,'BHXH',91),(74,900000,'BHYT',91),(75,360000,'BHTN',91),(76,1200000,'Thuế TNCN',91),(77,1400000,'BHXH',96),(78,700000,'BHYT',96),(79,280000,'BHTN',96),(80,800000,'Thuế TNCN',96);
-/*!40000 ALTER TABLE `deduction` ENABLE KEYS */;
 
 --
 -- Table structure for table `departments`
@@ -420,15 +391,12 @@ CREATE TABLE `feedback_employee` (
   `is_anonymous` bit(1) DEFAULT NULL,
   `strengths` varchar(255) DEFAULT NULL,
   `suggestions` varchar(255) DEFAULT NULL,
-  `employee_id` int NOT NULL,
   `feedback_provider_id` int DEFAULT NULL,
   `performance_review_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FKnw2ny26hb0qkxub227lnn3t0o` (`employee_id`),
   KEY `FKbko1jaxococdravb55gpwa7a7` (`feedback_provider_id`),
   KEY `FKptn0iq653w5uubays743eqvqh` (`performance_review_id`),
   CONSTRAINT `FKbko1jaxococdravb55gpwa7a7` FOREIGN KEY (`feedback_provider_id`) REFERENCES `employees` (`id`),
-  CONSTRAINT `FKnw2ny26hb0qkxub227lnn3t0o` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
   CONSTRAINT `FKptn0iq653w5uubays743eqvqh` FOREIGN KEY (`performance_review_id`) REFERENCES `performance_review` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -438,6 +406,7 @@ CREATE TABLE `feedback_employee` (
 --
 
 /*!40000 ALTER TABLE `feedback_employee` DISABLE KEYS */;
+INSERT INTO `feedback_employee` VALUES (1,'Ủy quyền nhiều hơn cho nhân viên cấp dưới','2024-12-16 09:00:00.000000','Anh A là người có khả năng định hướng rất tốt và truyền cảm hứng cho đội nhóm.','MANAGER_REVIEW',0x00,'Khả năng lãnh đạo, truyền đạt mục tiêu','Tham gia nhiều hơn vào review hàng quý',2,1),(2,'Cần cập nhật thêm kỹ năng công nghệ mới','2024-12-16 10:00:00.000000','Tôi luôn cố gắng điều phối hiệu quả các cuộc họp và trao đổi thông tin minh bạch.','SELF_ASSESSMENT',0x00,'Ra quyết định nhanh và logic','Học thêm về công nghệ HR hiện đại',1,1),(3,'Chưa quen với quy trình nội bộ','2024-03-21 14:00:00.000000','Cô J có tinh thần học hỏi tốt, chủ động trao đổi nhưng còn thiếu tự tin.','PEER_REVIEW',0x01,'Chăm chỉ, cầu tiến','Nên đọc thêm về chính sách công ty',3,2),(4,'Thỉnh thoảng giao tiếp chưa rõ ràng với các nhóm khác','2024-03-31 08:30:00.000000','F rất nhiệt tình trong công việc, sẵn sàng hỗ trợ đồng đội.','MANAGER_REVIEW',0x00,'Tư duy logic, phản ứng nhanh','Rèn luyện kỹ năng trình bày kỹ thuật',4,3),(5,'Chưa đủ kiên nhẫn với những task lặp lại','2024-03-31 09:00:00.000000','Tôi luôn theo sát tiến độ và báo cáo đúng thời hạn.','SELF_ASSESSMENT',0x00,'Tự giác cao, tinh thần trách nhiệm tốt','Tập trung cải thiện task planning',6,3),(6,'Cần giảm thời gian xử lý báo cáo lớn','2024-06-26 09:15:00.000000','Rất nhạy bén với số liệu và khả năng phân tích tài chính tốt.','MANAGER_REVIEW',0x00,'Phân tích số liệu chính xác','Tận dụng thêm công cụ Excel nâng cao',12,4),(7,'Nên chú ý hơn đến tài liệu hóa quy trình','2024-08-29 13:00:00.000000','Anh G là một người cực kỳ tận tâm trong quá trình triển khai pipeline.','PEER_REVIEW',0x01,'Sự kiên trì và kỹ năng troubleshooting tốt','Viết tài liệu hướng dẫn rõ ràng hơn',6,5);
 /*!40000 ALTER TABLE `feedback_employee` ENABLE KEYS */;
 
 --
@@ -452,7 +421,7 @@ CREATE TABLE `pay_periods` (
   `end_date` datetime(6) DEFAULT NULL,
   `pay_period_code` varchar(255) DEFAULT NULL,
   `start_date` datetime(6) DEFAULT NULL,
-  `status` enum('Closed','Open') NOT NULL,
+  `status` enum('CLOSED','OPEN') NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -462,7 +431,7 @@ CREATE TABLE `pay_periods` (
 --
 
 /*!40000 ALTER TABLE `pay_periods` DISABLE KEYS */;
-INSERT INTO `pay_periods` VALUES (-1259191496,'2025-06-23 05:07:59.626000','Lương tháng 6','2025-06-23 05:07:59.626000','Open'),(1,'2025-01-31 23:59:59.000000','PP2025-01','2025-01-01 00:00:00.000000','Closed'),(2,'2025-02-28 23:59:59.000000','PP2025-02','2025-02-01 00:00:00.000000','Closed'),(3,'2025-03-31 23:59:59.000000','PP2025-03','2025-03-01 00:00:00.000000','Closed'),(4,'2025-04-30 23:59:59.000000','PP2025-04','2025-04-01 00:00:00.000000','Closed'),(5,'2025-05-31 23:59:59.000000','PP2025-05','2025-05-01 00:00:00.000000','Closed'),(6,'2025-06-30 23:59:59.000000','PP2025-06','2025-06-01 00:00:00.000000','Open'),(7,'2025-07-31 23:59:59.000000','PP2025-07','2025-07-01 00:00:00.000000','Open'),(8,'2025-08-31 23:59:59.000000','PP2025-08','2025-08-01 00:00:00.000000','Open'),(9,'2025-09-30 23:59:59.000000','PP2025-09','2025-09-01 00:00:00.000000','Open'),(10,'2025-10-31 23:59:59.000000','PP2025-10','2025-10-01 00:00:00.000000','Open'),(11,'2025-11-30 23:59:59.000000','PP2025-11','2025-11-01 00:00:00.000000','Open'),(12,'2025-12-31 23:59:59.000000','PP2025-12','2025-12-01 00:00:00.000000','Open'),(13,'2024-11-30 23:59:59.000000','PP2024-11','2024-11-01 00:00:00.000000','Closed'),(14,'2024-12-31 23:59:59.000000','PP2024-12','2024-12-01 00:00:00.000000','Closed'),(15,'2026-01-31 23:59:59.000000','PP2026-01','2026-01-01 00:00:00.000000','Open'),(16,'2026-02-28 23:59:59.000000','PP2026-02','2026-02-01 00:00:00.000000','Open'),(17,'2026-03-31 23:59:59.000000','PP2026-03','2026-03-01 00:00:00.000000','Open'),(18,'2026-04-30 23:59:59.000000','PP2026-04','2026-04-01 00:00:00.000000','Open'),(19,'2026-05-31 23:59:59.000000','PP2026-05','2026-05-01 00:00:00.000000','Open'),(20,'2026-06-30 23:59:59.000000','PP2026-06','2026-06-01 00:00:00.000000','Open'),(932790467,'2025-06-23 05:07:59.626000','Lương tháng 4','2025-06-23 05:07:59.626000','Closed'),(956711442,'2025-06-23 05:07:59.626000','Lương tháng 7','2025-06-23 05:07:59.626000','Closed'),(1287736253,'2025-06-23 05:07:59.626000','Lương tháng 3','2025-06-23 05:07:59.626000','Closed');
+INSERT INTO `pay_periods` VALUES (-1259191496,'2025-06-23 05:07:59.626000','Lương tháng 6','2025-06-23 05:07:59.626000','OPEN'),(1,'2025-01-31 23:59:59.000000','PP2025-01','2025-01-01 00:00:00.000000','CLOSED'),(2,'2025-02-28 23:59:59.000000','PP2025-02','2025-02-01 00:00:00.000000','CLOSED'),(3,'2025-03-31 23:59:59.000000','PP2025-03','2025-03-01 00:00:00.000000','CLOSED'),(4,'2025-04-30 23:59:59.000000','PP2025-04','2025-04-01 00:00:00.000000','CLOSED'),(5,'2025-05-31 23:59:59.000000','PP2025-05','2025-05-01 00:00:00.000000','CLOSED'),(6,'2025-06-30 23:59:59.000000','PP2025-06','2025-06-01 00:00:00.000000','OPEN'),(7,'2025-07-31 23:59:59.000000','PP2025-07','2025-07-01 00:00:00.000000','OPEN'),(8,'2025-08-31 23:59:59.000000','PP2025-08','2025-08-01 00:00:00.000000','OPEN'),(9,'2025-09-30 23:59:59.000000','PP2025-09','2025-09-01 00:00:00.000000','OPEN'),(10,'2025-10-31 23:59:59.000000','PP2025-10','2025-10-01 00:00:00.000000','OPEN'),(11,'2025-11-30 23:59:59.000000','PP2025-11','2025-11-01 00:00:00.000000','OPEN'),(12,'2025-12-31 23:59:59.000000','PP2025-12','2025-12-01 00:00:00.000000','OPEN'),(13,'2024-11-30 23:59:59.000000','PP2024-11','2024-11-01 00:00:00.000000','CLOSED'),(14,'2024-12-31 23:59:59.000000','PP2024-12','2024-12-01 00:00:00.000000','CLOSED'),(15,'2026-01-31 23:59:59.000000','PP2026-01','2026-01-01 00:00:00.000000','OPEN'),(16,'2026-02-28 23:59:59.000000','PP2026-02','2026-02-01 00:00:00.000000','OPEN'),(17,'2026-03-31 23:59:59.000000','PP2026-03','2026-03-01 00:00:00.000000','OPEN'),(18,'2026-04-30 23:59:59.000000','PP2026-04','2026-04-01 00:00:00.000000','OPEN'),(19,'2026-05-31 23:59:59.000000','PP2026-05','2026-05-01 00:00:00.000000','OPEN'),(20,'2026-06-30 23:59:59.000000','PP2026-06','2026-06-01 00:00:00.000000','OPEN'),(932790467,'2025-06-23 05:07:59.626000','Lương tháng 4','2025-06-23 05:07:59.626000','CLOSED'),(956711442,'2025-06-23 05:07:59.626000','Lương tháng 7','2025-06-23 05:07:59.626000','CLOSED'),(1287736253,'2025-06-23 05:07:59.626000','Lương tháng 3','2025-06-23 05:07:59.626000','CLOSED');
 /*!40000 ALTER TABLE `pay_periods` ENABLE KEYS */;
 
 --
@@ -477,7 +446,7 @@ CREATE TABLE `payroll_components` (
   `amount` decimal(38,2) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `percentage` float DEFAULT NULL,
-  `type` enum('Deduction','Subsidy') NOT NULL,
+  `type` enum('DEDUCTION','SUDSIDY') NOT NULL,
   `regulation_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKptwk815cryvlmun26w7ktjxm6` (`regulation_id`),
@@ -490,7 +459,6 @@ CREATE TABLE `payroll_components` (
 --
 
 /*!40000 ALTER TABLE `payroll_components` DISABLE KEYS */;
-INSERT INTO `payroll_components` VALUES (1,200000.00,'Bảo hiểm xã hội',8,'Deduction',1),(2,300000.00,'Bảo hiểm y tế',1.5,'Deduction',2),(3,300000.00,'Phụ cấp chuyên cần',5,'Subsidy',3),(4,150000.00,'Trợ cấp xăng xe',NULL,'Subsidy',5),(5,100000.00,'Khấu trừ trễ giờ',NULL,'Deduction',NULL),(489767723,0.00,'hihihi',0,'Subsidy',1),(1371882658,0.00,'string2',7.5,'Subsidy',2);
 /*!40000 ALTER TABLE `payroll_components` ENABLE KEYS */;
 
 --
@@ -532,7 +500,7 @@ DROP TABLE IF EXISTS `payrolls`;
 CREATE TABLE `payrolls` (
   `id` int NOT NULL,
   `net_salary` decimal(38,2) DEFAULT NULL,
-  `status` enum('Approved','Paid','Pending','Rejected') NOT NULL,
+  `status` enum('APPROVED','PAID','PENDING','REJECTED') NOT NULL,
   `total_deduction` decimal(38,2) DEFAULT NULL,
   `total_income` decimal(38,2) DEFAULT NULL,
   `employee_id` int DEFAULT NULL,
@@ -550,7 +518,7 @@ CREATE TABLE `payrolls` (
 --
 
 /*!40000 ALTER TABLE `payrolls` DISABLE KEYS */;
-INSERT INTO `payrolls` VALUES (1,23000000.00,'Paid',2000000.00,25000000.00,1,1),(2,25500000.00,'Paid',1500000.00,27000000.00,2,2),(3,21000000.00,'Approved',1000000.00,22000000.00,3,3),(4,22200000.00,'Paid',1800000.00,24000000.00,4,4),(5,27500000.00,'Paid',2500000.00,30000000.00,5,5),(6,24800000.00,'Approved',1200000.00,26000000.00,6,1),(7,25000000.00,'Rejected',3000000.00,28000000.00,7,2),(8,21300000.00,'Paid',1700000.00,23000000.00,8,3),(9,23500000.00,'Pending',2000000.00,25500000.00,9,4),(10,23000000.00,'Paid',1500000.00,24500000.00,10,5),(11,23000000.00,'Paid',2000000.00,25000000.00,1,1),(12,25500000.00,'Approved',1500000.00,27000000.00,2,2),(13,21000000.00,'Paid',1000000.00,22000000.00,3,3),(14,22200000.00,'Rejected',1800000.00,24000000.00,4,4),(15,27500000.00,'Paid',2500000.00,30000000.00,5,5),(16,24800000.00,'Paid',1200000.00,26000000.00,6,1),(17,25000000.00,'Approved',3000000.00,28000000.00,7,2),(18,21300000.00,'Paid',1700000.00,23000000.00,8,3),(19,23500000.00,'Paid',2000000.00,25500000.00,9,4),(20,23000000.00,'Pending',1500000.00,24500000.00,10,5);
+INSERT INTO `payrolls` VALUES (1,23000000.00,'PAID',2000000.00,25000000.00,1,1),(2,25500000.00,'PAID',1500000.00,27000000.00,2,2),(3,21000000.00,'APPROVED',1000000.00,22000000.00,3,3),(4,22200000.00,'PAID',1800000.00,24000000.00,4,4),(5,27500000.00,'PAID',2500000.00,30000000.00,5,5),(6,24800000.00,'APPROVED',1200000.00,26000000.00,6,1),(7,25000000.00,'REJECTED',3000000.00,28000000.00,7,2),(8,21300000.00,'PAID',1700000.00,23000000.00,8,3),(9,23500000.00,'PENDING',2000000.00,25500000.00,9,4),(10,23000000.00,'PAID',1500000.00,24500000.00,10,5),(11,23000000.00,'PAID',2000000.00,25000000.00,1,1),(12,25500000.00,'APPROVED',1500000.00,27000000.00,2,2),(13,21000000.00,'PAID',1000000.00,22000000.00,3,3),(14,22200000.00,'REJECTED',1800000.00,24000000.00,4,4),(15,27500000.00,'PAID',2500000.00,30000000.00,5,5),(16,24800000.00,'PAID',1200000.00,26000000.00,6,1),(17,25000000.00,'APPROVED',3000000.00,28000000.00,7,2),(18,21300000.00,'PAID',1700000.00,23000000.00,8,3),(19,23500000.00,'PAID',2000000.00,25500000.00,9,4),(20,23000000.00,'PENDING',1500000.00,24500000.00,10,5);
 /*!40000 ALTER TABLE `payrolls` ENABLE KEYS */;
 
 --
@@ -590,6 +558,7 @@ CREATE TABLE `performance_review` (
 --
 
 /*!40000 ALTER TABLE `performance_review` DISABLE KEYS */;
+INSERT INTO `performance_review` VALUES (1,'2024-12-01 08:00:00.000000','Đánh giá toàn diện cuối năm','Lãnh đạo tốt, phối hợp hiệu quả với các bộ phận',4.7,'ANNUAL','2024-12-30 18:00:00.000000','2024-12-01 08:00:00.000000','COMPLETED','Annual Review 2024 - Nguyen Van A','2024-12-31 09:00:00.000000',2,1,1),(2,'2024-03-01 09:00:00.000000','Đánh giá sau 2 tháng thử việc','Tiềm năng phát triển, cần thêm đào tạo nội dung SEO',3.8,'PROBATION','2024-03-31 17:00:00.000000','2024-01-15 08:00:00.000000','COMPLETED','Probation Review - Do Thi J','2024-04-01 10:00:00.000000',9,10,10),(3,'2024-04-01 09:00:00.000000','Đánh giá quý 1','Hoàn thành OKRs, tuy nhiên cần cải thiện giao tiếp nhóm',4.2,'QUARTERLY','2024-03-31 17:00:00.000000','2024-01-01 08:00:00.000000','COMPLETED','Q1 Review - Vu Van F','2024-04-01 10:00:00.000000',4,6,6),(4,'2024-07-01 09:00:00.000000','Đánh giá giữa năm',NULL,NULL,'SEMI_ANNUAL','2024-06-30 17:00:00.000000','2024-04-01 08:00:00.000000','PENDING_APPROVAL','Mid-Year Review - Phan Thi N',NULL,12,14,14),(5,'2024-08-15 09:00:00.000000','Đánh giá sau khi hoàn thành CI/CD','Có tư duy hệ thống, triển khai hiệu quả pipeline',4.5,'PROJECT_BASED','2024-08-30 17:00:00.000000','2024-07-01 08:00:00.000000','COMPLETED','Project Review - Dang Van G','2024-09-01 09:00:00.000000',4,7,7),(6,'2024-11-01 08:00:00.000000','Review chưa thực hiện',NULL,NULL,'ANNUAL','2024-11-30 17:00:00.000000','2024-11-01 08:00:00.000000','OVERDUE','Annual Review - Le Thi R',NULL,17,18,18);
 /*!40000 ALTER TABLE `performance_review` ENABLE KEYS */;
 
 --
@@ -604,10 +573,10 @@ CREATE TABLE `performance_review_detail` (
   `comment` varchar(255) DEFAULT NULL,
   `criteria_description` varchar(255) DEFAULT NULL,
   `criteria_name` varchar(255) DEFAULT NULL,
+  `review_date` datetime(6) DEFAULT NULL,
   `score` float DEFAULT NULL,
   `performance_review_id` int NOT NULL,
   `reviewer_id` int NOT NULL,
-  `review_date` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKpluxypgcdvcd9da6jkglh93sv` (`performance_review_id`),
   KEY `FKefseldnn8kf0druxr3yrbxpns` (`reviewer_id`),
@@ -621,6 +590,7 @@ CREATE TABLE `performance_review_detail` (
 --
 
 /*!40000 ALTER TABLE `performance_review_detail` DISABLE KEYS */;
+INSERT INTO `performance_review_detail` VALUES (1,'Khả năng lãnh đạo xuất sắc','Đánh giá khả năng lãnh đạo đội nhóm','Leadership','2024-12-15 10:00:00.000000',4.8,1,2),(2,'Tổ chức công việc khoa học','Khả năng lên kế hoạch và điều phối','Planning','2024-12-15 10:15:00.000000',4.6,1,2),(3,'Có tư duy sáng tạo, nhưng cần thêm kinh nghiệm SEO','Tư duy marketing','Creativity','2024-03-20 11:00:00.000000',3.7,2,9),(4,'Thái độ học tập tốt','Thái độ và tinh thần hợp tác trong công việc','Attitude','2024-03-20 11:20:00.000000',3.9,2,9),(5,'Tích cực hỗ trợ nhóm DevOps','Khả năng hợp tác và teamwork','Teamwork','2024-03-30 16:00:00.000000',4.4,3,4),(6,'Cần cải thiện kỹ năng trình bày','Giao tiếp trong nhóm và thuyết trình','Communication','2024-03-30 16:15:00.000000',4,3,4),(7,'CI/CD được triển khai hiệu quả','Kỹ thuật DevOps và hạ tầng','DevOps Skill','2024-08-28 14:00:00.000000',4.6,5,4),(8,'Hiểu biết tốt về bảo mật','Áp dụng bảo mật vào pipeline','Security Awareness','2024-08-28 14:15:00.000000',4.5,5,4),(9,'Báo cáo tài chính chính xác','Độ chính xác trong phân tích số liệu','Accuracy','2024-06-25 09:30:00.000000',4.3,4,12),(10,'Cải thiện kỹ năng trình bày phân tích','Khả năng giải thích dữ liệu','Presentation','2024-06-25 09:45:00.000000',4.1,4,12);
 /*!40000 ALTER TABLE `performance_review_detail` ENABLE KEYS */;
 
 --
@@ -740,57 +710,6 @@ INSERT INTO `role` VALUES (1,'HR Manager',1),(2,'HR Specialist',1),(3,'Recruiter
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 
 --
--- Table structure for table `salary`
---
-
-DROP TABLE IF EXISTS `salary`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `salary` (
-  `id` int NOT NULL,
-  `time` datetime(6) DEFAULT NULL,
-  `employee_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK8shr4to2ct7gci2vauwolmrlk` (`employee_id`),
-  CONSTRAINT `FK8shr4to2ct7gci2vauwolmrlk` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `salary`
---
-
-/*!40000 ALTER TABLE `salary` DISABLE KEYS */;
-INSERT INTO `salary` VALUES (1,'2024-01-31 23:59:59.000000',1),(2,'2024-02-29 23:59:59.000000',1),(3,'2024-03-31 23:59:59.000000',1),(4,'2024-04-30 23:59:59.000000',1),(5,'2024-05-31 23:59:59.000000',1),(6,'2024-01-31 23:59:59.000000',2),(7,'2024-02-29 23:59:59.000000',2),(8,'2024-03-31 23:59:59.000000',2),(9,'2024-04-30 23:59:59.000000',2),(10,'2024-05-31 23:59:59.000000',2),(11,'2024-01-31 23:59:59.000000',3),(12,'2024-02-29 23:59:59.000000',3),(13,'2024-03-31 23:59:59.000000',3),(14,'2024-04-30 23:59:59.000000',3),(15,'2024-05-31 23:59:59.000000',3),(16,'2024-01-31 23:59:59.000000',4),(17,'2024-02-29 23:59:59.000000',4),(18,'2024-03-31 23:59:59.000000',4),(19,'2024-04-30 23:59:59.000000',4),(20,'2024-05-31 23:59:59.000000',4),(21,'2024-01-31 23:59:59.000000',5),(22,'2024-02-29 23:59:59.000000',5),(23,'2024-03-31 23:59:59.000000',5),(24,'2024-04-30 23:59:59.000000',5),(25,'2024-05-31 23:59:59.000000',5),(26,'2024-01-31 23:59:59.000000',6),(27,'2024-02-29 23:59:59.000000',6),(28,'2024-03-31 23:59:59.000000',6),(29,'2024-04-30 23:59:59.000000',6),(30,'2024-05-31 23:59:59.000000',6),(31,'2024-01-31 23:59:59.000000',7),(32,'2024-02-29 23:59:59.000000',7),(33,'2024-03-31 23:59:59.000000',7),(34,'2024-04-30 23:59:59.000000',7),(35,'2024-05-31 23:59:59.000000',7),(36,'2024-01-31 23:59:59.000000',8),(37,'2024-02-29 23:59:59.000000',8),(38,'2024-03-31 23:59:59.000000',8),(39,'2024-04-30 23:59:59.000000',8),(40,'2024-05-31 23:59:59.000000',8),(41,'2024-01-31 23:59:59.000000',9),(42,'2024-02-29 23:59:59.000000',9),(43,'2024-03-31 23:59:59.000000',9),(44,'2024-04-30 23:59:59.000000',9),(45,'2024-05-31 23:59:59.000000',9),(46,'2024-01-31 23:59:59.000000',10),(47,'2024-02-29 23:59:59.000000',10),(48,'2024-03-31 23:59:59.000000',10),(49,'2024-04-30 23:59:59.000000',10),(50,'2024-05-31 23:59:59.000000',10),(51,'2024-01-31 23:59:59.000000',11),(52,'2024-02-29 23:59:59.000000',11),(53,'2024-03-31 23:59:59.000000',11),(54,'2024-04-30 23:59:59.000000',11),(55,'2024-05-31 23:59:59.000000',11),(56,'2024-01-31 23:59:59.000000',12),(57,'2024-02-29 23:59:59.000000',12),(58,'2024-03-31 23:59:59.000000',12),(59,'2024-04-30 23:59:59.000000',12),(60,'2024-05-31 23:59:59.000000',12),(61,'2024-01-31 23:59:59.000000',13),(62,'2024-02-29 23:59:59.000000',13),(63,'2024-03-31 23:59:59.000000',13),(64,'2024-04-30 23:59:59.000000',13),(65,'2024-05-31 23:59:59.000000',13),(66,'2024-01-31 23:59:59.000000',14),(67,'2024-02-29 23:59:59.000000',14),(68,'2024-03-31 23:59:59.000000',14),(69,'2024-04-30 23:59:59.000000',14),(70,'2024-05-31 23:59:59.000000',14),(71,'2024-01-31 23:59:59.000000',15),(72,'2024-02-29 23:59:59.000000',15),(73,'2024-03-31 23:59:59.000000',15),(74,'2024-04-30 23:59:59.000000',15),(75,'2024-05-31 23:59:59.000000',15),(76,'2024-01-31 23:59:59.000000',16),(77,'2024-02-29 23:59:59.000000',16),(78,'2024-03-31 23:59:59.000000',16),(79,'2024-04-30 23:59:59.000000',16),(80,'2024-05-31 23:59:59.000000',16),(81,'2024-01-31 23:59:59.000000',17),(82,'2024-02-29 23:59:59.000000',17),(83,'2024-03-31 23:59:59.000000',17),(84,'2024-04-30 23:59:59.000000',17),(85,'2024-05-31 23:59:59.000000',17),(86,'2024-01-31 23:59:59.000000',18),(87,'2024-02-29 23:59:59.000000',18),(88,'2024-03-31 23:59:59.000000',18),(89,'2024-04-30 23:59:59.000000',18),(90,'2024-05-31 23:59:59.000000',18),(91,'2024-01-31 23:59:59.000000',19),(92,'2024-02-29 23:59:59.000000',19),(93,'2024-03-31 23:59:59.000000',19),(94,'2024-04-30 23:59:59.000000',19),(95,'2024-05-31 23:59:59.000000',19),(96,'2024-01-31 23:59:59.000000',20),(97,'2024-02-29 23:59:59.000000',20),(98,'2024-03-31 23:59:59.000000',20),(99,'2024-04-30 23:59:59.000000',20),(100,'2024-05-31 23:59:59.000000',20);
-/*!40000 ALTER TABLE `salary` ENABLE KEYS */;
-
---
--- Table structure for table `subsidy`
---
-
-DROP TABLE IF EXISTS `subsidy`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `subsidy` (
-  `id` int NOT NULL,
-  `amount` double DEFAULT NULL,
-  `type_subsidy` varchar(255) DEFAULT NULL,
-  `salary_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKoex0mqjp7h0r4i8c8as2n7hpf` (`salary_id`),
-  CONSTRAINT `FKoex0mqjp7h0r4i8c8as2n7hpf` FOREIGN KEY (`salary_id`) REFERENCES `salary` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `subsidy`
---
-
-/*!40000 ALTER TABLE `subsidy` DISABLE KEYS */;
-INSERT INTO `subsidy` VALUES (1,2000000,'Phụ cấp xăng xe',1),(2,1500000,'Phụ cấp ăn trưa',1),(3,500000,'Phụ cấp điện thoại',1),(4,1000000,'Phụ cấp xăng xe',6),(5,1500000,'Phụ cấp ăn trưa',6),(6,500000,'Phụ cấp điện thoại',6),(7,800000,'Phụ cấp xăng xe',11),(8,1500000,'Phụ cấp ăn trưa',11),(9,500000,'Phụ cấp điện thoại',11),(10,2500000,'Phụ cấp xăng xe',16),(11,1500000,'Phụ cấp ăn trưa',16),(12,800000,'Phụ cấp điện thoại',16),(13,1800000,'Phụ cấp xăng xe',21),(14,1500000,'Phụ cấp ăn trưa',21),(15,600000,'Phụ cấp điện thoại',21),(16,1000000,'Phụ cấp xăng xe',26),(17,1500000,'Phụ cấp ăn trưa',26),(18,500000,'Phụ cấp điện thoại',26),(19,1600000,'Phụ cấp xăng xe',31),(20,1500000,'Phụ cấp ăn trưa',31),(21,500000,'Phụ cấp điện thoại',31),(22,1200000,'Phụ cấp xăng xe',36),(23,1500000,'Phụ cấp ăn trưa',36),(24,500000,'Phụ cấp điện thoại',36),(25,2000000,'Phụ cấp xăng xe',41),(26,1500000,'Phụ cấp ăn trưa',41),(27,700000,'Phụ cấp điện thoại',41),(28,1400000,'Phụ cấp xăng xe',46),(29,1500000,'Phụ cấp ăn trưa',46),(30,500000,'Phụ cấp điện thoại',46),(31,1000000,'Phụ cấp xăng xe',51),(32,1500000,'Phụ cấp ăn trưa',51),(33,500000,'Phụ cấp điện thoại',51),(34,2200000,'Phụ cấp xăng xe',56),(35,1500000,'Phụ cấp ăn trưa',56),(36,800000,'Phụ cấp điện thoại',56),(37,1600000,'Phụ cấp xăng xe',61),(38,1500000,'Phụ cấp ăn trưa',61),(39,600000,'Phụ cấp điện thoại',61),(40,1800000,'Phụ cấp xăng xe',66),(41,1500000,'Phụ cấp ăn trưa',66),(42,600000,'Phụ cấp điện thoại',66),(43,2000000,'Phụ cấp xăng xe',71),(44,1500000,'Phụ cấp ăn trưa',71),(45,700000,'Phụ cấp điện thoại',71),(46,1200000,'Phụ cấp xăng xe',76),(47,1500000,'Phụ cấp ăn trưa',76),(48,500000,'Phụ cấp điện thoại',76),(49,2300000,'Phụ cấp xăng xe',81),(50,1500000,'Phụ cấp ăn trưa',81),(51,800000,'Phụ cấp điện thoại',81),(52,1000000,'Phụ cấp xăng xe',86),(53,1500000,'Phụ cấp ăn trưa',86),(54,500000,'Phụ cấp điện thoại',86),(55,1500000,'Phụ cấp xăng xe',91),(56,1500000,'Phụ cấp ăn trưa',91),(57,600000,'Phụ cấp điện thoại',91),(58,1000000,'Phụ cấp xăng xe',96),(59,1500000,'Phụ cấp ăn trưa',96),(60,500000,'Phụ cấp điện thoại',96);
-/*!40000 ALTER TABLE `subsidy` ENABLE KEYS */;
-
---
 -- Table structure for table `training_enrollment`
 --
 
@@ -823,6 +742,7 @@ CREATE TABLE `training_enrollment` (
 --
 
 /*!40000 ALTER TABLE `training_enrollment` DISABLE KEYS */;
+INSERT INTO `training_enrollment` VALUES (1,100,'2024-01-20 17:00:00.000000','2024-01-18 08:00:00.000000','Chương trình rõ ràng, thực tế','COMPLETED',92.5,3,1,1),(2,95,'2024-01-25 18:00:00.000000','2024-01-23 09:00:00.000000','Nội dung sát với công việc thực tế','COMPLETED',87,6,2,2),(3,80,NULL,'2024-01-28 09:00:00.000000',NULL,'IN_PROGRESS',NULL,6,NULL,3),(4,100,'2024-02-02 17:30:00.000000','2024-02-01 10:00:00.000000','Cần thêm ví dụ cụ thể hơn','COMPLETED',91,10,3,4),(5,100,'2024-02-05 17:00:00.000000','2024-02-04 10:00:00.000000','Ứng dụng tốt cho báo cáo ngân sách','COMPLETED',89.5,13,4,5),(6,NULL,NULL,NULL,NULL,'ENROLLED',NULL,18,5,6),(7,98,'2024-02-16 17:00:00.000000','2024-02-15 08:30:00.000000','Tài liệu chất lượng, giảng viên nhiệt tình','COMPLETED',95,8,6,7),(8,60,NULL,'2024-02-21 08:00:00.000000',NULL,'IN_PROGRESS',NULL,2,7,8),(9,30,NULL,'2024-02-25 09:00:00.000000','Không phù hợp trình độ hiện tại','DROPPED',NULL,6,8,9),(10,100,'2024-03-02 17:00:00.000000','2024-03-01 09:00:00.000000','Rất bổ ích cho chiến dịch Facebook Ads','COMPLETED',90,11,9,10);
 /*!40000 ALTER TABLE `training_enrollment` ENABLE KEYS */;
 
 --
@@ -841,15 +761,12 @@ CREATE TABLE `training_program` (
   `prerequisites` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `create_by_id` int DEFAULT NULL,
-  `departments_id` int DEFAULT NULL,
   `target_role_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKjy7ae1vp4bjr5k3bbk1mxj9tt` (`create_by_id`),
-  KEY `FKmrw0jfof514hoh2fh6u3fw5me` (`departments_id`),
   KEY `FK1v25jq3ccfr8m6gqwurthou5h` (`target_role_id`),
   CONSTRAINT `FK1v25jq3ccfr8m6gqwurthou5h` FOREIGN KEY (`target_role_id`) REFERENCES `role` (`id`),
-  CONSTRAINT `FKjy7ae1vp4bjr5k3bbk1mxj9tt` FOREIGN KEY (`create_by_id`) REFERENCES `employees` (`id`),
-  CONSTRAINT `FKmrw0jfof514hoh2fh6u3fw5me` FOREIGN KEY (`departments_id`) REFERENCES `departments` (`id`)
+  CONSTRAINT `FKjy7ae1vp4bjr5k3bbk1mxj9tt` FOREIGN KEY (`create_by_id`) REFERENCES `employees` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -858,7 +775,7 @@ CREATE TABLE `training_program` (
 --
 
 /*!40000 ALTER TABLE `training_program` DISABLE KEYS */;
-INSERT INTO `training_program` VALUES (1,'2024-01-20 08:00:00.000000','Đào tạo quy trình tuyển dụng và phỏng vấn hiệu quả',0x01,'Handbook HR, Video training, Case studies','Kinh nghiệm HR cơ bản','HR Best Practices',1,1,2),(2,'2024-01-25 08:00:00.000000','Khóa học Java Spring Boot từ cơ bản đến nâng cao',0x00,'Documentation, Source code examples, Online platform','Kiến thức Java cơ bản','Java Spring Boot Advanced',4,2,5),(3,'2024-02-01 08:00:00.000000','Đào tạo Digital Marketing và SEO',0x00,'Google Analytics, SEO tools, Case studies','Kiến thức marketing cơ bản','Digital Marketing Mastery',9,3,10),(4,'2024-02-05 08:00:00.000000','Khóa học phân tích tài chính và Excel nâng cao',0x01,'Excel templates, Financial models, Practice datasets','Kiến thức Excel cơ bản','Financial Analysis Pro',12,4,14),(5,'2024-02-10 08:00:00.000000','Đào tạo kỹ năng bán hàng và chăm sóc khách hàng',0x01,'Sales scripts, CRM training, Role-play scenarios','Kinh nghiệm bán hàng cơ bản','Sales Excellence',17,6,18),(6,'2024-02-15 08:00:00.000000','Automation Testing với Selenium',0x00,'Selenium documentation, Practice projects, Test frameworks','Kiến thức testing manual','Test Automation',4,2,8),(7,'2024-02-20 08:00:00.000000','Leadership và quản lý nhóm',0x00,'Leadership books, Management tools, Case studies','Kinh nghiệm làm việc 3+ năm','Leadership Development',1,1,1),(8,'2024-02-25 08:00:00.000000','DevOps và CI/CD Pipeline',0x00,'Docker, Kubernetes docs, CI/CD tools','Kiến thức Linux và networking','DevOps Fundamentals',4,2,7),(9,'2024-03-01 08:00:00.000000','Content Marketing và Social Media',0x00,'Content calendar templates, Design tools, Analytics','Kỹ năng viết cơ bản','Content Creation Pro',9,3,11);
+INSERT INTO `training_program` VALUES (1,'2024-01-20 08:00:00.000000','Đào tạo quy trình tuyển dụng và phỏng vấn hiệu quả',0x01,'Handbook HR, Video training, Case studies','Kinh nghiệm HR cơ bản','HR Best Practices',1,2),(2,'2024-01-25 08:00:00.000000','Khóa học Java Spring Boot từ cơ bản đến nâng cao',0x00,'Documentation, Source code examples, Online platform','Kiến thức Java cơ bản','Java Spring Boot Advanced',4,5),(3,'2024-02-01 08:00:00.000000','Đào tạo Digital Marketing và SEO',0x00,'Google Analytics, SEO tools, Case studies','Kiến thức marketing cơ bản','Digital Marketing Mastery',9,10),(4,'2024-02-05 08:00:00.000000','Khóa học phân tích tài chính và Excel nâng cao',0x01,'Excel templates, Financial models, Practice datasets','Kiến thức Excel cơ bản','Financial Analysis Pro',12,14),(5,'2024-02-10 08:00:00.000000','Đào tạo kỹ năng bán hàng và chăm sóc khách hàng',0x01,'Sales scripts, CRM training, Role-play scenarios','Kinh nghiệm bán hàng cơ bản','Sales Excellence',17,18),(6,'2024-02-15 08:00:00.000000','Automation Testing với Selenium',0x00,'Selenium documentation, Practice projects, Test frameworks','Kiến thức testing manual','Test Automation',4,8),(7,'2024-02-20 08:00:00.000000','Leadership và quản lý nhóm',0x00,'Leadership books, Management tools, Case studies','Kinh nghiệm làm việc 3+ năm','Leadership Development',1,1),(8,'2024-02-25 08:00:00.000000','DevOps và CI/CD Pipeline',0x00,'Docker, Kubernetes docs, CI/CD tools','Kiến thức Linux và networking','DevOps Fundamentals',4,7),(9,'2024-03-01 08:00:00.000000','Content Marketing và Social Media',0x00,'Content calendar templates, Design tools, Analytics','Kỹ năng viết cơ bản','Content Creation Pro',9,11);
 /*!40000 ALTER TABLE `training_program` ENABLE KEYS */;
 
 --
@@ -897,6 +814,7 @@ CREATE TABLE `training_request` (
 --
 
 /*!40000 ALTER TABLE `training_request` DISABLE KEYS */;
+INSERT INTO `training_request` VALUES (1,'2024-01-18 09:00:00.000000','Nắm rõ quy trình phỏng vấn hiệu quả','HIGH','Chuẩn bị cho mùa tuyển dụng Q1','2024-01-16 08:30:00.000000','APPROVED',1,2,1,3),(2,'2024-01-28 10:00:00.000000','Nâng cao kỹ năng Spring Boot để phát triển hệ thống nội bộ','MEDIUM','Dự án nội bộ sắp triển khai','2024-01-25 09:00:00.000000','FULFILLED',4,4,2,6),(3,'2024-02-02 13:30:00.000000','Tăng hiệu quả SEO cho website công ty','HIGH','Traffic web quá thấp','2024-02-01 09:15:00.000000','APPROVED',9,9,3,10),(4,'2024-02-06 08:00:00.000000','Tự động hóa các báo cáo tài chính định kỳ','MEDIUM','Nâng cao hiệu suất làm việc','2024-02-05 10:00:00.000000','APPROVED',12,14,4,13),(5,NULL,'Tăng kỹ năng xử lý phản hồi từ khách hàng','HIGH','Chuẩn bị cho chiến dịch mùa hè','2024-02-10 09:00:00.000000','PENDING',NULL,17,5,18),(6,'2024-02-16 08:30:00.000000','Thành thạo công cụ test automation','MEDIUM','Đảm bảo chất lượng cho sản phẩm mới','2024-02-15 08:00:00.000000','FULFILLED',4,8,6,8),(7,'2024-02-21 11:00:00.000000','Chuẩn bị lộ trình trưởng nhóm','HIGH','Định hướng thăng tiến','2024-02-20 08:00:00.000000','APPROVED',1,1,7,2),(8,NULL,'Triển khai CI/CD cho môi trường staging','LOW','Giảm thời gian release thủ công','2024-02-25 14:00:00.000000','PENDING',NULL,4,8,6),(9,'2024-03-02 09:00:00.000000','Tạo nội dung cho chiến dịch mạng xã hội','MEDIUM','Nhân viên mới cần nắm quy trình','2024-03-01 10:00:00.000000','APPROVED',9,9,9,11);
 /*!40000 ALTER TABLE `training_request` ENABLE KEYS */;
 
 --
@@ -929,7 +847,7 @@ CREATE TABLE `training_session` (
 --
 
 /*!40000 ALTER TABLE `training_session` DISABLE KEYS */;
-INSERT INTO `training_session` VALUES (333529296,0,0,24,'string',3,'Cơ bản về Spring boot',1,2);
+INSERT INTO `training_session` VALUES (1,1500000,15,4,'Phòng họp A1 - Tầng 3',30,'Onboarding & Interview Workshop',2,1),(2,2000000,25,8,'Phòng Lab 2 - Tầng 5',30,'Java Spring Boot - Cơ bản',5,2),(3,2500000,20,10,'Phòng Lab 3 - Tầng 6',25,'Spring Boot - Dự án thực tế',5,2),(4,1800000,12,6,'Phòng Marketing - Tầng 4',20,'SEO & Google Ads Basics',10,3),(5,2200000,10,6,'Phòng Đào tạo Tài chính',20,'Excel nâng cao cho phân tích',14,4),(6,1700000,18,5,'Phòng Bán hàng - Tầng 2',25,'Kỹ năng tư vấn và chốt đơn',18,5),(7,1900000,14,6,'Lab kiểm thử tự động',20,'Automation Testing with Selenium',8,6),(8,3000000,10,8,'Phòng Chiến lược - Tầng 7',15,'Leadership for Mid-level',1,7),(9,2100000,15,6,'Phòng DevOps - Tầng 5',20,'CI/CD Pipeline Training',7,8),(10,1600000,16,5,'Phòng Content - Tầng 4',20,'Content Writing Workshop',11,9),(333529296,0,0,24,'string',3,'Cơ bản về Spring boot',1,2);
 /*!40000 ALTER TABLE `training_session` ENABLE KEYS */;
 
 --
@@ -945,4 +863,4 @@ INSERT INTO `training_session` VALUES (333529296,0,0,24,'string',3,'Cơ bản v�
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-24 21:02:42
+-- Dump completed on 2025-06-24 22:08:17
