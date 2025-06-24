@@ -1,6 +1,6 @@
 package com.project.hrm.enums;
 
-public enum AttendenceType {
+public enum AttendanceType {
     REGULAR,        // Ca hành chính, giờ hành chính
     OVERTIME,       // Tăng ca
     NIGHT,          // Ca đêm

@@ -1,7 +1,7 @@
 package com.project.hrm.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.project.hrm.enums.AttendenceType;
+import com.project.hrm.enums.AttendanceType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Attendence {
+public class Attendance {
     @Id
     private int id;
 
@@ -24,7 +24,7 @@ public class Attendence {
     @JsonBackReference
     private Employees employee;
 
-    private LocalDateTime attendenceDate;
+    private LocalDateTime attendanceDate;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
     private Float regularTime;
@@ -32,5 +32,5 @@ public class Attendence {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AttendenceType shiftType;
+    private AttendanceType shiftType;
 }

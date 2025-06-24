@@ -1,6 +1,6 @@
-package com.project.hrm.dto.attendenceDTO;
+package com.project.hrm.dto.attendanceDTO;
 
-import com.project.hrm.enums.AttendenceType;
+import com.project.hrm.enums.AttendanceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,12 +12,13 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttendenceCreateDTO {
+public class AttendanceDTO {
+    private Integer id;
     private Integer employeeId;
-    private LocalDateTime attendenceDate;
+    private LocalDateTime attendanceDate;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
     private Float regularTime;
     private Float otherTime;
-    private AttendenceType shiftType;
+    private AttendanceType shiftType;
 }
