@@ -33,8 +33,8 @@ public class RecruitmentRequirementsMapper {
                 .roleName(recruitmentRequirements.getRole().getName())
                 .departmentId(recruitmentRequirements.getRole().getDepartments().getId())
                 .departmentName(recruitmentRequirements.getRole().getDepartments().getDepartmentName())
-                .employeeId(recruitmentRequirements.getEmployees().getId())
-                .employeeName(recruitmentRequirements.getEmployees().fullName())
+                .employeeId(recruitmentRequirements.getRequirements().getId())
+                .employeeName(recruitmentRequirements.getRequirements().fullName())
                 .build();
     }
 

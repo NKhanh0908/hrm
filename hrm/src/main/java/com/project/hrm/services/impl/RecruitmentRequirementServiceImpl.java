@@ -119,7 +119,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         RecruitmentRequirements recruitmentRequirements = recruitmentRequirementsMapper.convertCreateDTOtoEntity(recruitmentRequirementsCreateDTO);
         recruitmentRequirements.setId(IdGenerator.getGenerationId());
         recruitmentRequirements.setRole(role);
-        recruitmentRequirements.setEmployees(accountService.getPrincipal());
+        recruitmentRequirements.setRequirements(accountService.getPrincipal());
 
         return recruitmentRequirementsMapper.toDTO(
                 recruitmentRequirementsRepository.save(recruitmentRequirements));
@@ -167,13 +167,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
             entity.setRole(role);
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new CustomException(Error.UNAUTHORIZED);
-        }
-        Account account = (Account) authentication.getPrincipal();
-
-            entity.setEmployees(account.getEmployees());
+        entity.setRequirements(accountService.getPrincipal());
 
         return recruitmentRequirementsMapper.toDTO(
                 recruitmentRequirementsRepository.save(entity));

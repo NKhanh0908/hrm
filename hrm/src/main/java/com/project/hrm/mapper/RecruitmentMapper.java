@@ -30,8 +30,8 @@ public class RecruitmentMapper {
                 .jobDescription(recruitment.getJobDescription())
                 .recruitmentRequirementsDTO(
                         recruitmentRequirementsMapper.toDTO(recruitment.getRecruitmentRequirements()))
-                .employeeApproveId(recruitment.getEmployees().getId())
-                .employeeApproveName(recruitment.getEmployees().fullName())
+                .employeeApproveId(recruitment.getApproveBy().getId())
+                .employeeApproveName(recruitment.getApproveBy().fullName())
                 .build();
     }
 
