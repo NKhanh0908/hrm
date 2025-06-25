@@ -67,8 +67,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     public CandidateProfileDTO update(CandidateProfileUpdateDTO dto) {
         log.info("Update CandidateProfile");
 
-        CandidateProfile existing = candidateProfileRepository.findById(dto.getId())
-                .orElseThrow(() -> new RuntimeException("CandidateProfile not found with ID: " + dto.getId()));
+        CandidateProfile existing = getEntityById(dto.getId());
 
         if (dto.getName() != null) {
             existing.setName(dto.getName());
@@ -155,6 +154,19 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
 
         return candidateProfileRepository.findById(id)
                 .orElseThrow(() -> new CustomException(Error.CANDIDATE_PROFILE_NOT_FOUND));
+    }
+
+    /**
+     * Check exists candidate profile by email
+     *
+     * @param email check
+     * @return CandidateProfile {@link CandidateProfile}
+     */
+    @Override
+    public CandidateProfileDTO checkExistsCandidateProfile(String email) {
+        log.info("Check exists CandidateProfile by email: {}", email);
+
+        return candidateProfileMapper.toCandidateProfileDTO(candidateProfileRepository.findCandidateProfileByEmail(email));
     }
 
     @Transactional(readOnly = true)

@@ -14,4 +14,6 @@ public interface CandidateProfileRepository extends JpaRepository<CandidateProfi
             WHERE a.id = :applyId
             """, nativeQuery = true)
     CandidateProfile findByApplyId(@Param("applyId") Integer applyId);
+
+    CandidateProfile findCandidateProfileByEmail(String email);
 }

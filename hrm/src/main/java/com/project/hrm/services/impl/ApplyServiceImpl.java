@@ -2,6 +2,7 @@ package com.project.hrm.services.impl;
 
 import com.project.hrm.dto.applyDTO.*;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
+import com.project.hrm.dto.candidateProfileDTO.CandidateProfileUpdateDTO;
 import com.project.hrm.dto.contractDTO.ContractCreateDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeDTO;
@@ -31,6 +32,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -61,12 +63,32 @@ public class ApplyServiceImpl implements ApplyService {
     public ApplyDTO create(ApplyCreateDTO applyCreateDTO) {
         log.info("Create Apply");
 
-        CandidateProfileDTO candidateProfileDTO = candidateProfileService.create(applyCreateDTO.getCandidateProfileCreateDTO());
+        CandidateProfileDTO candidateProfileDTO = new CandidateProfileDTO();
+
+        CandidateProfileDTO existsCandidateProfile = candidateProfileService.checkExistsCandidateProfile(applyCreateDTO.getCandidateProfileCreateDTO().getEmail());
+
+        if(existsCandidateProfile != null) {
+            CandidateProfileUpdateDTO candidateProfileUpdateDTO = new CandidateProfileUpdateDTO();
+            candidateProfileUpdateDTO.setId(existsCandidateProfile.getId());
+            candidateProfileUpdateDTO.setPhone(existsCandidateProfile.getPhone());
+            candidateProfileUpdateDTO.setName(existsCandidateProfile.getName());
+            candidateProfileUpdateDTO.setLinkCV(existsCandidateProfile.getLinkCV());
+            candidateProfileUpdateDTO.setSkills(existsCandidateProfile.getSkills());
+            candidateProfileUpdateDTO.setExperience(existsCandidateProfile.getExperience());
+
+            candidateProfileDTO = candidateProfileService.update(candidateProfileUpdateDTO);
+        } else{
+            candidateProfileDTO = candidateProfileService.create(applyCreateDTO.getCandidateProfileCreateDTO());
+        }
 
         Recruitment recruitment = recruitmentService.getEntityById(applyCreateDTO.getRecruitmentId());
 
         if (recruitment.getStatus() != RecruitmentStatus.OPEN) {
             throw new CustomException(Error.APPLY_NOT_OPEN);
+        }
+
+        if(recruitment.getDeadline().isBefore(LocalDateTime.now())){
+            throw new CustomException(Error.APPLY_EXPIRED);
         }
 
         Apply apply = applyMapper.convertCreateDTOToEntity(applyCreateDTO, recruitment,
