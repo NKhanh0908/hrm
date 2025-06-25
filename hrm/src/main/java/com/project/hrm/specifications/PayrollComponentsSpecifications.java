@@ -1,6 +1,8 @@
 package com.project.hrm.specifications;
 
 import com.project.hrm.dto.payrollComponentsDTO.PayrollComponentsFilter;
+import com.project.hrm.dto.payrollComponentsDTO.PayrollComponentsFilterWithRange;
+import com.project.hrm.dto.payrollsDTO.PayrollsFilterWithRange;
 import com.project.hrm.entities.PayrollComponents;
 import com.project.hrm.enums.PayrollComponentType;
 import jakarta.persistence.criteria.Predicate;
@@ -44,34 +46,28 @@ public class PayrollComponentsSpecifications {
         };
     }
 
-    public static Specification<PayrollComponents> filterWithRange(
-            BigDecimal minAmount,
-            BigDecimal maxAmount,
-            Float minPercentage,
-            Float maxPercentage,
-            PayrollComponentType type
-    ) {
+    public static Specification<PayrollComponents> filterWithRange(PayrollComponentsFilterWithRange filterWithRange) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (minAmount != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("amount"), minAmount));
+            if (filterWithRange.getMinAmount() != null) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("amount"), filterWithRange.getMinAmount()));
             }
 
-            if (maxAmount != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("amount"), maxAmount));
+            if (filterWithRange.getMaxAmount() != null) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("amount"), filterWithRange.getMaxAmount()));
             }
 
-            if (minPercentage != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("percentage"), minPercentage));
+            if (filterWithRange.getMinPercentage() != null) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("percentage"), filterWithRange.getMinPercentage()));
             }
 
-            if (maxPercentage != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("percentage"), maxPercentage));
+            if (filterWithRange.getMaxPercentage() != null) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("percentage"), filterWithRange.getMaxPercentage()));
             }
 
-            if (type != null) {
-                predicates.add(cb.equal(root.get("type"), type));
+            if (filterWithRange.getType() != null) {
+                predicates.add(cb.equal(root.get("type"), filterWithRange.getType()));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

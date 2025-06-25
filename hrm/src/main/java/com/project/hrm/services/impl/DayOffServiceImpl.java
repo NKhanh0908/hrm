@@ -17,7 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,14 +29,34 @@ public class DayOffServiceImpl implements DayOffService {
     private final DayOffMapper dayOffMapper;
     private final EmployeeService employeeService;
 
+
+    /**
+     * Creates a new {@link DayOff} entity from the provided {@link DayOffCreateDTO}.
+     *
+     * @param dayOffCreateDTO the DTO containing day-off request information
+     * @return the created {@link DayOffDTO} after being persisted
+     */
     @Transactional
     @Override
     public DayOffDTO create(DayOffCreateDTO dayOffCreateDTO) {
         log.info("Inside create dayOff");
-        DayOff dayOff = dayOffMapper.toEntityfromDTO(dayOffCreateDTO);
+
+        DayOff dayOff = dayOffMapper.toEntityFromDTO(dayOffCreateDTO);
+
         dayOff.setId(IdGenerator.getGenerationId());
+
+        dayOff.setEmployee(employeeService.getEntityById(dayOffCreateDTO.getEmployeeId()));
+
         return dayOffMapper.toDTO(dayOffRepository.save(dayOff));
     }
+
+    /**
+     * Updates an existing {@link DayOff} entity with the given {@link DayOffUpdateDTO}.
+     *
+     * @param dayOffUpdateDTO the DTO containing updated day-off request information
+     * @return the updated {@link DayOffDTO} after persistence
+     * @throws EntityNotFoundException if the specified day-off or employee does not exist
+     */
 
     @Transactional
     @Override
@@ -73,6 +93,12 @@ public class DayOffServiceImpl implements DayOffService {
         return dayOffMapper.toDTO(updated);
     }
 
+    /**
+     * Deletes a {@link DayOff} entity by its ID.
+     *
+     * @param id the ID of the day-off record to delete
+     * @throws EntityNotFoundException if no day-off exists with the given ID
+     */
     @Transactional
     @Override
     public void delete(Integer id) {
@@ -84,6 +110,12 @@ public class DayOffServiceImpl implements DayOffService {
         }
     }
 
+    /**
+     * Checks if a {@link DayOff} entity exists by its ID.
+     *
+     * @param id the ID to check
+     * @return true if a day-off with the given ID exists, false otherwise
+     */
     @Transactional(readOnly = true)
     @Override
     public Boolean checkExists(Integer id) {
@@ -91,6 +123,13 @@ public class DayOffServiceImpl implements DayOffService {
         return dayOffRepository.existsById(id);
     }
 
+    /**
+     * Retrieves a {@link DayOffDTO} by its ID.
+     *
+     * @param id the ID of the day-off record
+     * @return the corresponding {@link DayOffDTO}
+     * @throws EntityNotFoundException if the day-off does not exist
+     */
     @Transactional(readOnly = true)
     @Override
     public DayOffDTO getById(Integer id) {
@@ -98,6 +137,13 @@ public class DayOffServiceImpl implements DayOffService {
         return dayOffMapper.toDTO(getEntityById(id));
     }
 
+    /**
+     * Retrieves a {@link DayOff} entity by its ID.
+     *
+     * @param id the ID of the day-off record
+     * @return the corresponding {@link DayOff} entity
+     * @throws EntityNotFoundException if no entity exists with the given ID
+     */
     @Transactional(readOnly = true)
     @Override
     public DayOff getEntityById(Integer id) {
@@ -106,6 +152,12 @@ public class DayOffServiceImpl implements DayOffService {
                 .orElseThrow(() -> new EntityNotFoundException("No Day Off found with id: " + id));
     }
 
+    /**
+     * Retrieves all {@link DayOffDTO} records for a specific employee.
+     *
+     * @param employeeId the ID of the employee
+     * @return a list of {@link DayOffDTO} associated with the employee
+     */
     @Transactional(readOnly = true)
     @Override
     public List<DayOffDTO> getDayOffsByEmployeeId(Integer employeeId) {
@@ -117,6 +169,15 @@ public class DayOffServiceImpl implements DayOffService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Filters {@link DayOff} entities using the provided {@link DayOffFilter},
+     * and returns a paginated list of {@link DayOffDTO}.
+     *
+     * @param dayOffFilter the filtering criteria
+     * @param page         the page number (zero-based)
+     * @param size         the number of records per page
+     * @return a list of filtered {@link DayOffDTO}
+     */
     @Transactional(readOnly = true)
     @Override
     public List<DayOffDTO> filter(DayOffFilter dayOffFilter, int page, int size) {
@@ -132,6 +193,15 @@ public class DayOffServiceImpl implements DayOffService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Dynamically filters {@link DayOff} entities based on complex criteria
+     * in {@link DayOffFilterDynamic}, and returns a paginated list of {@link DayOffDTO}.
+     *
+     * @param dayOffFilterDynamic the dynamic filtering criteria
+     * @param page                the page number (zero-based)
+     * @param size                the number of records per page
+     * @return a list of dynamically filtered {@link DayOffDTO}
+     */
     @Transactional(readOnly = true)
     @Override
     public List<DayOffDTO> filterDynamic(DayOffFilterDynamic dayOffFilterDynamic, int page, int size) {
@@ -145,6 +215,4 @@ public class DayOffServiceImpl implements DayOffService {
                 .stream().map(dayOffMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
-
 }

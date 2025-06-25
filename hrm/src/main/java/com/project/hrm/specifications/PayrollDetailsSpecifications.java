@@ -1,6 +1,7 @@
 package com.project.hrm.specifications;
 
 import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsFilter;
+import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsFilterWithRange;
 import com.project.hrm.entities.PayrollDetails;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -39,27 +40,25 @@ public class PayrollDetailsSpecifications {
         };
     }
 
-    public static Specification<PayrollDetails> filterWithRange(
-            BigDecimal minAmount, BigDecimal maxAmount,
-            Float minPercentage, Float maxPercentage) {
+    public static Specification<PayrollDetails> filterWithRange(PayrollDetailsFilterWithRange payrollDetailsFilterWithRange) {
 
         return (root, query, cb) -> {
             Specification<PayrollDetails> spec = Specification.where(null);
 
-            if (minAmount != null) {
-                spec = spec.and((r,q,c) -> c.greaterThanOrEqualTo(root.get("amount"), minAmount));
+            if (payrollDetailsFilterWithRange.getMinAmount() != null) {
+                spec = spec.and((r,q,c) -> c.greaterThanOrEqualTo(root.get("amount"), payrollDetailsFilterWithRange.getMinAmount()));
             }
 
-            if (maxAmount != null) {
-                spec = spec.and((r,q,c) -> c.lessThanOrEqualTo(root.get("amount"), maxAmount));
+            if (payrollDetailsFilterWithRange.getMaxAmount() != null) {
+                spec = spec.and((r,q,c) -> c.lessThanOrEqualTo(root.get("amount"), payrollDetailsFilterWithRange.getMaxAmount()));
             }
 
-            if (minPercentage != null) {
-                spec = spec.and((r,q,c) -> c.greaterThanOrEqualTo(root.get("percentage"), minPercentage));
+            if (payrollDetailsFilterWithRange.getMinPercentage() != null) {
+                spec = spec.and((r,q,c) -> c.greaterThanOrEqualTo(root.get("percentage"), payrollDetailsFilterWithRange.getMinPercentage()));
             }
 
-            if (maxPercentage != null) {
-                spec = spec.and((r,q,c) -> c.lessThanOrEqualTo(root.get("percentage"), minPercentage));
+            if (payrollDetailsFilterWithRange.getMaxPercentage() != null) {
+                spec = spec.and((r,q,c) -> c.lessThanOrEqualTo(root.get("percentage"), payrollDetailsFilterWithRange.getMinPercentage()));
             }
 
             return spec.toPredicate(root, query, cb);

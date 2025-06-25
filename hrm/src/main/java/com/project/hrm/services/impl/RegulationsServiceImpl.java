@@ -29,6 +29,15 @@ public class RegulationsServiceImpl implements RegulationsService {
     private final RegulationsRepository regulationsRepository;
     private final RegulationsMapper regulationsMapper;
 
+
+    /**
+     * Filters {@link Regulations} entities based on the given {@link RegulationsFilter} and pagination.
+     *
+     * @param filter the filter criteria
+     * @param page   page number (zero-based)
+     * @param size   number of items per page
+     * @return a list of {@link RegulationsDTO} matching the filter
+     */
     @Transactional(readOnly = true)
     @Override
     public List<RegulationsDTO> filter(RegulationsFilter filter, int page, int size) {
@@ -41,6 +50,13 @@ public class RegulationsServiceImpl implements RegulationsService {
         return regulationsMapper.convertPageEntityToPageDTO(regulationsRepository.findAll(spec, pageable));
     }
 
+    /**
+     * Retrieves a {@link RegulationsDTO} by its ID.
+     *
+     * @param id the ID of the regulation
+     * @return the corresponding {@link RegulationsDTO}
+     * @throws EntityNotFoundException if the regulation is not found
+     */
     @Transactional(readOnly = true)
     @Override
     public RegulationsDTO getById(Integer id) {
@@ -48,6 +64,13 @@ public class RegulationsServiceImpl implements RegulationsService {
         return regulationsMapper.toRegulationsDTO(getEntityById(id));
     }
 
+    /**
+     * Retrieves a {@link Regulations} entity by its ID.
+     *
+     * @param id the ID of the regulation
+     * @return the {@link Regulations} entity
+     * @throws EntityNotFoundException if not found
+     */
     @Transactional(readOnly = true)
     @Override
     public Regulations getEntityById(Integer id) {
@@ -56,6 +79,12 @@ public class RegulationsServiceImpl implements RegulationsService {
                 .orElseThrow(() -> new EntityNotFoundException("Regulations not found by id: " + id));
     }
 
+    /**
+     * Checks whether a {@link Regulations} exists with the given ID.
+     *
+     * @param regulationsId the ID to check
+     * @return true if exists, false otherwise
+     */
     @Transactional(readOnly = true)
     @Override
     public Boolean checkExists(Integer regulationsId) {
@@ -63,6 +92,12 @@ public class RegulationsServiceImpl implements RegulationsService {
         return regulationsRepository.existsById(regulationsId);
     }
 
+    /**
+     * Creates a new {@link Regulations} entity based on the given {@link RegulationsCreateDTO}.
+     *
+     * @param regulationsCreateDTO the data for creation
+     * @return the created {@link RegulationsDTO}
+     */
     @Transactional
     @Override
     public RegulationsDTO create(RegulationsCreateDTO regulationsCreateDTO) {
@@ -74,6 +109,13 @@ public class RegulationsServiceImpl implements RegulationsService {
         return regulationsMapper.toRegulationsDTO(regulationsRepository.save(regulations));
     }
 
+    /**
+     * Updates an existing {@link Regulations} entity using the given {@link RegulationsUpdateDTO}.
+     *
+     * @param regulationsUpdateDTO the update data
+     * @return the updated {@link RegulationsDTO}
+     * @throws EntityNotFoundException if the regulation does not exist
+     */
     @Transactional
     @Override
     public RegulationsDTO update(RegulationsUpdateDTO regulationsUpdateDTO) {
@@ -87,8 +129,8 @@ public class RegulationsServiceImpl implements RegulationsService {
         if (regulationsUpdateDTO.getName() != null) {
             regulations.setName(regulationsUpdateDTO.getName());
         }
-        if (regulationsUpdateDTO.getApplicable_salary() != null) {
-            regulations.setApplicable_salary(regulationsUpdateDTO.getApplicable_salary());
+        if (regulationsUpdateDTO.getApplicableSalary() != null) {
+            regulations.setApplicableSalary(regulationsUpdateDTO.getApplicableSalary());
         }
         if (regulationsUpdateDTO.getPercentage() != null) {
             regulations.setPercentage(regulationsUpdateDTO.getPercentage());
@@ -96,15 +138,20 @@ public class RegulationsServiceImpl implements RegulationsService {
         if (regulationsUpdateDTO.getAmount() != null) {
             regulations.setAmount(regulationsUpdateDTO.getAmount());
         }
-        if (regulationsUpdateDTO.getEffective_date() != null) {
-            regulations.setEffective_date(regulationsUpdateDTO.getEffective_date());
+        if (regulationsUpdateDTO.getEffectiveDate() != null) {
+            regulations.setEffectiveDate(regulationsUpdateDTO.getEffectiveDate());
         }
 
         Regulations updated = regulationsRepository.save(regulations);
         return regulationsMapper.toRegulationsDTO(updated);
     }
 
-
+    /**
+     * Deletes a {@link Regulations} entity by its ID.
+     *
+     * @param regulationsId the ID to delete
+     * @throws EntityNotFoundException if not found
+     */
     @Transactional
     @Override
     public void delete(Integer regulationsId) {

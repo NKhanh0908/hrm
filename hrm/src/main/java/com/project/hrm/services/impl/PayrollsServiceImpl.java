@@ -1,17 +1,12 @@
 package com.project.hrm.services.impl;
 
-import com.project.hrm.dto.payrollsDTO.PayrollsCreateDTO;
-import com.project.hrm.dto.payrollsDTO.PayrollsDTO;
-import com.project.hrm.dto.payrollsDTO.PayrollsFilter;
-import com.project.hrm.dto.payrollsDTO.PayrollsUpdateDTO;
+import com.project.hrm.dto.payrollsDTO.*;
 import com.project.hrm.entities.Payrolls;
-import com.project.hrm.mapper.PayPeriodMapper;
 import com.project.hrm.mapper.PayrollsMapper;
 import com.project.hrm.repositories.PayrollsRepository;
 import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.PayPeriodsService;
 import com.project.hrm.services.PayrollsService;
-import com.project.hrm.specifications.PayPeriodsSpecifications;
 import com.project.hrm.specifications.PayrollsSpecifications;
 import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,17 +29,37 @@ public class PayrollsServiceImpl implements PayrollsService {
     private final PayrollsMapper payrollsMapper;
     private final EmployeeService employeeService;
     private final PayPeriodsService payPeriodsService;
-    private final PayPeriodMapper payPeriodMapper;
 
+
+    /**
+     * Creates a new {@link Payrolls} entity based on the given {@link PayrollsCreateDTO}.
+     *
+     * @param payrollsCreateDTO the DTO containing necessary data to create a payroll
+     * @return the created {@link PayrollsDTO}
+     */
     @Transactional
     @Override
     public PayrollsDTO create(PayrollsCreateDTO payrollsCreateDTO) {
         log.info("Create PayrollsDTO");
-        Payrolls payrolls = payrollsMapper.toPayrrollsFromCreateDTO(payrollsCreateDTO);
+        Payrolls payrolls = payrollsMapper.toPayrollsFromCreateDTO(payrollsCreateDTO);
+
         payrolls.setId(IdGenerator.getGenerationId());
+
+        payrolls.setEmployee(employeeService.getEntityById(payrolls.getEmployee().getId()));
+
+        payrolls.setPayPeriod(payPeriodsService.getEntityById(payrolls.getPayPeriod().getId()));
+
         return payrollsMapper.toPayrollsDTO(payrollsRepository.save(payrolls));
     }
 
+    /**
+     * Updates an existing {@link Payrolls} entity using the provided {@link PayrollsUpdateDTO}.
+     * Performs netSalary calculation if not explicitly provided.
+     *
+     * @param payrollsUpdateDTO the DTO containing updated payroll information
+     * @return the updated {@link PayrollsDTO}
+     * @throws EntityNotFoundException if the payroll or any referenced entity is not found
+     */
     @Transactional
     @Override
     public PayrollsDTO update(PayrollsUpdateDTO payrollsUpdateDTO) {
@@ -61,11 +76,11 @@ public class PayrollsServiceImpl implements PayrollsService {
         }
 
         if (payrollsUpdateDTO.getTotalIncome() != null && payrollsUpdateDTO.getTotalIncome().compareTo(BigDecimal.ZERO) > 0) {
-            payrolls.setTotal_income(payrollsUpdateDTO.getTotalIncome());
+            payrolls.setTotalIncome(payrollsUpdateDTO.getTotalIncome());
         }
 
         if (payrollsUpdateDTO.getTotalDeduction() != null && payrollsUpdateDTO.getTotalDeduction().compareTo(BigDecimal.ZERO) > 0) {
-            payrolls.setTotal_income(payrollsUpdateDTO.getTotalIncome());
+            payrolls.setTotalIncome(payrollsUpdateDTO.getTotalIncome());
         }
 
         if (payrollsUpdateDTO.getStatus() != null){
@@ -73,21 +88,27 @@ public class PayrollsServiceImpl implements PayrollsService {
         }
 
         if (payrollsUpdateDTO.getNetSalary() != null && payrollsUpdateDTO.getNetSalary().compareTo(BigDecimal.ZERO) > 0) {
-            payrolls.setNet_salary(payrollsUpdateDTO.getNetSalary());
+            payrolls.setNetSalary(payrollsUpdateDTO.getNetSalary());
         } else {
             BigDecimal income = payrollsUpdateDTO.getTotalIncome();
             BigDecimal deduction = payrollsUpdateDTO.getTotalDeduction();
 
             if (income != null && deduction != null) {
-                payrolls.setNet_salary(income.subtract(deduction));
+                payrolls.setNetSalary(income.subtract(deduction));
             } else {
-                log.warn("Không thể tính net_salary vì thiếu totalIncome hoặc totalDeduction");
-                payrolls.setNet_salary(BigDecimal.ZERO); // hoặc giữ nguyên giá trị cũ nếu muốn
+                log.warn("Cannot calculate netSalary due to missing totalIncome or totalDeduction");
+                payrolls.setNetSalary(BigDecimal.ZERO); // hoặc giữ nguyên giá trị cũ nếu muốn
             }
         }
         return payrollsMapper.toPayrollsDTO(payrollsRepository.save(payrolls));
     }
 
+    /**
+     * Deletes a {@link Payrolls} entity by its ID.
+     *
+     * @param Id the ID of the payroll to delete
+     * @throws EntityNotFoundException if the payroll is not found
+     */
     @Transactional
     @Override
     public void delete(Integer Id) {
@@ -100,6 +121,12 @@ public class PayrollsServiceImpl implements PayrollsService {
 
     }
 
+    /**
+     * Checks whether a {@link Payrolls} entity exists by its ID.
+     *
+     * @param Id the ID to check
+     * @return true if the payroll exists, false otherwise
+     */
     @Transactional(readOnly = true)
     @Override
     public Boolean checkExistence(Integer Id) {
@@ -107,6 +134,13 @@ public class PayrollsServiceImpl implements PayrollsService {
         return payrollsRepository.existsById(Id);
     }
 
+    /**
+     * Retrieves a {@link PayrollsDTO} by its ID.
+     *
+     * @param id the ID of the payroll to retrieve
+     * @return the corresponding {@link PayrollsDTO}
+     * @throws EntityNotFoundException if the payroll is not found
+     */
     @Transactional(readOnly = true)
     @Override
     public PayrollsDTO getById(Integer id) {
@@ -114,6 +148,13 @@ public class PayrollsServiceImpl implements PayrollsService {
         return payrollsMapper.toPayrollsDTO(getEntityById(id));
     }
 
+    /**
+     * Retrieves the {@link Payrolls} entity directly by ID.
+     *
+     * @param id the ID of the payroll
+     * @return the corresponding {@link Payrolls} entity
+     * @throws EntityNotFoundException if not found
+     */
     @Transactional(readOnly = true)
     @Override
     public Payrolls getEntityById(Integer id) {
@@ -122,6 +163,15 @@ public class PayrollsServiceImpl implements PayrollsService {
                 .orElseThrow(() -> new EntityNotFoundException("Payrolls Not Found By Id: " + id));
     }
 
+    /**
+     * Filters payroll records based on criteria specified in the {@link PayrollsFilter}.
+     *
+     * @param payrollFilter filter object containing search conditions
+     * @param page          the page number (zero-based)
+     * @param size          number of records per page
+     * @return a list of matching {@link PayrollsDTO}
+     */
+    @Transactional(readOnly = true)
     @Override
     public List<PayrollsDTO> filter(PayrollsFilter payrollFilter, int page, int size) {
         log.info("Filter PayrollsDTO");
@@ -133,11 +183,20 @@ public class PayrollsServiceImpl implements PayrollsService {
         return payrollsMapper.convertToPageEntityToPageDTO(payrollsRepository.findAll(payrollsSpecification, pageable));
     }
 
+    /**
+     * Filters payrolls based on income, deduction, and net salary ranges.
+     *
+     * @param payrollsFilterWithRange attribute for search
+     * @param page          the page number (zero-based)
+     * @param size          number of records per page
+     * @return a list of {@link PayrollsDTO} within the given ranges
+     */
+    @Transactional(readOnly = true)
     @Override
-    public List<PayrollsDTO> filterWithRange(BigDecimal minIncome, BigDecimal maxIncome, BigDecimal minDeduction, BigDecimal maxDeduction, BigDecimal minNetSalary, BigDecimal maxNetSalary, int page, int size) {
+    public List<PayrollsDTO> filterWithRange(PayrollsFilterWithRange payrollsFilterWithRange, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Specification<Payrolls> payrollsSpecification = PayrollsSpecifications.filterWithRange(minIncome,maxIncome, minDeduction, maxDeduction, minNetSalary, maxNetSalary);
+        Specification<Payrolls> payrollsSpecification = PayrollsSpecifications.filterWithRange(payrollsFilterWithRange);
 
         return payrollsMapper.convertToPageEntityToPageDTO(payrollsRepository.findAll(payrollsSpecification, pageable));
     }

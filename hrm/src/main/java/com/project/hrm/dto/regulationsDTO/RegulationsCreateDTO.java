@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegulationsCreateDTO {
-    private String name; //Tên của luật
-    private BigDecimal amount; //Mức tiền trong quy định, có thể NULL
-    private Float percentage; //Phần trăm trong quy định, có thể NULL
-    private BigDecimal applicable_salary; //Mức lương áp dụng
-    private LocalDateTime effective_date;
+    private String name;
+    private BigDecimal amount;
+    private Float percentage;
+    private BigDecimal applicableSalary;
+    private LocalDateTime effectiveDate;
 }

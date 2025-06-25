@@ -1,10 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
-import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsCreateDTO;
-import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsDTO;
-import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsFilter;
-import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsUpdateDTO;
+import com.project.hrm.dto.payrollDetailsDTO.*;
 import com.project.hrm.services.PayrollDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -32,9 +28,9 @@ public class PayrollDetailsController {
     @PostMapping
     @Operation(
             summary = "Create Payroll Detail",
-            description = "Create a new payroll detail record",
+            description = "Create a new payroll detail",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Payroll Detail creation data",
+                    description = "Payroll detail creation data",
                     required = true,
                     content = @Content(schema = @Schema(implementation = PayrollDetailsCreateDTO.class))
             ),
@@ -51,9 +47,9 @@ public class PayrollDetailsController {
     @PutMapping
     @Operation(
             summary = "Update Payroll Detail",
-            description = "Update an existing payroll detail record",
+            description = "Update an existing payroll detail",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Payroll Detail update data",
+                    description = "Payroll detail update data",
                     required = true,
                     content = @Content(schema = @Schema(implementation = PayrollDetailsUpdateDTO.class))
             ),
@@ -98,7 +94,7 @@ public class PayrollDetailsController {
     @PostMapping("/filter")
     @Operation(
             summary = "Filter Payroll Details",
-            description = "Filter payroll details by attributes",
+            description = "Filter payroll details based on criteria",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Filter criteria",
                     required = true,
@@ -116,15 +112,16 @@ public class PayrollDetailsController {
         return ResponseEntity.ok(new APIResponse<>(true, "Filter payroll details successfully", list, null, request.getRequestURI()));
     }
 
-    @GetMapping("/filter-range")
+    @PostMapping("/filter-range")
     @Operation(
             summary = "Filter Payroll Details with Range",
-            description = "Filter payroll details by amount and percentage range",
+            description = "Filter payroll details based on amount or percentage range",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Range filter criteria",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = PayrollDetailsFilterWithRange.class))
+            ),
             parameters = {
-                    @Parameter(name = "minAmount", description = "Minimum amount"),
-                    @Parameter(name = "maxAmount", description = "Maximum amount"),
-                    @Parameter(name = "minPercentage", description = "Minimum percentage"),
-                    @Parameter(name = "maxPercentage", description = "Maximum percentage"),
                     @Parameter(name = "page", description = "Page number"),
                     @Parameter(name = "size", description = "Page size")
             },
@@ -132,16 +129,11 @@ public class PayrollDetailsController {
                     @ApiResponse(responseCode = "200", description = "Filtered payroll details with range", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PayrollDetailsDTO.class))))
             }
     )
-    public ResponseEntity<APIResponse<List<PayrollDetailsDTO>>> filterRange(
-            @RequestParam(required = false) BigDecimal minAmount,
-            @RequestParam(required = false) BigDecimal maxAmount,
-            @RequestParam(required = false) Float minPercentage,
-            @RequestParam(required = false) Float maxPercentage,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            HttpServletRequest request) {
-
-        List<PayrollDetailsDTO> list = payrollDetailsService.filterWithRange(minAmount, maxAmount, minPercentage, maxPercentage, page, size);
+    public ResponseEntity<APIResponse<List<PayrollDetailsDTO>>> filterRange(@RequestBody PayrollDetailsFilterWithRange filterWithRange,
+                                                                            @RequestParam(defaultValue = "0") int page,
+                                                                            @RequestParam(defaultValue = "10") int size,
+                                                                            HttpServletRequest request) {
+        List<PayrollDetailsDTO> list = payrollDetailsService.filterWithRange(filterWithRange, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter payroll details with range successfully", list, null, request.getRequestURI()));
     }
 }

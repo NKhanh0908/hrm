@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegulationsFilter {
-    private String name; //Tên của luật
-    private BigDecimal applicable_salary; //Mức lương áp dụng
-    private LocalDateTime effective_date; //Ngày áp dụng
+    private String name;
+    private BigDecimal applicableSalary;
+    private LocalDateTime effectiveDate;
 }

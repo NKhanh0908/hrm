@@ -31,9 +31,9 @@ public class Payrolls {
     @JsonBackReference
     private PayPeriods payPeriod;
 
-    private BigDecimal total_income;
-    private BigDecimal total_deduction;
-    private BigDecimal net_salary;
+    private BigDecimal totalIncome;
+    private BigDecimal totalDeduction;
+    private BigDecimal netSalary;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

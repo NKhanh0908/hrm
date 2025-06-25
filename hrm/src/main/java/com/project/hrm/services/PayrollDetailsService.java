@@ -1,9 +1,6 @@
 package com.project.hrm.services;
 
-import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsCreateDTO;
-import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsDTO;
-import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsFilter;
-import com.project.hrm.dto.payrollDetailsDTO.PayrollDetailsUpdateDTO;
+import com.project.hrm.dto.payrollDetailsDTO.*;
 import com.project.hrm.entities.PayrollDetails;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +23,5 @@ public interface PayrollDetailsService {
 
     List<PayrollDetailsDTO> filter(PayrollDetailsFilter payrollComponentFilter, int page, int size);
 
-    List<PayrollDetailsDTO> filterWithRange(BigDecimal minAmount, BigDecimal maxAmount, Float minPercentage, Float maxPercentage, int page, int size);
+    List<PayrollDetailsDTO> filterWithRange(PayrollDetailsFilterWithRange payrollDetailsFilterWithRange, int page, int size);
 }

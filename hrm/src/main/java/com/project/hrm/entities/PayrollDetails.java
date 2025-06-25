@@ -23,11 +23,11 @@ public class PayrollDetails {
     @JsonBackReference
     private Payrolls payroll;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn
     private PayrollComponents payrollComponent;
 
     private BigDecimal amount;
-    private Boolean is_percentage; // Nếu dúng thì tính bằng phần trăm, sai thì chỉ tính bằng amount
-    private Float percentage; // Có thể NULL
+    private Boolean isPercentage;
+    private Float percentage;
 }

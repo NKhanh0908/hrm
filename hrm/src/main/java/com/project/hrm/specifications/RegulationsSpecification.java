@@ -16,11 +16,11 @@ public class RegulationsSpecification {
             if (filter.getName() != null && !filter.getName().isEmpty()) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + filter.getName().toLowerCase() + "%"));
             }
-            if (filter.getApplicable_salary() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("applicable_salary"), filter.getApplicable_salary()));
+            if (filter.getApplicableSalary() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("applicableSalary"), filter.getApplicableSalary()));
             }
-            if (filter.getEffective_date() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("effective_date"), filter.getEffective_date()));
+            if (filter.getEffectiveDate() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("effectiveDate"), filter.getEffectiveDate()));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

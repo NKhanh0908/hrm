@@ -1,9 +1,6 @@
 package com.project.hrm.services;
 
-import com.project.hrm.dto.payrollsDTO.PayrollsCreateDTO;
-import com.project.hrm.dto.payrollsDTO.PayrollsDTO;
-import com.project.hrm.dto.payrollsDTO.PayrollsFilter;
-import com.project.hrm.dto.payrollsDTO.PayrollsUpdateDTO;
+import com.project.hrm.dto.payrollsDTO.*;
 import com.project.hrm.entities.Payrolls;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +23,5 @@ public interface PayrollsService {
 
     List<PayrollsDTO> filter(PayrollsFilter payrollFilter, int page, int size);
 
-    List<PayrollsDTO> filterWithRange(BigDecimal minIncome, BigDecimal maxIncome, BigDecimal minDeduction, BigDecimal maxDeduction, BigDecimal minNetSalary, BigDecimal maxNetSalary, int page, int size);
+    List<PayrollsDTO> filterWithRange(PayrollsFilterWithRange payrollsFilterWithRange, int page, int size);
 }

@@ -3,21 +3,16 @@ package com.project.hrm.mapper;
 import com.project.hrm.dto.attendanceDTO.AttendanceCreateDTO;
 import com.project.hrm.dto.attendanceDTO.AttendanceDTO;
 import com.project.hrm.entities.Attendance;
-import com.project.hrm.repositories.EmployeeRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
 public class AttendanceMapper {
-    private final EmployeeRepository employeeRepository;
 
     public Attendance toEntity(AttendanceDTO attendanceDTO) {
         return Attendance.builder()
                 .id(attendanceDTO.getId())
-                .employee(employeeRepository.findById(attendanceDTO.getEmployeeId())
-                        .orElseThrow(() -> new EntityNotFoundException("Employee not found with id: " + attendanceDTO.getEmployeeId())))
                 .attendanceDate(attendanceDTO.getAttendanceDate())
                 .checkIn(attendanceDTO.getCheckIn())
                 .checkOut(attendanceDTO.getCheckOut())
@@ -42,8 +37,6 @@ public class AttendanceMapper {
 
     public Attendance toEntityFromCreateDTO(AttendanceCreateDTO attendanceCreateDTO) {
         return Attendance.builder()
-                .employee(employeeRepository.findById(attendanceCreateDTO.getEmployeeId())
-                        .orElseThrow(() -> new EntityNotFoundException("Employee not found with id: " + attendanceCreateDTO.getEmployeeId())))
                 .attendanceDate(attendanceCreateDTO.getAttendanceDate())
                 .checkIn(attendanceCreateDTO.getCheckIn())
                 .checkOut(attendanceCreateDTO.getCheckOut())

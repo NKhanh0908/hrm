@@ -17,6 +17,6 @@ public class DayOffFilterDynamic {
     private LocalDateTime startDateFrom;
     private LocalDateTime endDateTo;
     private String status;
-    private Boolean useRequestDayFilter; // nếu true thì lọc theo requestDay
-    private Boolean useStartEndOverlapFilter; // nếu true thì lọc giao với startDate và endDate
+    private Boolean useRequestDayFilter;
+    private Boolean useStartEndOverlapFilter;
 }

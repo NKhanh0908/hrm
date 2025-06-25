@@ -5,9 +5,7 @@ import com.project.hrm.dto.regulationsDTO.RegulationsDTO;
 import com.project.hrm.entities.Regulations;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,8 +20,8 @@ public class RegulationsMapper {
                 .name(regulations.getName())
                 .amount(regulations.getAmount())
                 .percentage(regulations.getPercentage())
-                .applicable_salary(regulations.getApplicable_salary())
-                .effective_date(regulations.getEffective_date())
+                .applicableSalary(regulations.getApplicableSalary())
+                .effectiveDate(regulations.getEffectiveDate())
                 .build();
     }
 
@@ -34,8 +32,8 @@ public class RegulationsMapper {
                 .name(dto.getName())
                 .amount(dto.getAmount())
                 .percentage(dto.getPercentage())
-                .applicable_salary(dto.getApplicable_salary())
-                .effective_date(dto.getEffective_date())
+                .applicableSalary(dto.getApplicableSalary())
+                .effectiveDate(dto.getEffectiveDate())
                 .build();
     }
 
@@ -45,8 +43,8 @@ public class RegulationsMapper {
                 .name(createDTO.getName())
                 .amount(createDTO.getAmount())
                 .percentage(createDTO.getPercentage())
-                .applicable_salary(createDTO.getApplicable_salary())
-                .effective_date(createDTO.getEffective_date())
+                .applicableSalary(createDTO.getApplicableSalary())
+                .effectiveDate(createDTO.getEffectiveDate())
                 .build();
     }
 
