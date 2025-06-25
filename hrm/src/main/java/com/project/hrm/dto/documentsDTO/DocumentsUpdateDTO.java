@@ -1,10 +1,10 @@
 package com.project.hrm.dto.documentsDTO;
 
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -12,16 +12,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class DocumentsDTO {
+public class DocumentsUpdateDTO {
     private Integer id;
     private String title;
     private String description;
-    private String filePath;
-    private String fileType;
-    private Integer fileSize;
-    private LocalDateTime uploadDate;
-    private String documentStatus;
+    private MultipartFile file;
     private Integer documentTypeId;
     private Integer uploadedById;
+    private String documentStatus;
 }

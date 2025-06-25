@@ -4,6 +4,5 @@ public enum DocumentAccess {
     READ,
     WRITE,
     DELETE,
-    SHARE,
-    NONE
+    SHARE
 }

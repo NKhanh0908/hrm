@@ -13,5 +13,4 @@ public class DocumentAccessesCreateDTO {
     private String accessLevel;
     private Integer documentId;
     private Integer employeeId;
-
 }

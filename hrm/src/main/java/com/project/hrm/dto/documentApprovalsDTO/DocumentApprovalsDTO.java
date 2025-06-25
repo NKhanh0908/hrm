@@ -22,5 +22,6 @@ public class DocumentApprovalsDTO {
     private Integer approvedById;
     private String approverByName;
     private String documentName;
+    private LocalDateTime requestedAt;
 
 }

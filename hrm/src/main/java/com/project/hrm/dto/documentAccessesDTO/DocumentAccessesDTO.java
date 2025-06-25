@@ -18,8 +18,6 @@ public class DocumentAccessesDTO {
     private String accessLevel;
     private String employeeName;
     private String employeeEmail;
-    private String status;
     private Integer documentId;
     private Integer employeeId;
-    private LocalDateTime createdAt;
 }

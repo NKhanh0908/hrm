@@ -17,6 +17,7 @@ public class DocumentApprovals {
     private Integer id;
     private LocalDateTime approvalDate;
     private String reason;
+    private LocalDateTime requestedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
