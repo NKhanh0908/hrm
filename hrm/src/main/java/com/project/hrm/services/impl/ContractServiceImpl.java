@@ -85,6 +85,10 @@ public class ContractServiceImpl implements ContractService {
 
         Contracts contracts = getEntityById(contractUpdateDTO.getId());
 
+        if(!contracts.getContractStatus().equals(ContractStatus.SIGNED)){
+            throw new CustomException(Error.CONTRACT_UNABLE_TO_UPDATE);
+        }
+
         if (contractUpdateDTO.getEmployeeId() != null) {
             contracts.setEmployee(employeeService.getEntityById(contractUpdateDTO.getEmployeeId()));
         }

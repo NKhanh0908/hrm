@@ -92,7 +92,7 @@ public enum Error {
     RECRUITMENT_REQUIREMENTS_NOT_FOUND(7001, "Recruitment requirements not found", HttpStatus.NOT_FOUND),
     RECRUITMENT_REQUIREMENTS_ALREADY_EXISTS(7002, "Recruitment requirements already exists", HttpStatus.CONFLICT),
     RECRUITMENT_REQUIREMENTS_UNABLE_TO_SAVE(7003, "Unable to save recruitment requirements", HttpStatus.INTERNAL_SERVER_ERROR),
-    RECRUITMENT_REQUIREMENTS_UNABLE_TO_UPDATE(7004, "Unable to update recruitment requirements", HttpStatus.INTERNAL_SERVER_ERROR),
+    RECRUITMENT_REQUIREMENTS_UNABLE_TO_UPDATE(7004, "Unable to update recruitment requirements by status not equals PENDING", HttpStatus.INTERNAL_SERVER_ERROR),
     RECRUITMENT_REQUIREMENTS_UNABLE_TO_DELETE(7005, "Unable to delete recruitment requirements", HttpStatus.INTERNAL_SERVER_ERROR),
     RECRUITMENT_REQUIREMENTS_INVALID_QUANTITY(7006, "Invalid recruitment quantity", HttpStatus.BAD_REQUEST),
     RECRUITMENT_REQUIREMENTS_INVALID_SALARY(7007, "Invalid expected salary", HttpStatus.BAD_REQUEST),
@@ -117,6 +117,7 @@ public enum Error {
     APPLY_INVALID_STATUS(9006, "Invalid application status", HttpStatus.BAD_REQUEST),
     APPLY_ALREADY_SUBMITTED(9007, "Application already submitted for this position", HttpStatus.CONFLICT),
     APPLY_NOT_OPEN(9008, "Cannot apply recruitment is not open", HttpStatus.BAD_REQUEST),
+    APPLY_EXPIRED(9008, "Cannot apply recruitment is EXPIRED", HttpStatus.BAD_REQUEST),
 
     // Evaluate-related errors
     EVALUATE_NOT_FOUND(10001, "Evaluation not found", HttpStatus.NOT_FOUND),

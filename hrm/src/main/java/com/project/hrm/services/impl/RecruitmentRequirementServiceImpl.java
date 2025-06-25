@@ -142,6 +142,10 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
         RecruitmentRequirements entity = getEntityById(recruitmentRequirementsUpdateDTO.getId());
 
+        if(!entity.getStatus().equals(RecruitmentRequirementsStatus.PENDING)){
+            throw new CustomException(Error.RECRUITMENT_REQUIREMENTS_UNABLE_TO_UPDATE);
+        }
+
         if (recruitmentRequirementsUpdateDTO.getDescription() != null) {
             entity.setDescription(recruitmentRequirementsUpdateDTO.getDescription());
         }
