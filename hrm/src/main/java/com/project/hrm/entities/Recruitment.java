@@ -35,6 +35,6 @@ public class Recruitment {
     @ManyToOne
     @JoinColumn(name = "on_approve")
     @JsonBackReference
-    private Employees employees;
+    private Employees approveBy;
 
 }
