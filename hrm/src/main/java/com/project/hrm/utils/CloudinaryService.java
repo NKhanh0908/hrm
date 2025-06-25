@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -27,19 +28,50 @@ public class CloudinaryService {
         cloudinary = new Cloudinary(valuesMap);
     }
 
-    public Map upload(MultipartFile multipartFile) {
+    public Map<String, Object> upload(MultipartFile multipartFile) {
+        File file = null;
         try {
-            log.info("Uploading photo to cloud: {}", multipartFile.getOriginalFilename());
-            File file = convert(multipartFile);
-            Map result = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
+            // Tạo thông tin metadata
+            String originalFileName = multipartFile.getOriginalFilename();
+            long fileSize = multipartFile.getSize();
+            String customFileName = generateCustomFileName(originalFileName);
+
+            log.info("Uploading photo to cloud. Original: {}, Size: {} bytes, Custom Name: {}",
+                    originalFileName, fileSize, customFileName);
+
+            // Chuyển đổi và upload
+            file = convert(multipartFile, customFileName);
+            String filePath = file.getAbsolutePath();
+
+            Map<String, Object> uploadOptions = new HashMap<>();
+            uploadOptions.put("public_id", customFileName); // Sử dụng tên tuỳ chỉnh
+
+            Map<String, Object> result = cloudinary.uploader().upload(file, uploadOptions);
+
+            // Bổ sung thông tin metadata
+            result.put("originalFileName", originalFileName);
+            result.put("fileSize", fileSize);
+            result.put("customFileName", customFileName);
+            result.put("localFilePath", filePath);
+
+            // Xoá file tạm
             if (!Files.deleteIfExists(file.toPath())) {
-                log.error("Unable to upload file by Delete If Exists: {}", file.getAbsolutePath());
-                throw new IOException("Unable to upload temporary file: " + file.getAbsolutePath());
+                log.warn("Temporary file not found: {}", filePath);
             }
             return result;
+
         } catch (IOException e) {
-            log.error("Unable to upload file: {}", e.getMessage());
-            throw new RuntimeException();
+            log.error("Upload failed: {}", e.getMessage());
+            throw new RuntimeException("Upload failed", e);
+        } finally {
+            // Đảm bảo xoá file tạm nếu có lỗi
+            if (file != null && file.exists()) {
+                try {
+                    Files.deleteIfExists(file.toPath());
+                } catch (IOException ex) {
+                    log.error("Cleanup failed: {}", ex.getMessage());
+                }
+            }
         }
     }
 
@@ -48,28 +80,40 @@ public class CloudinaryService {
             log.info("Deleting photo from cloud: {}", id);
             return cloudinary.uploader().destroy(id, ObjectUtils.emptyMap());
         } catch (IOException e) {
-            log.error("Unable to delete file: {}", e.getMessage());
-            throw new RuntimeException();
+            log.error("Delete failed: {}", e.getMessage());
+            throw new RuntimeException("Delete failed", e);
         }
     }
 
     public String getPublicId(String url) {
         String[] parts = url.split("/");
         String publicIdWithExtension = parts[parts.length - 1];
-        String publicId = publicIdWithExtension.split("\\.")[0];
-        return publicId;
+        return publicIdWithExtension.split("\\.")[0];
     }
 
-    private File convert(MultipartFile multipartFile) throws IOException {
+    private File convert(MultipartFile multipartFile, String fileName) throws IOException {
+        FileOutputStream fos = null;
         try {
-            File file = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-            FileOutputStream fo = new FileOutputStream(file);
-            fo.write(multipartFile.getBytes());
-            fo.close();
+            File file = new File(fileName);
+            fos = new FileOutputStream(file);
+            fos.write(multipartFile.getBytes());
             return file;
-        } catch (IOException e) {
-            log.error("Unable to convert file: {}", e.getMessage());
-            throw new RuntimeException();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    log.error("Stream close error: {}", e.getMessage());
+                }
+            }
         }
+    }
+
+    private String generateCustomFileName(String originalFileName) {
+        String extension = "";
+        if (originalFileName != null && originalFileName.contains(".")) {
+            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        }
+        return "custom_" + UUID.randomUUID() + extension;
     }
 }

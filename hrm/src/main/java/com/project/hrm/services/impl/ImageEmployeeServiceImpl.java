@@ -26,7 +26,7 @@ public class ImageEmployeeServiceImpl implements ImageEmployeeService {
 
         Map<String, Object> resultMap = cloudinaryService.upload(image);
 
-        return (String) resultMap.get("url");
+        return (String) resultMap.get("localFilePath");
     }
 
     @Override
