@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @Builder
@@ -26,6 +25,8 @@ public class PayrollComponents {
     @Column(nullable = false)
     private PayrollComponentType type;
     private BigDecimal amount;
+
+    private Boolean isPercentage;
     private Float percentage;
 
     @ManyToOne
@@ -33,8 +34,8 @@ public class PayrollComponents {
     @JsonBackReference
     private Regulations regulation;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn
-    @JsonManagedReference
-    private List<PayrollDetails> details;
+    @JsonBackReference
+    private Payrolls payroll;
 }

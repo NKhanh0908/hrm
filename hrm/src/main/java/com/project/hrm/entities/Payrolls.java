@@ -31,16 +31,12 @@ public class Payrolls {
     @JsonBackReference
     private PayPeriods payPeriod;
 
-    private BigDecimal totalIncome;
-    private BigDecimal totalDeduction;
-    private BigDecimal netSalary;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PayrollStatus status;
 
     @OneToMany(mappedBy = "payroll")
     @JsonManagedReference
-    private List<PayrollDetails> payrollDetails;
+    private List<PayrollComponents> payrollDComponents;
 
 }
