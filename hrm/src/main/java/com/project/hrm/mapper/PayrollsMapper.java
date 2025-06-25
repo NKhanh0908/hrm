@@ -19,9 +19,6 @@ public class PayrollsMapper {
     public Payrolls toPayrolls(PayrollsDTO payrollsDTO) {
         return Payrolls.builder()
                 .id(payrollsDTO.getId())
-                .totalIncome(payrollsDTO.getTotalIncome())
-                .totalDeduction(payrollsDTO.getTotalDeduction())
-                .netSalary(payrollsDTO.getNetSalary())
                 .status(payrollsDTO.getStatus())
                 .build();
     }
@@ -31,18 +28,12 @@ public class PayrollsMapper {
                 .id(payrolls.getId())
                 .employeeId(payrolls.getEmployee().getId())
                 .payPeriodId(payrolls.getPayPeriod().getId())
-                .totalIncome(payrolls.getTotalIncome())
-                .totalDeduction(payrolls.getTotalDeduction())
-                .netSalary(payrolls.getNetSalary())
                 .status(payrolls.getStatus())
                 .build();
     }
 
     public Payrolls toPayrollsFromCreateDTO(PayrollsCreateDTO payrollsCreateDTO) {
         return Payrolls.builder()
-                .totalIncome(payrollsCreateDTO.getTotalIncome())
-                .totalDeduction(payrollsCreateDTO.getTotalDeduction())
-                .netSalary(payrollsCreateDTO.getNetSalary())
                 .status(payrollsCreateDTO.getStatus())
                 .build();
     }
