@@ -121,6 +121,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /**
+     *
+     *
+     * @param employeeId
+     * @return
+     */
+    @Override
+    public Employees getEmployeeIsActive(Integer employeeId) {
+        return employeeRepository.findEmployeeIsActive(employeeId);
+    }
+
+    /**
      * Creates a new employee.
      *
      * @param employeeCreateDTO the information used to create the employee
