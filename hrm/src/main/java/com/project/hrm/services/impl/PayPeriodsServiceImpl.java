@@ -19,6 +19,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Slf4j
@@ -113,5 +115,14 @@ public class PayPeriodsServiceImpl implements PayPeriodsService {
         Pageable pageable = PageRequest.of(page, size);
 
         return payPeriodMapper.convertPageEntityToPageDTO(payPeriodsRepository.findAll(spec, pageable));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PayPeriods getPayPeriodsByDate(LocalDateTime startDate, LocalDateTime endDate) {
+        log.info("Check existence of PayPeriods with startDate: {}, endDate: {}", startDate, endDate);
+
+
+        return payPeriodsRepository.getByStartDateLessThanEqualAndEndDateGreaterThanEqual(endDate,startDate);
     }
 }

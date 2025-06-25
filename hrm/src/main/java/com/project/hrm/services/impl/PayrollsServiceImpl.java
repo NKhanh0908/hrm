@@ -1,7 +1,12 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.payPeriodsDTO.PayPeriodsCreateDTO;
+import com.project.hrm.dto.payPeriodsDTO.PayPeriodsDTO;
 import com.project.hrm.dto.payrollsDTO.*;
+import com.project.hrm.entities.PayPeriods;
 import com.project.hrm.entities.Payrolls;
+import com.project.hrm.enums.PayPeriodStatus;
+import com.project.hrm.mapper.PayPeriodMapper;
 import com.project.hrm.mapper.PayrollsMapper;
 import com.project.hrm.repositories.PayrollsRepository;
 import com.project.hrm.services.EmployeeService;
@@ -19,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -29,6 +35,7 @@ public class PayrollsServiceImpl implements PayrollsService {
     private final PayrollsMapper payrollsMapper;
     private final EmployeeService employeeService;
     private final PayPeriodsService payPeriodsService;
+    private final PayPeriodMapper payPeriodMapper;
 
 
     /**
@@ -47,7 +54,23 @@ public class PayrollsServiceImpl implements PayrollsService {
 
         payrolls.setEmployee(employeeService.getEntityById(payrolls.getEmployee().getId()));
 
-        payrolls.setPayPeriod(payPeriodsService.getEntityById(payrolls.getPayPeriod().getId()));
+        if (payPeriodsService.getPayPeriodsByDate(payrollsCreateDTO.getStartDate(), payrollsCreateDTO.getEndDate()) != null) {
+            payrolls.setPayPeriod(payPeriodsService.getPayPeriodsByDate(payrollsCreateDTO.getStartDate(), payrollsCreateDTO.getEndDate()));
+        } else {
+            PayPeriodsCreateDTO payPeriodsCreateDTO = new PayPeriodsCreateDTO();
+            payPeriodsCreateDTO.setStartDate(payrollsCreateDTO.getStartDate());
+            payPeriodsCreateDTO.setEndDate(payrollsCreateDTO.getEndDate());
+            payPeriodsCreateDTO.setStatus(PayPeriodStatus.valueOf("OPEN"));
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'T'MM-yyyy");
+            String formatted = payPeriodsCreateDTO.getStartDate().format(formatter);
+
+            payPeriodsCreateDTO.setPayPeriodCode(formatted);
+
+            PayPeriods payPeriods = payPeriodMapper.toPayPeriods(payPeriodsService.create(payPeriodsCreateDTO));
+
+            payrolls.setPayPeriod(payPeriods);
+        }
 
         return payrollsMapper.toPayrollsDTO(payrollsRepository.save(payrolls));
     }
@@ -75,31 +98,10 @@ public class PayrollsServiceImpl implements PayrollsService {
             payrolls.setPayPeriod(payPeriodsService.getEntityById(payrollsUpdateDTO.getPayPeriodId()));
         }
 
-        if (payrollsUpdateDTO.getTotalIncome() != null && payrollsUpdateDTO.getTotalIncome().compareTo(BigDecimal.ZERO) > 0) {
-            payrolls.setTotalIncome(payrollsUpdateDTO.getTotalIncome());
-        }
-
-        if (payrollsUpdateDTO.getTotalDeduction() != null && payrollsUpdateDTO.getTotalDeduction().compareTo(BigDecimal.ZERO) > 0) {
-            payrolls.setTotalIncome(payrollsUpdateDTO.getTotalIncome());
-        }
-
         if (payrollsUpdateDTO.getStatus() != null){
             payrolls.setStatus(payrollsUpdateDTO.getStatus());
         }
 
-        if (payrollsUpdateDTO.getNetSalary() != null && payrollsUpdateDTO.getNetSalary().compareTo(BigDecimal.ZERO) > 0) {
-            payrolls.setNetSalary(payrollsUpdateDTO.getNetSalary());
-        } else {
-            BigDecimal income = payrollsUpdateDTO.getTotalIncome();
-            BigDecimal deduction = payrollsUpdateDTO.getTotalDeduction();
-
-            if (income != null && deduction != null) {
-                payrolls.setNetSalary(income.subtract(deduction));
-            } else {
-                log.warn("Cannot calculate netSalary due to missing totalIncome or totalDeduction");
-                payrolls.setNetSalary(BigDecimal.ZERO); // hoặc giữ nguyên giá trị cũ nếu muốn
-            }
-        }
         return payrollsMapper.toPayrollsDTO(payrollsRepository.save(payrolls));
     }
 

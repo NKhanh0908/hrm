@@ -7,6 +7,7 @@ import com.project.hrm.dto.payPeriodsDTO.PayPeriodsUpdateDTO;
 import com.project.hrm.entities.PayPeriods;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,4 +25,6 @@ public interface PayPeriodsService {
     PayPeriods getEntityById(Integer id);
 
     List<PayPeriodsDTO> filter(PayPeriodsFilter payPeriodsFilter, int page, int size);
+
+    PayPeriods getPayPeriodsByDate(LocalDateTime startDate, LocalDateTime endDate);
 }
