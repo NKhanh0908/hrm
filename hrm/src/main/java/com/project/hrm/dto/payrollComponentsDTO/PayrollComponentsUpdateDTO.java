@@ -17,6 +17,8 @@ public class PayrollComponentsUpdateDTO {
     private String name;
     private PayrollComponentType type;
     private BigDecimal amount;
+    private Boolean isPercentage;
     private Float percentage;
     private Integer regulationId;
+    private Integer payrollsId;
 }

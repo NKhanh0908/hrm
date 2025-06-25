@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -14,9 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class PayrollsCreateDTO {
     private Integer employeeId;
-    private Integer payPeriodId;
-    private BigDecimal totalIncome;
-    private BigDecimal totalDeduction;
-    private BigDecimal netSalary;
     private PayrollStatus status;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 }

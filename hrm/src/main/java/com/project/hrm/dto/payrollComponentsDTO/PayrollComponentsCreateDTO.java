@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -16,6 +17,8 @@ public class PayrollComponentsCreateDTO {
     private String name;
     private PayrollComponentType type;
     private BigDecimal amount;
+    private Boolean isPercentage;
     private Float percentage;
     private Integer regulationId;
+    private Integer payrollsId;
 }

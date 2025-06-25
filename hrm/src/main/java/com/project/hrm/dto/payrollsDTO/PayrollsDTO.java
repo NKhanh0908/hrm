@@ -16,8 +16,5 @@ public class PayrollsDTO {
     private Integer id;
     private Integer employeeId;
     private Integer payPeriodId;
-    private BigDecimal totalIncome;
-    private BigDecimal totalDeduction;
-    private BigDecimal netSalary;
     private PayrollStatus status;
 }
