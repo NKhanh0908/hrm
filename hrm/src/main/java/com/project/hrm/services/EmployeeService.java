@@ -23,6 +23,8 @@ public interface EmployeeService {
 
     Boolean checkExists(Integer employeeId);
 
+    Employees getEmployeeIsActive(Integer employeeId);
+
     List<EmployeeDTO> filter(EmployeeFilter employeeFilter, int page, int size);
 
     List<EmployeeDTO> filterByDepartmentID(Integer departmentId, int page, int size);

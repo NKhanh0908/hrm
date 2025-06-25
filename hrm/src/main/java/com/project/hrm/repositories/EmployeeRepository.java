@@ -16,6 +16,10 @@ import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employees, Integer>, JpaSpecificationExecutor<Employees> {
+
+    @Query(value = "SELECT * FROM employees e WHERE e.id = :employeeId AND status = 'ACTIVE'", nativeQuery = true)
+    Employees findEmployeeIsActive(@Param("employeeId") Integer id);
+
     @Query(value = """
             SELECT d.id, d.department_name, count(*) as total
             FROM employees e
