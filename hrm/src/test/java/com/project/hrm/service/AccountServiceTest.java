@@ -65,7 +65,6 @@ public class AccountServiceTest {
         accountCreateDTO.setUsername("k123");
         accountCreateDTO.setPassword("k123");
         accountCreateDTO.setEmployeeId(21);
-        accountCreateDTO.setRoleId(4);
     }
 
     @Test
