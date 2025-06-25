@@ -43,8 +43,12 @@ public interface ContractRepository extends JpaRepository<Contracts, Integer>, J
             @Param("status") String status
     );
 
-    @Query(value = "SELECT contract_status, count(*) FROM contracts\n" +
-            "GROUP BY contract_status", nativeQuery = true)
+    @Query(value = """
+            SELECT contract_status AS status,
+                COUNT(*) AS total
+                    FROM contracts
+                    GROUP BY contract_status
+            """, nativeQuery = true)
     List<TotalContractByStatus> getTotalContractByStatus();
 
     @Query(value = """

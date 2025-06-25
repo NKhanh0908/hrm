@@ -1,7 +1,7 @@
 package com.project.hrm.dto.statisticsDTO;
 
 public interface TotalEmployeeByDepartment {
-    Integer getDepartmentId();
+    Integer getId();
     String getDepartmentName();
-    Integer getTotal();
+    Long getTotal();
 }

@@ -1,8 +1,10 @@
 package com.project.hrm.configuration;
 
+import com.project.hrm.enums.AccountRole;
 import com.project.hrm.services.impl.OurUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,6 +43,7 @@ public class WebSecurityConfiguration {
                 .authorizeHttpRequests((auth) -> auth.requestMatchers("/**", "/swagger-ui/**",
                         "/v3/api-docs/**", "/accounts", "/accounts/sign-in",
                         "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/employee/").hasAnyRole(String.valueOf(AccountRole.ADMIN))
                         .anyRequest()
                         .authenticated())
                 .httpBasic(withDefaults())
