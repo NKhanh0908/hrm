@@ -24,4 +24,6 @@ public interface PayrollsService {
     List<PayrollsDTO> filter(PayrollsFilter payrollFilter, int page, int size);
 
     List<PayrollsDTO> filterWithRange(PayrollsFilterWithRange payrollsFilterWithRange, int page, int size);
+
+
 }

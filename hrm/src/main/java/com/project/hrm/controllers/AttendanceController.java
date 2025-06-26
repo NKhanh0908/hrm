@@ -136,4 +136,49 @@ public class AttendanceController {
         List<AttendanceDTO> list = attendanceService.filterWithRange(filterWithRange, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter attendances with range successfully", list, null, request.getRequestURI()));
     }
+
+    @PostMapping("/check-in/{employeeId}")
+    @Operation(
+            summary = "Employee Check-in",
+            description = "Create a check-in attendance record for the specified employee",
+            parameters = @Parameter(name = "employeeId", description = "Employee ID performing check-in", required = true),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Checked in successfully", content = @Content(schema = @Schema(implementation = AttendanceDTO.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<AttendanceDTO>> checkIn(@PathVariable Integer employeeId,
+                                                              HttpServletRequest request) {
+        AttendanceDTO result = attendanceService.createWhenClickCheckIn(employeeId);
+        return ResponseEntity.ok(new APIResponse<>(true, "Check-in successful", result, null, request.getRequestURI()));
+    }
+
+    @PostMapping("/check-out/{employeeId}")
+    @Operation(
+            summary = "Employee Check-out",
+            description = "Set check-out time and calculate working hours for the employee",
+            parameters = @Parameter(name = "employeeId", description = "Employee ID performing check-out", required = true),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Checked out successfully", content = @Content(schema = @Schema(implementation = AttendanceDTO.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<AttendanceDTO>> checkOut(@PathVariable Integer employeeId,
+                                                               HttpServletRequest request) {
+        AttendanceDTO result = attendanceService.setAttendanceWhenClickCheckOut(employeeId);
+        return ResponseEntity.ok(new APIResponse<>(true, "Check-out successful", result, null, request.getRequestURI()));
+    }
+
+    @GetMapping("/unchecked-out/{employeeId}")
+    @Operation(
+            summary = "Check if Employee has Unchecked-out Attendance Today",
+            description = "Check whether the employee has already checked in today without checking out",
+            parameters = @Parameter(name = "employeeId", description = "Employee ID", required = true),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Status retrieved", content = @Content(schema = @Schema(implementation = Boolean.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<Boolean>> hasUncheckedOutToday(@PathVariable Integer employeeId,
+                                                                     HttpServletRequest request) {
+        boolean hasUnfinished = attendanceService.hasUncheckedOutAttendanceOnDate(java.time.LocalDateTime.now());
+        return ResponseEntity.ok(new APIResponse<>(true, "Checked attendance status successfully", hasUnfinished, null, request.getRequestURI()));
+    }
 }

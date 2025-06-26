@@ -2,10 +2,15 @@ package com.project.hrm.services.impl;
 
 import com.project.hrm.dto.attendanceDTO.*;
 import com.project.hrm.entities.Attendance;
+import com.project.hrm.entities.Employees;
+import com.project.hrm.enums.AttendanceType;
+import com.project.hrm.enums.SystemRegulationKey;
 import com.project.hrm.mapper.AttendanceMapper;
 import com.project.hrm.repositories.AttendanceRepository;
+import com.project.hrm.repositories.SystemRegulationRepository;
 import com.project.hrm.services.AttendanceService;
 import com.project.hrm.services.EmployeeService;
+import com.project.hrm.services.SystemRegulationService;
 import com.project.hrm.specifications.AttendanceSpecifications;
 import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +22,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +35,7 @@ public class AttendanceServiceImpl implements AttendanceService{
     private final AttendanceRepository attendanceRepository;
     private final AttendanceMapper attendanceMapper;
     private final EmployeeService employeeService;
+    private final SystemRegulationService systemRegulationService;
 
 
     /**
@@ -195,6 +204,75 @@ public class AttendanceServiceImpl implements AttendanceService{
                 .stream()
                 .map(attendanceMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public AttendanceDTO createWhenClickCheckIn(Integer employeesId) {
+        log.info("Create attendance when employeeId: {} click check in: {}", employeesId, LocalDateTime.now());
+
+        LocalDateTime now = LocalDateTime.now();
+
+        Employees employee = employeeService.getEmployeeIsActive(employeesId);
+        if (employee == null) {
+            throw new EntityNotFoundException("Employee is inactive or does not exist with ID: " + employeesId);
+        }
+
+        if (hasUncheckedOutAttendanceOnDate(now)) {
+            log.warn("Employee ID {} has unclosed attendance on {}", employeesId, now.toLocalDate());
+            throw new IllegalStateException("Already checked in today without checking out.");
+        }
+
+        Attendance attendance = new Attendance();
+        attendance.setId(IdGenerator.getGenerationId());
+        attendance.setEmployee(employee);
+        attendance.setCheckIn(now);
+        attendance.setShiftType(AttendanceType.REGULAR);
+
+        Attendance saved = attendanceRepository.save(attendance);
+        return attendanceMapper.toDTO(saved);
+    }
+
+    @Transactional
+    @Override
+    public AttendanceDTO setAttendanceWhenClickCheckOut(Integer employeesId) {
+        log.info("Set attendance when employeeId: {} click check out: {}", employeesId, LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        Employees employee = employeeService.getEmployeeIsActive(employeesId);
+        if (employee == null) {
+            throw new EntityNotFoundException("Employee is inactive");
+        }
+
+        Attendance attendance = attendanceRepository.findFirstByEmployee_IdAndCheckOutIsNull(employeesId)
+                .orElseThrow(() -> new IllegalStateException("No check-in record found or already checked out."));
+
+        attendance.setCheckOut(now);
+        LocalTime END_OF_SHIFT = LocalTime.parse(systemRegulationService.getValue(SystemRegulationKey.CHECKIN_START_TIME));
+        LocalDateTime endOfRegularShift = attendance.getCheckIn().toLocalDate().atTime(END_OF_SHIFT);
+
+        if (now.isBefore(endOfRegularShift)) {
+            float regularTime = (float) Duration.between(attendance.getCheckIn(), now).toMinutes() / 60;
+            attendance.setRegularTime(regularTime);
+            attendance.setOtherTime(0f);
+        } else {
+            float regularTime = (float) Duration.between(attendance.getCheckIn(), endOfRegularShift).toMinutes() / 60;
+            float otherTime = (float) Duration.between(endOfRegularShift, now).toMinutes() / 60;
+            attendance.setRegularTime(regularTime);
+            attendance.setOtherTime(otherTime);
+        }
+
+        Attendance saved = attendanceRepository.save(attendance);
+
+        return attendanceMapper.toDTO(saved);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean hasUncheckedOutAttendanceOnDate(LocalDateTime checkInDate) {
+        LocalDateTime startOfDay = checkInDate.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = checkInDate.toLocalDate().atTime(23, 59, 59);
+        return attendanceRepository.existsCheckInOnDateWithoutCheckOut(startOfDay, endOfDay);
     }
 
 }
