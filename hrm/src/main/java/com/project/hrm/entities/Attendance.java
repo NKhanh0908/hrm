@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Attendance {
     @Id
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn
