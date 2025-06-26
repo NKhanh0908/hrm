@@ -16,8 +16,6 @@ public enum Error {
 
     // Server Error
     UNCATEGORIZED_EXCEPTION(9999, "Unclassified error", HttpStatus.INTERNAL_SERVER_ERROR),
-    INVALID_ENUM_VALUE(9998, "Invalid enum value", HttpStatus.INTERNAL_SERVER_ERROR),
-
     // Database Error
     DATABASE_ACCESS_ERROR(9998, "Database access error", HttpStatus.INTERNAL_SERVER_ERROR),
     DUPLICATE_KEY(9996, "Duplicate key found", HttpStatus.CONFLICT),
@@ -214,7 +212,121 @@ public enum Error {
     ASSIGNED_WORK_PERSON_UNABLE_TO_SAVE(23002, "Unable to save AssignedWorkPerson", HttpStatus.INTERNAL_SERVER_ERROR),
     ASSIGNED_WORK_PERSON_UNABLE_TO_UPDATE(23003, "Unable to update AssignedWorkPerson", HttpStatus.INTERNAL_SERVER_ERROR),
 
+// Thêm các error codes sau vào enum Error hiện tại:
 
+    // Attendance-related errors
+    ATTENDANCE_NOT_FOUND(24001, "Attendance record not found", HttpStatus.NOT_FOUND),
+    ATTENDANCE_ALREADY_EXISTS(24002, "Attendance record already exists for this date", HttpStatus.CONFLICT),
+    ATTENDANCE_UNABLE_TO_SAVE(24003, "Unable to save attendance record", HttpStatus.INTERNAL_SERVER_ERROR),
+    ATTENDANCE_UNABLE_TO_UPDATE(24004, "Unable to update attendance record", HttpStatus.INTERNAL_SERVER_ERROR),
+    ATTENDANCE_UNABLE_TO_DELETE(24005, "Unable to delete attendance record", HttpStatus.INTERNAL_SERVER_ERROR),
+    ATTENDANCE_INVALID_TIME(24006, "Invalid check-in or check-out time", HttpStatus.BAD_REQUEST),
+    ATTENDANCE_CHECKIN_AFTER_CHECKOUT(24007, "Check-in time cannot be after check-out time", HttpStatus.BAD_REQUEST),
+    ATTENDANCE_ALREADY_CHECKED_IN(24008, "Employee already checked in for today", HttpStatus.CONFLICT),
+    ATTENDANCE_NOT_CHECKED_IN(24009, "Employee has not checked in yet", HttpStatus.BAD_REQUEST),
+
+    // DayOff-related errors
+    DAY_OFF_NOT_FOUND(25001, "Day off request not found", HttpStatus.NOT_FOUND),
+    DAY_OFF_ALREADY_EXISTS(25002, "Day off request already exists for this period", HttpStatus.CONFLICT),
+    DAY_OFF_UNABLE_TO_SAVE(25003, "Unable to save day off request", HttpStatus.INTERNAL_SERVER_ERROR),
+    DAY_OFF_UNABLE_TO_UPDATE(25004, "Unable to update day off request", HttpStatus.INTERNAL_SERVER_ERROR),
+    DAY_OFF_UNABLE_TO_DELETE(25005, "Unable to delete day off request", HttpStatus.INTERNAL_SERVER_ERROR),
+    DAY_OFF_INVALID_DATE_RANGE(25006, "Invalid day off date range", HttpStatus.BAD_REQUEST),
+    DAY_OFF_START_DATE_AFTER_END_DATE(25007, "Start date cannot be after end date", HttpStatus.BAD_REQUEST),
+    DAY_OFF_PAST_DATE(25008, "Cannot request day off for past dates", HttpStatus.BAD_REQUEST),
+    DAY_OFF_INSUFFICIENT_BALANCE(25009, "Insufficient leave balance", HttpStatus.BAD_REQUEST),
+
+    // Dependent-related errors
+    DEPENDENT_NOT_FOUND(26001, "Dependent not found", HttpStatus.NOT_FOUND),
+    DEPENDENT_ALREADY_EXISTS(26002, "Dependent already exists", HttpStatus.CONFLICT),
+    DEPENDENT_UNABLE_TO_SAVE(26003, "Unable to save dependent", HttpStatus.INTERNAL_SERVER_ERROR),
+    DEPENDENT_UNABLE_TO_UPDATE(26004, "Unable to update dependent", HttpStatus.INTERNAL_SERVER_ERROR),
+    DEPENDENT_UNABLE_TO_DELETE(26005, "Unable to delete dependent", HttpStatus.INTERNAL_SERVER_ERROR),
+    DEPENDENT_INVALID_RELATIONSHIP(26006, "Invalid dependent relationship", HttpStatus.BAD_REQUEST),
+    DEPENDENT_INVALID_BIRTH_DATE(26007, "Invalid dependent birth date", HttpStatus.BAD_REQUEST),
+    DEPENDENT_AGE_LIMIT_EXCEEDED(26008, "Dependent age limit exceeded", HttpStatus.BAD_REQUEST),
+
+    // PayPeriods-related errors
+    PAY_PERIOD_NOT_FOUND(27001, "Pay period not found", HttpStatus.NOT_FOUND),
+    PAY_PERIOD_ALREADY_EXISTS(27002, "Pay period already exists for this period", HttpStatus.CONFLICT),
+    PAY_PERIOD_UNABLE_TO_SAVE(27003, "Unable to save pay period", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAY_PERIOD_UNABLE_TO_UPDATE(27004, "Unable to update pay period", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAY_PERIOD_UNABLE_TO_DELETE(27005, "Unable to delete pay period", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAY_PERIOD_INVALID_DATE_RANGE(27006, "Invalid pay period date range", HttpStatus.BAD_REQUEST),
+    PAY_PERIOD_OVERLAPPING(27007, "Pay period overlaps with existing period", HttpStatus.CONFLICT),
+    PAY_PERIOD_ALREADY_CLOSED(27008, "Pay period is already closed", HttpStatus.BAD_REQUEST),
+    PAY_PERIOD_CANNOT_DELETE_WITH_PAYROLLS(27009, "Cannot delete pay period with existing payrolls", HttpStatus.CONFLICT),
+
+    // Payrolls-related errors
+    PAYROLL_NOT_FOUND(28001, "Payroll not found", HttpStatus.NOT_FOUND),
+    PAYROLL_ALREADY_EXISTS(28002, "Payroll already exists for this employee and period", HttpStatus.CONFLICT),
+    PAYROLL_UNABLE_TO_SAVE(28003, "Unable to save payroll", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAYROLL_UNABLE_TO_UPDATE(28004, "Unable to update payroll", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAYROLL_UNABLE_TO_DELETE(28005, "Unable to delete payroll", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAYROLL_ALREADY_APPROVED(28006, "Payroll is already approved", HttpStatus.BAD_REQUEST),
+    PAYROLL_ALREADY_PAID(28007, "Payroll is already paid", HttpStatus.BAD_REQUEST),
+    PAYROLL_INVALID_STATUS(28008, "Invalid payroll status", HttpStatus.BAD_REQUEST),
+    PAYROLL_PERIOD_NOT_ACTIVE(28009, "Pay period is not active", HttpStatus.BAD_REQUEST),
+
+    // PayrollComponents-related errors
+    PAYROLL_COMPONENT_NOT_FOUND(29001, "Payroll component not found", HttpStatus.NOT_FOUND),
+    PAYROLL_COMPONENT_ALREADY_EXISTS(29002, "Payroll component already exists", HttpStatus.CONFLICT),
+    PAYROLL_COMPONENT_UNABLE_TO_SAVE(29003, "Unable to save payroll component", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAYROLL_COMPONENT_UNABLE_TO_UPDATE(29004, "Unable to update payroll component", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAYROLL_COMPONENT_UNABLE_TO_DELETE(29005, "Unable to delete payroll component", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAYROLL_COMPONENT_INVALID_AMOUNT(29006, "Invalid payroll component amount", HttpStatus.BAD_REQUEST),
+    PAYROLL_COMPONENT_INVALID_PERCENTAGE(29007, "Invalid payroll component percentage", HttpStatus.BAD_REQUEST),
+    PAYROLL_COMPONENT_INVALID_TYPE(29008, "Invalid payroll component type", HttpStatus.BAD_REQUEST),
+
+    // Regulations-related errors
+    REGULATION_NOT_FOUND(30001, "Regulation not found", HttpStatus.NOT_FOUND),
+    REGULATION_ALREADY_EXISTS(30002, "Regulation already exists", HttpStatus.CONFLICT),
+    REGULATION_UNABLE_TO_SAVE(30003, "Unable to save regulation", HttpStatus.INTERNAL_SERVER_ERROR),
+    REGULATION_UNABLE_TO_UPDATE(30004, "Unable to update regulation", HttpStatus.INTERNAL_SERVER_ERROR),
+    REGULATION_UNABLE_TO_DELETE(30005, "Unable to delete regulation", HttpStatus.INTERNAL_SERVER_ERROR),
+    REGULATION_INVALID_AMOUNT(30006, "Invalid regulation amount", HttpStatus.BAD_REQUEST),
+    REGULATION_INVALID_PERCENTAGE(30007, "Invalid regulation percentage", HttpStatus.BAD_REQUEST),
+    REGULATION_INVALID_EFFECTIVE_DATE(30008, "Invalid regulation effective date", HttpStatus.BAD_REQUEST),
+    REGULATION_ALREADY_EFFECTIVE(30009, "Regulation is already effective", HttpStatus.BAD_REQUEST),
+
+    // Approvals-related errors
+    APPROVAL_NOT_FOUND(31001, "Approval not found", HttpStatus.NOT_FOUND),
+    APPROVAL_ALREADY_EXISTS(31002, "Approval already exists for this payroll", HttpStatus.CONFLICT),
+    APPROVAL_UNABLE_TO_SAVE(31003, "Unable to save approval", HttpStatus.INTERNAL_SERVER_ERROR),
+    APPROVAL_UNABLE_TO_UPDATE(31004, "Unable to update approval", HttpStatus.INTERNAL_SERVER_ERROR),
+    APPROVAL_UNABLE_TO_DELETE(31005, "Unable to delete approval", HttpStatus.INTERNAL_SERVER_ERROR),
+    APPROVAL_INVALID_STATUS(31006, "Invalid approval status", HttpStatus.BAD_REQUEST),
+    APPROVAL_ALREADY_PROCESSED(31007, "Approval already processed", HttpStatus.BAD_REQUEST),
+    APPROVAL_INSUFFICIENT_PERMISSION(31008, "Insufficient permission to approve", HttpStatus.FORBIDDEN),
+
+    // SystemRegulation-related errors
+    SYSTEM_REGULATION_NOT_FOUND(32001, "System regulation not found", HttpStatus.NOT_FOUND),
+    SYSTEM_REGULATION_UNABLE_TO_SAVE(32002, "Unable to save system regulation", HttpStatus.INTERNAL_SERVER_ERROR),
+    SYSTEM_REGULATION_UNABLE_TO_UPDATE(32003, "Unable to update system regulation", HttpStatus.INTERNAL_SERVER_ERROR),
+    SYSTEM_REGULATION_UNABLE_TO_DELETE(32004, "Unable to delete system regulation", HttpStatus.INTERNAL_SERVER_ERROR),
+    SYSTEM_REGULATION_INVALID_KEY(32005, "Invalid system regulation key", HttpStatus.BAD_REQUEST),
+    SYSTEM_REGULATION_INVALID_VALUE(32006, "Invalid system regulation value", HttpStatus.BAD_REQUEST),
+    SYSTEM_REGULATION_READONLY(32007, "System regulation is read-only", HttpStatus.BAD_REQUEST),
+
+    // General validation errors
+    INVALID_DATE_FORMAT(33001, "Invalid date format", HttpStatus.BAD_REQUEST),
+    INVALID_TIME_FORMAT(33002, "Invalid time format", HttpStatus.BAD_REQUEST),
+    INVALID_NUMERIC_VALUE(33003, "Invalid numeric value", HttpStatus.BAD_REQUEST),
+    INVALID_ENUM_VALUE(33004, "Invalid enum value", HttpStatus.BAD_REQUEST),
+    REQUIRED_FIELD_MISSING(33005, "Required field is missing", HttpStatus.BAD_REQUEST),
+    FIELD_TOO_LONG(33006, "Field value exceeds maximum length", HttpStatus.BAD_REQUEST),
+    FIELD_TOO_SHORT(33007, "Field value is below minimum length", HttpStatus.BAD_REQUEST),
+    INVALID_EMAIL_FORMAT(33008, "Invalid email format", HttpStatus.BAD_REQUEST),
+    INVALID_PHONE_FORMAT(33009, "Invalid phone number format", HttpStatus.BAD_REQUEST),
+
+    // Business logic errors
+    INSUFFICIENT_PRIVILEGES(34001, "Insufficient privileges to perform this action", HttpStatus.FORBIDDEN),
+    OPERATION_NOT_PERMITTED(34002, "Operation not permitted in current state", HttpStatus.BAD_REQUEST),
+    RESOURCE_IN_USE(34003, "Resource is currently in use and cannot be modified", HttpStatus.CONFLICT),
+    DEADLINE_EXCEEDED(34004, "Deadline has been exceeded", HttpStatus.BAD_REQUEST),
+    QUOTA_EXCEEDED(34005, "Quota limit exceeded", HttpStatus.BAD_REQUEST),
+    WORKFLOW_VIOLATION(34006, "Action violates workflow rules", HttpStatus.BAD_REQUEST),
+    DATA_INTEGRITY_VIOLATION(34007, "Data integrity constraint violation", HttpStatus.CONFLICT),
     ;
 
     private final int code;
