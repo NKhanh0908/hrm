@@ -196,16 +196,26 @@ public enum Error {
 
     // Performance review
     PERFORMANCE_REVIEW_NOT_FOUND(20001, "Performance review not found", HttpStatus.NOT_FOUND),
-    PERFORMANCE_REVIEW_UNABLE_TO_UPDATE(20002, "Must update Performance review with status SCHEDULED", HttpStatus.NOT_FOUND),
+    PERFORMANCE_REVIEW_UNABLE_TO_SAVE(20002, "Unable to save Performance review", HttpStatus.INTERNAL_SERVER_ERROR),
+    PERFORMANCE_REVIEW_UNABLE_TO_UPDATE(20003, "Must update Performance review with status SCHEDULED", HttpStatus.INTERNAL_SERVER_ERROR),
 
     // Performance review detail
     PERFORMANCE_REVIEW_DETAIL_NOT_FOUND(21001, "Performance review detail not found", HttpStatus.NOT_FOUND),
+    PERFORMANCE_REVIEW_DETAIL_UNABLE_TO_SAVE(21002, "Unable to save Performance review detail", HttpStatus.INTERNAL_SERVER_ERROR),
+    PERFORMANCE_REVIEW_DETAIL_UNABLE_TO_UPDATE(21003, "Unable to update Performance review detail", HttpStatus.INTERNAL_SERVER_ERROR),
 
     // Feedback employee
     FEEDBACK_NOT_FOUND(22001, "Feedback employee not found", HttpStatus.NOT_FOUND),
+    FEEDBACK_UNABLE_TO_SAVE(22002, "Unable to save Feedback employee", HttpStatus.INTERNAL_SERVER_ERROR),
+    FEEDBACK_UNABLE_TO_UPDATE(22003, "Unable to update Feedback employee", HttpStatus.INTERNAL_SERVER_ERROR),
 
     // AssignedWorkPerson
-    ASSIGNED_WORK_PERSON(23001, "AssignedWorkPerson not found", HttpStatus.NOT_FOUND),;
+    ASSIGNED_WORK_PERSON_NOT_FOUND(23001, "AssignedWorkPerson not found", HttpStatus.NOT_FOUND),
+    ASSIGNED_WORK_PERSON_UNABLE_TO_SAVE(23002, "Unable to save AssignedWorkPerson", HttpStatus.INTERNAL_SERVER_ERROR),
+    ASSIGNED_WORK_PERSON_UNABLE_TO_UPDATE(23003, "Unable to update AssignedWorkPerson", HttpStatus.INTERNAL_SERVER_ERROR),
+
+
+    ;
 
     private final int code;
     private final String message;

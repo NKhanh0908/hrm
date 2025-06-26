@@ -94,7 +94,7 @@ public class AssignedWorkPersonServiceImpl implements AssignedWorkPersonService 
     public AssignedWorkPerson getEntityById(Integer id) {
         log.info("Fetching AssignedWorkPerson entity by ID: {}", id);
         return repo.findById(id)
-                .orElseThrow(() -> new CustomException(Error.ASSIGNED_WORK_PERSON));
+                .orElseThrow(() -> new CustomException(Error.ASSIGNED_WORK_PERSON_NOT_FOUND));
     }
 
     /**
