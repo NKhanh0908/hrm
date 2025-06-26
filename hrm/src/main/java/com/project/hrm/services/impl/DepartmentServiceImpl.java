@@ -55,6 +55,8 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public DepartmentDTO getDepartmentDTOByEmployeeId(Integer employeeId) {
+        log.info("Get department by employee id: {}", employeeId);
+
         return departmentMapper.toDepartmentDTO(departmentRepository.getDepartmentsByEmployeeId(employeeId));
     }
 

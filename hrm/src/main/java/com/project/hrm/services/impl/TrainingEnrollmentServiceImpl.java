@@ -149,7 +149,16 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
         return trainingEnrollmentMapper.convertEntityToDTO(saved);
     }
 
-
+    /**
+     * Generate training enrollment entries for all sessions under a specific training program.
+     *
+     * This method retrieves all training sessions associated with the given requested program ID,
+     * and for each session, it creates a new training enrollment linked to the provided training request ID.
+     *
+     * @param requestedProgramId the ID of the training program to fetch sessions from
+     * @param trainingRequest the ID of the training request to associate with the enrollment
+     * @return a list of {@link TrainingEnrollmentDTO} objects representing the generated enrollments
+     */
     @Transactional
     @Override
     public List<TrainingEnrollmentDTO> generateTrainingEnroll(Integer requestedProgramId, Integer trainingRequest) {

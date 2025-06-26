@@ -186,6 +186,18 @@ public class RecruitmentServiceImpl implements RecruitmentService {
                 recruitmentRepository.save(recruitment));
     }
 
+    /**
+     * Updates the status of a recruitment post identified by the given ID.
+     *
+     * This method first checks for the existence of the recruitment entry.
+     * If it exists, it attempts to update the status. If the update fails or no rows are affected,
+     * a {@link CustomException} is thrown.
+     *
+     * @param id the ID of the recruitment post to update
+     * @param recruitmentStatus the new {@link RecruitmentStatus} to set
+     * @return the updated {@link RecruitmentDTO} after applying the status change
+     * @throws CustomException if the recruitment does not exist or the status cannot be updated
+     */
     @Transactional
     @Override
     public RecruitmentDTO updateStatus(Integer id, RecruitmentStatus recruitmentStatus) {

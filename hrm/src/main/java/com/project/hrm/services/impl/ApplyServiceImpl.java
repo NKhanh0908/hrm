@@ -141,14 +141,11 @@ public class ApplyServiceImpl implements ApplyService {
     /**
      * Marks the given application as invited to interview, sends an interview notification,
      * and returns the updated application DTO.
-     *
-     * <p>Process:
-     * <ol>
-     *   <li>Retrieve the {@link Apply} entity by the ID in {@link InterviewLetter}.</li>
-     *   <li>Update its status to {@link ApplyStatus#INTERVIEW} via {@link #updateStatus(Integer, ApplyStatus)}</li>
-     *   <li>Fetch applicant contact info via {@link InfoApply} projection.</li>
-     *   <li>Send an email notification with interview details using {@link MailService#notificationInterview(InfoApply, InterviewLetter)}</li>
-     * </ol>
+     * Process:
+     *  Retrieve the {@link Apply} entity by the ID in {@link InterviewLetter}.
+     *   Update its status to {@link ApplyStatus#INTERVIEW} via {@link #updateStatus(Integer, ApplyStatus)}
+     *  Fetch applicant contact info via {@link InfoApply} projection.
+     *  Send an email notification with interview details using {@link MailService#notificationInterview(InfoApply, InterviewLetter)}
      *
      * @param interviewLetter the details of the interview, including applyId, address, and interviewTime
      * @return the updated {@link ApplyDTO} reflecting the new INTERVIEW status
@@ -280,8 +277,18 @@ public class ApplyServiceImpl implements ApplyService {
                 .orElseThrow(()-> new CustomException(Error.APPLY_NOT_FOUND));
     }
 
+    /**
+     * Retrieves the role ID associated with a given application ID.
+     * Logs the provided applyId and uses the applyRepository to obtain the corresponding role ID.
+     * This method is typically used after a candidate has been hired to determine their assigned role.
+     *
+     * @param applyId the ID of the application to retrieve the role ID for
+     * @return the role ID linked to the specified application
+     */
     @Override
     public Integer getRoleIdByApplyId(Integer applyId) {
+        log.info("Get role id by apply id: {}", applyId);
+
         return applyRepository.getRoleIdByApplyId(applyId);
     }
 

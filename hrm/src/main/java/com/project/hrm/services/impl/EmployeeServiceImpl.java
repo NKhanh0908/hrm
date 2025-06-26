@@ -121,13 +121,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /**
+     * Retrieves an employee who is currently marked as active.
+     * The method delegates to {@code employeeRepository.findEmployeeIsActive}
+     * which must return an {@link Employees} entity with status = ACTIVE.
      *
-     *
-     * @param employeeId
-     * @return
+     * @param employeeId the ID of the employee to look up
+     * @return the active {@link Employees} entity, or {@code null} if no active record exists
      */
+    @Transactional(readOnly = true)
     @Override
     public Employees getEmployeeIsActive(Integer employeeId) {
+        log.info("Fetching active employee by ID: {}", employeeId);
+
         return employeeRepository.findEmployeeIsActive(employeeId);
     }
 

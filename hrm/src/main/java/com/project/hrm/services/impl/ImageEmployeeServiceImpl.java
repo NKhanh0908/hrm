@@ -20,6 +20,13 @@ import java.util.Map;
 public class ImageEmployeeServiceImpl implements ImageEmployeeService {
     private final CloudinaryService cloudinaryService;
 
+    /**
+     * Uploads an image to Cloudinary after validating file type and size.
+     *
+     * @param image the multipart file containing the image to be uploaded
+     * @return the public URL of the uploaded image
+     * @throws CustomException if the image fails validation
+     */
     @Override
     public String saveImage(MultipartFile image) {
         checkImage(image);
@@ -29,12 +36,27 @@ public class ImageEmployeeServiceImpl implements ImageEmployeeService {
         return (String) resultMap.get("url");
     }
 
+    /**
+     * Deletes an image from Cloudinary, given its public URL.
+     *
+     * @param url the public URL of the image to delete
+     * @throws IOException if Cloudinary deletion fails
+     */
     @Override
     public void deleteImage(String url) throws IOException {
         String publicId = cloudinaryService.getPublicId(url);
         Map result = cloudinaryService.delete(publicId);
     }
 
+    /**
+     * Validates the file type and size of the uploaded image.
+     *
+     * Accepted MIME types: {@code image/png}, {@code image/jpeg}, {@code image/jpg}.<br>
+     * Maximum size: 10&nbsp;MB.
+     *
+     * @param multipartFile the file to validate
+     * @throws CustomException if the file type or size is invalid
+     */
     private void checkImage(MultipartFile multipartFile){
         List<Error> errors = new ArrayList<>();
 

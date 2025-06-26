@@ -124,17 +124,38 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toDTO(accountRepository.save(account));
     }
 
+    /**
+     * Retrieves the {@link Employees} entity associated with the currently
+     * authenticated user (principal) from the Spring Security context.
+     *
+     * <p>
+     * The method performs the following steps:
+     * <ol>
+     *   <li>Obtains the {@link Authentication} object from {@link SecurityContextHolder}.</li>
+     *   <li>Verifies that the authentication is not {@code null} and is authenticated;
+     *       otherwise, throws {@link CustomException} with {@link Error#UNAUTHORIZED}.</li>
+     *   <li>Extracts the {@link Account} object from {@link Authentication#getPrincipal()}.</li>
+     *   <li>Logs the employee information for auditing purposes.</li>
+     *   <li>Returns the associated {@link Employees} entity.</li>
+     * </ol>
+     * </p>
+     *
+     * @return the {@link Employees} entity of the currently authenticated user
+     * @throws CustomException if no authenticated user is present in the security context
+     */
     @Override
     public Employees getPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new CustomException(Error.UNAUTHORIZED);
         }
+
         Account account = (Account) authentication.getPrincipal();
 
         log.info("User principal: {}", account.getEmployees());
         return account.getEmployees();
     }
+
 
     private boolean usernameExists(String username) {
         return accountRepository.findByUsername(username).isPresent();

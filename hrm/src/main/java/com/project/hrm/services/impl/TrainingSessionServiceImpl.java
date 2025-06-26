@@ -143,6 +143,12 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
                 });
     }
 
+    /**
+     * Retrieves all training sessions associated with the specified training program ID.
+     *
+     * @param trainingProgramId the ID of the training program to retrieve sessions for
+     * @return a list of {@link TrainingSessionDTO} objects representing the sessions
+     */
     @Override
     public List<TrainingSessionDTO> getAllByTrainingProgramId(Integer trainingProgramId) {
         log.info("Get all training session by training program id: {}", trainingProgramId);

@@ -11,6 +11,7 @@ import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.EvaluateMapper;
 import com.project.hrm.repositories.EvaluateRepository;
+import com.project.hrm.services.AccountService;
 import com.project.hrm.services.CandidateProfileService;
 import com.project.hrm.services.EvaluateService;
 import com.project.hrm.specifications.EvaluateSpecification;
@@ -36,6 +37,7 @@ public class EvaluateServiceImpl implements EvaluateService {
     private final EvaluateRepository evaluateRepository;
 
     private final CandidateProfileService candidateProfileService;
+    private final AccountService accountService;
 
     private final EvaluateMapper evaluateMapper;
 
@@ -85,15 +87,9 @@ public class EvaluateServiceImpl implements EvaluateService {
     public EvaluateDTO create(EvaluateCreateDTO evaluateCreateDTO) {
         log.info("Create Evaluate");
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
-        Account account = (Account) authentication.getPrincipal();
-
         CandidateProfile candidateProfile = candidateProfileService.getEntityById(evaluateCreateDTO.getCandidateProfileId());
 
-        Evaluate evaluate = evaluateMapper.conventCreateToEntity(evaluateCreateDTO, account.getEmployees(), candidateProfile);
+        Evaluate evaluate = evaluateMapper.conventCreateToEntity(evaluateCreateDTO, accountService.getPrincipal(), candidateProfile);
         evaluate.setId(IdGenerator.getGenerationId());
 
         return evaluateMapper.toEvaluateDTO(evaluateRepository.save(evaluate));
@@ -129,8 +125,6 @@ public class EvaluateServiceImpl implements EvaluateService {
         if (evaluateUpdateDTO.getEvaluate() != null) {
             evaluate.setEvaluate(evaluateUpdateDTO.getEvaluate());
         }
-
-        // `createBy` is checked but not set in this version.
 
         return evaluateMapper.toEvaluateDTO(evaluateRepository.save(evaluate));
     }

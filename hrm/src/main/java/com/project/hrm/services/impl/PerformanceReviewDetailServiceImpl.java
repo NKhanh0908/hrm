@@ -91,10 +91,11 @@ public class PerformanceReviewDetailServiceImpl implements PerformanceReviewDeta
     }
 
     /**
-     * Retrieve DTO by ID
+     * Returns a {@link PerformanceReviewDetailDTO} for the given detail ID.
      *
-     * @param id identifier
-     * @return DTO
+     * @param id the primary key of the performance-review detail
+     * @return the corresponding DTO
+     * @throws CustomException if no detail record exists with the specified ID
      */
     @Override
     public PerformanceReviewDetailDTO getDTOById(Integer id) {
@@ -103,10 +104,11 @@ public class PerformanceReviewDetailServiceImpl implements PerformanceReviewDeta
     }
 
     /**
-     * Retrieve entity by ID
+     * Returns the {@link PerformanceReviewDetail} entity for the given ID.
      *
-     * @param id identifier
-     * @return entity
+     * @param id the primary key of the performance-review detail
+     * @return the entity
+     * @throws CustomException if the entity is not found
      */
     @Override
     public PerformanceReviewDetail getEntityById(Integer id) {

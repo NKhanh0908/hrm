@@ -96,7 +96,6 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         return candidateProfileMapper.toCandidateProfileDTO(updated);
     }
 
-
     @Transactional
     @Override
     public void delete(Integer id) {
@@ -169,10 +168,21 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         return candidateProfileMapper.toCandidateProfileDTO(candidateProfileRepository.findCandidateProfileByEmail(email));
     }
 
+    /**
+     * Retrieves the candidate profile associated with a specific application ID.
+     * This method is marked as read-only transactional to ensure it does not modify the database.
+     * It is used to fetch candidate information after applying, typically for hiring or contract creation.
+     *
+     * @param applyId the ID of the application used to find the candidate profile
+     * @return the {@link CandidateProfile} linked to the specified application ID
+     */
     @Transactional(readOnly = true)
     @Override
     public CandidateProfile getEntityByApplyId(Integer applyId) {
+        log.info("Retrieve candidate profile by apply ID: {}", applyId);
+
         return candidateProfileRepository.findByApplyId(applyId);
     }
+
 
 }

@@ -184,7 +184,7 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService {
 
     /**
      * Filters performance reviews based on multiple optional conditions such as employee ID,
-     * approver ID, creation date range, review cycle, and status.
+     * approve ID, creation date range, review cycle, and status.
      *
      * @param performanceReviewFilter the filtering conditions
      * @param page                    the page number (0-based)
