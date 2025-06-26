@@ -52,7 +52,7 @@ public class RecruitmentMapper {
                 .jobDescription(recruitmentCreateDTO.getJobDescription())
                 .recruitmentRequirements(recruitmentRequirements)
                 .createAt(LocalDateTime.now())
-                .employees(employees)
+                .approveBy(employees)
                 .build();
     }
 

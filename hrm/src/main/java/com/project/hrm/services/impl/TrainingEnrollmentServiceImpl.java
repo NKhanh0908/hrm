@@ -3,10 +3,12 @@ package com.project.hrm.services.impl;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentCreateDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentFilter;
+import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentUpdateDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionDTO;
 import com.project.hrm.entities.TrainingEnrollment;
 import com.project.hrm.entities.TrainingRequest;
 import com.project.hrm.entities.TrainingSession;
+import com.project.hrm.enums.EnrollmentStatus;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.TrainingEnrollmentMapper;
@@ -62,6 +64,91 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
 
         return trainingEnrollmentMapper.convertEntityToDTO(saved);
     }
+
+    /**
+     * Updates an existing training enrollment record.
+     * Only the non-null fields present in {@link TrainingEnrollmentUpdateDTO}
+     * will be applied to the entity.
+     *
+     * @param trainingEnrollmentUpdateDTO DTO carrying the fields to be updated
+     * @return the updated {@link TrainingEnrollmentDTO}
+     * @throws CustomException if the enrollment record is not found
+     * @throws IllegalArgumentException if the status string cannot be converted to {@link EnrollmentStatus}
+     */
+    @Transactional
+    @Override
+    public TrainingEnrollmentDTO update(TrainingEnrollmentUpdateDTO trainingEnrollmentUpdateDTO) {
+
+        log.info("Updating TrainingEnrollment with ID: {}", trainingEnrollmentUpdateDTO.getId());
+
+        TrainingEnrollment enrollment = getEntityById(trainingEnrollmentUpdateDTO.getId());
+
+        if (trainingEnrollmentUpdateDTO.getEnrollmentDate() != null) {
+            enrollment.setEnrollmentDate(trainingEnrollmentUpdateDTO.getEnrollmentDate());
+        }
+        if (trainingEnrollmentUpdateDTO.getCompletionDate() != null) {
+            enrollment.setCompletionDate(trainingEnrollmentUpdateDTO.getCompletionDate());
+        }
+        if (trainingEnrollmentUpdateDTO.getAttendanceRate() != null) {
+            enrollment.setAttendanceRate(trainingEnrollmentUpdateDTO.getAttendanceRate());
+        }
+        if (trainingEnrollmentUpdateDTO.getTestScore() != null) {
+            enrollment.setTestScore(trainingEnrollmentUpdateDTO.getTestScore());
+        }
+        if (trainingEnrollmentUpdateDTO.getFeedback() != null) {
+            enrollment.setFeedback(trainingEnrollmentUpdateDTO.getFeedback());
+        }
+        if (trainingEnrollmentUpdateDTO.getStatus() != null) {
+            try {
+                enrollment.setStatus(EnrollmentStatus.valueOf(
+                        trainingEnrollmentUpdateDTO.getStatus().toUpperCase()));
+            } catch (IllegalArgumentException ex) {
+                log.error("Invalid status {} supplied for TrainingEnrollment ID {}",
+                        trainingEnrollmentUpdateDTO.getStatus(),
+                        trainingEnrollmentUpdateDTO.getId());
+                throw ex;
+            }
+        }
+
+        TrainingEnrollment updated = trainingEnrollmentRepository.save(enrollment);
+        log.info("TrainingEnrollment ID {} updated successfully", updated.getId());
+
+        return trainingEnrollmentMapper.convertEntityToDTO(updated);
+    }
+
+    /**
+     * Updates only the status of a training-enrollment record.
+     *
+     * @param id     the ID of the training enrollment to update
+     * @param status the new status (must be a valid {@link EnrollmentStatus})
+     * @return the updated {@link TrainingEnrollmentDTO}
+     * @throws CustomException          if the enrollment is not found
+     * @throws IllegalArgumentException if the status string is not a valid enum constant
+     */
+    @Transactional
+    @Override
+    public TrainingEnrollmentDTO updateStatus(Integer id, String status) {
+        log.info("Updating status of TrainingEnrollment ID {} to {}", id, status);
+
+        TrainingEnrollment trainingEnrollment = getEntityById(id);
+
+        try {
+            trainingEnrollment.setStatus(EnrollmentStatus.valueOf(status.toUpperCase()));
+        } catch (IllegalArgumentException ex) {
+            log.error("Invalid status '{}' supplied for TrainingEnrollment ID {}", status, id);
+            throw ex;
+        }
+
+        TrainingEnrollment saved = trainingEnrollmentRepository.save(trainingEnrollment);
+        log.info("TrainingEnrollment ID {} status updated to {}", saved.getId(), saved.getStatus());
+
+        if(!trainingEnrollmentRepository.existsActiveEnrollment(saved.getTrainingSession().getId(), saved.getTrainingRequest().getId())){
+            trainingRequestService.updateStatus(saved.getTrainingRequest().getId(), "FULFILLED");
+        }
+
+        return trainingEnrollmentMapper.convertEntityToDTO(saved);
+    }
+
 
     @Transactional
     @Override

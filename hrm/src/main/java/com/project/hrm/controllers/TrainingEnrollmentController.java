@@ -4,6 +4,7 @@ import com.project.hrm.dto.APIResponse;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentCreateDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentFilter;
+import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentUpdateDTO;
 import com.project.hrm.services.TrainingEnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,6 +45,57 @@ public class TrainingEnrollmentController {
             HttpServletRequest request) {
         TrainingEnrollmentDTO result = trainingEnrollmentService.create(dto);
         return ResponseEntity.ok(new APIResponse<>(true, "Create TrainingEnrollment successfully", result, null, request.getRequestURI()));
+    }
+
+    @PutMapping
+    @Operation(
+            summary     = "Update training enrollment",
+            description = "Update fields of an existing training enrollment. "
+                    + "Only non-null fields in the DTO will be applied.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Training enrollment update data",
+                    required    = true,
+                    content     = @Content(schema = @Schema(implementation = TrainingEnrollmentUpdateDTO.class))
+            ),
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description  = "Training enrollment updated successfully",
+                    content      = @Content(schema = @Schema(implementation = TrainingEnrollmentDTO.class)))
+    )
+    public ResponseEntity<APIResponse<TrainingEnrollmentDTO>> update(
+            @RequestBody TrainingEnrollmentUpdateDTO dto,
+            HttpServletRequest request) {
+
+        TrainingEnrollmentDTO result = trainingEnrollmentService.update(dto);
+
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Training enrollment updated successfully",
+                        result, null, request.getRequestURI()));
+    }
+
+    @PutMapping("/update-status")
+    @Operation(
+            summary     = "Update enrollment status",
+            description = "Change the status of an enrollment by ID.",
+            parameters  = {
+                    @Parameter(name = "id",     description = "Training enrollment ID", required = true),
+                    @Parameter(name = "status", description = "New status (e.g. PENDING, COMPLETED)", required = true)
+            },
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description  = "Enrollment status updated successfully",
+                    content      = @Content(schema = @Schema(implementation = TrainingEnrollmentDTO.class)))
+    )
+    public ResponseEntity<APIResponse<TrainingEnrollmentDTO>> updateStatus(
+            @RequestParam Integer id,
+            @RequestParam String  status,
+            HttpServletRequest request) {
+
+        TrainingEnrollmentDTO result = trainingEnrollmentService.updateStatus(id, status);
+
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Training enrollment status updated successfully",
+                        result, null, request.getRequestURI()));
     }
 
     @Operation(summary = "Get training enrollment by ID", description = "Retrieve a training enrollment by its ID",

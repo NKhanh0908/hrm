@@ -3,6 +3,7 @@ package com.project.hrm.services;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentCreateDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentFilter;
+import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentUpdateDTO;
 import com.project.hrm.entities.TrainingEnrollment;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,10 @@ import java.util.List;
 @Service
 public interface TrainingEnrollmentService {
     TrainingEnrollmentDTO create(TrainingEnrollmentCreateDTO trainingEnrollmentCreateDTO);
+
+    TrainingEnrollmentDTO update(TrainingEnrollmentUpdateDTO trainingEnrollmentUpdateDTO);
+
+    TrainingEnrollmentDTO updateStatus(Integer id, String status);
 
     List<TrainingEnrollmentDTO> generateTrainingEnroll(Integer requestedProgramId, Integer trainingRequest);
 
