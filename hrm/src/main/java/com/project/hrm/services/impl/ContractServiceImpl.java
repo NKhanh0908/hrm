@@ -163,6 +163,7 @@ public class ContractServiceImpl implements ContractService {
      * @return the corresponding {@link ContractDTO}
      * @throws RuntimeException if no contract is found with the given ID
      */
+    @Transactional(readOnly = true)
     @Override
     public ContractDTO getById(Integer id) {
         log.info("Get contract by id: {}", id);
@@ -176,6 +177,7 @@ public class ContractServiceImpl implements ContractService {
      * @return the corresponding {@link Contracts} entity
      * @throws RuntimeException if no contract is found with the given ID
      */
+    @Transactional(readOnly = true)
     @Override
     public Contracts getEntityById(Integer id) {
         log.info("Get contract entity by id: {}", id);
@@ -192,6 +194,7 @@ public class ContractServiceImpl implements ContractService {
      * @param size           the number of records per page
      * @return a list of {@link ContractDTO} matching the filter conditions
      */
+    @Transactional(readOnly = true)
     @Override
     public List<ContractDTO> filter(ContractFilter contractFilter, int page, int size) {
         log.info("Filter contract");

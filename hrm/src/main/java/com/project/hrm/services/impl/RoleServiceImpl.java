@@ -62,6 +62,7 @@ public class RoleServiceImpl implements RoleService {
      * @param roleCreateDTO the DTO containing information to create a role
      * @return a {@link RoleDTO} representing the newly created role
      */
+    @Transactional
     @Override
     public RoleDTO create(RoleCreateDTO roleCreateDTO) {
         Departments departments = departmentService.getEntityById(roleCreateDTO.getDepartmentId());
@@ -80,6 +81,7 @@ public class RoleServiceImpl implements RoleService {
      * @param departmentId the ID of the department
      * @return a list of {@link RoleDTO} representing the roles in the department
      */
+    @Transactional(readOnly = true)
     @Override
     public List<RoleDTO> getAllByDepartmentId(Integer departmentId) {
         List<Role> roles = roleRepository.findAllByDepartments_Id(departmentId);

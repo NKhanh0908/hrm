@@ -161,6 +161,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
      * @param email check
      * @return CandidateProfile {@link CandidateProfile}
      */
+    @Transactional(readOnly = true)
     @Override
     public CandidateProfileDTO checkExistsCandidateProfile(String email) {
         log.info("Check exists CandidateProfile by email: {}", email);

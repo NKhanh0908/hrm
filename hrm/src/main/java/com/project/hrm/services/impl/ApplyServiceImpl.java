@@ -285,6 +285,7 @@ public class ApplyServiceImpl implements ApplyService {
      * @param applyId the ID of the application to retrieve the role ID for
      * @return the role ID linked to the specified application
      */
+    @Transactional(readOnly = true)
     @Override
     public Integer getRoleIdByApplyId(Integer applyId) {
         log.info("Get role id by apply id: {}", applyId);

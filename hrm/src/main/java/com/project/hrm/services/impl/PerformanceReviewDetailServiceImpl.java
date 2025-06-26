@@ -97,6 +97,7 @@ public class PerformanceReviewDetailServiceImpl implements PerformanceReviewDeta
      * @return the corresponding DTO
      * @throws CustomException if no detail record exists with the specified ID
      */
+    @Transactional(readOnly = true)
     @Override
     public PerformanceReviewDetailDTO getDTOById(Integer id) {
         log.info("Fetching DTO for performance review detail id: {}", id);
@@ -110,6 +111,7 @@ public class PerformanceReviewDetailServiceImpl implements PerformanceReviewDeta
      * @return the entity
      * @throws CustomException if the entity is not found
      */
+    @Transactional(readOnly = true)
     @Override
     public PerformanceReviewDetail getEntityById(Integer id) {
         log.info("Fetching entity for performance review detail id: {}", id);

@@ -64,6 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param size         the page size
      * @return a list of {@link EmployeeDTO} representing the employees in the department
      */
+    @Transactional(readOnly = true)
     @Override
     public List<EmployeeDTO> filterByDepartmentID(Integer departmentId, int page, int size) {
         log.info("Filtering employees by department ID: {}, page: {}, size: {}", departmentId, page, size);

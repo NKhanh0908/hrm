@@ -182,6 +182,7 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
      * @param id the ID of the training enrollment
      * @return the {@link TrainingEnrollment} entity
      */
+    @Transactional(readOnly = true)
     @Override
     public TrainingEnrollment getEntityById(Integer id) {
         log.info("Fetching TrainingEnrollment entity with ID: {}", id);
@@ -198,6 +199,7 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
      * @param id the ID of the training enrollment
      * @return the {@link TrainingEnrollmentDTO}
      */
+    @Transactional(readOnly = true)
     @Override
     public TrainingEnrollmentDTO getDTOById(Integer id) {
         log.info("Fetching TrainingEnrollmentDTO with ID: {}", id);
@@ -212,6 +214,7 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
      * @param size                     the size of the page to be returned
      * @return a list of matching {@link TrainingEnrollmentDTO}
      */
+    @Transactional(readOnly = true)
     @Override
     public List<TrainingEnrollmentDTO> filter(TrainingEnrollmentFilter trainingEnrollmentFilter, int page, int size) {
         log.info("Filtering TrainingEnrollments with filter: {}, page: {}, size: {}",

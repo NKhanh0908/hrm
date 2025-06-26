@@ -133,6 +133,7 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService {
      * @param id PerformanceReview Id
      * @return {@link PerformanceReview} entity
      */
+    @Transactional(readOnly = true)
     @Override
     public PerformanceReview getEntityById(Integer id) {
         log.info("Find performance review by id: {}", id);
@@ -147,6 +148,7 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService {
      * @param id PerformanceReview Id
      * @return {@link PerformanceReviewDTO} entity
      */
+    @Transactional(readOnly = true)
     @Override
     public PerformanceReviewDTO getDTOById(Integer id) {
         return performanceReviewMapper.convertEntityToDTO(getEntityById(id));

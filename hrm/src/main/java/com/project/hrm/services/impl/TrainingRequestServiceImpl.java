@@ -132,6 +132,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
     * @return a {@link TrainingRequestDTO} representing the updated training request
     *
     * */
+    @Transactional
     @Override
     public TrainingRequestDTO updateStatus(Integer id, String status) {
         log.info("Update status TrainingRequest by Id: {}", id);
@@ -158,6 +159,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
      * @param id the ID of the training request
      * @return the {@link TrainingRequest} entity
      */
+    @Transactional(readOnly = true)
     @Override
     public TrainingRequest getEntityById(Integer id) {
         log.info("Fetching TrainingRequest entity with ID: {}", id);
@@ -174,6 +176,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
      * @param id the ID of the training request
      * @return the {@link TrainingRequestDTO}
      */
+    @Transactional(readOnly = true)
     @Override
     public TrainingRequestDTO getDTOById(Integer id) {
         return trainingRequestMapper.convertEntityToDTO(getEntityById(id));
@@ -187,6 +190,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
      * @param size                  the size of the page to be returned
      * @return a list of matching {@link TrainingRequestDTO}
      */
+    @Transactional(readOnly = true)
     @Override
     public List<TrainingRequestDTO> filter(TrainingRequestFilter trainingRequestFilter, int page, int size) {
         log.info("Filtering TrainingRequests with filter: {}, page: {}, size: {}",

@@ -53,6 +53,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @return the {@link DepartmentDTO} entity if found
      * returns the raw DTO for use by controller required
      */
+    @Transactional(readOnly = true)
     @Override
     public DepartmentDTO getDepartmentDTOByEmployeeId(Integer employeeId) {
         log.info("Get department by employee id: {}", employeeId);

@@ -121,6 +121,7 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
      * @param id the training session ID.
      * @return the corresponding {@link TrainingSessionDTO}.
      */
+    @Transactional(readOnly = true)
     @Override
     public TrainingSessionDTO getDTOById(Integer id) {
         log.info("Fetching training session DTO with ID: {}", id);
@@ -133,6 +134,7 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
      * @param id the training session ID.
      * @return the corresponding {@link TrainingSession}.
      */
+    @Transactional(readOnly = true)
     @Override
     public TrainingSession getEntityById(Integer id) {
         log.info("Fetching training session entity with ID: {}", id);
@@ -149,6 +151,7 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
      * @param trainingProgramId the ID of the training program to retrieve sessions for
      * @return a list of {@link TrainingSessionDTO} objects representing the sessions
      */
+    @Transactional(readOnly = true)
     @Override
     public List<TrainingSessionDTO> getAllByTrainingProgramId(Integer trainingProgramId) {
         log.info("Get all training session by training program id: {}", trainingProgramId);
@@ -166,6 +169,7 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
      * @param size                  the page size.
      * @return list of matching {@link TrainingSessionDTO}.
      */
+    @Transactional(readOnly = true)
     @Override
     public List<TrainingSessionDTO> filter(TrainingSessionFilter trainingSessionFilter, int page, int size) {
         log.info("Filtering training sessions with filter: {}, page: {}, size: {}", trainingSessionFilter, page, size);
