@@ -23,7 +23,6 @@ public interface ApplyRepository extends JpaRepository<Apply, Integer>, JpaSpeci
             @Param("status") String status
     );
 
-    @Transactional(readOnly = true)
     @Query(value = """
             SELECT cp.name, cp.email, rl.name as position_apply
                         FROM (
