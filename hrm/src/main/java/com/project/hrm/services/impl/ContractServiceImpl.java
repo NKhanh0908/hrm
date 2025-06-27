@@ -144,12 +144,15 @@ public class ContractServiceImpl implements ContractService {
             contracts.setTitle(contractUpdateDTO.getTitle());
         }
         if (contractUpdateDTO.getContractSigningDate() != null) {
+            validateContractDates(contracts.getStartDate(), contracts.getEndDate(), contractUpdateDTO.getContractSigningDate());
             contracts.setContractSigningDate(contractUpdateDTO.getContractSigningDate());
         }
         if (contractUpdateDTO.getStartDate() != null) {
+            validateContractDates(contractUpdateDTO.getStartDate(), contracts.getEndDate(), contracts.getContractSigningDate());
             contracts.setStartDate(contractUpdateDTO.getStartDate());
         }
         if (contractUpdateDTO.getEndDate() != null) {
+            validateContractDates(contracts.getStartDate(), contractUpdateDTO.getEndDate(), contracts.getContractSigningDate());
             contracts.setEndDate(contractUpdateDTO.getEndDate());
         }
         if (contractUpdateDTO.getBaseSalary() != null) {
