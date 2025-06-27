@@ -42,15 +42,17 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
         DocumentApprovals documentApprovals = documentApprovalsMapper.covertCreateDTOToEntity(documentApprovalsCreateDTO);
 
         documentApprovals.setId(IdGenerator.getGenerationId());
-        if (documentApprovalsRepository.existsByDocumentsIdAndRequestedById(
-                documentApprovals.getDocuments().getId(), documentApprovals.getRequestedBy().getId())) {
+        //if (documentApprovalsRepository.existsByDocumentsIdAndRequestedById(
+               // documentApprovals.getDocuments().getId(), documentApprovals.getRequestedBy().getId())) {
             // Chua viet Exception nay
-        }
+        //}
         Documents document = documentsService.getEntityById(documentApprovalsCreateDTO.getDocumentId());
         documentApprovals.setDocuments(document);
         documentApprovals.setRequestedBy(accountService.getPrincipal());
 
-        return documentApprovalsMapper.covertEntityToDTO(documentApprovals);
+        log.info(documentApprovals.toString());
+
+        return documentApprovalsMapper.covertEntityToDTO(documentApprovalsRepository.save(documentApprovals));
     }
 
     @Override

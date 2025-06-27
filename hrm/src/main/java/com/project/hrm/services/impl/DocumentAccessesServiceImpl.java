@@ -11,6 +11,7 @@ import com.project.hrm.services.AccountService;
 import com.project.hrm.services.DocumentAccessesService;
 import com.project.hrm.services.DocumentsService;
 import com.project.hrm.specifications.DocumentAccessesSpecification;
+import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ public class DocumentAccessesServiceImpl implements DocumentAccessesService {
     @Override
     public DocumentAccessesDTO create(DocumentAccessesCreateDTO documentAccessesCreateDTO) {
         DocumentAccesses documentAccesses = documentAccessesMapper.covertCreateDTOToEntity(documentAccessesCreateDTO);
+        documentAccesses.setId(IdGenerator.getGenerationId());
         documentAccesses.setDocuments(documentService.getEntityById(documentAccessesCreateDTO.getDocumentId()));
         documentAccesses.setEmployees(accountService.getPrincipal());
 

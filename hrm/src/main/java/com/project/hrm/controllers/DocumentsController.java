@@ -40,7 +40,7 @@ public class DocumentsController {
     public ResponseEntity<APIResponse<DocumentsDTO>> create(@RequestBody DocumentsCreateDTO documentsCreateDTO, HttpServletRequest request) {
         DocumentsDTO result = documentsService.create(documentsCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new APIResponse<>(true, "Document created successfully", result, null, null));
+                .body(new APIResponse<>(true, "Document created successfully", result, null, request.getRequestURI()));
     }
 
     @PutMapping

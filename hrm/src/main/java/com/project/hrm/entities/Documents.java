@@ -30,6 +30,6 @@ public class Documents {
     private DocumentTypes documentTypes;
 
     @ManyToOne
-    @JoinTable
+    @JoinColumn
     private Employees uploadedBy;
 }

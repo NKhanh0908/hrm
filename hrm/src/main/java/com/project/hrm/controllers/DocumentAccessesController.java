@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +41,10 @@ public class DocumentAccessesController {
                             content = @Content(schema = @Schema(implementation = DocumentAccessesCreateDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<DocumentAccessesDTO>> create(DocumentAccessesCreateDTO documentAccessesCreateDTO) {
+    public ResponseEntity<APIResponse<DocumentAccessesDTO>> create(@RequestBody DocumentAccessesCreateDTO documentAccessesCreateDTO, HttpServletRequest request) {
         DocumentAccessesDTO result = documentAccessesService.create(documentAccessesCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new APIResponse<>(true, "Created successfully", result, null, null));
+                .body(new APIResponse<>(true, "Created successfully", result, null, request.getRequestURI()));
     }
 
     @PutMapping

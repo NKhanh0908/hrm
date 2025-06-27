@@ -10,18 +10,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/document-approvals")
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class DocumentApprovalsController {
     @Operation(
             summary = "Create a new document approval request",
             description = "Creates a new document approval entry",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Document approval creation data",
                     required = true,
                     content = @Content(schema = @Schema(implementation = DocumentApprovalsCreateDTO.class))
             ),
@@ -42,8 +43,9 @@ public class DocumentApprovalsController {
                             content = @Content(schema = @Schema(implementation = DocumentApprovalsDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<DocumentApprovalsDTO>> create(@RequestBody DocumentApprovalsCreateDTO dto, HttpServletRequest request) {
-        DocumentApprovalsDTO result = documentApprovalsService.create(dto);
+    public ResponseEntity<APIResponse<DocumentApprovalsDTO>> create(@RequestBody DocumentApprovalsCreateDTO documentApprovalsCreateDTO, HttpServletRequest request) {
+        log.info("Creating document approval request 1111: {}", documentApprovalsCreateDTO.getDocumentId());
+        DocumentApprovalsDTO result = documentApprovalsService.create(documentApprovalsCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new APIResponse<>(true, "Created successfully", result, null, request.getRequestURI()));
     }
