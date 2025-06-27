@@ -1,8 +1,9 @@
 package com.project.hrm.repositories;
 
+import com.project.hrm.entities.Documents;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.swing.text.Document;
 
-public interface DocumentRepository extends JpaRepository<Document,Integer> {
+
+public interface DocumentRepository extends JpaRepository<Documents,Integer> {
 }

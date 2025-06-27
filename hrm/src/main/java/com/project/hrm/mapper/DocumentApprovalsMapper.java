@@ -4,12 +4,13 @@ import com.project.hrm.dto.documentApprovalsDTO.DocumentApprovalsCreateDTO;
 import com.project.hrm.dto.documentApprovalsDTO.DocumentApprovalsDTO;
 import com.project.hrm.entities.DocumentApprovals;
 import com.project.hrm.enums.DocumentApprovalsStatus;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Component
 public class DocumentApprovalsMapper {
     public DocumentApprovals covertCreateDTOToEntity(DocumentApprovalsCreateDTO documentApprovalsCreateDTO) {
         return DocumentApprovals.builder()

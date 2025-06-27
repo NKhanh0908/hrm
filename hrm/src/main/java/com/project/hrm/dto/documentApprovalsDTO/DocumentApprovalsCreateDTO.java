@@ -13,6 +13,5 @@ import lombok.NoArgsConstructor;
 public class DocumentApprovalsCreateDTO {
     private String status;
     private Integer documentId;
-    private Integer employeeId;
     private String reason;
 }

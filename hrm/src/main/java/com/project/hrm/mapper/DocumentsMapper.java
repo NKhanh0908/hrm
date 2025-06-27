@@ -4,11 +4,13 @@ import com.project.hrm.dto.documentsDTO.DocumentsCreateDTO;
 import com.project.hrm.dto.documentsDTO.DocumentsDTO;
 import com.project.hrm.entities.Documents;
 import com.project.hrm.enums.DocumentsStatus;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class DocumentsMapper {
     public Documents convertCreateDTOToEntity(DocumentsCreateDTO documentsCreateDTO) {
         return Documents.builder()

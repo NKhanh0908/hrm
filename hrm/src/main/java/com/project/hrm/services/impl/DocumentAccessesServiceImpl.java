@@ -1,0 +1,68 @@
+package com.project.hrm.services.impl;
+
+import com.project.hrm.dto.documentAccessesDTO.DocumentAccessesCreateDTO;
+import com.project.hrm.dto.documentAccessesDTO.DocumentAccessesDTO;
+import com.project.hrm.dto.documentAccessesDTO.DocumentAccessesUpdateDTO;
+import com.project.hrm.entities.DocumentAccesses;
+import com.project.hrm.enums.DocumentAccess;
+import com.project.hrm.mapper.DocumentAccessesMapper;
+import com.project.hrm.repositories.DocumentAccessesRepository;
+import com.project.hrm.services.AccountService;
+import com.project.hrm.services.DocumentAccessesService;
+import com.project.hrm.services.DocumentsService;
+import com.project.hrm.specifications.DocumentAccessesSpecification;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class DocumentAccessesServiceImpl implements DocumentAccessesService {
+    private final DocumentAccessesRepository documentAccessesRepository;
+    private final DocumentAccessesMapper documentAccessesMapper;
+    private final AccountService accountService;
+    private final DocumentsService documentService;
+    private final DocumentAccessesSpecification documentAccessesSpecification;
+
+    @Override
+    public DocumentAccessesDTO create(DocumentAccessesCreateDTO documentAccessesCreateDTO) {
+        DocumentAccesses documentAccesses = documentAccessesMapper.covertCreateDTOToEntity(documentAccessesCreateDTO);
+        documentAccesses.setDocuments(documentService.getEntityById(documentAccessesCreateDTO.getDocumentId()));
+        documentAccesses.setEmployees(accountService.getPrincipal());
+
+        return documentAccessesMapper.covertEntityToDTO(documentAccessesRepository.save(documentAccesses));
+    }
+
+    @Override
+    public DocumentAccessesDTO getDTOById(Integer id) {
+        return documentAccessesMapper.covertEntityToDTO(getEntityById(id));
+    }
+
+    @Override
+    public DocumentAccessesDTO update(DocumentAccessesUpdateDTO documentAccessesUpdateDTO) {
+        DocumentAccesses documentAccesses = getEntityById(documentAccessesUpdateDTO.getId());
+        if (documentAccessesUpdateDTO.getAccessLevel() != null) {
+            documentAccesses.setAccessLevel(DocumentAccess.valueOf(documentAccessesUpdateDTO.getAccessLevel()));
+        }
+        documentAccesses.setDocuments(documentService.getEntityById(documentAccessesUpdateDTO.getDocumentId()));
+        documentAccesses.setEmployees(accountService.getPrincipal());
+        return documentAccessesMapper.covertEntityToDTO(documentAccessesRepository.save(documentAccesses));
+    }
+
+    @Override
+    public DocumentAccesses getEntityById(Integer id) {
+        return documentAccessesRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Document Access not found with id: " + id));
+    }
+
+    @Override
+    public List<DocumentAccesses> filterByDocumentId(Integer documentId, String accessLevel, String employeeName, int page, int size) {
+        Specification<DocumentAccesses> spec = documentAccessesSpecification.filter(documentId, accessLevel, employeeName);
+        Pageable pageable = PageRequest.of(page, size);
+        return documentAccessesMapper.convertPageToListDTO(documentAccessesRepository.findAll(spec, pageable).getContent());
+    }
+}

@@ -16,7 +16,6 @@ public class DocumentsUpdateDTO {
     private Integer id;
     private String title;
     private String description;
-    private MultipartFile file;
     private Integer documentTypeId;
     private Integer uploadedById;
     private String documentStatus;

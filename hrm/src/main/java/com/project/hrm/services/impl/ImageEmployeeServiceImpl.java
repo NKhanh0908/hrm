@@ -53,4 +53,19 @@ public class ImageEmployeeServiceImpl implements ImageEmployeeService {
             throw new CustomException(errors);
         }
     }
+
+    @Override
+    public Map<String, Object> saveFile(MultipartFile file) {
+
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File must not be null or empty");
+        }
+
+        Map<String, Object> uploadResult = cloudinaryService.upload(file);
+        if (uploadResult == null || uploadResult.isEmpty()) {
+            throw new RuntimeException("Failed to upload file to Cloudinary");
+        }
+        log.info("File uploaded successfully: {}", uploadResult);
+        return uploadResult;
+    }
 }
