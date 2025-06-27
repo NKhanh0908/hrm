@@ -3,6 +3,7 @@ package com.project.hrm.mapper;
 import com.project.hrm.dto.dayOffDTO.DayOffCreateDTO;
 import com.project.hrm.dto.dayOffDTO.DayOffDTO;
 import com.project.hrm.entities.DayOff;
+import com.project.hrm.enums.DayOffStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ public class DayOffMapper {
                 .startDate(dayOffDTO.getStartDate())
                 .endDate(dayOffDTO.getEndDate())
                 .reason(dayOffDTO.getReason())
-                .status(dayOffDTO.getStatus())
+                .status(DayOffStatus.valueOf(dayOffDTO.getStatus()))
                 .build();
     }
 
@@ -28,7 +29,7 @@ public class DayOffMapper {
                 .startDate(dayOff.getStartDate())
                 .endDate(dayOff.getEndDate())
                 .reason(dayOff.getReason())
-                .status(dayOff.getStatus())
+                .status(String.valueOf(dayOff.getStatus()))
                 .employeeId(dayOff.getEmployee().getId())
                 .build();
     }
@@ -39,7 +40,7 @@ public class DayOffMapper {
                 .startDate(dayOffCreateDTO.getStartDate())
                 .endDate(dayOffCreateDTO.getEndDate())
                 .reason(dayOffCreateDTO.getReason())
-                .status(dayOffCreateDTO.getStatus())
+                .status(DayOffStatus.valueOf(dayOffCreateDTO.getStatus()))
                 .build();
     }
 }
