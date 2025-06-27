@@ -32,12 +32,17 @@ public class DocumentsServiceImpl implements DocumentsService {
     public DocumentsDTO create(DocumentsCreateDTO documentsCreateDTO) {
         Documents documents = documentsMapper.convertCreateDTOToEntity(documentsCreateDTO);
         documents.setId(IdGenerator.getGenerationId());
-        Map<String, Object> fileDetails = imageEmployeeService.saveFile(
-                documentsCreateDTO.getFile()
-        );
-        documents.setFilePath((String) fileDetails.get("filePath"));
-        documents.setFileType((String) fileDetails.get("fileType"));
-        documents.setFileSize((Integer) fileDetails.get("fileSize"));
+
+
+        if (documentsCreateDTO.getFile() != null) {
+            Map<String, Object> fileDetails = imageEmployeeService.saveFile(
+                    documentsCreateDTO.getFile()
+            );
+            documents.setFilePath((String) fileDetails.get("filePath"));
+            documents.setFileType((String) fileDetails.get("fileType"));
+            documents.setFileSize((Integer) fileDetails.get("fileSize"));
+        }
+
         documents.setUploadedBy(accountService.getPrincipal());
         documents.setDocumentTypes(documentTypeService.getEntityById(documentsCreateDTO.getDocumentTypeId()));
 

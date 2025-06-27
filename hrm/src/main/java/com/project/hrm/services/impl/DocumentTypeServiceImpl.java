@@ -27,9 +27,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
         DocumentTypes documentType = documentTypeMapper.covertCreateDTOToEntity(documentTypeCreateDTO);
 
         documentType.setId(IdGenerator.getGenerationId());
-        if (documentTypesRepository.existsByName(documentType.getName())) {
+        // if (documentTypesRepository.existsByName(documentType.getName())) {
             // chua viet Exception nay
-        }
+        // }
 
         return documentTypeMapper.covertEntityToDTO(documentTypesRepository.save(documentType));
     }
@@ -48,7 +48,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
         log.info("Update DocumentTypeDTO with id: {}", documentType.getId());
 
-        return documentTypeMapper.covertEntityToDTO(documentType);
+        return documentTypeMapper.covertEntityToDTO(documentTypesRepository.save(documentType));
     }
 
     @Override

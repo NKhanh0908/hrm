@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface DocumentTypesRepository extends JpaRepository<DocumentTypes,Integer> {
     @Query(
-            value = "SELECT EXISTS (SELECT 1 FROM document_types dt WHERE dt.name = :name  ",
+            value = "SELECT EXISTS (SELECT 1 FROM document_types dt WHERE dt.name = :name )",
             nativeQuery = true
     )
     boolean existsByName(@Param("name") String name);
