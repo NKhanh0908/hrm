@@ -1,9 +1,9 @@
 package com.project.hrm.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import com.project.hrm.enums.PayrollComponentType;
+import com.project.hrm.enums.PayrollStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +24,11 @@ public class Regulations {
 
     private String regulationKey;
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PayrollComponentType type;
+
     private BigDecimal amount;
     private Float percentage;
     private BigDecimal applicableSalary;

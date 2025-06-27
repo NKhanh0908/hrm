@@ -1,10 +1,8 @@
 package com.project.hrm.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.project.hrm.enums.DayOffStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +23,10 @@ public class DayOff {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String reason;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DayOffStatus status;
 
     @ManyToOne
     @JoinColumn
