@@ -102,6 +102,17 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.6.0</version>
 		</dependency>
+		<!-- Maven example for pom.xml -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.21.0</version> <!-- Use a recent stable version -->
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>6.21.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
