@@ -26,6 +26,4 @@ public interface ContractService {
 
     List<ContractDTO> filter(ContractFilter contractFilter, int page, int size);
 
-
-
 }

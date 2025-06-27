@@ -1,17 +1,17 @@
 package com.project.hrm.services.impl;
 
 import com.project.hrm.dto.payPeriodsDTO.PayPeriodsCreateDTO;
-import com.project.hrm.dto.payPeriodsDTO.PayPeriodsDTO;
+import com.project.hrm.dto.payrollComponentsDTO.PayrollComponentsDTO;
 import com.project.hrm.dto.payrollsDTO.*;
 import com.project.hrm.entities.PayPeriods;
 import com.project.hrm.entities.Payrolls;
 import com.project.hrm.enums.PayPeriodStatus;
+import com.project.hrm.enums.PayrollComponentType;
+import com.project.hrm.enums.SystemRegulationKey;
 import com.project.hrm.mapper.PayPeriodMapper;
 import com.project.hrm.mapper.PayrollsMapper;
 import com.project.hrm.repositories.PayrollsRepository;
-import com.project.hrm.services.EmployeeService;
-import com.project.hrm.services.PayPeriodsService;
-import com.project.hrm.services.PayrollsService;
+import com.project.hrm.services.*;
 import com.project.hrm.specifications.PayrollsSpecifications;
 import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,8 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Slf4j
 @Service
@@ -36,6 +39,12 @@ public class PayrollsServiceImpl implements PayrollsService {
     private final EmployeeService employeeService;
     private final PayPeriodsService payPeriodsService;
     private final PayPeriodMapper payPeriodMapper;
+    private final ContractService contractService;
+    private final AttendanceService attendanceService;
+    private final DayOffService dayOffService;
+    private final SystemRegulationService systemRegulationService;
+    private final PayrollComponentsService payrollComponentsService;
+    private final DependentService dependentService;
 
 
     /**
@@ -146,7 +155,7 @@ public class PayrollsServiceImpl implements PayrollsService {
     @Transactional(readOnly = true)
     @Override
     public PayrollsDTO getById(Integer id) {
-        log.info("Get ParollsDTO By Id: {}", id);
+        log.info("Get PayrollsDTO By Id: {}", id);
         return payrollsMapper.toPayrollsDTO(getEntityById(id));
     }
 
@@ -160,7 +169,7 @@ public class PayrollsServiceImpl implements PayrollsService {
     @Transactional(readOnly = true)
     @Override
     public Payrolls getEntityById(Integer id) {
-        log.info("Get Parolls By Id: {}", id);
+        log.info("Get Payrolls By Id: {}", id);
         return payrollsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Payrolls Not Found By Id: " + id));
     }
@@ -202,4 +211,122 @@ public class PayrollsServiceImpl implements PayrollsService {
 
         return payrollsMapper.convertToPageEntityToPageDTO(payrollsRepository.findAll(payrollsSpecification, pageable));
     }
+
+    @Transactional
+    @Override
+    public PayrollsResponseDTO getPayrollForEmployee(PayrollsCreateDTO payrollsCreateDTO) {
+        log.info("Get Payroll For Employee ID: {}", payrollsCreateDTO.getEmployeeId());
+
+        PayrollsDTO payrollsDTO = create(payrollsCreateDTO);
+
+//        Double baseSalary = contractService;
+        Double baseSalary = 1000000D;
+
+        PayPeriods payPeriods = payPeriodsService.getEntityById(payrollsDTO.getPayPeriodId());
+
+        float summaryRegularTime = attendanceService.getTotalRegularTimeAttendanceByPayPeriodsForEmployee(payrollsDTO.getEmployeeId(), payPeriods);
+        float summaryOverTime = attendanceService.getTotalOverTimeAttendanceByPayPeriodsForEmployee(payrollsDTO.getEmployeeId(), payPeriods);
+
+        int dayOff = dayOffService.countDayOffByEmployeeId(payrollsDTO.getEmployeeId(), payPeriods.getStartDate(), payPeriods.getEndDate());
+        int dayOffNotAccept = dayOffService.countDayOffByEmployeeIdStatus(payrollsDTO.getEmployeeId(), payPeriods.getStartDate(), payPeriods.getEndDate());
+
+        List<PayrollComponentsDTO>  payrollComponentsDTOList = payrollComponentsService.createComponents(getEntityById(payrollsDTO.getPayPeriodId()));
+
+        List<PayrollComponentsDTO> payrollComponentsDTOAdditionList = payrollComponentsDTOList.stream()
+                .filter(payrollComponentsDTO ->
+                        payrollComponentsDTO.getType()
+                        .equals(PayrollComponentType.SUBSIDY))
+                .toList();
+        List<PayrollComponentsDTO> payrollComponentsDTODeductionList = payrollComponentsDTOList.stream()
+                .filter(payrollComponentsDTO ->
+                        !payrollComponentsDTO.getType()
+                                .equals(PayrollComponentType.SUBSIDY))
+                .toList();
+
+        int countDependent = dependentService.countDependentsOfEmployee(payrollsDTO.getEmployeeId());
+        BigDecimal totalByDependent = BigDecimal.valueOf(countDependent).multiply(BigDecimal.valueOf(SystemRegulationKey.DEPENDENT_DEDUCTION.ordinal()));
+
+        BigDecimal totalIncome = summaryTotalIncome(baseSalary, summaryRegularTime, summaryOverTime, payrollComponentsDTOAdditionList).subtract();
+
+        BigDecimal insuranceTotal = summaryInsuranceTotal(payrollComponentsDTODeductionList,baseSalary);
+
+        return null; 
+
+    }
+
+    private BigDecimal summaryTotalIncome(Double baseSalary, float summaryRegularTime, float summaryOverTime, List<PayrollComponentsDTO>  payrollComponentsDTOList){
+        log.info("Summary Total Income");
+        Double totalStandardHoursInMonth = Double.valueOf(systemRegulationService.getValue(SystemRegulationKey.WORKDAYS_PER_MONTH));
+        double hourlyRate = baseSalary / totalStandardHoursInMonth;
+
+        BigDecimal totalIncomeForRegularTime = BigDecimal.valueOf(hourlyRate * summaryRegularTime);
+        BigDecimal totalIncomeForOverTime = BigDecimal.valueOf(hourlyRate * summaryOverTime * (double) SystemRegulationKey.OVERTIME_RATE.ordinal());
+
+        BigDecimal totalSubsidyIncome = calculationSubsidyComponents(payrollComponentsDTOList, baseSalary);
+
+        return totalIncomeForRegularTime.add(totalSubsidyIncome.add(totalIncomeForOverTime));
+    }
+
+
+    private BigDecimal summaryInsuranceTotal(List<PayrollComponentsDTO> payrollComponentsDTODeductionList, Double baseSalary){
+        log.info("Summary Insurance Total");
+
+        BigDecimal totalInsurance = BigDecimal.ZERO;
+
+        for (PayrollComponentsDTO payrollComponent : payrollComponentsDTODeductionList) {
+            if (payrollComponent.getType().equals(PayrollComponentType.INSURANCE)) {
+                totalInsurance = getBigDecimal(baseSalary, totalInsurance, payrollComponent);
+            }
+        }
+        return totalInsurance;
+    }
+
+
+    private BigDecimal calculationSubsidyComponents(List<PayrollComponentsDTO> payrollComponentsDTOList, Double baseSalary) {
+        log.info("Calculation Subsidy Components");
+        BigDecimal subsidyComponent = BigDecimal.ZERO;
+
+        for (PayrollComponentsDTO payrollComponentsDTO : payrollComponentsDTOList) {
+            if (payrollComponentsDTO.getType().equals(PayrollComponentType.SUBSIDY)) {
+                subsidyComponent = getBigDecimal(baseSalary, subsidyComponent, payrollComponentsDTO);
+            }
+        }
+
+        return subsidyComponent;
+    }
+
+    private BigDecimal calculationDeductionComponents(List<PayrollComponentsDTO> payrollComponentsDTOList, Double baseSalary) {
+        log.info("Calculation Deduction Components");
+        BigDecimal deductionComponent = BigDecimal.ZERO;
+
+        for (PayrollComponentsDTO payrollComponentsDTO : payrollComponentsDTOList) {
+            if (payrollComponentsDTO.getType().equals(PayrollComponentType.TAX) || payrollComponentsDTO.getType().equals(PayrollComponentType.INSURANCE)) {
+                log.info("Component {} is income tax or insurance will be calculated later.", payrollComponentsDTO.getId());
+                continue;
+            }
+            if (payrollComponentsDTO.getType().equals(PayrollComponentType.DEDUCTION)) {
+                deductionComponent = getBigDecimal(baseSalary, deductionComponent, payrollComponentsDTO);
+            }
+        }
+
+        return deductionComponent;
+    }
+
+    private BigDecimal getBigDecimal(Double baseSalary, BigDecimal amountComponent, PayrollComponentsDTO payrollComponentsDTO) {
+        if (Boolean.TRUE.equals(payrollComponentsDTO.getIsPercentage())) {
+            BigDecimal baseSalaryDecimal = BigDecimal.valueOf(baseSalary);
+            float percentage = payrollComponentsDTO.getPercentage();
+            BigDecimal calculated = baseSalaryDecimal.multiply(BigDecimal.valueOf(percentage))
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+            amountComponent = amountComponent.add(calculated);
+        } else if (payrollComponentsDTO.getAmount() != null) {
+            amountComponent = amountComponent.add(payrollComponentsDTO.getAmount());
+        } else {
+            // Các dòng còn lại mà hem có amount/percentage là sai
+            throw new IllegalArgumentException(
+                    "Component ID " + payrollComponentsDTO.getId() + " is missing amount and percentage.");
+        }
+        return amountComponent;
+    }
+
 }

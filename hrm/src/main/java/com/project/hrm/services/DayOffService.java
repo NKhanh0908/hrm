@@ -2,6 +2,9 @@ package com.project.hrm.services;
 
 import com.project.hrm.dto.dayOffDTO.*;
 import com.project.hrm.entities.DayOff;
+import com.project.hrm.entities.Employees;
+import com.project.hrm.entities.PayPeriods;
+import com.project.hrm.enums.EmployeeStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,5 +29,9 @@ public interface DayOffService {
     List<DayOffDTO> filter(DayOffFilter dayOffFilter, int page, int size);
 
     public List<DayOffDTO> filterDynamic(DayOffFilterDynamic dayOffFilterDynamic, int page, int size);
+
+    int countDayOffByEmployeeId(Integer employeeId, LocalDateTime startDate, LocalDateTime endDate);
+
+    int countDayOffByEmployeeIdStatus(Integer employeeId, LocalDateTime startDate, LocalDateTime endDate);
 
 }

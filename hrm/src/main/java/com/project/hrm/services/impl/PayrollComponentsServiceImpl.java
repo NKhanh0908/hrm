@@ -1,9 +1,12 @@
 package com.project.hrm.services.impl;
 
 import com.project.hrm.dto.payrollComponentsDTO.*;
+import com.project.hrm.dto.regulationsDTO.RegulationsFilter;
 import com.project.hrm.entities.PayrollComponents;
-import com.project.hrm.enums.PayrollComponentType;
+import com.project.hrm.entities.Payrolls;
+import com.project.hrm.entities.Regulations;
 import com.project.hrm.mapper.PayrollComponentMapper;
+import com.project.hrm.mapper.RegulationsMapper;
 import com.project.hrm.repositories.PayrollComponentsRepository;
 import com.project.hrm.services.PayrollComponentsService;
 import com.project.hrm.services.RegulationsService;
@@ -18,7 +21,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,6 +32,7 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
     private final PayrollComponentsRepository payrollComponentsRepository;
     private final PayrollComponentMapper payrollComponentMapper;
     private final RegulationsService regulationsService;
+    private final RegulationsMapper regulationsMapper;
 
     /**
      * Creates a new payroll component from the given DTO.
@@ -177,5 +183,42 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
         Specification<PayrollComponents> payrollComponentsSpecification = PayrollComponentsSpecifications.filterWithRange(payrollComponentsFilterWithRange);
 
         return payrollComponentMapper.convertPageEntityToPageDTO(payrollComponentsRepository.findAll(payrollComponentsSpecification, pageable));
+    }
+
+    @Override
+    public List<PayrollComponentsDTO> createComponents(Payrolls payrolls) {
+        log.info("Create Payroll Components With Regulations");
+        RegulationsFilter regulationsFilter = new RegulationsFilter();
+
+        List<Regulations> regulations = regulationsService.filter(regulationsFilter, Integer.MAX_VALUE, Integer.MAX_VALUE)
+                .stream()
+                .map(regulationsMapper::toRegulations)
+                .toList();
+        List<PayrollComponents> components = new ArrayList<>();
+
+        for (Regulations regulation : regulations) {
+            PayrollComponents pc = getPayrollComponents(payrolls, regulation);
+            components.add(pc);
+        }
+
+        return payrollComponentsRepository.saveAll(components)
+                .stream()
+                .map(payrollComponentMapper::toPayrollComponentsDTO)
+                .collect(Collectors.toList());
+    }
+
+    private static PayrollComponents getPayrollComponents(Payrolls payrolls, Regulations regulation) {
+        PayrollComponents pc = new PayrollComponents();
+        pc.setPayroll(payrolls);
+        pc.setRegulation(regulation);
+        pc.setType(regulation.getType());
+        if(regulation.getPercentage() != null){
+            pc.setIsPercentage(Boolean.TRUE);
+        }else {
+            pc.setIsPercentage(Boolean.FALSE);
+        }
+        pc.setPercentage(regulation.getPercentage() != null ? regulation.getPercentage() : null);
+        pc.setAmount(regulation.getAmount() != null ? regulation.getAmount() : null);
+        return pc;
     }
 }
