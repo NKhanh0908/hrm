@@ -22,6 +22,7 @@ public class Regulations {
     @Id
     private Integer id;
 
+    private String regulationKey;
     private String name;
     private BigDecimal amount;
     private Float percentage;
@@ -29,6 +30,6 @@ public class Regulations {
     private LocalDateTime effectiveDate;
 
     @OneToMany(mappedBy = "regulation")
-    @JsonManagedReference
+    @JsonManagedReference("regulation-payrollComponents")
     private List<PayrollComponents> payrollComponents;
 }

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RegulationsUpdateDTO {
     private int id;
+    private String regulationskey;
     private String name;
     private BigDecimal amount;
     private Float percentage;

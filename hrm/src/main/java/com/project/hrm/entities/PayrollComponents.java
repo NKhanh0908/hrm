@@ -31,11 +31,11 @@ public class PayrollComponents {
 
     @ManyToOne
     @JoinColumn
-    @JsonBackReference
+    @JsonBackReference("regulation-payrollComponents")
     private Regulations regulation;
 
     @ManyToOne
     @JoinColumn
-    @JsonBackReference
+    @JsonBackReference("payroll-payrollComponent")
     private Payrolls payroll;
 }

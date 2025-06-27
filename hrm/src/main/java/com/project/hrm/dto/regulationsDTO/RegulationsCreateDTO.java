@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegulationsCreateDTO {
+    private String regulationKey;
     private String name;
     private BigDecimal amount;
     private Float percentage;

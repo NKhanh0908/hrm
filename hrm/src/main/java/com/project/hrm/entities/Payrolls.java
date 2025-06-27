@@ -36,7 +36,7 @@ public class Payrolls {
     private PayrollStatus status;
 
     @OneToMany(mappedBy = "payroll")
-    @JsonManagedReference
+    @JsonManagedReference("payroll-payrollComponent")
     private List<PayrollComponents> payrollDComponents;
 
 }

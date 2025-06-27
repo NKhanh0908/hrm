@@ -40,6 +40,7 @@ public class RegulationsMapper {
     //To entities from CreateDTOs
     public Regulations toRegulationsFromCreateDTO(RegulationsCreateDTO createDTO) {
         return Regulations.builder()
+                .regulationKey(createDTO.getRegulationKey())
                 .name(createDTO.getName())
                 .amount(createDTO.getAmount())
                 .percentage(createDTO.getPercentage())
