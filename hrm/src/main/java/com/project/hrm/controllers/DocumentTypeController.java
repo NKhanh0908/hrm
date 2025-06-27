@@ -55,9 +55,7 @@ public class DocumentTypeController {
                             content = @Content(schema = @Schema(implementation = DocumentTypeDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<DocumentTypeDTO>> update(
-            @RequestBody DocumentTypeUpdateDTO updateDTO,
-            HttpServletRequest request) {
+    public ResponseEntity<APIResponse<DocumentTypeDTO>> update(@RequestBody DocumentTypeUpdateDTO updateDTO, HttpServletRequest request) {
 
         DocumentTypeDTO result = documentTypeService.update(updateDTO);
 
@@ -79,9 +77,7 @@ public class DocumentTypeController {
                     @ApiResponse(responseCode = "404", description = "Document type not found")
             }
     )
-    public ResponseEntity<APIResponse<DocumentTypeDTO>> getById(
-            @PathVariable Integer id,
-            HttpServletRequest request) {
+    public ResponseEntity<APIResponse<DocumentTypeDTO>> getById(@RequestParam Integer id, HttpServletRequest request) {
 
         DocumentTypeDTO result = documentTypeService.getDTOById(id);
 
