@@ -164,4 +164,9 @@ public class DependentServiceImpl implements DependentService {
                 .map(dependentMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public int countDependentsOfEmployee(Integer employeeId) {
+        return dependentRepository.countByEmployeeId(employeeId);
+    }
 }

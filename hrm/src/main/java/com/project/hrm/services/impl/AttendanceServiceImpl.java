@@ -3,6 +3,7 @@ package com.project.hrm.services.impl;
 import com.project.hrm.dto.attendanceDTO.*;
 import com.project.hrm.entities.Attendance;
 import com.project.hrm.entities.Employees;
+import com.project.hrm.entities.PayPeriods;
 import com.project.hrm.enums.AttendanceType;
 import com.project.hrm.enums.SystemRegulationKey;
 import com.project.hrm.mapper.AttendanceMapper;
@@ -26,6 +27,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -247,7 +249,7 @@ public class AttendanceServiceImpl implements AttendanceService{
                 .orElseThrow(() -> new IllegalStateException("No check-in record found or already checked out."));
 
         attendance.setCheckOut(now);
-        LocalTime END_OF_SHIFT = LocalTime.parse(systemRegulationService.getValue(SystemRegulationKey.CHECKIN_START_TIME));
+        LocalTime END_OF_SHIFT = LocalTime.parse(systemRegulationService.getValue(SystemRegulationKey.CHECKOUT_END_TIME));
         LocalDateTime endOfRegularShift = attendance.getCheckIn().toLocalDate().atTime(END_OF_SHIFT);
 
         if (now.isBefore(endOfRegularShift)) {
@@ -273,6 +275,30 @@ public class AttendanceServiceImpl implements AttendanceService{
         LocalDateTime startOfDay = checkInDate.toLocalDate().atStartOfDay();
         LocalDateTime endOfDay = checkInDate.toLocalDate().atTime(23, 59, 59);
         return attendanceRepository.existsCheckInOnDateWithoutCheckOut(startOfDay, endOfDay);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public float getTotalRegularTimeAttendanceByPayPeriodsForEmployee(Integer employeesId, PayPeriods payPeriods) {
+        log.info("Get total regular time attendance for employeeId: {} payPeriods: {}", employeesId, payPeriods);
+        Employees employees = employeeService.getEmployeeIsActive(employeesId);
+        List<Attendance> attendanceList = attendanceRepository.findByEmployeeAndAttendanceDateBetween(employees,payPeriods.getStartDate(), payPeriods.getEndDate());
+        return attendanceList.stream()
+                .map(Attendance::getRegularTime)
+                .filter(Objects::nonNull)
+                .reduce(0f, Float::sum);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public float getTotalOverTimeAttendanceByPayPeriodsForEmployee(Integer employeesId, PayPeriods payPeriods) {
+        log.info("Get total over time attendance for employeeId: {} payPeriods: {}", employeesId, payPeriods);
+        Employees employees = employeeService.getEmployeeIsActive(employeesId);
+        List<Attendance> attendanceList = attendanceRepository.findByEmployeeAndAttendanceDateBetween(employees,payPeriods.getStartDate(), payPeriods.getEndDate());
+        return attendanceList.stream()
+                .map(Attendance::getOtherTime)
+                .filter(Objects::nonNull)
+                .reduce(0f, Float::sum);
     }
 
 }

@@ -25,4 +25,6 @@ public interface DependentService {
     List<DependentDTO> getDependentsByEmployeeId(Integer employeeId);
 
     List<DependentDTO> getAllDependents();
+
+    int countDependentsOfEmployee(Integer employeeId);
 }

@@ -2,6 +2,8 @@ package com.project.hrm.services;
 
 import com.project.hrm.dto.attendanceDTO.*;
 import com.project.hrm.entities.Attendance;
+import com.project.hrm.entities.Employees;
+import com.project.hrm.entities.PayPeriods;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +33,10 @@ public interface AttendanceService {
     AttendanceDTO setAttendanceWhenClickCheckOut(Integer employeesId);
 
     boolean hasUncheckedOutAttendanceOnDate(LocalDateTime checkInDate);
+
+    float getTotalRegularTimeAttendanceByPayPeriodsForEmployee(Integer employeesId, PayPeriods payPeriods);
+
+    float getTotalOverTimeAttendanceByPayPeriodsForEmployee(Integer employeesId, PayPeriods payPeriods);
+
 
 }
