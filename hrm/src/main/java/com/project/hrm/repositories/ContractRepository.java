@@ -65,4 +65,12 @@ public interface ContractRepository extends JpaRepository<Contracts, Integer>, J
             GROUP BY salary_range
             ORDER BY MIN(base_salary)""", nativeQuery = true)
     List<TotalContractByStatusAndSalary> getTotalContractByStatusAndSalary(@Param("contractStatus") ContractStatus contractStatus);
+
+    @Modifying
+    @Query("UPDATE Contracts c SET c.contractStatus = 'ACTIVE' WHERE c.startDate <= :currentDate AND c.contractStatus = 'SIGNED'")
+    int activateSignedContracts(@Param("currentDate") LocalDateTime currentDate);
+
+    @Modifying
+    @Query("UPDATE Contracts c SET c.contractStatus = 'EXPIRED' WHERE c.endDate < :currentDate AND c.contractStatus = 'ACTIVE'")
+    int expireActiveContracts(@Param("currentDate") LocalDateTime currentDate);
 }

@@ -24,9 +24,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -39,6 +41,47 @@ public class ContractServiceImpl implements ContractService {
 
     private final EmployeeService employeeService;
     private final RoleService roleService;
+
+    /**
+     * Validates the start date, end date, and signing date of a contract.
+     * <p>
+     * - Throws {@link CustomException} if the start date is after the end date.
+     * - Throws {@link CustomException} if the signing date is after the start date.
+     *
+     * @param startDate   the start date of the contract
+     * @param endDate     the end date of the contract
+     * @param signingDate the date the contract was signed
+     * @throws CustomException if the date logic is invalid
+     */
+    private void validateContractDates(LocalDateTime startDate, LocalDateTime endDate, LocalDateTime signingDate) {
+        if (startDate.isAfter(endDate)) {
+            throw new CustomException(Error.INVALID_CONTRACT_PERIOD);
+        }
+        if (signingDate.isAfter(startDate)) {
+            throw new CustomException(Error.SIGNING_DATE_AFTER_START_DATE);
+        }
+    }
+
+    /**
+     * Scheduled job that runs daily to update the statuses of contracts based on the current date.
+     * <p>
+     * - Activates contracts that are signed and have reached their start date.
+     * - Expires contracts that have passed their end date.
+     * <p>
+     * The execution schedule is defined in application properties using `jobs.daily-report.cron`
+     * and the time zone using `jobs.time-zone`.
+     */
+    @Scheduled(cron = "${jobs.daily-report.cron}", zone = "${jobs.time-zone}")
+    @Transactional
+    public void updateContractStatuses() {
+        log.info("Flow Update contract status ");
+
+        LocalDateTime now = LocalDateTime.now();
+
+        contractRepository.activateSignedContracts(now);
+
+        contractRepository.expireActiveContracts(now);
+    }
 
     /**
      * Creates a new {@link Contracts} entity from the provided {@link ContractCreateDTO}.
@@ -59,6 +102,8 @@ public class ContractServiceImpl implements ContractService {
             log.error("409: An active contract of this role already exists for employee ID:{}", contractCreateDTO.getEmployeeId());
             throw new CustomException(Error.CONTRACT_ALREADY_EXISTS);
         }
+
+        validateContractDates(contractCreateDTO.getStartDate(), contractCreateDTO.getEndDate(), contractCreateDTO.getContractSigningDate());
 
         Employees employees = employeeService.getEntityById(contractCreateDTO.getEmployeeId());
 
@@ -110,7 +155,7 @@ public class ContractServiceImpl implements ContractService {
         if (contractUpdateDTO.getBaseSalary() != null) {
             contracts.setBaseSalary(contractUpdateDTO.getBaseSalary());
         }
-        if (contractUpdateDTO.getDescription() != null && contractUpdateDTO.getDescription().trim().isEmpty()) {
+        if (contractUpdateDTO.getDescription() != null && !contractUpdateDTO.getDescription().trim().isEmpty()) {
             contracts.setDescription(contractUpdateDTO.getDescription());
         }
 

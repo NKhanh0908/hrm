@@ -74,6 +74,8 @@ public enum Error {
     CONTRACT_INVALID_SALARY(5007, "Invalid base salary", HttpStatus.BAD_REQUEST),
     CONTRACT_EXPIRED(5008, "Contract has expired", HttpStatus.BAD_REQUEST),
     CONTRACT_INVALID_STATUS(5009, "Invalid contract status", HttpStatus.BAD_REQUEST),
+    INVALID_CONTRACT_PERIOD(5010, "Invalid contract period", HttpStatus.BAD_REQUEST),
+    SIGNING_DATE_AFTER_START_DATE(5011, "Invalid contract period", HttpStatus.BAD_REQUEST),
 
     // Recruitment-related errors
     RECRUITMENT_NOT_FOUND(6001, "Recruitment not found", HttpStatus.NOT_FOUND),
