@@ -1,5 +1,6 @@
 package com.project.hrm.dto.contractDTO;
 
+import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +21,7 @@ public class ContractDTO {
     private Double baseSalary;
     private String description;
     private String status;
-    private Integer employeeId;
-    private String employeeName;
+    private EmployeeDTO employee;
     private Integer departmentId;
     private String departmentName;
     private String roleName;

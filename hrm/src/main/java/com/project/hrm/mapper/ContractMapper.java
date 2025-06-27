@@ -6,6 +6,7 @@ import com.project.hrm.entities.Contracts;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.Role;
 import com.project.hrm.enums.ContractStatus;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class ContractMapper {
+    private final EmployeeMapper employeeMapper;
+
     public ContractDTO toDTO(Contracts contracts){
         return ContractDTO.builder()
                 .id(contracts.getId())
@@ -24,8 +28,7 @@ public class ContractMapper {
                 .description(contracts.getDescription())
                 .status(contracts.getContractStatus().toString())
                 .contractSigningDate(contracts.getContractSigningDate())
-                .employeeId(contracts.getEmployee().getId())
-                .employeeName(contracts.getEmployee().fullName())
+                .employee(employeeMapper.toEmployeeDTO(contracts.getEmployee()))
                 .departmentId(contracts.getRole().getDepartments().getId())
                 .departmentName(contracts.getRole().getDepartments().getDepartmentName())
                 .roleName(contracts.getRole().getName())
