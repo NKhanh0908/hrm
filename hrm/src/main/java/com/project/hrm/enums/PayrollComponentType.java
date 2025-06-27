@@ -2,5 +2,7 @@ package com.project.hrm.enums;
 
 public enum PayrollComponentType {
     SUBSIDY,
-    DEDUCTION
+    DEDUCTION,
+    TAX,
+    INSURANCE
 }
