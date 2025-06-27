@@ -1,6 +1,7 @@
 package com.project.hrm.configuration;
 
 import com.project.hrm.entities.Regulations;
+import com.project.hrm.enums.PayrollComponentType;
 import com.project.hrm.repositories.RegulationsRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class RegulationsInitializer {
                         regulation.setId(id);
                         regulation.setRegulationKey(data.key());
                         regulation.setName(data.name());
+                        regulation.setType(data.Type());
                         regulation.setAmount(data.amount());
                         regulation.setPercentage(data.percentage());
                         regulation.setApplicableSalary(data.applicableSalary());
@@ -46,27 +48,27 @@ public class RegulationsInitializer {
         Map<Integer, RegulationData> defaultRegulations = new HashMap<>();
 
         defaultRegulations.put(1, new RegulationData("SOCIAL_INSURANCE",
-                "Bảo hiểm xã hội", null, 8F, null,
+                "Bảo hiểm xã hội", PayrollComponentType.INSURANCE,null, 8F, null,
                 LocalDateTime.of(2025, 1, 1, 0, 0)
         ));
 
         defaultRegulations.put(2, new RegulationData("HEALTH_INSURANCE",
-                "Bảo hiểm y tế", null, 1.5F, null,
+                "Bảo hiểm y tế", PayrollComponentType.INSURANCE, null, 1.5F, null,
                 LocalDateTime.of(2025, 1, 1, 0, 0)
         ));
 
         defaultRegulations.put(3, new RegulationData("UNEMOPLOYMENT_INSURANCE",
-                "Bảo hiểm thất nghiệp", null, 1f, null,
+                "Bảo hiểm thất nghiệp", PayrollComponentType.INSURANCE, null, 1f, null,
                 LocalDateTime.of(2025, 1, 1, 0, 0)
         ));
 
         defaultRegulations.put(4, new RegulationData("UNION_DUES",
-                "Kinh phí công đoàn", null, 2F, null,
+                "Kinh phí công đoàn", PayrollComponentType.INSURANCE, null, 2F, null,
                 LocalDateTime.of(2025, 1, 1, 0, 0)
         ));
 
         defaultRegulations.put(5, new RegulationData("PERSONAL_INCOME_TAX",
-                "Thuế thu nhập cá nhân", null , null, null,
+                "Thuế thu nhập cá nhân", PayrollComponentType.TAX, null , null, null,
                 LocalDateTime.of(2025, 1, 1, 0, 0)
         ));
         return defaultRegulations;
@@ -76,6 +78,7 @@ public class RegulationsInitializer {
     private record RegulationData(
             String key,
             String name,
+            PayrollComponentType Type,
             BigDecimal amount,
             Float percentage,
             BigDecimal applicableSalary,
