@@ -14,5 +14,5 @@ public interface DocumentAccessesService {
     public DocumentAccessesDTO getDTOById(Integer id);
     public DocumentAccessesDTO update(DocumentAccessesUpdateDTO documentAccessesUpdateDTO);
     public DocumentAccesses getEntityById(Integer id);
-    public List<DocumentAccesses> filterByDocumentId(Integer documentId,String accessLevel, String employeeName, int page, int size);
+    public List<DocumentAccessesDTO> filterByDocumentId(Integer documentId,String accessLevel, String employeeName, int page, int size);
 }

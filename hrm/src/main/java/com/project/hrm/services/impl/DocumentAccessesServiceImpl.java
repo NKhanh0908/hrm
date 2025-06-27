@@ -26,7 +26,6 @@ public class DocumentAccessesServiceImpl implements DocumentAccessesService {
     private final DocumentAccessesMapper documentAccessesMapper;
     private final AccountService accountService;
     private final DocumentsService documentService;
-    private final DocumentAccessesSpecification documentAccessesSpecification;
 
     @Override
     public DocumentAccessesDTO create(DocumentAccessesCreateDTO documentAccessesCreateDTO) {
@@ -60,8 +59,8 @@ public class DocumentAccessesServiceImpl implements DocumentAccessesService {
     }
 
     @Override
-    public List<DocumentAccesses> filterByDocumentId(Integer documentId, String accessLevel, String employeeName, int page, int size) {
-        Specification<DocumentAccesses> spec = documentAccessesSpecification.filter(documentId, accessLevel, employeeName);
+    public List<DocumentAccessesDTO> filterByDocumentId(Integer documentId, String accessLevel, String employeeName, int page, int size) {
+        Specification<DocumentAccesses> spec = DocumentAccessesSpecification.filter(documentId, accessLevel, employeeName);
         Pageable pageable = PageRequest.of(page, size);
         return documentAccessesMapper.convertPageToListDTO(documentAccessesRepository.findAll(spec, pageable).getContent());
     }
