@@ -80,6 +80,12 @@ public class ContractServiceImpl implements ContractService {
         }
     }
 
+    /**
+     * Validates business rules before creating a new contract.
+     *
+     * @param contractCreateDTO the creation DTO
+     * @throws CustomException if any rule is violated
+     */
     private void validateContractCreation(ContractCreateDTO contractCreateDTO) {
         if (contractRepository.existsOverlappingActiveContract(
                 contractCreateDTO.getEmployeeId(),
@@ -104,6 +110,13 @@ public class ContractServiceImpl implements ContractService {
         }
     }
 
+    /**
+     * Validates update rules before modifying an existing contract.
+     *
+     * @param contractUpdateDTO              the update DTO
+     * @param existingContract the contract currently stored in the database
+     * @throws CustomException if validation fails
+     */
     private void validateContractUpdate(ContractUpdateDTO contractUpdateDTO, Contracts existingContract) {
         if (!existingContract.getContractStatus().equals(ContractStatus.SIGNED)) {
             throw new CustomException(Error.CONTRACT_UNABLE_TO_UPDATE);
@@ -331,8 +344,18 @@ public class ContractServiceImpl implements ContractService {
     }
 
     /**
-     * @param employeeId
-     * @return
+     * Retrieves the currently active contract of a given employee.
+     *
+     * <p>Logic:
+     * <ul>
+     *   <li>Logs the employee ID for traceability.</li>
+     *   <li>Delegates to {@code contractRepository.findCurrentActiveContract} to
+     *       obtain the active contract (status = ACTIVE, date range includes today).</li>
+     *   <li>Converts the entity to {@link ContractDTO} if present; otherwise returns {@code null}.</li>
+     * </ul>
+     *
+     * @param employeeId the ID of the employee whose active contract is requested
+     * @return the active {@link ContractDTO}, or {@code null} if none exists
      */
     @Transactional(readOnly = true)
     @Override

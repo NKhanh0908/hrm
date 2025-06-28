@@ -132,4 +132,27 @@ public class ContractsController {
                                 .body(("Error generating PDF: " + e.getMessage()).getBytes());
                 }
         }
+
+        @GetMapping("/active/{employeeId}")
+        @Operation(
+                summary = "Get active contract by employee ID",
+                description = "Returns the contract that is currently active for the specified employee.",
+                parameters = @Parameter(name = "employeeId", description = "Employee ID", required = true),
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Active contract retrieved",
+                                content = @Content(schema = @Schema(implementation = ContractDTO.class)))
+                }
+        )
+        public ResponseEntity<APIResponse<ContractDTO>> getCurrentActiveContract(
+                @PathVariable Integer employeeId,
+                HttpServletRequest request) {
+                ContractDTO result = contractService.getCurrentActiveContract(employeeId);
+                return ResponseEntity.ok(new APIResponse<>(
+                        true,
+                        "Active contract retrieved successfully",
+                        result,
+                        null,
+                        request.getRequestURI()
+                ));
+        }
 }
