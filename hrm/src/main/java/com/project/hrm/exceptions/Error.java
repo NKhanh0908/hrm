@@ -107,6 +107,11 @@ public enum Error {
     CANDIDATE_PROFILE_INVALID_EMAIL(8006, "Invalid candidate email", HttpStatus.BAD_REQUEST),
     CANDIDATE_PROFILE_INVALID_PHONE(8007, "Invalid candidate phone", HttpStatus.BAD_REQUEST),
     CANDIDATE_PROFILE_INVALID_CV(8008, "Invalid CV link", HttpStatus.BAD_REQUEST),
+    EMPLOYEE_HAS_ACTIVE_CONTRACT_DIFFERENT_ROLE(8009,"Employee already has active contract with different role", HttpStatus.BAD_REQUEST),
+    CONTRACT_PERIOD_CONFLICT(8010,"Contract period conflicts with existing contract", HttpStatus.BAD_REQUEST),
+    INVALID_STATUS_TRANSITION(8011,"Invalid contract status transition", HttpStatus.BAD_REQUEST),
+    START_DATE_TOO_OLD(8012,"Contract start date is too old", HttpStatus.BAD_REQUEST),
+    CONTRACT_PERIOD_TOO_SHORT(8014,"Contract period is too short (minimum 30 days required", HttpStatus.BAD_REQUEST),
 
     // Apply-related errors
     APPLY_NOT_FOUND(9001, "Application not found", HttpStatus.NOT_FOUND),

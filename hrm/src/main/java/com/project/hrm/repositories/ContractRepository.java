@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ContractRepository extends JpaRepository<Contracts, Integer>, JpaSpecificationExecutor<Contracts> {
@@ -20,16 +21,49 @@ public interface ContractRepository extends JpaRepository<Contracts, Integer>, J
           select case when count(c) > 0 then true else false end
           from Contracts c
           where c.employee.id = :employeeId
-            and c.role.id = :roleId
-            and c.startDate <= coalesce(:newEnd, c.endDate)
-            and (c.endDate is null or c.endDate >= :newStart)
+          and c.role.id = :roleId
+          and c.contractStatus in ('SIGNED', 'ACTIVE', 'SUSPENDED')
+          and c.startDate <= coalesce(:newEnd, c.endDate)
+          and (c.endDate is null or c.endDate >= :newStart)
         """)
-    boolean existsOverlappingContract(
+    boolean existsOverlappingActiveContract(
             @Param("employeeId") Integer employeeId,
             @Param("roleId")       Integer roleId,
             @Param("newStart") LocalDateTime newStart,
             @Param("newEnd") LocalDateTime newEnd
     );
+
+    @Query("""
+          select c from Contracts c
+          where c.employee.id = :employeeId
+            and c.contractStatus in ('ACTIVE', 'SIGNED')
+          order by
+            case when c.contractStatus = 'ACTIVE' then 1 else 2 end,
+            c.startDate desc
+          limit 1
+        """)
+    Optional<Contracts> findCurrentActiveContract(@Param("employeeId") Integer employeeId);
+
+    @Query("""
+          select c from Contracts c
+          where c.employee.id = :employeeId
+            and c.role.id = :roleId
+            and c.contractStatus = 'ACTIVE'
+          order by c.startDate desc
+          limit 1
+        """)
+    Optional<Contracts> findCurrentActiveContractByRole(
+            @Param("employeeId") Integer employeeId,
+            @Param("roleId") Integer roleId
+    );
+
+    @Query("""
+          select case when count(c) > 0 then true else false end
+          from Contracts c
+          where c.employee.id = :employeeId
+            and c.contractStatus = 'ACTIVE'
+        """)
+    boolean hasActiveContract(@Param("employeeId") Integer employeeId);
 
     @Modifying
     @Query(
@@ -67,10 +101,33 @@ public interface ContractRepository extends JpaRepository<Contracts, Integer>, J
     List<TotalContractByStatusAndSalary> getTotalContractByStatusAndSalary(@Param("contractStatus") ContractStatus contractStatus);
 
     @Modifying
-    @Query("UPDATE Contracts c SET c.contractStatus = 'ACTIVE' WHERE c.startDate <= :currentDate AND c.contractStatus = 'SIGNED'")
+    @Query("""
+           UPDATE Contracts c 
+           SET c.contractStatus = 'ACTIVE' 
+           WHERE c.startDate <= :currentDate 
+             AND c.contractStatus = 'SIGNED'
+             AND c.endDate >= :currentDate
+           """)
     int activateSignedContracts(@Param("currentDate") LocalDateTime currentDate);
 
     @Modifying
-    @Query("UPDATE Contracts c SET c.contractStatus = 'EXPIRED' WHERE c.endDate < :currentDate AND c.contractStatus = 'ACTIVE'")
+    @Query("""
+           UPDATE Contracts c 
+           SET c.contractStatus = 'SUSPENDED' 
+           WHERE c.endDate BETWEEN :currentDate AND :futureDate
+             AND c.contractStatus = 'ACTIVE'
+           """)
     int expireActiveContracts(@Param("currentDate") LocalDateTime currentDate);
+
+    @Modifying
+    @Query("""
+           UPDATE Contracts c 
+           SET c.contractStatus = 'SUSPENDED' 
+           WHERE c.endDate BETWEEN :currentDate AND :futureDate
+             AND c.contractStatus = 'ACTIVE'
+           """)
+    int suspendExpiringContracts(
+            @Param("currentDate") LocalDateTime currentDate,
+            @Param("futureDate") LocalDateTime futureDate
+    );
 }

@@ -26,6 +26,8 @@ public interface ContractService {
 
     List<ContractDTO> filter(ContractFilter contractFilter, int page, int size);
 
+    ContractDTO getCurrentActiveContract(Integer employeeId);
+
     byte[] generateContractReport(Integer id) throws Exception ;
 
     byte[] generateContractListReport(List<ContractDTO> contracts) throws Exception;

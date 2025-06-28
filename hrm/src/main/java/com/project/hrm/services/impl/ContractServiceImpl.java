@@ -35,9 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -71,6 +69,60 @@ public class ContractServiceImpl implements ContractService {
         if (signingDate.isAfter(startDate)) {
             throw new CustomException(Error.SIGNING_DATE_AFTER_START_DATE);
         }
+
+        LocalDateTime twoYearsAgo = LocalDateTime.now().minusYears(2);
+        if (startDate.isBefore(twoYearsAgo)) {
+            throw new CustomException(Error.START_DATE_TOO_OLD);
+        }
+
+        if (startDate.plusDays(30).isAfter(endDate)) {
+            throw new CustomException(Error.CONTRACT_PERIOD_TOO_SHORT);
+        }
+    }
+
+    private void validateContractCreation(ContractCreateDTO contractCreateDTO) {
+        if (contractRepository.existsOverlappingActiveContract(
+                contractCreateDTO.getEmployeeId(),
+                contractCreateDTO.getRoleId(),
+                contractCreateDTO.getStartDate(),
+                contractCreateDTO.getEndDate())) {
+            log.error("Overlap detected for employee ID: {} and role ID: {}",
+                    contractCreateDTO.getEmployeeId(), contractCreateDTO.getRoleId());
+            throw new CustomException(Error.CONTRACT_ALREADY_EXISTS);
+        }
+
+        Optional<Contracts> currentContract = contractRepository.findCurrentActiveContract(
+                contractCreateDTO.getEmployeeId());
+
+        if (currentContract.isPresent()) {
+            Contracts existing = currentContract.get();
+            if (!existing.getRole().getId().equals(contractCreateDTO.getRoleId())) {
+                log.warn("Employee {} has active contract with different role. Consider terminating existing contract first.",
+                        contractCreateDTO.getEmployeeId());
+                throw new CustomException(Error.EMPLOYEE_HAS_ACTIVE_CONTRACT_DIFFERENT_ROLE);
+            }
+        }
+    }
+
+    private void validateContractUpdate(ContractUpdateDTO contractUpdateDTO, Contracts existingContract) {
+        if (!existingContract.getContractStatus().equals(ContractStatus.SIGNED)) {
+            throw new CustomException(Error.CONTRACT_UNABLE_TO_UPDATE);
+        }
+
+        if (contractUpdateDTO.getStartDate() != null || contractUpdateDTO.getEndDate() != null) {
+            LocalDateTime newStartDate = contractUpdateDTO.getStartDate() != null ?
+                    contractUpdateDTO.getStartDate() : existingContract.getStartDate();
+            LocalDateTime newEndDate = contractUpdateDTO.getEndDate() != null ?
+                    contractUpdateDTO.getEndDate() : existingContract.getEndDate();
+
+            if (contractRepository.existsOverlappingActiveContract(
+                    existingContract.getEmployee().getId(),
+                    existingContract.getRole().getId(),
+                    newStartDate,
+                    newEndDate)) {
+                throw new CustomException(Error.CONTRACT_PERIOD_CONFLICT);
+            }
+        }
     }
 
     /**
@@ -85,13 +137,17 @@ public class ContractServiceImpl implements ContractService {
     @Scheduled(cron = "${jobs.daily-report.cron}", zone = "${jobs.time-zone}")
     @Transactional
     public void updateContractStatuses() {
-        log.info("Flow Update contract status ");
-
+        log.info("Flow Update contract status");
         LocalDateTime now = LocalDateTime.now();
 
-        contractRepository.activateSignedContracts(now);
+        int activated = contractRepository.activateSignedContracts(now);
+        int expired = contractRepository.expireActiveContracts(now);
 
-        contractRepository.expireActiveContracts(now);
+        log.info("Activated {} contracts, expired {} contracts", activated, expired);
+
+//        LocalDateTime futureDate = now.plusDays(30);
+//        int suspended = contractRepository.suspendExpiringContracts(now, futureDate);
+//        log.info("Suspended {} contracts nearing expiration", suspended);
     }
 
     /**
@@ -104,27 +160,26 @@ public class ContractServiceImpl implements ContractService {
     @Transactional
     @Override
     public ContractDTO create(ContractCreateDTO contractCreateDTO) {
-        log.info("Create contract");
+        log.info("Create contract for employee: {}", contractCreateDTO.getEmployeeId());
 
-        if(contractRepository.existsOverlappingContract(contractCreateDTO.getEmployeeId(),
-                contractCreateDTO.getRoleId(),
-                contractCreateDTO.getStartDate(),
-                contractCreateDTO.getEndDate())){
-            log.error("409: An active contract of this role already exists for employee ID:{}", contractCreateDTO.getEmployeeId());
-            throw new CustomException(Error.CONTRACT_ALREADY_EXISTS);
-        }
+        validateContractDates(contractCreateDTO.getStartDate(),
+                contractCreateDTO.getEndDate(),
+                contractCreateDTO.getContractSigningDate());
 
-        validateContractDates(contractCreateDTO.getStartDate(), contractCreateDTO.getEndDate(), contractCreateDTO.getContractSigningDate());
+        validateContractCreation(contractCreateDTO);
 
         Employees employees = employeeService.getEntityById(contractCreateDTO.getEmployeeId());
-
         Role role = roleService.getEntityById(contractCreateDTO.getRoleId());
 
-        Contracts contracts = contractMapper.convertCreateDTOToEntity(
-                contractCreateDTO, employees, role);
+        Contracts contracts = contractMapper.convertCreateDTOToEntity(contractCreateDTO, employees, role);
         contracts.setId(IdGenerator.getGenerationId());
 
-        return contractMapper.toDTO(contractRepository.save(contracts));
+        contracts.setContractStatus(ContractStatus.SIGNED);
+
+        Contracts saved = contractRepository.save(contracts);
+        log.info("Created contract with ID: {}", saved.getId());
+
+        return contractMapper.toDTO(saved);
     }
 
     /**
@@ -137,44 +192,48 @@ public class ContractServiceImpl implements ContractService {
     @Transactional
     @Override
     public ContractDTO update(ContractUpdateDTO contractUpdateDTO) {
-        log.info("Update contract");
+        log.info("Update contract ID: {}", contractUpdateDTO.getId());
 
         Contracts contracts = getEntityById(contractUpdateDTO.getId());
+        validateContractUpdate(contractUpdateDTO, contracts);
 
-        if(!contracts.getContractStatus().equals(ContractStatus.SIGNED)){
-            throw new CustomException(Error.CONTRACT_UNABLE_TO_UPDATE);
-        }
-
-        if (contractUpdateDTO.getEmployeeId() != null) {
-            contracts.setEmployee(employeeService.getEntityById(contractUpdateDTO.getEmployeeId()));
-        }
-        if (contractUpdateDTO.getRoleId() != null) {
-            contracts.setRole(roleService.getEntityById(contractUpdateDTO.getRoleId()));
-        }
-        if (contractUpdateDTO.getTitle() != null && !contractUpdateDTO.getTitle().trim().isEmpty()) {
-            contracts.setTitle(contractUpdateDTO.getTitle());
-        }
-        if (contractUpdateDTO.getContractSigningDate() != null) {
-            validateContractDates(contracts.getStartDate(), contracts.getEndDate(), contractUpdateDTO.getContractSigningDate());
-            contracts.setContractSigningDate(contractUpdateDTO.getContractSigningDate());
-        }
-        if (contractUpdateDTO.getStartDate() != null) {
-            validateContractDates(contractUpdateDTO.getStartDate(), contracts.getEndDate(), contracts.getContractSigningDate());
-            contracts.setStartDate(contractUpdateDTO.getStartDate());
-        }
-        if (contractUpdateDTO.getEndDate() != null) {
-            validateContractDates(contracts.getStartDate(), contractUpdateDTO.getEndDate(), contracts.getContractSigningDate());
-            contracts.setEndDate(contractUpdateDTO.getEndDate());
-        }
-        if (contractUpdateDTO.getBaseSalary() != null) {
-            contracts.setBaseSalary(contractUpdateDTO.getBaseSalary());
-        }
-        if (contractUpdateDTO.getDescription() != null && !contractUpdateDTO.getDescription().trim().isEmpty()) {
-            contracts.setDescription(contractUpdateDTO.getDescription());
-        }
+        // Update fields
+        updateContractFields(contractUpdateDTO, contracts);
 
         Contracts saved = contractRepository.save(contracts);
+        log.info("Updated contract ID: {}", saved.getId());
+
         return contractMapper.toDTO(saved);
+    }
+
+    private void updateContractFields(ContractUpdateDTO dto, Contracts contract) {
+        if (dto.getEmployeeId() != null) {
+            contract.setEmployee(employeeService.getEntityById(dto.getEmployeeId()));
+        }
+        if (dto.getRoleId() != null) {
+            contract.setRole(roleService.getEntityById(dto.getRoleId()));
+        }
+        if (dto.getTitle() != null && !dto.getTitle().trim().isEmpty()) {
+            contract.setTitle(dto.getTitle());
+        }
+        if (dto.getContractSigningDate() != null) {
+            validateContractDates(contract.getStartDate(), contract.getEndDate(), dto.getContractSigningDate());
+            contract.setContractSigningDate(dto.getContractSigningDate());
+        }
+        if (dto.getStartDate() != null) {
+            validateContractDates(dto.getStartDate(), contract.getEndDate(), contract.getContractSigningDate());
+            contract.setStartDate(dto.getStartDate());
+        }
+        if (dto.getEndDate() != null) {
+            validateContractDates(contract.getStartDate(), dto.getEndDate(), contract.getContractSigningDate());
+            contract.setEndDate(dto.getEndDate());
+        }
+        if (dto.getBaseSalary() != null) {
+            contract.setBaseSalary(dto.getBaseSalary());
+        }
+        if (dto.getDescription() != null && !dto.getDescription().trim().isEmpty()) {
+            contract.setDescription(dto.getDescription());
+        }
     }
 
     /**
@@ -209,10 +268,16 @@ public class ContractServiceImpl implements ContractService {
     @Transactional
     @Override
     public void delete(Integer contractId) {
-        log.info("Delete Contract");
+        log.info("Delete Contract ID: {}", contractId);
 
-        Contracts contracts = getEntityById(contractId);
-        contractRepository.delete(contracts);
+        Contracts contract = getEntityById(contractId);
+
+        if (!EnumSet.of(ContractStatus.SIGNED, ContractStatus.CANCELLED).contains(contract.getContractStatus())) {
+            throw new CustomException(Error.CONTRACT_UNABLE_TO_DELETE);
+        }
+
+        contractRepository.delete(contract);
+        log.info("Deleted contract ID: {}", contractId);
     }
 
     /**
@@ -263,6 +328,20 @@ public class ContractServiceImpl implements ContractService {
         Page<Contracts> contractsPage = contractRepository.findAll(spec, pageable);
 
         return contractMapper.convertPageToList(contractsPage);
+    }
+
+    /**
+     * @param employeeId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public ContractDTO getCurrentActiveContract(Integer employeeId) {
+        log.info("Get current active contract for employee: {}", employeeId);
+
+        return contractRepository.findCurrentActiveContract(employeeId)
+                .map(contractMapper::toDTO)
+                .orElse(null);
     }
 
     /**
