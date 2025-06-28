@@ -20,6 +20,10 @@ import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +32,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -41,6 +50,9 @@ public class ContractServiceImpl implements ContractService {
 
     private final EmployeeService employeeService;
     private final RoleService roleService;
+
+    private static final String REPORT_PATH = "/reports/";
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     /**
      * Validates the start date, end date, and signing date of a contract.
@@ -252,5 +264,143 @@ public class ContractServiceImpl implements ContractService {
         Page<Contracts> contractsPage = contractRepository.findAll(spec, pageable);
 
         return contractMapper.convertPageToList(contractsPage);
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    @Transactional
+    @Override
+    public byte[] generateContractReport(Integer id)  throws Exception {
+        // 1. Lấy dữ liệu
+        ContractDTO contract = getById(id);
+        Map<String, Object> reportData = createReportData(contract);
+
+        // Compile và fill report cho trang 1
+        JasperReport page1Report = compileReport("ContractPage1.jrxml");
+        JasperPrint page1Print = JasperFillManager.fillReport(page1Report, reportData,
+                new JRBeanCollectionDataSource(List.of(reportData)));
+
+        // Compile và fill report cho trang 2
+        JasperReport page2Report = compileReport("ContractPage2.jrxml");
+        JasperPrint page2Print = JasperFillManager.fillReport(page2Report, reportData,
+                new JRBeanCollectionDataSource(List.of(reportData)));
+
+        // Gộp 2 trang thành 1 report
+        List<JasperPrint> jasperPrintList = List.of(page1Print, page2Print);
+        JasperPrint mergedReport = mergeReports(jasperPrintList);
+
+        // Export thành PDF
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JasperExportManager.exportReportToPdfStream(mergedReport, outputStream);
+
+        return outputStream.toByteArray();
+    }
+
+    private JasperReport compileReport(String reportFileName) throws Exception {
+        try (InputStream reportStream = new ClassPathResource(REPORT_PATH + reportFileName).getInputStream()) {
+            return JasperCompileManager.compileReport(reportStream);
+        }
+    }
+
+    private JasperPrint mergeReports(List<JasperPrint> jasperPrintList) throws JRException {
+        JasperPrint mergedReport = new JasperPrint();
+
+        for (JasperPrint jasperPrint : jasperPrintList) {
+            List<JRPrintPage> pages = jasperPrint.getPages();
+            for (JRPrintPage page : pages) {
+                mergedReport.addPage(page);
+            }
+        }
+
+        return mergedReport;
+    }
+
+    private Map<String, Object> createReportData(ContractDTO contract) {
+        Map<String, Object> data = new HashMap<>();
+
+        if (contract.getEmployee() != null) {
+            data.put("fullName", contract.getEmployee().getFirstName() + " " +
+                    contract.getEmployee().getLastName());
+            data.put("dob", contract.getEmployee().getDateOfBirth());
+            data.put("citizenIdentificationCard", contract.getEmployee().getCitizenIdentificationCard());
+            data.put("gender", contract.getEmployee().getGender());
+            data.put("address", contract.getEmployee().getAddress());
+            data.put("phone", contract.getEmployee().getPhone());
+            data.put("email", contract.getEmployee().getEmail());
+        }
+
+        data.put("contractTitle", contract.getTitle());
+        data.put("baseSalary", formatCurrency(contract.getBaseSalary()));
+        data.put("typeContract", contract.getTitle()); // hoặc có thể là contract type riêng
+        data.put("fromDate", contract.getStartDate() != null ?
+                contract.getStartDate().format(DATE_FORMATTER) : "");
+        data.put("toDate", contract.getEndDate() != null ?
+                contract.getEndDate().format(DATE_FORMATTER) : "");
+        data.put("description", contract.getDescription());
+        data.put("status", contract.getStatus());
+
+        data.put("departmentName", contract.getDepartmentName());
+        data.put("roleName", contract.getRoleName());
+
+        Map<String, Object> rowData = new HashMap<>();
+        rowData.put("row", data);
+
+
+
+        return rowData;
+    }
+
+    private String formatCurrency(Double amount) {
+        if (amount == null) return "0 VND";
+        return String.format("%,.0f VND", amount);
+    }
+
+    /**
+     * @param contracts 
+     * @return
+     */
+    public byte[] generateContractListReport(List<ContractDTO> contracts) throws Exception {
+        // Tạo dữ liệu cho báo cáo danh sách
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("reportTitle", "DANH SÁCH HỢP ĐỒNG LAO ĐỘNG");
+        parameters.put("generatedDate", java.time.LocalDate.now().format(DATE_FORMATTER));
+
+        // Chuyển đổi dữ liệu
+        List<Map<String, Object>> reportData = contracts.stream()
+                .map(this::convertToReportMap)
+                .toList();
+
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reportData);
+
+        // Compile và fill report (cần tạo file ContractList.jrxml)
+        JasperReport jasperReport = compileReport("ContractList.jrxml");
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+
+        // Export PDF
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+
+        return outputStream.toByteArray();
+    }
+
+    private Map<String, Object> convertToReportMap(ContractDTO contract) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("id", contract.getId());
+        map.put("title", contract.getTitle());
+        map.put("employeeName", contract.getEmployee() != null ?
+                (contract.getEmployee().getFirstName() + " " + contract.getEmployee().getLastName()) : "");
+        map.put("departmentName", contract.getDepartmentName());
+        map.put("roleName", contract.getRoleName());
+        map.put("startDate", contract.getStartDate() != null ?
+                contract.getStartDate().format(DATE_FORMATTER) : "");
+        map.put("endDate", contract.getEndDate() != null ?
+                contract.getEndDate().format(DATE_FORMATTER) : "");
+        map.put("baseSalary", formatCurrency(contract.getBaseSalary()));
+        map.put("status", contract.getStatus());
+
+        return map;
     }
 }

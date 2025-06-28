@@ -16,7 +16,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -109,5 +111,25 @@ public class ContractsController {
                 contractService.updateStatus(id, status);
                 return ResponseEntity.ok(new APIResponse<>(true,
                                 "Contract status updated to " + status + " is successfully", null, null, request.getRequestURI()));
+        }
+
+        @GetMapping("/{contractId}/pdf")
+        @Operation(summary = "Generate PDF report for a specific contract")
+        public ResponseEntity<byte[]> generateContractPDF(@PathVariable Integer contractId) {
+                try {
+                        byte[] pdfBytes = contractService.generateContractReport(contractId);
+
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.setContentType(MediaType.APPLICATION_PDF);
+                        headers.setContentDispositionFormData("attachment",
+                                "contract_" + contractId + ".pdf");
+                        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+                        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+
+                } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(("Error generating PDF: " + e.getMessage()).getBytes());
+                }
         }
 }

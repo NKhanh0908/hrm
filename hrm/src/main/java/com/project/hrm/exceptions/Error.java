@@ -214,8 +214,6 @@ public enum Error {
     ASSIGNED_WORK_PERSON_UNABLE_TO_SAVE(23002, "Unable to save AssignedWorkPerson", HttpStatus.INTERNAL_SERVER_ERROR),
     ASSIGNED_WORK_PERSON_UNABLE_TO_UPDATE(23003, "Unable to update AssignedWorkPerson", HttpStatus.INTERNAL_SERVER_ERROR),
 
-// Thêm các error codes sau vào enum Error hiện tại:
-
     // Attendance-related errors
     ATTENDANCE_NOT_FOUND(24001, "Attendance record not found", HttpStatus.NOT_FOUND),
     ATTENDANCE_ALREADY_EXISTS(24002, "Attendance record already exists for this date", HttpStatus.CONFLICT),
