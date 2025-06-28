@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+    <fontFamily name="VN-Arial">
+        <normal>fonts/VN_Arial/arial.ttf</normal>
+        <bold>fonts/VN_Arial/arialbd.ttf</bold>
+        <italic>fonts/VN_Arial/ariali.ttf</italic>
+        <boldItalic>fonts/VN_Arial/arialbi.ttf</boldItalic>
+
+        <!-- Bắt buộc cho Unicode -->
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <!-- Nhúng font vào PDF -->
+        <pdfEmbedded>true</pdfEmbedded>
+    </fontFamily>
+</fontFamilies>

@@ -22,7 +22,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -273,29 +272,40 @@ public class ContractServiceImpl implements ContractService {
     @Transactional
     @Override
     public byte[] generateContractReport(Integer id)  throws Exception {
-        // 1. Lấy dữ liệu
         ContractDTO contract = getById(id);
         Map<String, Object> reportData = createReportData(contract);
 
-        // Compile và fill report cho trang 1
+        log.debug("report data: {}", reportData);
+
         JasperReport page1Report = compileReport("ContractPage1.jrxml");
         JasperPrint page1Print = JasperFillManager.fillReport(page1Report, reportData,
                 new JRBeanCollectionDataSource(List.of(reportData)));
 
-        // Compile và fill report cho trang 2
-        JasperReport page2Report = compileReport("ContractPage2.jrxml");
-        JasperPrint page2Print = JasperFillManager.fillReport(page2Report, reportData,
-                new JRBeanCollectionDataSource(List.of(reportData)));
+//        JasperReport page2Report = compileReport("ContractPage2.jrxml");
+//        JasperPrint page2Print = JasperFillManager.fillReport(page2Report, reportData,
+//                new JRBeanCollectionDataSource(List.of(reportData)));
+//
+//        List<JasperPrint> jasperPrintList = List.of(page1Print, page2Print);
+//        JasperPrint mergedReport = mergeReports(jasperPrintList);
 
-        // Gộp 2 trang thành 1 report
-        List<JasperPrint> jasperPrintList = List.of(page1Print, page2Print);
-        JasperPrint mergedReport = mergeReports(jasperPrintList);
-
-        // Export thành PDF
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        JasperExportManager.exportReportToPdfStream(mergedReport, outputStream);
+        JasperExportManager.exportReportToPdfStream(page1Print, outputStream);
 
+//        Map<String, Object> reportData = createReportData();
+//
+//        JasperReport page1Report = compileReport("test.jrxml");
+//        JasperPrint page1Print = JasperFillManager.fillReport(page1Report, reportData,
+//                new JRBeanCollectionDataSource(List.of(reportData)));
+//
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        JasperExportManager.exportReportToPdfStream(page1Print, outputStream);
         return outputStream.toByteArray();
+    }
+
+    private Map<String, Object> createReportData() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("reportTitle", "Bao cao 1");
+        return data;
     }
 
     private JasperReport compileReport(String reportFileName) throws Exception {
@@ -323,7 +333,8 @@ public class ContractServiceImpl implements ContractService {
         if (contract.getEmployee() != null) {
             data.put("fullName", contract.getEmployee().getFirstName() + " " +
                     contract.getEmployee().getLastName());
-            data.put("dob", contract.getEmployee().getDateOfBirth());
+            data.put("dob", contract.getEmployee().getDateOfBirth() != null ?
+                    contract.getEmployee().getDateOfBirth() : "");
             data.put("citizenIdentificationCard", contract.getEmployee().getCitizenIdentificationCard());
             data.put("gender", contract.getEmployee().getGender());
             data.put("address", contract.getEmployee().getAddress());
@@ -344,12 +355,10 @@ public class ContractServiceImpl implements ContractService {
         data.put("departmentName", contract.getDepartmentName());
         data.put("roleName", contract.getRoleName());
 
-        Map<String, Object> rowData = new HashMap<>();
-        rowData.put("row", data);
+        Map<String, Object> reportData = new HashMap<>();
+        reportData.put("row", data);
 
-
-
-        return rowData;
+        return data;
     }
 
     private String formatCurrency(Double amount) {

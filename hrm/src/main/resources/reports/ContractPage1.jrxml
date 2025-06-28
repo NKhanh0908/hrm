@@ -1,150 +1,297 @@
-<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
-<jasperReport name="Blank_A4" language="groovy" columnCount="1" pageWidth="595" pageHeight="842" orientation="Landscape" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<field name="row" class="java.util.Map"/>
-	<!-- Nếu muốn truy cập trực tiếp qua $F{fullName} … thì cũng cần khai báo thêm -->
-	<field name="fullName"       class="java.lang.String"/>
-	<field name="dob"            class="java.lang.String"/>
-	<field name="citizenIdCard"  class="java.lang.String"/>
-	<field name="gender"         class="java.lang.String"/>
-	<field name="address"        class="java.lang.String"/>
-	<field name="phone"          class="java.lang.String"/>
-	<field name="email"          class="java.lang.String"/>
-	<field name="contractTitle"  class="java.lang.String"/>
-	<field name="startDate"      class="java.time.LocalDateTime"/> <!-- Hoặc LocalDate nếu parse trước -->
-	<field name="endDate"        class="java.time.LocalDateTime"/>
-	<field name="baseSalary"     class="java.lang.String"/>
-	<field name="status"         class="java.lang.String"/>
-	<field name="departmentName" class="java.lang.String"/>
-	<field name="roleName"       class="java.lang.String"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+			  name="ContractPage1" pageWidth="595" pageHeight="842" orientation="Portrait"
+			  columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 
-	<background>
-		<element kind="textField" x="-13" y="-17" width="113" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Lương cơ bản:]]></expression>
-		</element>
-		<element kind="textField"  x="100" y="-17" width="459" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[$F{row}.get($P{baseSalary})]]]></expression>
-		</element>
-	</background>
-	<title height="68">
-		<element kind="textField"  x="-20" y="-15" width="589" height="25" fontName="Times New Roman" fontSize="13.0" bold="true" hTextAlign="Center">
-			<expression><![CDATA[CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM]]></expression>
-		</element>
-		<element kind="textField" x="-20" y="0" width="589" height="25" fontName="Times New Roman" fontSize="13.0" bold="true" hTextAlign="Center">
-			<expression><![CDATA[Độc lập - Tự do - Hạnh phúc ]]></expression>
-		</element>
-		<element kind="textField"  x="-23" y="38" width="595" height="30" fontName="Times New Roman" fontSize="21.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-			<expression><![CDATA[HỢP ĐỒNG LAO ĐỘNG]]></expression>
-		</element>
-		<element kind="textField"  x="380" y="10" width="189" height="20" rotation="None" markup="none" fontName="Times New Roman" fontSize="13.0" vTextAlign="Middle">
-			<expression><![CDATA[Ngày:..... Tháng:..........  Năm:.........]]></expression>
-		</element>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="generatedDate" class="java.lang.String"/>
+
+	<field name="fullName" class="java.lang.String"/>
+	<field name="dob" class="java.lang.String"/>
+	<field name="citizenIdCard" class="java.lang.String"/>
+	<field name="gender" class="java.lang.String"/>
+	<field name="address" class="java.lang.String"/>
+	<field name="phone" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="contractTitle" class="java.lang.String"/>
+	<field name="startDate" class="java.lang.String"/>
+	<field name="endDate" class="java.lang.String"/>
+	<field name="baseSalary" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
+	<field name="departmentName" class="java.lang.String"/>
+	<field name="roleName" class="java.lang.String"/>
+
+	<title>
+		<band height="100" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="10" width="555" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="35" width="555" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Độc lập - Tự do - Hạnh phúc"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="55" width="175" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ngày:.... Tháng:....  Năm:...."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="75" width="555" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="21" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["HỢP ĐỒNG LAO ĐỘNG"]]></textFieldExpression>
+			</textField>
+		</band>
 	</title>
-	<pageHeader height="43">
-		<element kind="textField"  x="-11" y="8" width="586" height="30" rotation="None" markup="none" fontName="Times New Roman" fontSize="15.0" vTextAlign="Middle">
-			<expression><![CDATA[Chúng tôi, một bên là Công ty: ..........................................................................................................]]></expression>
-		</element>
+
+	<pageHeader>
+		<band height="60" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="10" width="555" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Chúng tôi, một bên là Công ty: ............................................................."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="35" width="555" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Địa chỉ: .............................................................................................."]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageHeader>
-	<columnHeader height="38">
-		<element kind="textField"  x="-10" y="8" width="585" height="30" rotation="None" markup="none" fontName="Times New Roman" fontSize="15.0" vTextAlign="Middle">
-			<expression><![CDATA[Địa chỉ: ...............................................................................................................................................]]></expression>
-		</element>
+
+	<columnHeader>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ông/ Bà: .............................................................................................."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="25" width="555" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Sinh ngày: ..................................................................................."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="50" width="555" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CMND/CCCD số: ........................"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="75" width="555" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Chức vụ: ..........................................................."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="100" width="555" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Và một bên là Ông/ Bà:"]]></textFieldExpression>
+			</textField>
+		</band>
 	</columnHeader>
+
 	<detail>
-		<band height="125">
-			<element kind="textField"  x="-10" y="0" width="585" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA[Ông/ Bà: ...............................................................................................................................]]></expression>
-			</element>
-			<element kind="textField"  x="-10" y="30" width="585" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA[Sinh ngày: .......................................................................................................................]]></expression>
-			</element>
-			<element kind="textField" x="-11" y="60" width="587" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA[CMND/CCCD số: .................................]]></expression>
-			</element>
-			<element kind="textField" x="-11" y="95" width="587" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA[Chức vụ: .......................................................................................................................]]></expression>
-			</element>
+		<band height="160" splitType="Stretch">
+			<textField>
+				<reportElement x="160" y="0" width="395" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fullName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="25" width="70" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Sinh ngày:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="25" width="220" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dob}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="25" width="70" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Giới tính:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="25" width="195" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gender}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="50" width="120" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CMND/CCCD số:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="50" width="435" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{citizenIdCard}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="80" width="70" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Điều 1:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="80" width="485" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Chức vụ, Thời hạn"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="105" width="70" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Chức vụ:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="105" width="485" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{roleName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="130" width="90" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Phòng ban:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="130" width="465" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{departmentName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
-	<columnFooter height="135">
-		<element kind="textField"  x="-11" y="0" width="171" height="30" fontSize="15.0" evaluationTime="Page" bold="true" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Và một bên là Ông/ Bà:   ]]></expression>
-		</element>
-		<element kind="textField" x="160" y="-1" width="409" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<textFieldExpression><![CDATA[$F{row}.get($P{fullName})]]]></textFieldExpression>
-		</element>
-		<element kind="textField"  x="-13" y="30" width="83" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Sinh ngày: ]]></expression>
-		</element>
-		<element kind="textField"  x="-11" y="65" width="120" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[CMND/CCCD số: ]]></expression>
-		</element>
-		<element kind="textField" x="70" y="30" width="220" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<textFieldExpression><![CDATA[$F{row}.get($P{dob})]]]></textFieldExpression>
-		</element>
-		<element kind="textField" x="110" y="65" width="459" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<textFieldExpression><![CDATA[$F{row}.get($P{citizenIdentificationCard})]]]></textFieldExpression>
-		</element>
-		<element kind="textField" x="292" y="30" width="83" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Giới tính: ]]></expression>
-		</element>
-		<element kind="textField"  x="380" y="30" width="179" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<textFieldExpression><![CDATA[$F{row}.get($P{gender})]]]></textFieldExpression>
-		</element>
-		<element kind="textField" x="-13" y="99" width="53" height="30" fontSize="15.0" evaluationTime="Page" bold="true" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Điều 1:]]></expression>
-		</element>
-		<element kind="textField"  x="40" y="100" width="529" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Chức vụ, Thời hạn]]></expression>
-		</element>
+
+	<columnFooter>
+		<band height="100" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="120" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Loại hợp đồng:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="0" width="435" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{contractTitle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="25" width="80" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Từ ngày:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="25" width="200" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{startDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="25" width="90" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Đến ngày:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="25" width="185" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{endDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="55" width="70" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Điều 2:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="55" width="485" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Lương, phụ cấp, các khoản bổ sung khác"]]></textFieldExpression>
+			</textField>
+		</band>
 	</columnFooter>
-	<pageFooter height="125">
-		<element kind="textField"  x="-11" y="-1" width="70" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Chức vụ:]]></expression>
-		</element>
-		<element kind="textField"  x="60" y="-1" width="499" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<textFieldExpression><![CDATA[$F{row}.get($P{roleName})]]]></textFieldExpression>
-		</element>
-		<element kind="textField" x="-13" y="30" width="90" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Phòng ban:]]></expression>
-		</element>
-		<element kind="textField"  x="80" y="30" width="479" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<textFieldExpression><![CDATA[$F{row}.get($P{departmentName})]]]></textFieldExpression>
-		</element>
-		<element kind="textField"  x="-13" y="60" width="113" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Loại hợp đồng:]]></expression>
-		</element>
-		<element kind="textField"  x="100" y="60" width="459" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<textFieldExpression><![CDATA[$F{row}.get($P{typeContract})]]]></textFieldExpression>
-		</element>
-		<element kind="textField" x="-13" y="90" width="90" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Từ ngày:]]></expression>
-		</element>
-		<element kind="textField"  x="274" y="90" width="90" height="30" fontSize="15.0" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Đến ngày:]]></expression>
-		</element>
-		<element kind="textField" x="77" y="90" width="197" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<textFieldExpression><![CDATA[$F{row}.get($P{fromDate})]]]></textFieldExpression>
-		</element>
-		<element kind="textField"  x="362" y="90" width="197" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<textFieldExpression><![CDATA[$F{row}.get($P{toDate})]]]></textFieldExpression>
-		</element>
+
+	<pageFooter>
+		<band height="50" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="120" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Lương cơ bản:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="0" width="435" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="15" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{baseSalary}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
-	<summary height="42">
-		<element kind="textField"  x="-13" y="-5" width="53" height="30" fontSize="15.0" evaluationTime="Page" bold="true" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Điều 2:]]></expression>
-		</element>
-		<element kind="textField" x="40" y="-5" width="529" height="30" fontSize="15.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
-			<expression><![CDATA[Lương, phụ cấp, các khoản bổ sung khác]]></expression>
-		</element>
-	</summary>
+
 </jasperReport>
