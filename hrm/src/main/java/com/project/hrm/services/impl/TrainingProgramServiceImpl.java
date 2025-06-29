@@ -139,6 +139,6 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
         Page<TrainingProgram> trainingProgramPage = trainingProgramRepository.findAll(trainingProgramSpecification, pageable);
 
-        return trainingProgramMapper.convertPageToListDTO(trainingProgramPage);
+        return trainingProgramMapper.toTrainingProgramPageDTO(trainingProgramPage);
     }
 }
