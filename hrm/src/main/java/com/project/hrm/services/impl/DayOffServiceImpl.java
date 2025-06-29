@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.dayOffDTO.*;
 import com.project.hrm.entities.DayOff;
 import com.project.hrm.enums.DayOffStatus;
@@ -12,6 +13,7 @@ import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -185,17 +187,16 @@ public class DayOffServiceImpl implements DayOffService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<DayOffDTO> filter(DayOffFilter dayOffFilter, int page, int size) {
+    public PageDTO<DayOffDTO> filter(DayOffFilter dayOffFilter, int page, int size) {
         log.info("Get Day Offs by Filter: {}", dayOffFilter);
 
         Specification<DayOff> dayOffSpecification = DayOffSpecifications.filter(dayOffFilter);
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return dayOffRepository.findAll(dayOffSpecification, pageable)
-                .getContent()
-                .stream().map(dayOffMapper::toDTO)
-                .collect(Collectors.toList());
+        Page<DayOff> dayOffs = dayOffRepository.findAll(dayOffSpecification, pageable);
+
+        return dayOffMapper.toDayOffPageDTO(dayOffs);
     }
 
     /**

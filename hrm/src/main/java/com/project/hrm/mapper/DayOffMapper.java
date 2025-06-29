@@ -1,10 +1,12 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.dayOffDTO.DayOffCreateDTO;
 import com.project.hrm.dto.dayOffDTO.DayOffDTO;
 import com.project.hrm.entities.DayOff;
 import com.project.hrm.enums.DayOffStatus;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -43,4 +45,19 @@ public class DayOffMapper {
                 .status(DayOffStatus.valueOf(dayOffCreateDTO.getStatus()))
                 .build();
     }
+
+    public PageDTO<DayOffDTO> toDayOffPageDTO(Page<DayOff> page) {
+        return PageDTO.<DayOffDTO>builder()
+                .content(
+                        page.getContent()
+                                .stream()
+                                .map(this::toDTO)      // dùng toDTO(DayOff)
+                                .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
+    }
+
 }

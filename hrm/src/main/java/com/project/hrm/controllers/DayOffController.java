@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.dayOffDTO.*;
 import com.project.hrm.services.DayOffService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,12 +87,12 @@ public class DayOffController {
 
     @PostMapping("/filter")
     @Operation(summary = "Lọc đơn nghỉ theo điều kiện cơ bản",
-            responses = @ApiResponse(responseCode = "200", description = "Danh sách đơn nghỉ", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DayOffDTO.class)))))
-    public ResponseEntity<APIResponse<List<DayOffDTO>>> filter(@RequestBody DayOffFilter filter,
+            responses = @ApiResponse(responseCode = "200", description = "Danh sách đơn nghỉ", content = @Content(schema = @Schema(implementation = PageDTO.class))))
+    public ResponseEntity<APIResponse<PageDTO<DayOffDTO>>> filter(@RequestBody DayOffFilter filter,
                                                                @RequestParam(defaultValue = "0") int page,
                                                                @RequestParam(defaultValue = "10") int size,
                                                                HttpServletRequest request) {
-        List<DayOffDTO> list = dayOffService.filter(filter, page, size);
+        PageDTO<DayOffDTO> list = dayOffService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter DayOffs successfully", list, null, request.getRequestURI()));
     }
 
