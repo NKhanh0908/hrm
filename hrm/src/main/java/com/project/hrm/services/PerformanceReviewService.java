@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.performanceReviewDTO.PerformanceReviewCreateDTO;
 import com.project.hrm.dto.performanceReviewDTO.PerformanceReviewDTO;
 import com.project.hrm.dto.performanceReviewDTO.PerformanceReviewFilter;
@@ -21,5 +22,5 @@ public interface PerformanceReviewService {
 
     PerformanceReviewDTO updateStatus(Integer id, String status);
 
-    List<PerformanceReviewDTO> filter(PerformanceReviewFilter performanceReviewFilter, int page, int size);
+    PageDTO<PerformanceReviewDTO> filter(PerformanceReviewFilter performanceReviewFilter, int page, int size);
 }

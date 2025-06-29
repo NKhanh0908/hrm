@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.performanceReviewDTO.PerformanceReviewCreateDTO;
 import com.project.hrm.dto.performanceReviewDTO.PerformanceReviewDTO;
 import com.project.hrm.dto.performanceReviewDTO.PerformanceReviewFilter;
@@ -112,14 +113,14 @@ public class PerformanceReviewController {
                     @Parameter(name = "size", description = "Page size", example = "10")
             },
             responses = @ApiResponse(responseCode = "200", description = "Filtered performance reviews successfully",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PerformanceReviewDTO.class))))
+                    content = @Content(schema = @Schema(implementation = PageDTO.class)))
     )
-    public ResponseEntity<APIResponse<List<PerformanceReviewDTO>>> filter(
+    public ResponseEntity<APIResponse<PageDTO<PerformanceReviewDTO>>> filter(
             @RequestBody PerformanceReviewFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
-        List<PerformanceReviewDTO> result = performanceReviewService.filter(filter, page, size);
+        PageDTO<PerformanceReviewDTO> result = performanceReviewService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filtered performance reviews successfully", result, null, request.getRequestURI()));
     }
 }

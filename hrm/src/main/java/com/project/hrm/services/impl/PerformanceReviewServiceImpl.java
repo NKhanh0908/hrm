@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.performanceReviewDTO.PerformanceReviewCreateDTO;
 import com.project.hrm.dto.performanceReviewDTO.PerformanceReviewDTO;
 import com.project.hrm.dto.performanceReviewDTO.PerformanceReviewFilter;
@@ -27,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -195,7 +195,7 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<PerformanceReviewDTO> filter(PerformanceReviewFilter performanceReviewFilter, int page, int size) {
+    public PageDTO<PerformanceReviewDTO> filter(PerformanceReviewFilter performanceReviewFilter, int page, int size) {
         log.info("Filtering performance reviews with criteria: {}", performanceReviewFilter);
 
         Specification<PerformanceReview> specification = PerformanceReviewSpecification.filter(performanceReviewFilter);
@@ -203,7 +203,7 @@ public class PerformanceReviewServiceImpl implements PerformanceReviewService {
 
         Page<PerformanceReview> pageResult = performanceReviewRepository.findAll(specification, pageable);
 
-        return performanceReviewMapper.convertListEntityToListDTO(pageResult.getContent());
+        return performanceReviewMapper.toPerformanceReviewPageDTO(pageResult);
     }
 
 }
