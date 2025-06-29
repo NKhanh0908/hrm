@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.feedbackEmployeeDTO.FeedbackEmployeeCreateDTO;
 import com.project.hrm.dto.feedbackEmployeeDTO.FeedbackEmployeeDTO;
 import com.project.hrm.dto.feedbackEmployeeDTO.FeedbackEmployeeFilter;
@@ -23,8 +24,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -122,12 +121,12 @@ public class FeedbackEmployeeServiceImpl implements FeedbackEmployeeService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<FeedbackEmployeeDTO> filter(FeedbackEmployeeFilter filter, int page, int size) {
+    public PageDTO<FeedbackEmployeeDTO> filter(FeedbackEmployeeFilter filter, int page, int size) {
         log.info("Filtering feedback with filter: {} and page: {}, size: {}", filter, page, size);
 
         Specification<FeedbackEmployee> spec = FeedbackEmployeeSpecification.filter(filter);
         Page<FeedbackEmployee> result = feedbackEmployeeRepository.findAll(spec, PageRequest.of(page, size));
 
-        return feedbackEmployeeMapper.convertEntityListToDTOList(result.getContent());
+        return feedbackEmployeeMapper.toFeedbackEmployeePageDTO(result);
     }
 }

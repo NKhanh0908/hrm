@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.feedbackEmployeeDTO.FeedbackEmployeeCreateDTO;
 import com.project.hrm.dto.feedbackEmployeeDTO.FeedbackEmployeeDTO;
 import com.project.hrm.dto.feedbackEmployeeDTO.FeedbackEmployeeFilter;
@@ -109,14 +110,14 @@ public class FeedbackEmployeeController {
                     @Parameter(name = "size", description = "Page size", example = "10")
             },
             responses = @ApiResponse(responseCode = "200", description = "Filtered feedback list",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = FeedbackEmployeeDTO.class))))
+                    content = @Content(schema = @Schema(implementation = PageDTO.class)))
     )
-    public ResponseEntity<APIResponse<List<FeedbackEmployeeDTO>>> filter(
+    public ResponseEntity<APIResponse<PageDTO<FeedbackEmployeeDTO>>> filter(
             @RequestBody FeedbackEmployeeFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
-        List<FeedbackEmployeeDTO> results = feedbackEmployeeService.filter(filter, page, size);
+        PageDTO<FeedbackEmployeeDTO> results = feedbackEmployeeService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filtered feedback retrieved successfully", results, null, request.getRequestURI()));
     }
 }

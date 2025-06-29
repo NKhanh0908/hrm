@@ -1,9 +1,11 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.feedbackEmployeeDTO.FeedbackEmployeeCreateDTO;
 import com.project.hrm.dto.feedbackEmployeeDTO.FeedbackEmployeeDTO;
 import com.project.hrm.entities.FeedbackEmployee;
 import com.project.hrm.enums.ReviewType;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -44,5 +46,17 @@ public class FeedbackEmployeeMapper {
         return feedbackEmployees.stream()
                 .map(this::convertEntityToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PageDTO<FeedbackEmployeeDTO> toFeedbackEmployeePageDTO(Page<FeedbackEmployee> page) {
+        return PageDTO.<FeedbackEmployeeDTO>builder()
+                .content(page.getContent().stream()
+                        .map(this::convertEntityToDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
     }
 }
