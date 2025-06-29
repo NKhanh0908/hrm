@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentCreateDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentFilter;
@@ -21,6 +22,6 @@ public interface DepartmentService {
 
     DepartmentDTO getDepartmentDTOByEmployeeId(Integer employeeId);
 
-    List<DepartmentDTO> filter(DepartmentFilter departmentFilter, int page, int size);
+    PageDTO<DepartmentDTO> filter(DepartmentFilter departmentFilter, int page, int size);
 
 }

@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentCreateDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentFilter;
@@ -19,8 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -134,24 +133,25 @@ public class DepartmentServiceImpl implements DepartmentService {
     /**
      * Filters the list of departments based on department name, address, and email by {@link DepartmentFilter}.
      * This method supports pagination and executes within a read-only transaction.
+     *
      * @param departmentFilter include
-     *          departmentName the (possibly partial) name of the department to filter by
-     *          address        the address of the department (optional)
-     *          email          the email of the department (optional)
-     * @param page           the zero-based page index
-     * @param size           the number of records per page
+     *                         departmentName the (possibly partial) name of the department to filter by
+     *                         address        the address of the department (optional)
+     *                         email          the email of the department (optional)
+     * @param page             the zero-based page index
+     * @param size             the number of records per page
      * @return a paginated result containing {@link DepartmentDTO} instances that match the filter criteria
      */
     @Transactional(readOnly = true)
     @Override
-    public List<DepartmentDTO> filter(DepartmentFilter departmentFilter, int page, int size) {
+    public PageDTO<DepartmentDTO> filter(DepartmentFilter departmentFilter, int page, int size) {
         log.info("Filter Department");
 
         Specification<Departments> departmentsSpecification = DepartmentSpecification.filterDepartment(departmentFilter);
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return departmentMapper.convertPageEntityToPageDTO(
+        return departmentMapper.toDepartmentPageDTO(
                 departmentRepository.findAll(departmentsSpecification, pageable));
     }
 

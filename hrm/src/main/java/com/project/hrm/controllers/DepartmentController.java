@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentCreateDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentFilter;
@@ -67,12 +68,12 @@ public class DepartmentController {
                         @Parameter(name = "page", description = "Page number (0-based)", required = false, example = "0"),
                         @Parameter(name = "size", description = "Page size", required = false, example = "10")
         }, responses = {
-                        @ApiResponse(responseCode = "200", description = "Filtered department list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DepartmentDTO.class))))
+                        @ApiResponse(responseCode = "200", description = "Filtered department list", content = @Content(schema = @Schema(implementation = PageDTO.class)))
         })
-        public ResponseEntity<APIResponse<List<DepartmentDTO>>> filter(@RequestBody DepartmentFilter departmentFilter,
+        public ResponseEntity<APIResponse<PageDTO<DepartmentDTO>>> filter(@RequestBody DepartmentFilter departmentFilter,
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
-                List<DepartmentDTO> filteredDepartments = departmentService.filter(departmentFilter, page, size);
+                PageDTO<DepartmentDTO> filteredDepartments = departmentService.filter(departmentFilter, page, size);
                 return ResponseEntity.ok(new APIResponse<>(true, "Filter Departments successfully", filteredDepartments,
                                 null, request.getRequestURI()));
         }

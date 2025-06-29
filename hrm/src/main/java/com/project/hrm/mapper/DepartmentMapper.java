@@ -1,5 +1,6 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentCreateDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentDTO;
 import com.project.hrm.dto.departmentDTO.DepartmentUpdateDTO;
@@ -61,6 +62,18 @@ public class DepartmentMapper {
                 .stream()
                 .map(this::toDepartmentDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PageDTO<DepartmentDTO> toDepartmentPageDTO(Page<Departments> page) {
+        return PageDTO.<DepartmentDTO>builder()
+                .content(page.getContent().stream()
+                        .map(this::toDepartmentDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
     }
 
 }
