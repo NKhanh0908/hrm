@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class EmployeeController {
         @Operation(summary = "Create new employee", description = "Creates a new employee in the system", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Employee creation data", required = true, content = @Content(schema = @Schema(implementation = EmployeeCreateDTO.class))), responses = {
                         @ApiResponse(responseCode = "201", description = "Employee created successfully", content = @Content(schema = @Schema(implementation = EmployeeDTO.class)))
         })
-        public ResponseEntity<APIResponse<EmployeeDTO>> create(@RequestBody EmployeeCreateDTO employeeCreateDTO,
+        public ResponseEntity<APIResponse<EmployeeDTO>> create(@ModelAttribute EmployeeCreateDTO employeeCreateDTO,
                         HttpServletRequest request) {
                 EmployeeDTO result = employeeService.create(employeeCreateDTO);
                 return ResponseEntity.status(HttpStatus.CREATED)

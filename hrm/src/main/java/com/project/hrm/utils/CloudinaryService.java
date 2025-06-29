@@ -21,21 +21,16 @@ import java.util.Objects;
 public class CloudinaryService {
     public Cloudinary cloudinary;
 
-    @Value("${cloudinary.name}")
-    private String CLOUD_NAME;
+    public CloudinaryService(
+            @Value("${cloudinary.name}") String cloudName,
+            @Value("${cloudinary.api-key}") String apiKey,
+            @Value("${cloudinary.api-secret}") String apiSecret) {
 
-    @Value("${cloudinary.api-key}")
-    private String CLOUD_API_KEY;
-
-    @Value("${cloudinary.api-secret}")
-    private String CLOUD_API_SECRET;
-
-    public CloudinaryService() {
-        Map<String, String> valuesMap = new HashMap<>();
-        valuesMap.put("cloud_name", CLOUD_NAME);
-        valuesMap.put("api_key", CLOUD_API_KEY);
-        valuesMap.put("api_secret", CLOUD_API_SECRET);
-        cloudinary = new Cloudinary(valuesMap);
+        this.cloudinary = new Cloudinary(Map.of(
+                "cloud_name", cloudName,
+                "api_key",    apiKey,
+                "api_secret", apiSecret
+        ));
     }
 
     public Map upload(MultipartFile multipartFile) {
