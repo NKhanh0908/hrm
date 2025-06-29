@@ -2,7 +2,9 @@ package com.project.hrm.utils;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,11 +21,20 @@ import java.util.Objects;
 public class CloudinaryService {
     public Cloudinary cloudinary;
 
+    @Value("${cloudinary.name}")
+    private String CLOUD_NAME;
+
+    @Value("${cloudinary.api-key}")
+    private String CLOUD_API_KEY;
+
+    @Value("${cloudinary.api-secret}")
+    private String CLOUD_API_SECRET;
+
     public CloudinaryService() {
         Map<String, String> valuesMap = new HashMap<>();
-        valuesMap.put("cloud_name", "dswwzexhq");
-        valuesMap.put("api_key", "962968498882681");
-        valuesMap.put("api_secret", "xbW1T2RbBhKK-qLOi8Ov4yF274o");
+        valuesMap.put("cloud_name", CLOUD_NAME);
+        valuesMap.put("api_key", CLOUD_API_KEY);
+        valuesMap.put("api_secret", CLOUD_API_SECRET);
         cloudinary = new Cloudinary(valuesMap);
     }
 

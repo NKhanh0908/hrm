@@ -8,6 +8,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,10 @@ import java.util.Locale;
 @Slf4j
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
+
+    @Value("${spring.mail.username}")
+    private String MAIL_SEND_FROM;
+
     private final JavaMailSender javaMailSender;
 
     /**
@@ -220,7 +225,7 @@ public class MailServiceImpl implements MailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(toEmail);
             helper.setSubject(subject);
-            helper.setFrom("khanhnq0908@gmail.com");
+            helper.setFrom(MAIL_SEND_FROM);
             helper.setText(htmlContent, true);
 
             javaMailSender.send(message);
