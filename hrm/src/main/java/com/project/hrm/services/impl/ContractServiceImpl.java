@@ -375,6 +375,9 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public byte[] generateContractReport(Integer id)  throws Exception {
         ContractDTO contract = getById(id);
+
+        log.info("Contract: {}", contract);
+
         Map<String, Object> reportData = createReportData(contract);
 
         log.debug("report data: {}", reportData);
@@ -383,12 +386,12 @@ public class ContractServiceImpl implements ContractService {
         JasperPrint page1Print = JasperFillManager.fillReport(page1Report, reportData,
                 new JRBeanCollectionDataSource(List.of(reportData)));
 
-//        JasperReport page2Report = compileReport("ContractPage2.jrxml");
-//        JasperPrint page2Print = JasperFillManager.fillReport(page2Report, reportData,
-//                new JRBeanCollectionDataSource(List.of(reportData)));
-//
-//        List<JasperPrint> jasperPrintList = List.of(page1Print, page2Print);
-//        JasperPrint mergedReport = mergeReports(jasperPrintList);
+        JasperReport page2Report = compileReport("ContractPage2.jrxml");
+        JasperPrint page2Print = JasperFillManager.fillReport(page2Report, reportData,
+                new JRBeanCollectionDataSource(List.of(reportData)));
+
+        List<JasperPrint> jasperPrintList = List.of(page1Print, page2Print);
+        JasperPrint mergedReport = mergeReports(jasperPrintList);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         JasperExportManager.exportReportToPdfStream(page1Print, outputStream);

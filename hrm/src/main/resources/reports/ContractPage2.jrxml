@@ -13,14 +13,14 @@
 			<textField>
 				<reportElement x="0" y="0" width="555" height="25"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="15"/>
+					<font fontName="VN-Arial" size="15" isBold="false" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Hình thức trả lương: Tiền mặt hoặc chuyển khoảng vào ngày 32 của tháng"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="30" width="555" height="25"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="15"/>
+					<font fontName="VN-Arial" size="15" isBold="false" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Chế độ nâng bậc, tăng lương: Theo quy định của công ty và kết quả làm việc"]]></textFieldExpression>
 			</textField>
@@ -47,28 +47,28 @@
 			<textField>
 				<reportElement x="0" y="0" width="280" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="18" isBold="true"/>
+					<font fontName="VN-Arial" size="15" isBold="false" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Người sử dụng lao động"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="290" y="0" width="265" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="18" isBold="true"/>
+					<font fontName="VN-Arial" size="15" isBold="false" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Người lao động"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="25" width="280" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="13"/>
+					<font fontName="VN-Arial" size="15" isBold="false" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["(Ký, ghi rõ họ tên và đóng dấu)"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="290" y="25" width="265" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="13"/>
+					<font fontName="VN-Arial" size="15" isBold="false" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["(Ký, ghi rõ họ tên)"]]></textFieldExpression>
 			</textField>
