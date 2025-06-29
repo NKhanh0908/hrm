@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonCreateDTO;
 import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonDTO;
 import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonUpdateDTO;
@@ -15,6 +16,8 @@ import com.project.hrm.services.EmployeeService;
 import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,15 +117,18 @@ public class AssignedWorkPersonServiceImpl implements AssignedWorkPersonService 
      * Filters AssignedWorkPerson records based on criteria and pagination.
      *
      * @param employeeId the filtering criteria
+     * @param page
+     * @param size
      * @return list of {@link AssignedWorkPersonDTO}
      */
     @Transactional(readOnly = true)
     @Override
-    public List<AssignedWorkPersonDTO> filterByEmployeeId(Integer employeeId) {
-        log.info("Filtering AssignedWorkPerson with filter: {}", employeeId);
+    public PageDTO<AssignedWorkPersonDTO> filterByEmployeeId(Integer employeeId, int page, int size) {
+        log.info("Filtering AssignedWorkPerson by employeeId={}, page={}, size={}", employeeId, page, size);
 
-        List<AssignedWorkPerson> assignedWorkPeople = repo.findAllByEmployeeId(employeeId);
+        Page<AssignedWorkPerson> entityPage =
+                repo.findAllByEmployeeId(employeeId, PageRequest.of(page, size));
 
-        return mapper.convertEntityListToDTOList(assignedWorkPeople);
+        return mapper.toAssignedWorkPersonPageDTO(entityPage);
     }
 }

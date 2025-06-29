@@ -1,8 +1,10 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonCreateDTO;
 import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonDTO;
 import com.project.hrm.entities.AssignedWorkPerson;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -44,5 +46,18 @@ public class AssignedWorkPersonMapper {
         return assignedWorkPersonList.stream()
                 .map(this::convertEntityToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PageDTO<AssignedWorkPersonDTO> toAssignedWorkPersonPageDTO(Page<AssignedWorkPerson> page) {
+        return PageDTO.<AssignedWorkPersonDTO>builder()
+                .content(page.getContent()
+                        .stream()
+                        .map(this::convertEntityToDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
     }
 }

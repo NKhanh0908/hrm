@@ -1,13 +1,13 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonCreateDTO;
 import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonDTO;
 import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonUpdateDTO;
 import com.project.hrm.services.AssignedWorkPersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -76,13 +74,19 @@ public class AssignedWorkPersonController {
     @GetMapping("/by-employee/{employeeId}")
     @Operation(summary = "Get assignments by employee",
             description = "Retrieve all assignments linked to the specified employee",
-            parameters = @Parameter(name = "employeeId", description = "Employee ID", required = true),
+            parameters = {
+                @Parameter(name = "employeeId", description = "Employee ID", required = true),
+                @Parameter(name = "page", description = "Page number (0-based)", required = false, example = "0"),
+                @Parameter(name = "size", description = "Page size", required = false, example = "10")
+            },
             responses = @ApiResponse(responseCode = "200", description = "Assignments retrieved",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = AssignedWorkPersonDTO.class)))))
-    public ResponseEntity<APIResponse<List<AssignedWorkPersonDTO>>> getByEmployee(
+                    content = @Content(schema = @Schema(implementation = PageDTO.class))))
+    public ResponseEntity<APIResponse<PageDTO<AssignedWorkPersonDTO>>> getByEmployee(
             @PathVariable Integer employeeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
-        List<AssignedWorkPersonDTO> results = assignedWorkPersonService.filterByEmployeeId(employeeId);
+        PageDTO<AssignedWorkPersonDTO> results = assignedWorkPersonService.filterByEmployeeId(employeeId, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Assignments for employee retrieved", results, null, request.getRequestURI()));
     }
 }
