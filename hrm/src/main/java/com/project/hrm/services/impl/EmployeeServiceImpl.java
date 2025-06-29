@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeFilter;
@@ -46,13 +47,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<EmployeeDTO> filter(EmployeeFilter employeeFilter, int page, int size) {
+    public PageDTO<EmployeeDTO> filter(EmployeeFilter employeeFilter, int page, int size) {
         log.info("Filter EmployeeDTO");
 
         Specification<Employees> spec = EmployeeSpecification.filterEmployee(employeeFilter);
         Pageable pageable = PageRequest.of(page, size);
 
-        return employeeMapper.pageToEmployeeDTOList(employeeRepository.findAll(spec, pageable));
+        return employeeMapper.toEmployeePageDTO(employeeRepository.findAll(spec, pageable));
     }
 
     /**

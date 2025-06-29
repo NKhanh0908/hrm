@@ -1,5 +1,6 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.contractDTO.ContractDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeDTO;
@@ -47,6 +48,24 @@ public class EmployeeMapper {
                 .stream()
                 .map(this::toEmployeeDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PageDTO<EmployeeDTO> toEmployeePageDTO(Page<Employees> employeesPage) {
+        return PageDTO.<EmployeeDTO>builder()
+                .content(
+                        employeesPage.getContent()
+                                .stream()
+                                .map(this::toEmployeeDTO)
+                                .toList()
+                )
+                .page(employeesPage.getNumber())
+                .size(employeesPage.getSize())
+                .totalElements(employeesPage.getTotalElements())
+                .totalPages(employeesPage.getTotalPages())
+                .first(employeesPage.isFirst())
+                .last(employeesPage.isLast())
+                .empty(employeesPage.isEmpty())
+                .build();
     }
 
     // Convert DTO to entity

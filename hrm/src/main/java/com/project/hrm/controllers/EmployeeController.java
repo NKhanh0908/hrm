@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeFilter;
@@ -87,14 +88,14 @@ public class EmployeeController {
 
         @PostMapping("/filter")
         @Operation(summary = "Filter employees", description = "Returns a list of employees based on the provided filter criteria", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Employee filter criteria", required = true, content = @Content(schema = @Schema(implementation = EmployeeFilter.class))), responses = {
-                        @ApiResponse(responseCode = "200", description = "Employees filtered successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = EmployeeDTO.class))))
+                        @ApiResponse(responseCode = "200", description = "Employees filtered successfully", content = @Content(schema = @Schema(implementation = PageDTO.class)))
         })
-        public ResponseEntity<APIResponse<List<EmployeeDTO>>> filter(
+        public ResponseEntity<APIResponse<PageDTO<EmployeeDTO>>> filter(
                         @RequestBody EmployeeFilter employeeFilter,
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
 
-                List<EmployeeDTO> results = employeeService.filter(employeeFilter, page, size);
+                PageDTO<EmployeeDTO> results = employeeService.filter(employeeFilter, page, size);
                 return ResponseEntity.ok(new APIResponse<>(true, "Employees filtered successfully", results, null,
                                 request.getRequestURI()));
         }
