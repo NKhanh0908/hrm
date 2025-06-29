@@ -1,5 +1,6 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramCreateDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramDTO;
 import com.project.hrm.entities.TrainingProgram;
@@ -49,6 +50,20 @@ public class TrainingProgramMapper {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
+    public PageDTO<TrainingProgramDTO> toTrainingProgramPageDTO(Page<TrainingProgram> page) {
+        return PageDTO.<TrainingProgramDTO>builder()
+                .content(page.getContent()
+                        .stream()
+                        .map(this::convertToDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
+    }
+
 
 
 }

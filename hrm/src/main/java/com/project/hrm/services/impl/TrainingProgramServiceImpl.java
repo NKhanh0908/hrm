@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramCreateDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramFilter;
@@ -21,8 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -131,7 +130,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<TrainingProgramDTO> filter(TrainingProgramFilter trainingProgramFilter, int page, int size) {
+    public PageDTO<TrainingProgramDTO> filter(TrainingProgramFilter trainingProgramFilter, int page, int size) {
         log.info("Filtering training programs: {}", trainingProgramFilter);
 
         Specification<TrainingProgram> trainingProgramSpecification = TrainingProgramSpecification.filter((trainingProgramFilter));

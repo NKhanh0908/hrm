@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramCreateDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramFilter;
@@ -85,15 +86,15 @@ public class TrainingProgramController {
                     content = @Content(schema = @Schema(implementation = TrainingProgramFilter.class))),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Training programs filtered successfully",
-                            content = @Content(schema = @Schema(implementation = TrainingProgramDTO.class)))
+                            content = @Content(schema = @Schema(implementation = PageDTO.class)))
             })
-    public ResponseEntity<APIResponse<List<TrainingProgramDTO>>> filter(
+    public ResponseEntity<APIResponse<PageDTO<TrainingProgramDTO>>> filter(
             @RequestBody TrainingProgramFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
 
-        List<TrainingProgramDTO> result = trainingProgramService.filter(filter, page, size);
+        PageDTO<TrainingProgramDTO> result = trainingProgramService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Training programs filtered successfully", result, null, request.getRequestURI()));
     }
 }

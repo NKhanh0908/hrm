@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramCreateDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramDTO;
 import com.project.hrm.dto.trainingProgramDTO.TrainingProgramFilter;
@@ -19,5 +20,5 @@ public interface TrainingProgramService {
 
     TrainingProgramDTO getDTOById(Integer id);
 
-    List<TrainingProgramDTO> filter(TrainingProgramFilter trainingProgramFilter, int page, int size);
+    PageDTO<TrainingProgramDTO> filter(TrainingProgramFilter trainingProgramFilter, int page, int size);
 }
