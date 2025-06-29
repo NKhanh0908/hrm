@@ -1,9 +1,8 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.candidateProfileDTO.*;
 import com.project.hrm.entities.CandidateProfile;
-
-import java.util.List;
 
 public interface CandidateProfileService {
     CandidateProfileDTO create(CandidateProfileCreateDTO dto);
@@ -20,6 +19,6 @@ public interface CandidateProfileService {
 
     CandidateProfile getEntityByApplyId(Integer applyId);
 
-    List<CandidateProfileDTO> filter(CandidateProfileFilter candidateProfileFilter, int page, int size);
+    PageDTO<CandidateProfileDTO> filter(CandidateProfileFilter candidateProfileFilter, int page, int size);
 
 }

@@ -1,5 +1,6 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileCreateDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileUpdateDTO;
@@ -68,6 +69,19 @@ public class CandidateProfileMapper {
         return candidateProfilePage.getContent().stream()
                 .map(this::toCandidateProfileDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PageDTO<CandidateProfileDTO> toCandidateProfilePageDTO(Page<CandidateProfile> page) {
+        return PageDTO.<CandidateProfileDTO>builder()
+                .content(page.getContent()
+                        .stream()
+                        .map(this::toCandidateProfileDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
     }
 
 }

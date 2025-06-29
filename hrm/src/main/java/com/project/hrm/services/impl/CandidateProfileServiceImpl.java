@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileCreateDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileFilter;
@@ -21,8 +22,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -121,13 +120,13 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
      * Filters candidate profiles based on the provided filter criteria, with pagination.
      *
      * @param candidateProfileFilter the filter object containing search criteria such as name, email, position, etc.
-     * @param page the zero-based page index to retrieve.
-     * @param size the number of records per page.
+     * @param page                   the zero-based page index to retrieve.
+     * @param size                   the number of records per page.
      * @return a list of {@link CandidateProfileDTO} that match the filter criteria.
      */
     @Transactional(readOnly = true)
     @Override
-    public List<CandidateProfileDTO> filter(CandidateProfileFilter candidateProfileFilter, int page, int size) {
+    public PageDTO<CandidateProfileDTO> filter(CandidateProfileFilter candidateProfileFilter, int page, int size) {
         log.info("Filter CandidateProfile");
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
@@ -135,7 +134,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
 
         Page<CandidateProfile> pageResult = candidateProfileRepository.findAll(spec, pageable);
 
-        return candidateProfileMapper.convertPageToList(pageResult);
+        return candidateProfileMapper.toCandidateProfilePageDTO(pageResult);
     }
 
     /**

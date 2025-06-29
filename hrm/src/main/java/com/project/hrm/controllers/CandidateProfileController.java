@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileCreateDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileFilter;
@@ -76,14 +77,14 @@ public class CandidateProfileController {
 
         @PostMapping("/filter")
         @Operation(summary = "Filter Candidate Profiles", description = "Returns a filtered list of candidate profiles based on various criteria such as name, email, skills, etc.", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filtering criteria for candidate profiles", required = true, content = @Content(schema = @Schema(implementation = CandidateProfileFilter.class))), responses = {
-                        @ApiResponse(responseCode = "200", description = "Candidate profiles filtered successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CandidateProfileDTO.class))))
+                        @ApiResponse(responseCode = "200", description = "Candidate profiles filtered successfully", content = @Content(schema = @Schema(implementation = PageDTO.class)))
         })
-        public ResponseEntity<APIResponse<List<CandidateProfileDTO>>> filter(
+        public ResponseEntity<APIResponse<PageDTO<CandidateProfileDTO>>> filter(
                         @RequestBody CandidateProfileFilter candidateProfileFilter,
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
 
-                List<CandidateProfileDTO> results = candidateProfileService.filter(candidateProfileFilter, page, size);
+                PageDTO<CandidateProfileDTO> results = candidateProfileService.filter(candidateProfileFilter, page, size);
                 return ResponseEntity.ok(new APIResponse<>(true, "Candidate profiles filtered successfully", results,
                                 null, request.getRequestURI()));
         }
