@@ -450,9 +450,9 @@ public class ContractServiceImpl implements ContractService {
         data.put("contractTitle", contract.getTitle());
         data.put("baseSalary", formatCurrency(contract.getBaseSalary()));
         data.put("typeContract", contract.getTitle()); // hoặc có thể là contract type riêng
-        data.put("fromDate", contract.getStartDate() != null ?
+        data.put("startDate", contract.getStartDate() != null ?
                 contract.getStartDate().format(DATE_FORMATTER) : "");
-        data.put("toDate", contract.getEndDate() != null ?
+        data.put("endDate", contract.getEndDate() != null ?
                 contract.getEndDate().format(DATE_FORMATTER) : "");
         data.put("description", contract.getDescription());
         data.put("status", contract.getStatus());
