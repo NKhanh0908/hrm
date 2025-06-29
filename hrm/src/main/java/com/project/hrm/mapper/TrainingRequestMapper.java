@@ -1,5 +1,6 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestCreateDTO;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestDTO;
 import com.project.hrm.entities.TrainingRequest;
@@ -49,4 +50,18 @@ public class TrainingRequestMapper {
                 .stream().map(this::convertEntityToDTO)
                 .collect(Collectors.toList());
     }
+
+    public PageDTO<TrainingRequestDTO> toTrainingRequestPageDTO(Page<TrainingRequest> page) {
+        return PageDTO.<TrainingRequestDTO>builder()
+                .content(page.getContent()
+                        .stream()
+                        .map(this::convertEntityToDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
+    }
+
 }

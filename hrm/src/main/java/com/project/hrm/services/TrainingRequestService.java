@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestCreateDTO;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestDTO;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestFilter;
@@ -21,5 +22,5 @@ public interface TrainingRequestService {
 
     TrainingRequestDTO getDTOById(Integer id);
 
-    List<TrainingRequestDTO> filter(TrainingRequestFilter trainingRequestFilter, int page, int size);
+    PageDTO<TrainingRequestDTO> filter(TrainingRequestFilter trainingRequestFilter, int page, int size);
 }

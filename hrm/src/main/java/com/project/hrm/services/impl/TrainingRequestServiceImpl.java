@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestCreateDTO;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestDTO;
 import com.project.hrm.dto.trainingRequestDTO.TrainingRequestFilter;
@@ -192,7 +193,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<TrainingRequestDTO> filter(TrainingRequestFilter trainingRequestFilter, int page, int size) {
+    public PageDTO<TrainingRequestDTO> filter(TrainingRequestFilter trainingRequestFilter, int page, int size) {
         log.info("Filtering TrainingRequests with filter: {}, page: {}, size: {}",
                 trainingRequestFilter, page, size);
 
@@ -200,9 +201,6 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
         Pageable pageable = PageRequest.of(page, size);
         Page<TrainingRequest> pageResult = trainingRequestRepository.findAll(specification, pageable);
 
-        List<TrainingRequestDTO> dtos = trainingRequestMapper.convertPageToListDTO(pageResult);
-        log.info("Found {} training requests matching filter", dtos.size());
-
-        return dtos;
+        return trainingRequestMapper.toTrainingRequestPageDTO(pageResult);
     }
 }
