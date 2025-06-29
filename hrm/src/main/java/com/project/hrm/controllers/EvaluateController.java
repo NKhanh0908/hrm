@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateFilter;
@@ -75,13 +76,13 @@ public class EvaluateController {
 
         @PostMapping("/filter")
         @Operation(summary = "Filter evaluations", description = "Filters evaluations based on various criteria", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filter criteria", required = true, content = @Content(schema = @Schema(implementation = EvaluateFilter.class))), responses = {
-                        @ApiResponse(responseCode = "200", description = "Evaluations filtered successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = EvaluateDTO.class))))
+                        @ApiResponse(responseCode = "200", description = "Evaluations filtered successfully", content = @Content(schema = @Schema(implementation = PageDTO.class)))
         })
-        public ResponseEntity<APIResponse<List<EvaluateDTO>>> filter(
+        public ResponseEntity<APIResponse<PageDTO<EvaluateDTO>>> filter(
                         @RequestBody EvaluateFilter filter,
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
-                List<EvaluateDTO> results = evaluateService.filter(filter, page, size);
+                PageDTO<EvaluateDTO> results = evaluateService.filter(filter, page, size);
                 return ResponseEntity.ok(new APIResponse<>(true, "Evaluations filtered successfully", results, null,
                                 request.getRequestURI()));
         }

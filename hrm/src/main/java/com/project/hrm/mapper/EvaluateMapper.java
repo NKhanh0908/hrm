@@ -1,5 +1,6 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.entities.CandidateProfile;
@@ -45,5 +46,17 @@ public class EvaluateMapper {
                 .stream()
                 .map(this::toEvaluateDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PageDTO<EvaluateDTO> toEvaluatePageDTO(Page<Evaluate> page) {
+        return PageDTO.<EvaluateDTO>builder()
+                .content(page.getContent().stream()
+                        .map(this::toEvaluateDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
     }
 }

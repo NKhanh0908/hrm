@@ -1,10 +1,10 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateFilter;
 import com.project.hrm.dto.evaluateDTO.EvaluateUpdateDTO;
-import com.project.hrm.entities.Account;
 import com.project.hrm.entities.CandidateProfile;
 import com.project.hrm.entities.Evaluate;
 import com.project.hrm.exceptions.CustomException;
@@ -23,12 +23,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -51,14 +47,14 @@ public class EvaluateServiceImpl implements EvaluateService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<EvaluateDTO> filter(EvaluateFilter evaluateFilter, int page, int size) {
+    public PageDTO<EvaluateDTO> filter(EvaluateFilter evaluateFilter, int page, int size) {
         log.info("Filter Evaluate");
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Specification<Evaluate> spec = EvaluateSpecification.filter(evaluateFilter);
         Page<Evaluate> pageResult = evaluateRepository.findAll(spec, pageable);
 
-        return evaluateMapper.convertPageToList(pageResult);
+        return evaluateMapper.toEvaluatePageDTO(pageResult);
     }
 
     /**

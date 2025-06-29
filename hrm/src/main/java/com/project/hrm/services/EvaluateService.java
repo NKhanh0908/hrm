@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.dto.evaluateDTO.EvaluateFilter;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Service
 public interface EvaluateService {
-    List<EvaluateDTO> filter(EvaluateFilter evaluateFilter , int page, int size);
+    PageDTO<EvaluateDTO> filter(EvaluateFilter evaluateFilter , int page, int size);
 
     EvaluateDTO getById(Integer id);
 
