@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementFilter;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
@@ -80,13 +81,13 @@ public class RecruitmentRequirementsController {
 
         @PostMapping("/filter")
         @Operation(summary = "Filter recruitment requirements", description = "Filters recruitment requirements based on provided criteria", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filter parameters", required = true, content = @Content(schema = @Schema(implementation = RecruitmentRequirementFilter.class))), responses = {
-                        @ApiResponse(responseCode = "200", description = "Filter successful", content = @Content(array = @ArraySchema(schema = @Schema(implementation = RecruitmentRequirementsDTO.class))))
+                        @ApiResponse(responseCode = "200", description = "Filter successful", content = @Content(schema = @Schema(implementation = PageDTO.class)))
         })
-        public ResponseEntity<APIResponse<List<RecruitmentRequirementsDTO>>> filter(
+        public ResponseEntity<APIResponse<PageDTO<RecruitmentRequirementsDTO>>> filter(
                         @RequestBody RecruitmentRequirementFilter filter,
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
-                List<RecruitmentRequirementsDTO> result = recruitmentRequirementService
+                PageDTO<RecruitmentRequirementsDTO> result = recruitmentRequirementService
                                 .filterRecruitmentRequirements(filter, page, size);
                 return ResponseEntity
                                 .ok(new APIResponse<>(true, "Filter completed", result, null, request.getRequestURI()));

@@ -1,10 +1,10 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementFilter;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsUpdateDTO;
-import com.project.hrm.entities.Account;
 import com.project.hrm.entities.RecruitmentRequirements;
 import com.project.hrm.entities.Role;
 import com.project.hrm.enums.RecruitmentRequirementsStatus;
@@ -13,7 +13,6 @@ import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.RecruitmentRequirementsMapper;
 import com.project.hrm.repositories.RecruitmentRequirementsRepository;
 import com.project.hrm.services.AccountService;
-import com.project.hrm.services.DepartmentService;
 import com.project.hrm.services.RecruitmentRequirementService;
 import com.project.hrm.services.RoleService;
 import com.project.hrm.specifications.RecruitmentRequirementsSpecification;
@@ -25,12 +24,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -47,13 +42,13 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
      * Filters recruitment requirements based on the provided filter criteria with pagination support.
      *
      * @param recruitmentRequirementFilter the filter object containing search criteria such as position, status, date, etc.
-     * @param page the zero-based page index to retrieve.
-     * @param size the number of records per page.
+     * @param page                         the zero-based page index to retrieve.
+     * @param size                         the number of records per page.
      * @return a list of {@link RecruitmentRequirementsDTO} that match the filter criteria.
      */
     @Transactional(readOnly = true)
     @Override
-    public List<RecruitmentRequirementsDTO> filterRecruitmentRequirements(RecruitmentRequirementFilter recruitmentRequirementFilter, int page, int size) {
+    public PageDTO<RecruitmentRequirementsDTO> filterRecruitmentRequirements(RecruitmentRequirementFilter recruitmentRequirementFilter, int page, int size) {
         log.info("Filter Recruitment Requirements");
         
         Specification<RecruitmentRequirements> recruitmentRequirementsSpecification
@@ -65,7 +60,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
                 = recruitmentRequirementsRepository.findAll(recruitmentRequirementsSpecification, pageable);
 
         return recruitmentRequirementsMapper
-                .toPageEntityToPageDTO(recruitmentRequirementsPage);
+                .toRecruitmentRequirementsPageDTO(recruitmentRequirementsPage);
     }
 
     /**

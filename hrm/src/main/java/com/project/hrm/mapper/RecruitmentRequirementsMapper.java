@@ -1,5 +1,6 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.dto.recruitmentDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.entities.Departments;
@@ -54,5 +55,17 @@ public class RecruitmentRequirementsMapper {
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PageDTO<RecruitmentRequirementsDTO> toRecruitmentRequirementsPageDTO(Page<RecruitmentRequirements> page) {
+        return PageDTO.<RecruitmentRequirementsDTO>builder()
+                .content(page.getContent().stream()
+                        .map(this::toDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
     }
 }
