@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.approvalsDTO.ApprovalsCreateDTO;
 import com.project.hrm.dto.approvalsDTO.ApprovalsDTO;
 import com.project.hrm.dto.approvalsDTO.ApprovalsFilter;
@@ -24,7 +25,7 @@ public interface ApprovalsService {
 
     Approvals getEntityById(Integer id);
 
-    List<ApprovalsDTO> filter(ApprovalsFilter approvalsFilter, int page, int size);
+    PageDTO<ApprovalsDTO> filter(ApprovalsFilter approvalsFilter, int page, int size);
 
-    List<ApprovalsDTO> filterByApprovalDateRange(LocalDateTime fromDate, LocalDateTime toDate, int page, int size);
+    PageDTO<ApprovalsDTO> filterByApprovalDateRange(LocalDateTime fromDate, LocalDateTime toDate, int page, int size);
 }

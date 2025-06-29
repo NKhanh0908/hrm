@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.approvalsDTO.ApprovalsCreateDTO;
 import com.project.hrm.dto.approvalsDTO.ApprovalsDTO;
 import com.project.hrm.dto.approvalsDTO.ApprovalsFilter;
@@ -17,6 +18,7 @@ import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -165,18 +167,16 @@ public class ApprovalsServiceImpl implements ApprovalsService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<ApprovalsDTO> filter(ApprovalsFilter approvalsFilter, int page, int size) {
+    public PageDTO<ApprovalsDTO> filter(ApprovalsFilter approvalsFilter, int page, int size) {
         log.info("filter: {}", approvalsFilter);
 
         Pageable pageable = PageRequest.of(page, size);
 
         Specification<Approvals> approvalsSpecification = ApprovalsSpecifications.filter(approvalsFilter);
 
-        return approvalsRepository.findAll(approvalsSpecification, pageable)
-                .getContent()
-                .stream()
-                .map(approvalsMapper::toDTO)
-                .collect(Collectors.toList());
+        Page<Approvals> approvals = approvalsRepository.findAll(approvalsSpecification, pageable);
+
+        return approvalsMapper.toApprovalsPageDTO(approvals);
     }
 
     /**
@@ -190,14 +190,13 @@ public class ApprovalsServiceImpl implements ApprovalsService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<ApprovalsDTO> filterByApprovalDateRange(LocalDateTime fromDate, LocalDateTime toDate, int page, int size) {
+    public PageDTO<ApprovalsDTO> filterByApprovalDateRange(LocalDateTime fromDate, LocalDateTime toDate, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+
         Specification<Approvals> spec = ApprovalsSpecifications.filterByApprovalDateRange(fromDate, toDate);
 
-        return approvalsRepository.findAll(spec, pageable)
-                .getContent()
-                .stream()
-                .map(approvalsMapper::toDTO)
-                .collect(Collectors.toList());
+        Page<Approvals> approvalsPageDTO = approvalsRepository.findAll(spec, pageable);
+
+        return approvalsMapper.toApprovalsPageDTO(approvalsPageDTO);
     }
 }

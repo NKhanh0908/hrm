@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.approvalsDTO.ApprovalsCreateDTO;
 import com.project.hrm.dto.approvalsDTO.ApprovalsDTO;
 import com.project.hrm.dto.approvalsDTO.ApprovalsFilter;
@@ -109,14 +110,14 @@ public class ApprovalsController {
                     content = @Content(schema = @Schema(implementation = ApprovalsFilter.class))
             ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered approvals list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ApprovalsDTO.class))))
+                    @ApiResponse(responseCode = "200", description = "Filtered approvals list", content = @Content(schema = @Schema(implementation = PageDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<List<ApprovalsDTO>>> filter(@RequestBody ApprovalsFilter filter,
+    public ResponseEntity<APIResponse<PageDTO<ApprovalsDTO>>> filter(@RequestBody ApprovalsFilter filter,
                                                                   @RequestParam(defaultValue = "0") int page,
                                                                   @RequestParam(defaultValue = "10") int size,
                                                                   HttpServletRequest request) {
-        List<ApprovalsDTO> result = approvalsService.filter(filter, page, size);
+        PageDTO<ApprovalsDTO> result = approvalsService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter Approvals successfully", result, null, request.getRequestURI()));
     }
 
@@ -130,17 +131,17 @@ public class ApprovalsController {
                     @Parameter(name = "size", description = "Page size", required = false)
             },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered approvals list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ApprovalsDTO.class))))
+                    @ApiResponse(responseCode = "200", description = "Filtered approvals list", content = @Content(schema = @Schema(implementation = PageDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<List<ApprovalsDTO>>> filterByDateRange(
+    public ResponseEntity<APIResponse<PageDTO<ApprovalsDTO>>> filterByDateRange(
             @RequestParam(required = false) LocalDateTime fromDate,
             @RequestParam(required = false) LocalDateTime toDate,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request
     ) {
-        List<ApprovalsDTO> result = approvalsService.filterByApprovalDateRange(fromDate, toDate, page, size);
+        PageDTO<ApprovalsDTO> result = approvalsService.filterByApprovalDateRange(fromDate, toDate, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter approvals by approvalDate successfully", result, null, request.getRequestURI()));
     }
 }
