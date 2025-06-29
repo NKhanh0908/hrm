@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentCreateDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentFilter;
@@ -216,7 +217,7 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
      */
     @Transactional(readOnly = true)
     @Override
-    public List<TrainingEnrollmentDTO> filter(TrainingEnrollmentFilter trainingEnrollmentFilter, int page, int size) {
+    public PageDTO<TrainingEnrollmentDTO> filter(TrainingEnrollmentFilter trainingEnrollmentFilter, int page, int size) {
         log.info("Filtering TrainingEnrollments with filter: {}, page: {}, size: {}",
                 trainingEnrollmentFilter, page, size);
 
@@ -224,9 +225,6 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
         Pageable pageable = PageRequest.of(page, size);
         Page<TrainingEnrollment> pageResult = trainingEnrollmentRepository.findAll(specification, pageable);
 
-        List<TrainingEnrollmentDTO> dtos = trainingEnrollmentMapper.convertPageToListDTO(pageResult);
-        log.info("Found {} enrollments matching filter", dtos.size());
-
-        return dtos;
+        return trainingEnrollmentMapper.toTrainingEnrollmentPageDTO(pageResult);
     }
 }

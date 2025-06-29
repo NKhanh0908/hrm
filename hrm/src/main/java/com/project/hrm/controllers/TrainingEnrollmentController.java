@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentCreateDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentDTO;
 import com.project.hrm.dto.trainingEnrollmentDTO.TrainingEnrollmentFilter;
@@ -122,15 +123,15 @@ public class TrainingEnrollmentController {
                     @Parameter(name = "size", description = "Page size", example = "10")
             },
             responses = @ApiResponse(responseCode = "200", description = "Filtered training enrollment list",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TrainingEnrollmentDTO.class))))
+                    content = @Content(schema = @Schema(implementation = PageDTO.class)))
     )
     @PostMapping("/filter")
-    public ResponseEntity<APIResponse<List<TrainingEnrollmentDTO>>> filter(
+    public ResponseEntity<APIResponse<PageDTO<TrainingEnrollmentDTO>>> filter(
             @RequestBody TrainingEnrollmentFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
-        List<TrainingEnrollmentDTO> results = trainingEnrollmentService.filter(filter, page, size);
+        PageDTO<TrainingEnrollmentDTO> results = trainingEnrollmentService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter TrainingEnrollments successfully", results, null, request.getRequestURI()));
     }
 }
