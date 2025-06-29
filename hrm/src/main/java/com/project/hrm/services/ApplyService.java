@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.applyDTO.*;
 import com.project.hrm.dto.othersDTO.InterviewLetter;
 import com.project.hrm.entities.Apply;
@@ -28,7 +29,7 @@ public interface ApplyService {
 
     Integer getRoleIdByApplyId(Integer applyId);
 
-    List<ApplyDTO> filter(ApplyFilter applyFilter, int page, int size);
+    PageDTO<ApplyDTO> filter(ApplyFilter applyFilter, int page, int size);
 
 
 }

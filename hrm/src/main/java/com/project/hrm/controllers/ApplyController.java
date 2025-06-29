@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.applyDTO.*;
 import com.project.hrm.dto.othersDTO.InterviewLetter;
 import com.project.hrm.enums.ApplyStatus;
@@ -72,12 +73,12 @@ public class ApplyController {
                         @Parameter(name = "page", description = "Page number (0-based)", required = false, example = "0"),
                         @Parameter(name = "size", description = "Page size", required = false, example = "10")
         }, responses = {
-                        @ApiResponse(responseCode = "200", description = "Filtered apply list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ApplyDTO.class))))
+                        @ApiResponse(responseCode = "200", description = "Filtered apply list", content = @Content(schema = @Schema(implementation = PageDTO.class)))
         })
-        public ResponseEntity<APIResponse<List<ApplyDTO>>> filter(@RequestBody ApplyFilter applyFilter,
-                        @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
-                List<ApplyDTO> applyDTOList = applyService.filter(applyFilter, page, size);
+        public ResponseEntity<APIResponse<PageDTO<ApplyDTO>>> filter(@RequestBody ApplyFilter applyFilter,
+                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
+            PageDTO<ApplyDTO> applyDTOList = applyService.filter(applyFilter, page, size);
                 return ResponseEntity.ok(new APIResponse<>(true, "Filter Apply successfully", applyDTOList, null,
                                 request.getRequestURI()));
         }

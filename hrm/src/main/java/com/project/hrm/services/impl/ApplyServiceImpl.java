@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.applyDTO.*;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.dto.candidateProfileDTO.CandidateProfileUpdateDTO;
@@ -33,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -297,13 +297,13 @@ public class ApplyServiceImpl implements ApplyService {
      * Filters and retrieves a paginated list of ApplyDTOs based on the provided filter criteria.
      *
      * @param applyFilter the filter criteria including status, position, recruitment ID, etc.
-     * @param page the page number to retrieve (0-based).
-     * @param size the number of records per page.
+     * @param page        the page number to retrieve (0-based).
+     * @param size        the number of records per page.
      * @return a list of matching ApplyDTOs for the specified page.
      */
     @Transactional(readOnly = true)
     @Override
-    public List<ApplyDTO> filter(ApplyFilter applyFilter, int page, int size) {
+    public PageDTO<ApplyDTO> filter(ApplyFilter applyFilter, int page, int size) {
         log.info("Filter Apply");
 
         Specification<Apply> applySpecification = ApplySpecification.filter(applyFilter);
@@ -312,7 +312,7 @@ public class ApplyServiceImpl implements ApplyService {
 
         Page<Apply> applyPage = applyRepository.findAll(applySpecification, pageable);
 
-        return applyMapper.convertPageToList(applyPage);
+        return applyMapper.toApplyPageDTO(applyPage);
     }
 
 }

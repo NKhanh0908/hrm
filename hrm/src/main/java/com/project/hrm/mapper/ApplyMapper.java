@@ -1,5 +1,6 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.applyDTO.ApplyCreateDTO;
 import com.project.hrm.dto.applyDTO.ApplyDTO;
 import com.project.hrm.entities.Apply;
@@ -38,6 +39,21 @@ public class ApplyMapper {
                 .position(applyCreateDTO.getPosition())
                 .recruitment(recruitment)
                 .candidateProfile(candidateProfile)
+                .build();
+    }
+
+    public PageDTO<ApplyDTO> toApplyPageDTO(Page<Apply> applyPage){
+        return PageDTO.<ApplyDTO>builder()
+                .content(
+                        applyPage.getContent()
+                                .stream()
+                                .map(this::toDTO)
+                                .collect(Collectors.toList())
+                )
+                .page(applyPage.getNumber())
+                .size(applyPage.getSize())
+                .totalElements(applyPage.getTotalElements())
+                .totalPages(applyPage.getTotalPages())
                 .build();
     }
 
