@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,9 +22,8 @@ public class Employees {
     private String email;
     private String phone;
     private String gender;
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     private String address;
-    private String position;
     private String image;
     private String citizenIdentificationCard;
     @Enumerated(EnumType.STRING)
