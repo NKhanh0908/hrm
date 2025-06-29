@@ -1,8 +1,10 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.performanceReviewDetailDTO.PerformanceReviewDetailCreateDTO;
 import com.project.hrm.dto.performanceReviewDetailDTO.PerformanceReviewDetailDTO;
 import com.project.hrm.entities.PerformanceReviewDetail;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -38,5 +40,17 @@ public class PerformanceReviewDetailMapper {
         return performanceReviewDetailList.stream()
                 .map(this::convertEntityToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PageDTO<PerformanceReviewDetailDTO> toReviewDetailPageDTO(Page<PerformanceReviewDetail> page) {
+        return PageDTO.<PerformanceReviewDetailDTO>builder()
+                .content(page.getContent().stream()
+                        .map(this::convertEntityToDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.performanceReviewDetailDTO.PerformanceReviewDetailCreateDTO;
 import com.project.hrm.dto.performanceReviewDetailDTO.PerformanceReviewDetailDTO;
 import com.project.hrm.dto.performanceReviewDetailDTO.PerformanceReviewDetailFilter;
@@ -25,8 +26,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -127,13 +126,13 @@ public class PerformanceReviewDetailServiceImpl implements PerformanceReviewDeta
      * @return list of DTOs
      */
     @Override
-    public List<PerformanceReviewDetailDTO> filter(PerformanceReviewDetailFilter filter, int page, int size) {
+    public PageDTO<PerformanceReviewDetailDTO> filter(PerformanceReviewDetailFilter filter, int page, int size) {
         log.info("Filtering performance review details with filter: {}", filter);
 
         Specification<PerformanceReviewDetail> spec = PerformanceReviewDetailSpecification.filter(filter);
         Pageable pageable = PageRequest.of(page, size);
         Page<PerformanceReviewDetail> result = repo.findAll(spec, pageable);
 
-        return mapper.convertEntityListToDTOList(result.getContent());
+        return mapper.toReviewDetailPageDTO(result);
     }
 }
