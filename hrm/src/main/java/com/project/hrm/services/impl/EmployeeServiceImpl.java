@@ -67,7 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<EmployeeDTO> filterByDepartmentID(Integer departmentId, int page, int size) {
+    public PageDTO<EmployeeDTO> filterByDepartmentID(Integer departmentId, int page, int size) {
         log.info("Filtering employees by department ID: {}, page: {}, size: {}", departmentId, page, size);
 
         Pageable pageable = PageRequest.of(page, size);
@@ -75,7 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         log.info("Found {} employees in department {}", employeesPage.getTotalElements(), departmentId);
 
-        return employeeMapper.toEmployeeDTOList(employeesPage.getContent());
+        return employeeMapper.toEmployeePageDTO(employeesPage);
     }
 
     /**

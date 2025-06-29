@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -16,9 +18,8 @@ public class EmployeeCreateDTO {
     private String email;
     private String phone;
     private String gender;
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     private String address;
-    private String position;
     private MultipartFile image;
     private String citizenIdentificationCard;
     private String status;

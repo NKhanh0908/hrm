@@ -31,7 +31,6 @@ public class EmployeeMapper {
                 .dateOfBirth(employees.getDateOfBirth())
                 .citizenIdentificationCard(employees.getCitizenIdentificationCard())
                 .address(employees.getAddress())
-                .position(employees.getPosition())
                 .image(employees.getImage())
                 .status(employees.getStatus().toString())
                 .build();
@@ -62,13 +61,9 @@ public class EmployeeMapper {
                 .size(employeesPage.getSize())
                 .totalElements(employeesPage.getTotalElements())
                 .totalPages(employeesPage.getTotalPages())
-                .first(employeesPage.isFirst())
-                .last(employeesPage.isLast())
-                .empty(employeesPage.isEmpty())
                 .build();
     }
 
-    // Convert DTO to entity
     public Employees toEntity(EmployeeDTO employeeDTO) {
         return Employees.builder()
                 .id(employeeDTO.getId())
@@ -81,7 +76,6 @@ public class EmployeeMapper {
                 .dateOfBirth(employeeDTO.getDateOfBirth())
                 .citizenIdentificationCard(employeeDTO.getCitizenIdentificationCard())
                 .address(employeeDTO.getAddress())
-                .position(employeeDTO.getPosition())
                 .image(employeeDTO.getImage())
                 .build();
     }
@@ -97,7 +91,6 @@ public class EmployeeMapper {
                 .dateOfBirth(dto.getDateOfBirth())
                 .citizenIdentificationCard(dto.getCitizenIdentificationCard())
                 .address(dto.getAddress())
-                .position(dto.getPosition())
                 .build();
     }
 

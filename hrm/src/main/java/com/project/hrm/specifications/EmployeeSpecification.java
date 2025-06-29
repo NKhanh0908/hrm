@@ -34,7 +34,7 @@ public class EmployeeSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("gender"), employeeFilter.getGender()));
             }
 
-            if(employeeFilter.getAddress() != null && !employeeFilter.getAddress().isEmpty()){
+            if(employeeFilter.getAddress() != null){
                 predicates.add(criteriaBuilder.equal(root.get("address"), employeeFilter.getAddress()));
             }
 

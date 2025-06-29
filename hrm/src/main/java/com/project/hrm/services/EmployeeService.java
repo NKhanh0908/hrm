@@ -28,5 +28,5 @@ public interface EmployeeService {
 
     PageDTO<EmployeeDTO> filter(EmployeeFilter employeeFilter, int page, int size);
 
-    List<EmployeeDTO> filterByDepartmentID(Integer departmentId, int page, int size);
+    PageDTO<EmployeeDTO> filterByDepartmentID(Integer departmentId, int page, int size);
 }

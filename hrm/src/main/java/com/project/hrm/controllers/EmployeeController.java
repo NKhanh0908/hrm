@@ -110,16 +110,16 @@ public class EmployeeController {
                         @Parameter(name = "size", description = "Page size", example = "10")
                 },
                 responses = {
-                        @ApiResponse(responseCode = "200", description = "Successfully retrieved employee list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = EmployeeDTO.class))))
+                        @ApiResponse(responseCode = "200", description = "Successfully retrieved employee list", content = @Content(schema = @Schema(implementation = PageDTO.class)))
                 }
         )
-        public ResponseEntity<APIResponse<List<EmployeeDTO>>> filterByDepartmentId(
+        public ResponseEntity<APIResponse<PageDTO<EmployeeDTO>>> filterByDepartmentId(
                 @RequestParam Integer departmentId,
                 @RequestParam(defaultValue = "0") int page,
                 @RequestParam(defaultValue = "10") int size,
                 HttpServletRequest request) {
 
-                List<EmployeeDTO> employees = employeeService.filterByDepartmentID(departmentId, page, size);
+                PageDTO<EmployeeDTO> employees = employeeService.filterByDepartmentID(departmentId, page, size);
 
                 return ResponseEntity.ok(new APIResponse<>(
                         true,
