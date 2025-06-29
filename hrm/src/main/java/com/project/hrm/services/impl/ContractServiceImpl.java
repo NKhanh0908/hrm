@@ -396,14 +396,6 @@ public class ContractServiceImpl implements ContractService {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         JasperExportManager.exportReportToPdfStream(page1Print, outputStream);
 
-//        Map<String, Object> reportData = createReportData();
-//
-//        JasperReport page1Report = compileReport("test.jrxml");
-//        JasperPrint page1Print = JasperFillManager.fillReport(page1Report, reportData,
-//                new JRBeanCollectionDataSource(List.of(reportData)));
-//
-//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        JasperExportManager.exportReportToPdfStream(page1Print, outputStream);
         return outputStream.toByteArray();
     }
 
