@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.contractDTO.ContractCreateDTO;
 import com.project.hrm.dto.contractDTO.ContractDTO;
 import com.project.hrm.dto.contractDTO.ContractFilter;
@@ -333,14 +334,14 @@ public class ContractServiceImpl implements ContractService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<ContractDTO> filter(ContractFilter contractFilter, int page, int size) {
+    public PageDTO<ContractDTO> filter(ContractFilter contractFilter, int page, int size) {
         log.info("Filter contract");
 
         Specification<Contracts> spec = ContractSpecification.filter(contractFilter);
         Pageable pageable = PageRequest.of(page, size);
         Page<Contracts> contractsPage = contractRepository.findAll(spec, pageable);
 
-        return contractMapper.convertPageToList(contractsPage);
+        return contractMapper.toContractPageDTO(contractsPage);
     }
 
     /**

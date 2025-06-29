@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.contractDTO.ContractCreateDTO;
 import com.project.hrm.dto.contractDTO.ContractDTO;
 import com.project.hrm.dto.contractDTO.ContractFilter;
@@ -85,14 +86,14 @@ public class ContractsController {
                         @Parameter(name = "page", description = "Page number (0-based)", example = "0"),
                         @Parameter(name = "size", description = "Page size", example = "10")
         }, responses = {
-                        @ApiResponse(responseCode = "200", description = "Contracts filtered successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ContractDTO.class))))
+                        @ApiResponse(responseCode = "200", description = "Contracts filtered successfully", content = @Content(schema = @Schema(implementation = PageDTO.class)))
         })
-        public ResponseEntity<APIResponse<List<ContractDTO>>> filter(
+        public ResponseEntity<APIResponse<PageDTO<ContractDTO>>> filter(
                         @RequestBody ContractFilter filter,
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
 
-                List<ContractDTO> results = contractService.filter(filter, page, size);
+                PageDTO<ContractDTO> results = contractService.filter(filter, page, size);
                 return ResponseEntity.ok(new APIResponse<>(true, "Contracts filtered successfully", results, null,
                                 request.getRequestURI()));
         }

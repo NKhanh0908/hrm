@@ -1,5 +1,6 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.contractDTO.ContractCreateDTO;
 import com.project.hrm.dto.contractDTO.ContractDTO;
 import com.project.hrm.entities.Contracts;
@@ -54,5 +55,18 @@ public class ContractMapper {
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PageDTO<ContractDTO> toContractPageDTO(Page<Contracts> page) {
+        return PageDTO.<ContractDTO>builder()
+                .content(page.getContent()
+                        .stream()
+                        .map(this::toDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
     }
 }

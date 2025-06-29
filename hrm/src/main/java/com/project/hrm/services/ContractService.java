@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.contractDTO.ContractCreateDTO;
 import com.project.hrm.dto.contractDTO.ContractDTO;
 import com.project.hrm.dto.contractDTO.ContractFilter;
@@ -24,7 +25,7 @@ public interface ContractService {
 
     Contracts getEntityById(Integer id);
 
-    List<ContractDTO> filter(ContractFilter contractFilter, int page, int size);
+    PageDTO<ContractDTO> filter(ContractFilter contractFilter, int page, int size);
 
     ContractDTO getCurrentActiveContract(Integer employeeId);
 
