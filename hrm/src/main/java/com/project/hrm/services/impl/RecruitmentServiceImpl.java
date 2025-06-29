@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.recruitmentDTO.*;
 import com.project.hrm.entities.Account;
 import com.project.hrm.entities.Recruitment;
@@ -25,8 +26,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -49,7 +48,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size) {
+    public PageDTO<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size) {
         log.info("Filter Recruitment");
         Specification<Recruitment> recruitmentSpecification = RecruitmentSpecification.filter(recruitmentFilter);
 
@@ -57,7 +56,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         Page<Recruitment> recruitmentPage = recruitmentRepository.findAll(recruitmentSpecification, pageable);
 
-        return recruitmentMapper.convertPageEntityToPageDTO(recruitmentPage);
+        return recruitmentMapper.toRecruitmentPageDTO(recruitmentPage);
     }
 
     /**

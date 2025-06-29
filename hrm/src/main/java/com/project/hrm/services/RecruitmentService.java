@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.recruitmentDTO.*;
 import com.project.hrm.entities.Recruitment;
 import com.project.hrm.enums.RecruitmentStatus;
@@ -23,6 +24,6 @@ public interface RecruitmentService {
 
     RecruitmentDTO getDTOById(Integer id);
 
-    List<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size);
+    PageDTO<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size);
 
 }

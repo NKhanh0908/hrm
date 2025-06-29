@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.recruitmentDTO.*;
 import com.project.hrm.enums.RecruitmentStatus;
 import com.project.hrm.services.RecruitmentService;
@@ -76,13 +77,13 @@ public class RecruitmentController {
 
         @PostMapping("/filter")
         @Operation(summary = "Filter recruitment posts", description = "Filters recruitment posts based on given criteria", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filter conditions", required = true, content = @Content(schema = @Schema(implementation = RecruitmentFilter.class))), responses = {
-                        @ApiResponse(responseCode = "200", description = "Recruitments filtered successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = RecruitmentDTO.class))))
+                        @ApiResponse(responseCode = "200", description = "Recruitments filtered successfully", content = @Content(schema = @Schema(implementation = PageDTO.class)))
         })
-        public ResponseEntity<APIResponse<List<RecruitmentDTO>>> filter(
+        public ResponseEntity<APIResponse<PageDTO<RecruitmentDTO>>> filter(
                         @RequestBody RecruitmentFilter filter,
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
-                List<RecruitmentDTO> results = recruitmentService.filter(filter, page, size);
+                PageDTO<RecruitmentDTO> results = recruitmentService.filter(filter, page, size);
                 return ResponseEntity.ok(new APIResponse<>(true, "Recruitments filtered successfully", results, null,
                                 request.getRequestURI()));
         }
