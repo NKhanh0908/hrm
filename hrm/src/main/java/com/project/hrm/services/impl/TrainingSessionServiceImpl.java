@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionCreateDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionFilter;
@@ -171,7 +172,7 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<TrainingSessionDTO> filter(TrainingSessionFilter trainingSessionFilter, int page, int size) {
+    public PageDTO<TrainingSessionDTO> filter(TrainingSessionFilter trainingSessionFilter, int page, int size) {
         log.info("Filtering training sessions with filter: {}, page: {}, size: {}", trainingSessionFilter, page, size);
 
         Specification<TrainingSession> trainingSessionSpecification = TrainingSessionSpecification.filter(trainingSessionFilter);
@@ -180,6 +181,6 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
 
         Page<TrainingSession> trainingSessionPage = trainingSessionRepository.findAll(trainingSessionSpecification, pageable);
 
-        return trainingSessionMapper.convertListEntityToListDTO(trainingSessionPage.getContent());
+        return trainingSessionMapper.toTrainingSessionPageDTO(trainingSessionPage);
     }
 }

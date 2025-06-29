@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionCreateDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionFilter;
@@ -131,15 +132,15 @@ public class TrainingSessionController {
             },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Filtered list of training sessions",
-                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = TrainingSessionDTO.class))))
+                            content = @Content(schema = @Schema(implementation = PageDTO.class)))
             })
-    public ResponseEntity<APIResponse<List<TrainingSessionDTO>>> filterTrainingSessions(
+    public ResponseEntity<APIResponse<PageDTO<TrainingSessionDTO>>> filterTrainingSessions(
             @RequestBody TrainingSessionFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
 
-        List<TrainingSessionDTO> result = trainingSessionService.filter(filter, page, size);
+        PageDTO<TrainingSessionDTO> result = trainingSessionService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true,
                 "Filtered training sessions retrieved successfully",
                 result, null, request.getRequestURI()));

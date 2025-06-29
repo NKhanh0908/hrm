@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionCreateDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionDTO;
 import com.project.hrm.dto.trainingSession.TrainingSessionFilter;
@@ -21,5 +22,5 @@ public interface TrainingSessionService {
 
     List<TrainingSessionDTO> getAllByTrainingProgramId(Integer trainingProgramId);
 
-    List<TrainingSessionDTO> filter(TrainingSessionFilter trainingSessionFilter, int page, int size);
+    PageDTO<TrainingSessionDTO> filter(TrainingSessionFilter trainingSessionFilter, int page, int size);
 }
