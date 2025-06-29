@@ -1,5 +1,6 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.attendanceDTO.*;
 import com.project.hrm.entities.Attendance;
 import com.project.hrm.entities.Employees;
@@ -24,9 +25,9 @@ public interface AttendanceService {
 
     Attendance getEntityById(Integer id);
 
-    List<AttendanceDTO> filter(AttendanceFilter attendanceFilter, int page, int size);
+    PageDTO<AttendanceDTO> filter(AttendanceFilter attendanceFilter, int page, int size);
 
-    List<AttendanceDTO> filterWithRange(AttendanceFilterWithRange attendanceFilterWithRange, int page, int size);
+    PageDTO<AttendanceDTO> filterWithRange(AttendanceFilterWithRange attendanceFilterWithRange, int page, int size);
 
     AttendanceDTO createWhenClickCheckIn(Integer employeesId);
 

@@ -1,9 +1,11 @@
 package com.project.hrm.mapper;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.attendanceDTO.AttendanceCreateDTO;
 import com.project.hrm.dto.attendanceDTO.AttendanceDTO;
 import com.project.hrm.entities.Attendance;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -43,6 +45,19 @@ public class AttendanceMapper {
                 .regularTime(attendanceCreateDTO.getRegularTime())
                 .otherTime(attendanceCreateDTO.getOtherTime())
                 .shiftType(attendanceCreateDTO.getShiftType())
+                .build();
+    }
+
+    public PageDTO<AttendanceDTO> toAttendancePageDTO(Page<Attendance> page) {
+        return PageDTO.<AttendanceDTO>builder()
+                .content(page.getContent()
+                        .stream()
+                        .map(this::toDTO)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
                 .build();
     }
 }

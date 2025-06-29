@@ -1,6 +1,7 @@
 package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.attendanceDTO.*;
 import com.project.hrm.services.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -101,14 +102,14 @@ public class AttendanceController {
                     content = @Content(schema = @Schema(implementation = AttendanceFilter.class))
             ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered attendances", content = @Content(array = @ArraySchema(schema = @Schema(implementation = AttendanceDTO.class))))
+                    @ApiResponse(responseCode = "200", description = "Filtered attendances", content = @Content(schema = @Schema(implementation = AttendanceDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<List<AttendanceDTO>>> filter(@RequestBody AttendanceFilter filter,
-                                                                   @RequestParam(defaultValue = "0") int page,
-                                                                   @RequestParam(defaultValue = "10") int size,
-                                                                   HttpServletRequest request) {
-        List<AttendanceDTO> list = attendanceService.filter(filter, page, size);
+    public ResponseEntity<APIResponse<PageDTO<AttendanceDTO>>> filter(@RequestBody AttendanceFilter filter,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "10") int size,
+                                                                      HttpServletRequest request) {
+        PageDTO<AttendanceDTO> list = attendanceService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter attendances successfully", list, null, request.getRequestURI()));
     }
 
@@ -126,14 +127,14 @@ public class AttendanceController {
                     @Parameter(name = "size", description = "Page size")
             },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered attendances with range", content = @Content(array = @ArraySchema(schema = @Schema(implementation = AttendanceDTO.class))))
+                    @ApiResponse(responseCode = "200", description = "Filtered attendances with range", content = @Content(schema = @Schema(implementation = PageDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<List<AttendanceDTO>>> filterRange(@RequestBody AttendanceFilterWithRange filterWithRange,
+    public ResponseEntity<APIResponse<PageDTO<AttendanceDTO>>> filterRange(@RequestBody AttendanceFilterWithRange filterWithRange,
                                                                         @RequestParam(defaultValue = "0") int page,
                                                                         @RequestParam(defaultValue = "10") int size,
                                                                         HttpServletRequest request) {
-        List<AttendanceDTO> list = attendanceService.filterWithRange(filterWithRange, page, size);
+        PageDTO<AttendanceDTO> list = attendanceService.filterWithRange(filterWithRange, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter attendances with range successfully", list, null, request.getRequestURI()));
     }
 

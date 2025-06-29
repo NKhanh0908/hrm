@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.attendanceDTO.*;
 import com.project.hrm.entities.Attendance;
 import com.project.hrm.entities.Employees;
@@ -17,6 +18,7 @@ import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -172,17 +174,15 @@ public class AttendanceServiceImpl implements AttendanceService{
      */
     @Transactional(readOnly = true)
     @Override
-    public List<AttendanceDTO> filter(AttendanceFilter attendanceFilter, int page, int size) {
+    public PageDTO<AttendanceDTO> filter(AttendanceFilter attendanceFilter, int page, int size) {
         log.info("Filter attendance filter: {}", attendanceFilter);
         Pageable pageable = PageRequest.of(page, size);
 
         Specification<Attendance> specification = AttendanceSpecifications.filter(attendanceFilter);
 
-        return attendanceRepository.findAll(specification, pageable)
-                .getContent()
-                .stream()
-                .map(attendanceMapper::toDTO)
-                .collect(Collectors.toList());
+        Page<Attendance> attendancePage = attendanceRepository.findAll(specification, pageable);
+
+        return attendanceMapper.toAttendancePageDTO(attendancePage);
     }
 
     /**
@@ -196,16 +196,15 @@ public class AttendanceServiceImpl implements AttendanceService{
      */
     @Transactional(readOnly = true)
     @Override
-    public List<AttendanceDTO> filterWithRange(AttendanceFilterWithRange attendanceFilterWithRange, int page, int size) {
+    public PageDTO<AttendanceDTO> filterWithRange(AttendanceFilterWithRange attendanceFilterWithRange, int page, int size) {
         log.info("Filter attendance filter with range: {}", attendanceFilterWithRange);
         Pageable pageable = PageRequest.of(page, size);
 
         Specification<Attendance> specification = AttendanceSpecifications.filterWithRange(attendanceFilterWithRange);
-        return attendanceRepository.findAll(specification, pageable)
-                .getContent()
-                .stream()
-                .map(attendanceMapper::toDTO)
-                .collect(Collectors.toList());
+
+        Page<Attendance> attendancePage = attendanceRepository.findAll(specification, pageable);
+
+        return attendanceMapper.toAttendancePageDTO(attendancePage);
     }
 
     @Transactional
