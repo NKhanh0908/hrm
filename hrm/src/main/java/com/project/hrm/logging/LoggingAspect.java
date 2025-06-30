@@ -1,18 +1,22 @@
 package com.project.hrm.logging;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 @Aspect
 @Component
+@Slf4j
 public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
@@ -55,6 +59,64 @@ public class LoggingAspect {
 //        return result;
 //    }
 
+    @Pointcut("execution(* com.project.hrm.repositories..*(..))")
+    public void repositoryMethods() {}
 
+    @Around("repositoryMethods()")
+    public Object logRepositoryExecution(ProceedingJoinPoint joinPoint) throws Throwable {
+        return logMethodExecution(joinPoint, "REPOSITORY");
+    }
+
+    private Object logMethodExecution(ProceedingJoinPoint joinPoint, String layer) throws Throwable {
+        String methodName = joinPoint.getSignature().getName();
+        String className = joinPoint.getTarget().getClass().getSimpleName();
+        String traceId = UUID.randomUUID().toString().substring(0, 8);
+
+        // Set trace ID for correlation
+        MDC.put("traceId", traceId);
+        MDC.put("layer", layer);
+
+        StopWatch stopWatch = new StopWatch();
+
+        try {
+            // Log method entry
+            log.info("[{}] Entering {}.{} with args: {}",
+                    layer, className, methodName, Arrays.toString(joinPoint.getArgs()));
+
+            stopWatch.start();
+            Object result = joinPoint.proceed();
+            stopWatch.stop();
+
+            // Log successful exit
+            log.info("[{}] {}.{} executed in {}ms", layer, className, methodName, stopWatch.getTotalTimeMillis());
+
+
+            return result;
+
+        } catch (Exception e) {
+            stopWatch.stop();
+
+            // Log exception
+            log.error("[{}] Exception in {}.{} after {}ms: {}",
+                    layer, className, methodName, stopWatch.getTotalTimeMillis(), e.getMessage(), e);
+
+            throw e;
+
+        } finally {
+            // Clean up MDC
+            MDC.remove("traceId");
+            MDC.remove("layer");
+        }
+    }
+
+    @AfterThrowing(pointcut = "repositoryMethods()",
+            throwing = "exception")
+    public void logException(JoinPoint joinPoint, Throwable exception) {
+        String methodName = joinPoint.getSignature().getName();
+        String className = joinPoint.getTarget().getClass().getSimpleName();
+
+        log.error("Unhandled exception in {}.{}: {}",
+                className, methodName, exception.getMessage(), exception);
+    }
 
 }

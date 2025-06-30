@@ -33,7 +33,7 @@ public class ImageEmployeeServiceImpl implements ImageEmployeeService {
 
         Map<String, Object> resultMap = cloudinaryService.upload(image);
 
-        return (String) resultMap.get("url");
+        return (String) resultMap.get("localFilePath");
     }
 
     /**
@@ -74,5 +74,20 @@ public class ImageEmployeeServiceImpl implements ImageEmployeeService {
         if (!errors.isEmpty()) {
             throw new CustomException(errors);
         }
+    }
+
+    @Override
+    public Map<String, Object> saveFile(MultipartFile file) {
+
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File must not be null or empty");
+        }
+
+        Map<String, Object> uploadResult = cloudinaryService.upload(file);
+        if (uploadResult == null || uploadResult.isEmpty()) {
+            throw new RuntimeException("Failed to upload file to Cloudinary");
+        }
+        log.info("File uploaded successfully: {}", uploadResult);
+        return uploadResult;
     }
 }
