@@ -116,10 +116,6 @@ public class CloudinaryService {
     }
 
     private String generateCustomFileName(String originalFileName) {
-        String extension = "";
-        if (originalFileName != null && originalFileName.contains(".")) {
-            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-        }
-        return "custom_" + UUID.randomUUID() + extension;
+        return "custom_" + UUID.randomUUID() ;
     }
 }
