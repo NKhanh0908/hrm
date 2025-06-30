@@ -4,5 +4,6 @@ public enum PayrollComponentType {
     SUBSIDY,
     DEDUCTION,
     TAX,
-    INSURANCE
+    INSURANCE,
+    REWARD
 }
