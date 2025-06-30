@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.Document;
 import java.util.List;
@@ -35,8 +36,7 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
     private final DocumentsService documentsService;
     private final AccountService accountService;
 
-
-
+    @Transactional
     @Override
     public DocumentApprovalsDTO create(DocumentApprovalsCreateDTO documentApprovalsCreateDTO) {
         DocumentApprovals documentApprovals = documentApprovalsMapper.covertCreateDTOToEntity(documentApprovalsCreateDTO);
@@ -55,6 +55,7 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
         return documentApprovalsMapper.covertEntityToDTO(documentApprovalsRepository.save(documentApprovals));
     }
 
+    @Transactional
     @Override
     public DocumentApprovalsDTO update(DocumentApprovalsUpdateDTO documentApprovalsUpdateDTO) {
         DocumentApprovals documentApprovals = getEntityById(documentApprovalsUpdateDTO.getId());
@@ -78,17 +79,20 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
         return documentApprovalsMapper.covertEntityToDTO(documentApprovalsRepository.save(documentApprovals));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public DocumentApprovalsDTO getDTOById(Integer id) {
         return documentApprovalsMapper.covertEntityToDTO(getEntityById(id));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public DocumentApprovals getEntityById(Integer id) {
         return documentApprovalsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("DocumentApproval not found with id: " + id));
     }
 
+    @Transactional
     @Override
     public DocumentApprovalsDTO updateStatus(Integer id, String status) {
         DocumentApprovals documentApprovals = getEntityById(id);
@@ -102,6 +106,7 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
         return documentApprovalsMapper.covertEntityToDTO(documentApprovalsRepository.save(documentApprovals));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<DocumentApprovalsDTO> filterByStatus(DocumentFilterDTO filterDTO, Integer page, Integer size) {
         log.info("Filter DocumentApprovals by status: {}", filterDTO.getStatus());

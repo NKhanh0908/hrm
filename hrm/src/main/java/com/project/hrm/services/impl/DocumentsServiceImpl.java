@@ -12,11 +12,10 @@ import com.project.hrm.services.DocumentTypeService;
 import com.project.hrm.services.DocumentsService;
 import com.project.hrm.services.ImageEmployeeService;
 import com.project.hrm.utils.IdGenerator;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.EnumMap;
 import java.util.Map;
 
 @Service
@@ -28,6 +27,7 @@ public class DocumentsServiceImpl implements DocumentsService {
     private final AccountService accountService;
     private final DocumentTypeService documentTypeService;
 
+    @Transactional
     @Override
     public DocumentsDTO create(DocumentsCreateDTO documentsCreateDTO) {
         Documents documents = documentsMapper.convertCreateDTOToEntity(documentsCreateDTO);
@@ -73,11 +73,13 @@ public class DocumentsServiceImpl implements DocumentsService {
         return documentsMapper.convertEntityToDTO(documentRepository.save(existingDocument));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public DocumentsDTO getDTOById(Integer id) {
         return documentsMapper.convertEntityToDTO(getEntityById(id));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Documents getEntityById(Integer id) {
         return documentRepository.findById(id)

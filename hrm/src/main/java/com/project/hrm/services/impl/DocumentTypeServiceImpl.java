@@ -11,6 +11,7 @@ import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.DocumentType;
 
 
@@ -21,6 +22,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     private final DocumentTypesRepository documentTypesRepository;
     private final DocumentTypeMapper documentTypeMapper;
 
+    @Transactional
     @Override
     public DocumentTypeDTO create(DocumentTypeCreateDTO documentTypeCreateDTO) {
         log.info("Create DocumentTypeDTO with name: {}", documentTypeCreateDTO.getName());
@@ -34,6 +36,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
         return documentTypeMapper.covertEntityToDTO(documentTypesRepository.save(documentType));
     }
 
+    @Transactional
     @Override
     public DocumentTypeDTO update(DocumentTypeUpdateDTO documentTypeUpdateDTO) {
         DocumentTypes documentType = getEntityById(documentTypeUpdateDTO.getId());
@@ -51,11 +54,13 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
         return documentTypeMapper.covertEntityToDTO(documentTypesRepository.save(documentType));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public DocumentTypeDTO getDTOById(Integer id) {
         return documentTypeMapper.covertEntityToDTO(getEntityById(id));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public DocumentTypes getEntityById(Integer id) {
         return documentTypesRepository.findById(id)

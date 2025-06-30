@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class DocumentAccessesServiceImpl implements DocumentAccessesService {
     private final AccountService accountService;
     private final DocumentsService documentService;
 
+    @Transactional
     @Override
     public DocumentAccessesDTO create(DocumentAccessesCreateDTO documentAccessesCreateDTO) {
         DocumentAccesses documentAccesses = documentAccessesMapper.covertCreateDTOToEntity(documentAccessesCreateDTO);
@@ -38,11 +40,13 @@ public class DocumentAccessesServiceImpl implements DocumentAccessesService {
         return documentAccessesMapper.covertEntityToDTO(documentAccessesRepository.save(documentAccesses));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public DocumentAccessesDTO getDTOById(Integer id) {
         return documentAccessesMapper.covertEntityToDTO(getEntityById(id));
     }
 
+    @Transactional
     @Override
     public DocumentAccessesDTO update(DocumentAccessesUpdateDTO documentAccessesUpdateDTO) {
         DocumentAccesses documentAccesses = getEntityById(documentAccessesUpdateDTO.getId());
@@ -54,12 +58,14 @@ public class DocumentAccessesServiceImpl implements DocumentAccessesService {
         return documentAccessesMapper.covertEntityToDTO(documentAccessesRepository.save(documentAccesses));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public DocumentAccesses getEntityById(Integer id) {
         return documentAccessesRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Document Access not found with id: " + id));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<DocumentAccessesDTO> filterByDocumentId(Integer documentId, String accessLevel, String employeeName, int page, int size) {
         Specification<DocumentAccesses> spec = DocumentAccessesSpecification.filter(documentId, accessLevel, employeeName);
