@@ -332,6 +332,56 @@ public enum Error {
     QUOTA_EXCEEDED(34005, "Quota limit exceeded", HttpStatus.BAD_REQUEST),
     WORKFLOW_VIOLATION(34006, "Action violates workflow rules", HttpStatus.BAD_REQUEST),
     DATA_INTEGRITY_VIOLATION(34007, "Data integrity constraint violation", HttpStatus.CONFLICT),
+
+    // Document-related errors
+    DOCUMENT_NOT_FOUND(35001, "Document not found", HttpStatus.NOT_FOUND),
+    DOCUMENT_ALREADY_EXISTS(35002, "Document already exists", HttpStatus.CONFLICT),
+    DOCUMENT_UNABLE_TO_SAVE(35003, "Unable to save document", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_UNABLE_TO_UPDATE(35004, "Unable to update document", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_UNABLE_TO_DELETE(35005, "Unable to delete document", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_INVALID_TITLE(35006, "Invalid document title", HttpStatus.BAD_REQUEST),
+    DOCUMENT_INVALID_DESCRIPTION(35007, "Invalid document description", HttpStatus.BAD_REQUEST),
+    DOCUMENT_INVALID_FILE_PATH(35008, "Invalid document file path", HttpStatus.BAD_REQUEST),
+    DOCUMENT_INVALID_STATUS(35009, "Invalid document status", HttpStatus.BAD_REQUEST),
+    DOCUMENT_ACCESS_DENIED(35010, "Access denied to document", HttpStatus.FORBIDDEN),
+    DOCUMENT_EXPIRED(35011, "Document has expired", HttpStatus.BAD_REQUEST),
+    DOCUMENT_NOT_APPROVED(35012, "Document is not approved", HttpStatus.BAD_REQUEST),
+    DOCUMENT_ALREADY_APPROVED(35013, "Document is already approved", HttpStatus.CONFLICT),
+    DOCUMENT_ALREADY_REJECTED(35014, "Document is already rejected", HttpStatus.CONFLICT),
+
+    // DocumentTypes-related errors
+    DOCUMENT_TYPE_NOT_FOUND(36001, "Document type not found", HttpStatus.NOT_FOUND),
+    DOCUMENT_TYPE_ALREADY_EXISTS(36002, "Document type already exists", HttpStatus.CONFLICT),
+    DOCUMENT_TYPE_UNABLE_TO_SAVE(36003, "Unable to save document type", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_TYPE_UNABLE_TO_UPDATE(36004, "Unable to update document type", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_TYPE_UNABLE_TO_DELETE(36005, "Unable to delete document type", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_TYPE_INVALID_NAME(36006, "Invalid document type name", HttpStatus.BAD_REQUEST),
+    DOCUMENT_TYPE_INVALID_DESCRIPTION(36007, "Invalid document type description", HttpStatus.BAD_REQUEST),
+    DOCUMENT_TYPE_IN_USE(36008, "Document type is currently in use and cannot be deleted", HttpStatus.CONFLICT),
+
+    // DocumentAccesses-related errors
+    DOCUMENT_ACCESS_NOT_FOUND(37001, "Document access record not found", HttpStatus.NOT_FOUND),
+    DOCUMENT_ACCESS_ALREADY_EXISTS(37002, "Document access already exists", HttpStatus.CONFLICT),
+    DOCUMENT_ACCESS_UNABLE_TO_SAVE(37003, "Unable to save document access", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_ACCESS_UNABLE_TO_UPDATE(37004, "Unable to update document access", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_ACCESS_UNABLE_TO_DELETE(37005, "Unable to delete document access", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_ACCESS_INVALID_LEVEL(37006, "Invalid document access level", HttpStatus.BAD_REQUEST),
+    DOCUMENT_ACCESS_INSUFFICIENT_PERMISSION(37007, "Insufficient permission to access document", HttpStatus.FORBIDDEN),
+    DOCUMENT_ACCESS_EXPIRED(37008, "Document access has expired", HttpStatus.BAD_REQUEST),
+
+    // DocumentApprovals-related errors
+    DOCUMENT_APPROVAL_NOT_FOUND(38001, "Document approval not found", HttpStatus.NOT_FOUND),
+    DOCUMENT_APPROVAL_ALREADY_EXISTS(38002, "Document approval already exists", HttpStatus.CONFLICT),
+    DOCUMENT_APPROVAL_UNABLE_TO_SAVE(38003, "Unable to save document approval", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_APPROVAL_UNABLE_TO_UPDATE(38004, "Unable to update document approval", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_APPROVAL_UNABLE_TO_DELETE(38005, "Unable to delete document approval", HttpStatus.INTERNAL_SERVER_ERROR),
+    DOCUMENT_APPROVAL_INVALID_STATUS(38006, "Invalid document approval status", HttpStatus.BAD_REQUEST),
+    DOCUMENT_APPROVAL_INVALID_REASON(38007, "Invalid document approval reason", HttpStatus.BAD_REQUEST),
+    DOCUMENT_APPROVAL_ALREADY_PROCESSED(38008, "Document approval already processed", HttpStatus.CONFLICT),
+    DOCUMENT_APPROVAL_INSUFFICIENT_PERMISSION(38009, "Insufficient permission to approve document", HttpStatus.FORBIDDEN),
+    DOCUMENT_APPROVAL_SELF_APPROVAL_NOT_ALLOWED(38010, "Self approval is not allowed", HttpStatus.BAD_REQUEST),
+    DOCUMENT_APPROVAL_DEADLINE_EXCEEDED(38011, "Document approval deadline exceeded", HttpStatus.BAD_REQUEST),
+    DOCUMENT_APPROVAL_INVALID_DATE(38012, "Invalid document approval date", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;
