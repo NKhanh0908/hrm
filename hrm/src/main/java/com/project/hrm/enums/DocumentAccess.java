@@ -1,8 +1,10 @@
 package com.project.hrm.enums;
 
 public enum DocumentAccess {
-    READ,
-    WRITE,
+    VIEW,
+    DOWNLOAD,
+    EDIT,
     DELETE,
-    SHARE
+    FULL_ACCESS,
+    APPROVE
 }

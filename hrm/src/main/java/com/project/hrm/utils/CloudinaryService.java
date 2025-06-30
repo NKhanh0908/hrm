@@ -49,8 +49,12 @@ public class CloudinaryService {
             file = convert(multipartFile, customFileName);
             String filePath = file.getAbsolutePath();
 
+            String contentType = multipartFile.getContentType();
+            boolean isImage = contentType != null && contentType.startsWith("image");
+
             Map<String, Object> uploadOptions = new HashMap<>();
             uploadOptions.put("public_id", customFileName); // Sử dụng tên tuỳ chỉnh
+            uploadOptions.put("resource_type", isImage ? "image" : "raw"); // Xác định loại tài nguyên
 
             Map<String, Object> result = cloudinary.uploader().upload(file, uploadOptions);
 

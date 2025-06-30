@@ -5,7 +5,9 @@ import com.project.hrm.dto.documentApprovalsDTO.DocumentApprovalsUpdateDTO;
 import com.project.hrm.dto.documentsDTO.DocumentsCreateDTO;
 import com.project.hrm.dto.documentsDTO.DocumentsDTO;
 import com.project.hrm.dto.documentsDTO.DocumentsUpdateDTO;
+import com.project.hrm.entities.Account;
 import com.project.hrm.services.DocumentsService;
+import com.project.hrm.services.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Documents Controller", description = "Manage document data")
 public class DocumentsController {
     private final DocumentsService documentsService;
+    private final PermissionService permissionService;
 
     @PostMapping
     @Operation(
@@ -59,5 +64,25 @@ public class DocumentsController {
     public ResponseEntity<APIResponse<DocumentsDTO>> update(@RequestBody DocumentsUpdateDTO documentsUpdateDTO, HttpServletRequest request) {
         DocumentsDTO result = documentsService.update(documentsUpdateDTO);
         return ResponseEntity.ok(new APIResponse<>(true, "Document updated successfully", result, null, request.getRequestURI()));
+    }
+
+    @GetMapping("/{docId}/view")
+    @PreAuthorize("@permissionService.canViewDocument(#account, #docId)")
+    @Operation(
+            summary = "View document",
+            description = "Retrieves the document by its ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Document retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = DocumentsDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Document not found")
+            }
+    )
+    public ResponseEntity<APIResponse<DocumentsDTO>> view(@PathVariable Integer docId, @AuthenticationPrincipal Account account, HttpServletRequest request) {
+        if (!permissionService.canViewDocument(account, docId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new APIResponse<>(false, "You do not have permission to view this document", null, null, request.getRequestURI()));
+        }
+        DocumentsDTO result = documentsService.getDTOById(docId);
+        return ResponseEntity.ok(new APIResponse<>(true, "Document retrieved successfully", result, null, request.getRequestURI()));
     }
 }
