@@ -246,7 +246,7 @@ public class PayrollsServiceImpl implements PayrollsService {
         int countDependent = dependentService.countDependentsOfEmployee(payrollsDTO.getEmployeeId());
         BigDecimal totalByDependent = BigDecimal.valueOf(countDependent).multiply(BigDecimal.valueOf(SystemRegulationKey.DEPENDENT_DEDUCTION.ordinal()));
 
-        BigDecimal totalIncome = summaryTotalIncome(baseSalary, summaryRegularTime, summaryOverTime, payrollComponentsDTOAdditionList).subtract();
+        BigDecimal totalIncome = summaryTotalIncome(baseSalary, summaryRegularTime, summaryOverTime, payrollComponentsDTOAdditionList).subtract(totalByDependent);
 
         BigDecimal insuranceTotal = summaryInsuranceTotal(payrollComponentsDTODeductionList,baseSalary);
 
