@@ -38,9 +38,9 @@ public class DocumentsServiceImpl implements DocumentsService {
             Map<String, Object> fileDetails = imageEmployeeService.saveFile(
                     documentsCreateDTO.getFile()
             );
-            documents.setFilePath((String) fileDetails.get("filePath"));
-            documents.setFileType((String) fileDetails.get("fileType"));
-            documents.setFileSize((Integer) fileDetails.get("fileSize"));
+            documents.setFilePath((String) fileDetails.get("url"));
+            documents.setFileType((String) fileDetails.get("originalFileName"));
+            documents.setFileSize((Long) fileDetails.get("fileSize"));
         }
 
         documents.setUploadedBy(accountService.getPrincipal());

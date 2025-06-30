@@ -19,7 +19,7 @@ public class DocumentsDTO {
     private String description;
     private String filePath;
     private String fileType;
-    private Integer fileSize;
+    private Long fileSize;
     private LocalDateTime uploadDate;
     private String documentStatus;
     private Integer documentTypeId;

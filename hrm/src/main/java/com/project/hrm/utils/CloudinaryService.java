@@ -39,7 +39,7 @@ public class CloudinaryService {
         try {
             // Tạo thông tin metadata
             String originalFileName = multipartFile.getOriginalFilename();
-            long fileSize = multipartFile.getSize();
+            Long fileSize = multipartFile.getSize();
             String customFileName = generateCustomFileName(originalFileName);
 
             log.info("Uploading photo to cloud. Original: {}, Size: {} bytes, Custom Name: {}",

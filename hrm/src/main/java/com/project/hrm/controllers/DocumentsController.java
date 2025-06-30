@@ -37,7 +37,7 @@ public class DocumentsController {
                             content = @Content(schema = @Schema(implementation = DocumentsCreateDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<DocumentsDTO>> create(@RequestBody DocumentsCreateDTO documentsCreateDTO, HttpServletRequest request) {
+    public ResponseEntity<APIResponse<DocumentsDTO>> create(@ModelAttribute DocumentsCreateDTO documentsCreateDTO, HttpServletRequest request) {
         DocumentsDTO result = documentsService.create(documentsCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new APIResponse<>(true, "Document created successfully", result, null, request.getRequestURI()));

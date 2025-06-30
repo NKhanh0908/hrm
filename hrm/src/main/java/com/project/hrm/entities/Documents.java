@@ -18,7 +18,7 @@ public class Documents {
     private String description;
     private String filePath;
     private String fileType;
-    private Integer fileSize;
+    private Long fileSize;
     private LocalDateTime uploadDate;
 
     @Enumerated(EnumType.STRING)
