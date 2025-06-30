@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -45,9 +46,8 @@ public class EmployeeServiceTest {
         employees.setEmail("john.smith@gmail.com");
         employees.setPhone("0457812547");
         employees.setGender("Male");
-        employees.setDateOfBirth("2002");
+        employees.setDateOfBirth(LocalDate.now());
         employees.setAddress("Tp HCM");
-        employees.setPosition("IT");
         employees.setStatus(EmployeeStatus.SUSPENDED);
 
         employeeCreateDTO = new EmployeeCreateDTO();
@@ -56,9 +56,8 @@ public class EmployeeServiceTest {
         employeeCreateDTO.setEmail("john.smith@gmail.com");
         employeeCreateDTO.setPhone("0457812547");
         employeeCreateDTO.setGender("Male");
-        employeeCreateDTO.setDateOfBirth("2002");
+        employeeCreateDTO.setDateOfBirth(LocalDate.now());
         employeeCreateDTO.setAddress("Tp HCM");
-        employeeCreateDTO.setPosition("IT");
         employeeCreateDTO.setStatus("SUSPENDED");
         employeeCreateDTO.setImage(null);
     }
