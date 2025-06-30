@@ -9,8 +9,10 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
@@ -23,6 +25,7 @@ public class MailServiceImpl implements MailService {
 
 
     private final JavaMailSender javaMailSender;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Sends an interview invitation email to the applicant.
@@ -30,6 +33,7 @@ public class MailServiceImpl implements MailService {
      * @param infoApply       information of the applicant
      * @param interviewLetter the interview letter details including time and location
      */
+    @Async("emailTaskExecutor")
     @Override
     public void notificationInterview(InfoApply infoApply, InterviewLetter interviewLetter) {
         log.info("Sending interview to email...: {}", infoApply.getEmail());
@@ -47,6 +51,7 @@ public class MailServiceImpl implements MailService {
      * @param infoApply           information of the applicant
      * @param jobOfferDetailsDTO  the details of the job offer such as department, start date, etc.
      */
+    @Async("emailTaskExecutor")
     @Override
     public void notificationForHired(InfoApply infoApply, JobOfferDetailsDTO jobOfferDetailsDTO) {
         log.info("Sending hired to email...: {}", infoApply.getEmail());
@@ -63,6 +68,7 @@ public class MailServiceImpl implements MailService {
      *
      * @param infoApply information of the applicant
      */
+    @Async("emailTaskExecutor")
     @Override
     public void notificationForRejection(InfoApply infoApply) {
         log.info("Sending reject to email...: {}", infoApply.getEmail());

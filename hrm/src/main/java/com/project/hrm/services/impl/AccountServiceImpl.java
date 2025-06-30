@@ -152,7 +152,7 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = (Account) authentication.getPrincipal();
 
-        log.info("User principal: {}", account.getEmployees());
+        log.info("User principal: {}", account);
         return account.getEmployees();
     }
 
