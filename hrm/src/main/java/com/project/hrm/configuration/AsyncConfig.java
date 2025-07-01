@@ -9,13 +9,36 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 @EnableAsync
 public class AsyncConfig {
-    @Bean(name = "emailTaskExecutor")
+
+    @Bean(name = "emailInterviewTaskExecutor")
     public TaskExecutor emailTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(5);
         executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("email-async-");
+        executor.setThreadNamePrefix("email-interview-async-");
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean(name = "emailHiredTaskExecutor")
+    public TaskExecutor emailHiredExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(5);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("email-hired-async-");
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean(name = "emailRejectTaskExecutor")
+    public TaskExecutor emailRejectTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(3);
+        executor.setMaxPoolSize(5);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("email-reject-async-");
         executor.initialize();
         return executor;
     }

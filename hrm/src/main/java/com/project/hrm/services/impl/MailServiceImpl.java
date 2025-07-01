@@ -33,7 +33,7 @@ public class MailServiceImpl implements MailService {
      * @param infoApply       information of the applicant
      * @param interviewLetter the interview letter details including time and location
      */
-    @Async("emailTaskExecutor")
+    @Async("emailInterviewTaskExecutor")
     @Override
     public void notificationInterview(InfoApply infoApply, InterviewLetter interviewLetter) {
         log.info("Sending interview to email...: {}", infoApply.getEmail());
@@ -51,7 +51,7 @@ public class MailServiceImpl implements MailService {
      * @param infoApply           information of the applicant
      * @param jobOfferDetailsDTO  the details of the job offer such as department, start date, etc.
      */
-    @Async("emailTaskExecutor")
+    @Async("emailHiredTaskExecutor")
     @Override
     public void notificationForHired(InfoApply infoApply, JobOfferDetailsDTO jobOfferDetailsDTO) {
         log.info("Sending hired to email...: {}", infoApply.getEmail());
@@ -68,7 +68,7 @@ public class MailServiceImpl implements MailService {
      *
      * @param infoApply information of the applicant
      */
-    @Async("emailTaskExecutor")
+    @Async("emailRejectTaskExecutor")
     @Override
     public void notificationForRejection(InfoApply infoApply) {
         log.info("Sending reject to email...: {}", infoApply.getEmail());
