@@ -22,6 +22,9 @@ public class RegulationsSpecification {
             if (filter.getEffectiveDate() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("effectiveDate"), filter.getEffectiveDate()));
             }
+            if (filter.getPayrollComponentType() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("type"), filter.getPayrollComponentType()));
+            }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

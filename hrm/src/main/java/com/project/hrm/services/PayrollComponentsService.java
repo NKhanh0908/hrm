@@ -29,4 +29,6 @@ public interface PayrollComponentsService {
     List<PayrollComponentsDTO> filterWithRange(PayrollComponentsFilterWithRange payrollComponentsFilterWithRange, int page, int size);
 
     List<PayrollComponentsDTO> createComponents(Payrolls payrolls);
+
+    PayrollComponents getPayrollIdAndType(Integer payrollId, PayrollComponentType type);
 }
