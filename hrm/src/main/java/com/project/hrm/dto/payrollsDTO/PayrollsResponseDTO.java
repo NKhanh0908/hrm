@@ -20,7 +20,7 @@ public class PayrollsResponseDTO {
     private Integer employeeId;
     private Integer payPeriodId;
 
-    private BigDecimal baseSalary;
+    private Double baseSalary;
 
     private List<PayrollComponentsDTO> additions;
     private List<PayrollComponentsDTO> deductions;
@@ -33,5 +33,7 @@ public class PayrollsResponseDTO {
 
     private BigDecimal grossSalary;
     private BigDecimal totalDeductions;
+    private BigDecimal totalInsuranceAmount;
+    private BigDecimal totalTaxAmount;
     private BigDecimal netSalary;
 }

@@ -1,5 +1,7 @@
 package com.project.hrm.enums;
 
+import java.math.BigDecimal;
+
 public enum ScaleOfTaxation {
     LEVEL1(0, 5000000, 0.05),
     LEVEL2(5000000, 10000000, 0.10),
@@ -20,9 +22,15 @@ public enum ScaleOfTaxation {
         this.taxRate = taxRate;
     }
 
-    public double taxCalculation(double taxableIncome) {
-        if (taxableIncome <= belowLevel) return -1;
-        double taxMoney = Math.min(taxableIncome, aboveLevel) - belowLevel;
-        return taxMoney * taxRate;
+    public BigDecimal taxCalculation(BigDecimal taxableIncome) {
+        if (taxableIncome.compareTo(BigDecimal.valueOf(belowLevel)) <= 0) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal min = taxableIncome.min(BigDecimal.valueOf(aboveLevel));
+
+        BigDecimal taxMoney = min.subtract(BigDecimal.valueOf(belowLevel));
+
+        return taxMoney.multiply(BigDecimal.valueOf(taxRate));
     }
+
 }

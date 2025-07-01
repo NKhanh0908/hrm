@@ -1,5 +1,7 @@
 package com.project.hrm.dto.regulationsDTO;
 
+import com.project.hrm.enums.PayrollComponentType;
+import com.project.hrm.enums.PayrollStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +18,5 @@ public class RegulationsFilter {
     private String name;
     private BigDecimal applicableSalary;
     private LocalDateTime effectiveDate;
+    private PayrollComponentType payrollComponentType;
 }
