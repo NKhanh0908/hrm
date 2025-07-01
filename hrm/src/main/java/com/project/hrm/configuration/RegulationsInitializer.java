@@ -71,6 +71,11 @@ public class RegulationsInitializer {
                 "Thuế thu nhập cá nhân", PayrollComponentType.TAX, null , null, null,
                 LocalDateTime.of(2025, 1, 1, 0, 0)
         ));
+
+        defaultRegulations.put(6, new RegulationData("ATTENDANCE_LATE",
+                "Chấm công trễ", PayrollComponentType.DEDUCTION, BigDecimal.valueOf(50000), null, null,
+                LocalDateTime.of(2025, 1, 1, 0, 0)
+        ));
         return defaultRegulations;
     }
 
