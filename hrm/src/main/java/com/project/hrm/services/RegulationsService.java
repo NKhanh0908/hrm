@@ -25,4 +25,6 @@ public interface RegulationsService {
     RegulationsDTO update(RegulationsUpdateDTO regulationsUpdateDTO);
 
     void delete(Integer regulationsId);
+
+    Regulations getRegulationsByKey(String regulationsKey);
 }

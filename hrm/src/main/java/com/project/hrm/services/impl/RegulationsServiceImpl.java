@@ -163,4 +163,11 @@ public class RegulationsServiceImpl implements RegulationsService {
             throw new EntityNotFoundException("Regulations not found by id: " + regulationsId);
         }
     }
+
+    @Override
+    public Regulations getRegulationsByKey(String regulationsKey) {
+        log.info("Get Regulations by regulationsKey: {}", regulationsKey);
+        return regulationsRepository.findRegulationByKey(regulationsKey)
+                .orElseThrow(() -> new EntityNotFoundException("Regulations not found with key: " + regulationsKey));
+    }
 }

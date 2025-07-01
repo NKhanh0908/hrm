@@ -2,17 +2,18 @@ package com.project.hrm.services.impl;
 
 import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.attendanceDTO.*;
+import com.project.hrm.dto.disciplinaryActionDTO.DisciplinaryActionCreateDTO;
 import com.project.hrm.entities.Attendance;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.PayPeriods;
 import com.project.hrm.enums.AttendanceType;
 import com.project.hrm.enums.SystemRegulationKey;
+import com.project.hrm.enums.ViolationSeverity;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.AttendanceMapper;
 import com.project.hrm.repositories.AttendanceRepository;
-import com.project.hrm.repositories.SystemRegulationRepository;
-import com.project.hrm.services.AttendanceService;
-import com.project.hrm.services.EmployeeService;
-import com.project.hrm.services.SystemRegulationService;
+import com.project.hrm.services.*;
 import com.project.hrm.specifications.AttendanceSpecifications;
 import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,9 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -40,6 +38,8 @@ public class AttendanceServiceImpl implements AttendanceService{
     private final AttendanceMapper attendanceMapper;
     private final EmployeeService employeeService;
     private final SystemRegulationService systemRegulationService;
+    private final RegulationsService regulationsService;
+    private final DisciplinaryActionService disciplinaryActionService;
 
 
     /**
@@ -51,6 +51,7 @@ public class AttendanceServiceImpl implements AttendanceService{
     @Transactional
     @Override
     public AttendanceDTO create(AttendanceCreateDTO attendanceCreateDTO) {
+        log.info("Create Attendance");
         Attendance attendance = attendanceMapper.toEntityFromCreateDTO(attendanceCreateDTO);
         attendance.setId(IdGenerator.getGenerationId());
         attendance.setEmployee(employeeService.getEntityById(attendance.getEmployee().getId()));
@@ -68,7 +69,7 @@ public class AttendanceServiceImpl implements AttendanceService{
     @Transactional
     @Override
     public AttendanceDTO update(AttendanceUpdateDTO attendanceUpdateDTO) {
-        log.info("Updating attendance: {}", attendanceUpdateDTO);
+        log.info("Updating attendance: {}", attendanceUpdateDTO.getId());
 
         Attendance attendance = getEntityById(attendanceUpdateDTO.getId());
 
@@ -106,31 +107,31 @@ public class AttendanceServiceImpl implements AttendanceService{
     /**
      * Deletes an existing {@link Attendance} record by its ID.
      *
-     * @param Id the ID of the attendance to delete
+     * @param id the ID of the attendance to delete
      * @throws EntityNotFoundException if no attendance is found with the given ID
      */
     @Transactional
     @Override
-    public void delete(Integer Id) {
-        log.info("Delete attendance with Id: {}", Id);
-        if(checkExistence(Id)){
-            attendanceRepository.deleteById(Id);
+    public void delete(Integer id) {
+        log.info("Delete attendance with Id: {}", id);
+        if(checkExistence(id)){
+            attendanceRepository.deleteById(id);
         }else {
-            throw new EntityNotFoundException("Attendance with Id: " + Id + " not found");
+            throw new CustomException(Error.ATTENDANCE_NOT_FOUND);
         }
     }
 
     /**
      * Checks if an {@link Attendance} record exists by its ID.
      *
-     * @param Id the ID of the attendance record
+     * @param id the ID of the attendance record
      * @return true if the attendance exists, false otherwise
      */
     @Transactional(readOnly = true)
     @Override
-    public Boolean checkExistence(Integer Id) {
-        log.info("Check existence with Id: {}",Id);
-        return attendanceRepository.existsById(Id);
+    public Boolean checkExistence(Integer id) {
+        log.info("Check existence with Id: {}",id);
+        return attendanceRepository.existsById(id);
     }
 
     /**
@@ -160,7 +161,7 @@ public class AttendanceServiceImpl implements AttendanceService{
     public Attendance getEntityById(Integer id) {
         log.info("Get attendance entity by id: {}", id);
         return attendanceRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + id));
+                .orElseThrow(() -> new CustomException(Error.ATTENDANCE_NOT_FOUND));
     }
 
     /**
@@ -175,7 +176,7 @@ public class AttendanceServiceImpl implements AttendanceService{
     @Transactional(readOnly = true)
     @Override
     public PageDTO<AttendanceDTO> filter(AttendanceFilter attendanceFilter, int page, int size) {
-        log.info("Filter attendance filter: {}", attendanceFilter);
+        log.info("Filter attendance filter with employeeId and Date: {}, {}", attendanceFilter.getEmployeeId(), attendanceFilter.getCheckIn());
         Pageable pageable = PageRequest.of(page, size);
 
         Specification<Attendance> specification = AttendanceSpecifications.filter(attendanceFilter);
@@ -197,7 +198,7 @@ public class AttendanceServiceImpl implements AttendanceService{
     @Transactional(readOnly = true)
     @Override
     public PageDTO<AttendanceDTO> filterWithRange(AttendanceFilterWithRange attendanceFilterWithRange, int page, int size) {
-        log.info("Filter attendance filter with range: {}", attendanceFilterWithRange);
+        log.info("Filter attendance filter with range: {}", attendanceFilterWithRange.getEmployeeId());
         Pageable pageable = PageRequest.of(page, size);
 
         Specification<Attendance> specification = AttendanceSpecifications.filterWithRange(attendanceFilterWithRange);
@@ -209,21 +210,25 @@ public class AttendanceServiceImpl implements AttendanceService{
 
     @Transactional
     @Override
-    public AttendanceDTO createWhenClickCheckIn(Integer employeesId) {
-        log.info("Create attendance when employeeId: {} click check in: {}", employeesId, LocalDateTime.now());
+    public AttendanceDTO createWhenClickCheckIn(Integer employeeId) {
+        log.info("Create attendance when employeeId: {} click check in: {}", employeeId, LocalDateTime.now());
 
         LocalDateTime now = LocalDateTime.now();
 
-        Employees employee = employeeService.getEmployeeIsActive(employeesId);
+        Employees employee = employeeService.getEmployeeIsActive(employeeId);
         if (employee == null) {
-            throw new EntityNotFoundException("Employee is inactive or does not exist with ID: " + employeesId);
+            throw new CustomException(Error.EMPLOYEE_NOT_FOUND);
         }
 
-        if (hasUncheckedOutAttendanceOnDate(now)) {
-            log.warn("Employee ID {} has unclosed attendance on {}", employeesId, now.toLocalDate());
-            throw new IllegalStateException("Already checked in today without checking out.");
+        if (hasUncheckedOutAttendanceOnDate(employeeId, now)) {
+            log.warn("Employee ID {} has unclosed attendance on {}", employeeId, now.toLocalDate());
+            throw new CustomException(Error.ATTENDANCE_ALREADY_CHECKED_IN);
         }
 
+        // Check attendance late
+        handleLateCheckIn(employeeId, now);
+
+        // Create attendance
         Attendance attendance = new Attendance();
         attendance.setId(IdGenerator.getGenerationId());
         attendance.setEmployee(employee);
@@ -234,6 +239,25 @@ public class AttendanceServiceImpl implements AttendanceService{
         return attendanceMapper.toDTO(saved);
     }
 
+    private void handleLateCheckIn(Integer employeeId, LocalDateTime checkInDateTime) {
+        LocalTime checkInTime = checkInDateTime.toLocalTime();
+        LocalTime startOfShift = LocalTime.parse(systemRegulationService.getValue(SystemRegulationKey.CHECKIN_START_TIME));
+
+        if (checkInTime.isAfter(startOfShift)) {
+            log.warn("Check-in late — Employee ID: {}, Check-in Time: {}", employeeId, checkInTime);
+
+            DisciplinaryActionCreateDTO disciplinaryAction = new DisciplinaryActionCreateDTO();
+            disciplinaryAction.setDescription("Check-in time is after start of shift");
+            disciplinaryAction.setDate(checkInDateTime);
+            disciplinaryAction.setEmployeeId(employeeId);
+            disciplinaryAction.setRegulationId(regulationsService.getRegulationsByKey("ATTENDANCE_LATE").getId());
+            disciplinaryAction.setSeverity(ViolationSeverity.LOW);
+            disciplinaryAction.setPenaltyAmount(null);
+
+            disciplinaryActionService.createDisciplinaryAction(disciplinaryAction);
+        }
+    }
+
     @Transactional
     @Override
     public AttendanceDTO setAttendanceWhenClickCheckOut(Integer employeesId) {
@@ -241,16 +265,23 @@ public class AttendanceServiceImpl implements AttendanceService{
         LocalDateTime now = LocalDateTime.now();
         Employees employee = employeeService.getEmployeeIsActive(employeesId);
         if (employee == null) {
-            throw new EntityNotFoundException("Employee is inactive");
+            throw new CustomException(Error.EMPLOYEE_NOT_FOUND);
         }
 
-        Attendance attendance = attendanceRepository.findFirstByEmployee_IdAndCheckOutIsNull(employeesId)
-                .orElseThrow(() -> new IllegalStateException("No check-in record found or already checked out."));
+        Attendance attendance = attendanceRepository.findFirstByEmployeeIdAndCheckOutIsNull(employeesId)
+                .orElseThrow(() -> new CustomException(Error.ATTENDANCE_NOT_FOUND));
 
         attendance.setCheckOut(now);
-        LocalTime END_OF_SHIFT = LocalTime.parse(systemRegulationService.getValue(SystemRegulationKey.CHECKOUT_END_TIME));
-        LocalDateTime endOfRegularShift = attendance.getCheckIn().toLocalDate().atTime(END_OF_SHIFT);
+        LocalTime endOfShift = LocalTime.parse(systemRegulationService.getValue(SystemRegulationKey.CHECKOUT_END_TIME));
+        LocalDateTime endOfRegularShift = attendance.getCheckIn().toLocalDate().atTime(endOfShift);
 
+        calculateAttendanceTimes(attendance, now, endOfRegularShift);
+
+        Attendance saved = attendanceRepository.save(attendance);
+        return attendanceMapper.toDTO(saved);
+    }
+
+    private void calculateAttendanceTimes(Attendance attendance, LocalDateTime now, LocalDateTime endOfRegularShift) {
         if (now.isBefore(endOfRegularShift)) {
             float regularTime = (float) Duration.between(attendance.getCheckIn(), now).toMinutes() / 60;
             attendance.setRegularTime(regularTime);
@@ -261,19 +292,14 @@ public class AttendanceServiceImpl implements AttendanceService{
             attendance.setRegularTime(regularTime);
             attendance.setOtherTime(otherTime);
         }
-
-        Attendance saved = attendanceRepository.save(attendance);
-
-        return attendanceMapper.toDTO(saved);
     }
-
 
     @Transactional(readOnly = true)
     @Override
-    public boolean hasUncheckedOutAttendanceOnDate(LocalDateTime checkInDate) {
+    public boolean hasUncheckedOutAttendanceOnDate(Integer employeeId, LocalDateTime checkInDate) {
         LocalDateTime startOfDay = checkInDate.toLocalDate().atStartOfDay();
         LocalDateTime endOfDay = checkInDate.toLocalDate().atTime(23, 59, 59);
-        return attendanceRepository.existsCheckInOnDateWithoutCheckOut(startOfDay, endOfDay);
+        return attendanceRepository.existsCheckInOnDateWithoutCheckOut(employeeId, startOfDay, endOfDay);
     }
 
     @Transactional(readOnly = true)
@@ -281,11 +307,7 @@ public class AttendanceServiceImpl implements AttendanceService{
     public float getTotalRegularTimeAttendanceByPayPeriodsForEmployee(Integer employeesId, PayPeriods payPeriods) {
         log.info("Get total regular time attendance for employeeId: {} payPeriods: {}", employeesId, payPeriods);
         Employees employees = employeeService.getEmployeeIsActive(employeesId);
-        List<Attendance> attendanceList = attendanceRepository.findByEmployeeAndAttendanceDateBetween(employees,payPeriods.getStartDate(), payPeriods.getEndDate());
-        return attendanceList.stream()
-                .map(Attendance::getRegularTime)
-                .filter(Objects::nonNull)
-                .reduce(0f, Float::sum);
+        return attendanceRepository.getTotalRegularTime(employees, payPeriods.getStartDate(), payPeriods.getEndDate());
     }
 
     @Transactional(readOnly = true)
@@ -293,11 +315,6 @@ public class AttendanceServiceImpl implements AttendanceService{
     public float getTotalOverTimeAttendanceByPayPeriodsForEmployee(Integer employeesId, PayPeriods payPeriods) {
         log.info("Get total over time attendance for employeeId: {} payPeriods: {}", employeesId, payPeriods);
         Employees employees = employeeService.getEmployeeIsActive(employeesId);
-        List<Attendance> attendanceList = attendanceRepository.findByEmployeeAndAttendanceDateBetween(employees,payPeriods.getStartDate(), payPeriods.getEndDate());
-        return attendanceList.stream()
-                .map(Attendance::getOtherTime)
-                .filter(Objects::nonNull)
-                .reduce(0f, Float::sum);
+        return attendanceRepository.getTotalOtherTime(employees, payPeriods.getStartDate(), payPeriods.getEndDate());
     }
-
 }
