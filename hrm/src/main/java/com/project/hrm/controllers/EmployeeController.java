@@ -47,7 +47,7 @@ public class EmployeeController {
         @Operation(summary = "Update existing employee", description = "Updates the information of an existing employee", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Employee update data", required = true, content = @Content(schema = @Schema(implementation = EmployeeUpdateDTO.class))), responses = {
                         @ApiResponse(responseCode = "200", description = "Employee updated successfully", content = @Content(schema = @Schema(implementation = EmployeeDTO.class)))
         })
-        public ResponseEntity<APIResponse<EmployeeDTO>> update(@RequestBody EmployeeUpdateDTO employeeUpdateDTO,
+        public ResponseEntity<APIResponse<EmployeeDTO>> update(@ModelAttribute EmployeeUpdateDTO employeeUpdateDTO,
                         HttpServletRequest request) {
                 EmployeeDTO result = employeeService.update(employeeUpdateDTO);
                 return ResponseEntity.ok(new APIResponse<>(true, "Employee updated successfully", result, null,

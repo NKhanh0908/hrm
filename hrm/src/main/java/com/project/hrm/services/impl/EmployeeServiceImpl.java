@@ -170,8 +170,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO update(EmployeeUpdateDTO employeeUpdateDTO) {
         log.info("Update Employee");
 
-        List<Error> errors = new ArrayList<>();
-
         Employees employees = employeeMapper.toEntity(getDTOById(employeeUpdateDTO.getId()));
 
         if (employeeUpdateDTO.getFirstName() != null)
