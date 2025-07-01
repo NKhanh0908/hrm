@@ -32,7 +32,7 @@ public class DisciplinaryAction {
 
     private BigDecimal penaltyAmount; // Trong trường hợp muốn override amount
 
-    private Boolean resolved = false;
+    private Boolean resolved;
 
     @Enumerated(EnumType.STRING)
     private ViolationSeverity severity; // Enum: MINOR, MAJOR, CRITICAL

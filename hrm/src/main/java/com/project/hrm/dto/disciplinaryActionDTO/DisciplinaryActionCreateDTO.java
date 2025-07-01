@@ -19,6 +19,6 @@ public class DisciplinaryActionCreateDTO {
     private Integer employeeId;
     private Integer regulationId;
     private BigDecimal penaltyAmount;
-    private Boolean resolved;
+    private Boolean resolved = false;
     private ViolationSeverity severity;
 }
