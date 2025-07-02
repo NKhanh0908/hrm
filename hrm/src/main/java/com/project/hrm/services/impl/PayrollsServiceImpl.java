@@ -324,7 +324,7 @@ public class PayrollsServiceImpl implements PayrollsService {
         }
 
         PayrollComponents payrollComponents = payrollComponentsService.getPayrollIdAndType(payrollId, PayrollComponentType.TAX);
-        payrollComponents.setAmount(taxableIncome);
+        payrollComponents.setAmount(totalTax);
         payrollComponentsRepository.save(payrollComponents);
 
         return totalTax;
