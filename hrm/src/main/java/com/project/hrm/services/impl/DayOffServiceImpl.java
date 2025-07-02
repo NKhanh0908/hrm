@@ -169,7 +169,7 @@ public class DayOffServiceImpl implements DayOffService {
     @Override
     public List<DayOffDTO> getDayOffsByEmployeeId(Integer employeeId) {
         log.info("Get Day Offs by Employee Id: {}", employeeId);
-        List<DayOff> dayOffsList = dayOffRepository.findDayOffsByEmployeeIdNative(employeeId);
+        List<DayOff> dayOffsList = dayOffRepository.findByEmployeeId(employeeId);
 
         return dayOffsList.stream()
                 .map(dayOffMapper::toDTO)
@@ -222,64 +222,19 @@ public class DayOffServiceImpl implements DayOffService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int countDayOffByEmployeeId(Integer employeeId, LocalDateTime startDate, LocalDateTime endDate) {
         log.info("Count Day Offs by Employee Id: {}", employeeId);
-
-        DayOffFilterDynamic dayOffFilterDynamic = new DayOffFilterDynamic();
-        dayOffFilterDynamic.setStartDateFrom(startDate);
-        dayOffFilterDynamic.setEndDateTo(endDate);
-        dayOffFilterDynamic.setUseStartEndOverlapFilter(Boolean.TRUE);
-
-        Specification<DayOff> spec = DayOffSpecifications.filterDynamic(dayOffFilterDynamic);
-
-        List<DayOff> dayOffs = dayOffRepository.findAll(spec);
-
-        Set<LocalDate> uniqueDaysOff = getUniqueDaysOff(startDate, endDate, dayOffs);
-
-        return uniqueDaysOff.size();
+        List<LocalDate> distinctDays = dayOffRepository.findDistinctDaysOffByEmployeeId(employeeId, startDate, endDate);
+        return distinctDays.size();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int countDayOffByEmployeeIdStatus(Integer employeeId, LocalDateTime startDate, LocalDateTime endDate) {
         log.info("Count Day Offs status by Employee Id: {}", employeeId);
-
-        DayOffFilterDynamic dayOffFilterDynamic = new DayOffFilterDynamic();
-        dayOffFilterDynamic.setStartDateFrom(startDate);
-        dayOffFilterDynamic.setEndDateTo(endDate);
-        dayOffFilterDynamic.setUseStartEndOverlapFilter(Boolean.TRUE);
-        dayOffFilterDynamic.setStatus(String.valueOf(DayOffStatus.PENDING));
-
-        Specification<DayOff> spec = DayOffSpecifications.filterDynamic(dayOffFilterDynamic);
-
-        List<DayOff> dayOffs = dayOffRepository.findAll(spec);
-
-        Set<LocalDate> uniqueDaysOff = getUniqueDaysOff(startDate, endDate, dayOffs);
-
-        return uniqueDaysOff.size();
+        List<LocalDate> distinctDays = dayOffRepository.findDistinctDaysOffByEmployeeIdAndStatus(employeeId, startDate, endDate, DayOffStatus.PENDING);
+        return distinctDays.size();
     }
-
-    private static Set<LocalDate> getUniqueDaysOff(LocalDateTime startDate, LocalDateTime endDate, List<DayOff> dayOffs) {
-        Set<LocalDate> uniqueDaysOff = new HashSet<>();
-
-        for (DayOff dayOff : dayOffs) {
-            LocalDate dayOffStart = dayOff.getStartDate().toLocalDate();
-            LocalDate dayOffEnd = dayOff.getEndDate().toLocalDate();
-            LocalDate filterStart = startDate.toLocalDate();
-            LocalDate filterEnd = endDate.toLocalDate();
-
-            // Lấy khoảng giao nhau giữa DayOff và khoảng truyền vào
-            LocalDate effectiveStart = dayOffStart.isBefore(filterStart) ? filterStart : dayOffStart;
-            LocalDate effectiveEnd = dayOffEnd.isAfter(filterEnd) ? filterEnd : dayOffEnd;
-
-            // Thêm từng ngày vào set (loại trùng)
-            while (!effectiveStart.isAfter(effectiveEnd)) {
-                uniqueDaysOff.add(effectiveStart);
-                effectiveStart = effectiveStart.plusDays(1);
-            }
-        }
-        return uniqueDaysOff;
-    }
-
-
 }

@@ -8,65 +8,78 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDateTime;
 
 public class DayOffSpecifications {
+    private static Specification<DayOff> hasRequestDay(LocalDateTime requestDay) {
+        return requestDay == null ? null : (root, query, cb) -> cb.equal(root.get("requestDay"), requestDay);
+    }
+
+    private static Specification<DayOff> hasStartDate(LocalDateTime startDate) {
+        return startDate == null ? null : (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("startDate"), startDate);
+    }
+
+    private static Specification<DayOff> hasEndDate(LocalDateTime endDate) {
+        return endDate == null ? null : (root, query, cb) -> cb.lessThanOrEqualTo(root.get("endDate"), endDate);
+    }
+
+    private static Specification<DayOff> hasReason(String reason) {
+        return reason == null || reason.isEmpty() ? null : (root, query, cb) -> cb.like(cb.lower(root.get("reason")), "%" + reason.toLowerCase() + "%");
+    }
+
+    private static Specification<DayOff> hasStatus(String status) {
+        return status == null || status.isEmpty() ? null : (root, query, cb) -> cb.equal(cb.lower(root.get("status")), status.toLowerCase());
+    }
+
+    private static Specification<DayOff> hasRequestDayRange(LocalDateTime from, LocalDateTime to) {
+        return from == null || to == null ? null : (root, query, cb) -> cb.between(root.get("requestDay"), from, to);
+    }
+
+    private static Specification<DayOff> hasStartEndOverlap(LocalDateTime startDateFrom, LocalDateTime endDateTo) {
+        return startDateFrom == null || endDateTo == null ? null : (root, query, cb) -> cb.and(
+                cb.lessThanOrEqualTo(root.get("startDate"), endDateTo),
+                cb.greaterThanOrEqualTo(root.get("endDate"), startDateFrom)
+        );
+    }
+
     public static Specification<DayOff> filter(DayOffFilter filter) {
-        return (root, query, cb) -> {
-            Specification<DayOff> spec = Specification.where(null);
-
-            if (filter.getRequestDay() != null) {
-                spec = spec.and((root1, query1, cb1) ->
-                        cb1.equal(root1.get("requestDay"), filter.getRequestDay()));
-            }
-
-            if (filter.getStartDate() != null) {
-                spec = spec.and((root1, query1, cb1) ->
-                        cb1.greaterThanOrEqualTo(root1.get("startDate"), filter.getStartDate()));
-            }
-
-            if (filter.getEndDate() != null) {
-                spec = spec.and((root1, query1, cb1) ->
-                        cb1.lessThanOrEqualTo(root1.get("endDate"), filter.getEndDate()));
-            }
-
-            if (filter.getReason() != null && !filter.getReason().isEmpty()) {
-                spec = spec.and((root1, query1, cb1) ->
-                        cb1.like(cb1.lower(root1.get("reason")), "%" + filter.getReason().toLowerCase() + "%"));
-            }
-
-            if (filter.getStatus() != null && !filter.getStatus().isEmpty()) {
-                spec = spec.and((root1, query1, cb1) ->
-                        cb1.equal(cb1.lower(root1.get("status")), filter.getStatus().toLowerCase()));
-            }
-
-            return spec.toPredicate(root, query, cb);
-        };
+        if (filter == null || allFieldsNull(filter)) {
+            return (root, query, cb) -> cb.conjunction();
+        }
+        return Specification.where(hasRequestDay(filter.getRequestDay()))
+                .and(hasStartDate(filter.getStartDate()))
+                .and(hasEndDate(filter.getEndDate()))
+                .and(hasReason(filter.getReason()))
+                .and(hasStatus(filter.getStatus()));
     }
 
     public static Specification<DayOff> filterDynamic(DayOffFilterDynamic filterDynamic) {
-        return (root, query, cb) -> {
-            Specification<DayOff> spec = Specification.where(null);
-
-            if (filterDynamic.getUseRequestDayFilter() != null && filterDynamic.getUseRequestDayFilter()) {
-                if (filterDynamic.getRequestDayFrom() != null && filterDynamic.getRequestDayTo() != null) {
-                    spec = spec.and((r, q, c) -> c.between(r.get("requestDay"), filterDynamic.getRequestDayFrom(), filterDynamic.getRequestDayTo()));
-                }
-            }
-
-            if (filterDynamic.getUseStartEndOverlapFilter() != null && filterDynamic.getUseStartEndOverlapFilter()) {
-                if (filterDynamic.getStartDateFrom() != null && filterDynamic.getEndDateTo() != null) {
-                    // Điều kiện giao nhau: startDate <= endDateTo && endDate >= startDateFrom
-                    spec = spec.and((r, q, c) -> c.and(
-                            c.lessThanOrEqualTo(r.get("startDate"), filterDynamic.getEndDateTo()),
-                            c.greaterThanOrEqualTo(r.get("endDate"), filterDynamic.getStartDateFrom())
-                    ));
-                }
-            }
-
-            if (filterDynamic.getStatus() != null && !filterDynamic.getStatus().trim().isEmpty()) {
-                spec = spec.and((r, q, c) -> c.equal(c.lower(r.get("status")), filterDynamic.getStatus().toLowerCase()));
-            }
-
-            return spec.toPredicate(root, query, cb);
-        };
+        if (filterDynamic == null || allFieldsNull(filterDynamic)) {
+            return (root, query, cb) -> cb.conjunction();
+        }
+        Specification<DayOff> spec = Specification.where(null);
+        if (filterDynamic.getUseRequestDayFilter() != null && filterDynamic.getUseRequestDayFilter()) {
+            spec = spec.and(hasRequestDayRange(filterDynamic.getRequestDayFrom(), filterDynamic.getRequestDayTo()));
+        }
+        if (filterDynamic.getUseStartEndOverlapFilter() != null && filterDynamic.getUseStartEndOverlapFilter()) {
+            spec = spec.and(hasStartEndOverlap(filterDynamic.getStartDateFrom(), filterDynamic.getEndDateTo()));
+        }
+        if (filterDynamic.getStatus() != null && !filterDynamic.getStatus().trim().isEmpty()) {
+            spec = spec.and(hasStatus(filterDynamic.getStatus()));
+        }
+        return spec;
     }
 
+    private static boolean allFieldsNull(DayOffFilter filter) {
+        return filter.getRequestDay() == null &&
+                filter.getStartDate() == null &&
+                filter.getEndDate() == null &&
+                filter.getReason() == null &&
+                filter.getStatus() == null;
+    }
+
+    private static boolean allFieldsNull(DayOffFilterDynamic filter) {
+        return filter.getRequestDayFrom() == null &&
+                filter.getRequestDayTo() == null &&
+                filter.getStartDateFrom() == null &&
+                filter.getEndDateTo() == null &&
+                filter.getStatus() == null;
+    }
 }
