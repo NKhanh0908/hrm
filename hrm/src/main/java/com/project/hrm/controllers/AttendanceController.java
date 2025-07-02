@@ -167,19 +167,4 @@ public class AttendanceController {
         AttendanceDTO result = attendanceService.setAttendanceWhenClickCheckOut(employeeId);
         return ResponseEntity.ok(new APIResponse<>(true, "Check-out successful", result, null, request.getRequestURI()));
     }
-
-    @GetMapping("/unchecked-out/{employeeId}")
-    @Operation(
-            summary = "Check if Employee has Unchecked-out Attendance Today",
-            description = "Check whether the employee has already checked in today without checking out",
-            parameters = @Parameter(name = "employeeId", description = "Employee ID", required = true),
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Status retrieved", content = @Content(schema = @Schema(implementation = Boolean.class)))
-            }
-    )
-    public ResponseEntity<APIResponse<Boolean>> hasUncheckedOutToday(@PathVariable Integer employeeId,
-                                                                     HttpServletRequest request) {
-        boolean hasUnfinished = attendanceService.hasUncheckedOutAttendanceOnDate(java.time.LocalDateTime.now());
-        return ResponseEntity.ok(new APIResponse<>(true, "Checked attendance status successfully", hasUnfinished, null, request.getRequestURI()));
-    }
 }
