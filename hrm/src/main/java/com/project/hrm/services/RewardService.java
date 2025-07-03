@@ -18,7 +18,7 @@ public interface RewardService {
 
     void deleteReward(Integer id);
 
-    RewardDTO getDTo(Integer id);
+    RewardDTO getDTO(Integer id);
 
     Reward getEntity(Integer id);
 

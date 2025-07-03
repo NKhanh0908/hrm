@@ -11,8 +11,9 @@ import java.util.List;
 
 @Repository
 public interface DependentRepository extends JpaRepository<Dependent, Integer>, JpaSpecificationExecutor<Dependent> {
-    @Query(value = "SELECT * FROM dependent WHERE employee_id = :employeeId", nativeQuery = true)
-    List<Dependent> findByEmployeeIdNative(@Param("employeeId") Integer employeeId);
+    @Query("SELECT d FROM Dependent d WHERE d.employee.id = :employeeId")
+    List<Dependent> findByEmployeeId(@Param("employeeId") Integer employeeId);
 
-    int countByEmployeeId(Integer employeeId);
+    @Query("SELECT COUNT(d) FROM Dependent d WHERE d.employee.id = :employeeId")
+    int countByEmployeeId(@Param("employeeId") Integer employeeId);
 }

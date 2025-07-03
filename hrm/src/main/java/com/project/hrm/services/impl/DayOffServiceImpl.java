@@ -4,6 +4,8 @@ import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.dayOffDTO.*;
 import com.project.hrm.entities.DayOff;
 import com.project.hrm.enums.DayOffStatus;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.DayOffMapper;
 import com.project.hrm.repositories.DayOffRepository;
 import com.project.hrm.services.DayOffService;
@@ -23,9 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -156,7 +156,7 @@ public class DayOffServiceImpl implements DayOffService {
     public DayOff getEntityById(Integer id) {
         log.info("Get Day Off by id: {}", id);
         return dayOffRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No Day Off found with id: " + id));
+                .orElseThrow(() -> new CustomException(Error.DAY_OFF_NOT_FOUND));
     }
 
     /**

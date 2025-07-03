@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -20,74 +20,59 @@ public class RegulationsInitializer {
     @PostConstruct
     public void initDefaultRegulations() {
         Map<Integer, RegulationData> defaultRegulations = getRegulationDataMap();
-        for (Map.Entry<Integer, RegulationData> entry : defaultRegulations.entrySet()) {
-            Integer id = entry.getKey();
-            RegulationData data = entry.getValue();
+        List<Integer> ids = new ArrayList<>(defaultRegulations.keySet());
+        List<Regulations> existingRegulations = regulationsRepository.findAllById(ids);
+        Set<Integer> existingIds = existingRegulations.stream()
+                .map(Regulations::getId)
+                .collect(Collectors.toSet());
 
-            regulationsRepository.findById(id).ifPresentOrElse(
-                    existing -> {
-                         //Không làm gì nếu đã tồn tại
-                    },
-                    () -> {
-                        Regulations regulation = new Regulations();
-                        regulation.setId(id);
-                        regulation.setRegulationKey(data.key());
-                        regulation.setName(data.name());
-                        regulation.setType(data.Type());
-                        regulation.setAmount(data.amount());
-                        regulation.setPercentage(data.percentage());
-                        regulation.setApplicableSalary(data.applicableSalary());
-                        regulation.setEffectiveDate(data.effectiveDate());
-                        regulationsRepository.save(regulation);
-                    }
-            );
+        List<Regulations> newRegulations = defaultRegulations.entrySet().stream()
+                .filter(entry -> !existingIds.contains(entry.getKey()))
+                .map(entry -> {
+                    RegulationData data = entry.getValue();
+                    return Regulations.builder()
+                            .id(entry.getKey())
+                            .regulationKey(data.key())
+                            .name(data.name())
+                            .type(data.Type())
+                            .amount(data.amount())
+                            .percentage(data.percentage())
+                            .applicableSalary(data.applicableSalary())
+                            .effectiveDate(data.effectiveDate())
+                            .build();
+                })
+                .toList();
+
+        if (!newRegulations.isEmpty()) {
+            regulationsRepository.saveAll(newRegulations);
         }
     }
 
     private static Map<Integer, RegulationData> getRegulationDataMap() {
         Map<Integer, RegulationData> defaultRegulations = new HashMap<>();
-
         defaultRegulations.put(1, new RegulationData("SOCIAL_INSURANCE",
-                "Bảo hiểm xã hội", PayrollComponentType.INSURANCE,null, 8F, null,
-                LocalDateTime.of(2025, 1, 1, 0, 0)
-        ));
-
+                "Bảo hiểm xã hội", PayrollComponentType.INSURANCE, null, 8F, null,
+                LocalDateTime.of(2025, 1, 1, 0, 0)));
         defaultRegulations.put(2, new RegulationData("HEALTH_INSURANCE",
                 "Bảo hiểm y tế", PayrollComponentType.INSURANCE, null, 1.5F, null,
-                LocalDateTime.of(2025, 1, 1, 0, 0)
-        ));
-
+                LocalDateTime.of(2025, 1, 1, 0, 0)));
         defaultRegulations.put(3, new RegulationData("UNEMOPLOYMENT_INSURANCE",
-                "Bảo hiểm thất nghiệp", PayrollComponentType.INSURANCE, null, 1f, null,
-                LocalDateTime.of(2025, 1, 1, 0, 0)
-        ));
-
+                "Bảo hiểm thất nghiệp", PayrollComponentType.INSURANCE, null, 1F, null,
+                LocalDateTime.of(2025, 1, 1, 0, 0)));
         defaultRegulations.put(4, new RegulationData("UNION_DUES",
                 "Kinh phí công đoàn", PayrollComponentType.INSURANCE, null, 2F, null,
-                LocalDateTime.of(2025, 1, 1, 0, 0)
-        ));
-
+                LocalDateTime.of(2025, 1, 1, 0, 0)));
         defaultRegulations.put(5, new RegulationData("PERSONAL_INCOME_TAX",
-                "Thuế thu nhập cá nhân", PayrollComponentType.TAX, null , null, null,
-                LocalDateTime.of(2025, 1, 1, 0, 0)
-        ));
-
+                "Thuế thu nhập cá nhân", PayrollComponentType.TAX, null, null, null,
+                LocalDateTime.of(2025, 1, 1, 0, 0)));
         defaultRegulations.put(6, new RegulationData("ATTENDANCE_LATE",
                 "Chấm công trễ", PayrollComponentType.DEDUCTION, BigDecimal.valueOf(50000), null, null,
-                LocalDateTime.of(2025, 1, 1, 0, 0)
-        ));
+                LocalDateTime.of(2025, 1, 1, 0, 0)));
         return defaultRegulations;
     }
 
-
     private record RegulationData(
-            String key,
-            String name,
-            PayrollComponentType Type,
-            BigDecimal amount,
-            Float percentage,
-            BigDecimal applicableSalary,
-            LocalDateTime effectiveDate
-    ) {
-    }
+            String key, String name, PayrollComponentType Type,
+            BigDecimal amount, Float percentage, BigDecimal applicableSalary,
+            LocalDateTime effectiveDate) {}
 }

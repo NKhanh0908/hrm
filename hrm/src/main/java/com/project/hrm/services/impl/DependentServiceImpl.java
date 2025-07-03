@@ -1,5 +1,6 @@
 package com.project.hrm.services.impl;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.dependentDTO.DependentCreateDTO;
 import com.project.hrm.dto.dependentDTO.DependentDTO;
 import com.project.hrm.dto.dependentDTO.DependentUpdateDTO;
@@ -12,6 +13,9 @@ import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,32 +82,32 @@ public class DependentServiceImpl implements DependentService {
     /**
      * Deletes a {@link Dependent} entity by its ID.
      *
-     * @param id the ID of the dependent to delete
+     * @param dependentId the ID of the dependent to delete
      * @throws EntityNotFoundException if no dependent is found with the given ID
      */
     @Transactional
     @Override
-    public void delete(Integer id) {
-        log.info("Delete Dependent with id: {}", id);
-        if(checkExists(id)){
-            dependentRepository.deleteById(id);
+    public void delete(Integer dependentId) {
+        log.info("Delete Dependent with dependentId: {}", dependentId);
+        if(checkExists(dependentId)){
+            dependentRepository.deleteById(dependentId);
         }else{
-            throw new EntityNotFoundException("Dependent with id: " + id + " not found");
+            throw new EntityNotFoundException("Dependent with id: " + dependentId + " not found");
         }
     }
 
     /**
      * Checks if a {@link Dependent} entity exists by its ID.
      *
-     * @param id the ID to check
+     * @param dependentId the ID to check
      * @return true if the dependent exists, false otherwise
      */
     @Transactional(readOnly = true)
     @Override
-    public Boolean checkExists(Integer id) {
-        log.info("Check Exists Dependent by ID: {}", id);
+    public Boolean checkExists(Integer dependentId) {
+        log.info("Check Exists Dependent by ID: {}", dependentId);
 
-        return dependentRepository.existsById(id);
+        return dependentRepository.existsById(dependentId);
     }
 
     /**
@@ -146,23 +150,19 @@ public class DependentServiceImpl implements DependentService {
     @Transactional(readOnly = true)
     @Override
     public List<DependentDTO> getDependentsByEmployeeId(Integer employeeId) {
-        List<Dependent> dependentList = dependentRepository.findByEmployeeIdNative(employeeId);
+        List<Dependent> dependentList = dependentRepository.findByEmployeeId(employeeId);
         return dependentList.stream()
                 .map(dependentMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Retrieves all {@link DependentDTO} entities in the system.
-     *
-     * @return a list of all {@link DependentDTO}
-     */
+    @Transactional(readOnly = true)
     @Override
-    public List<DependentDTO> getAllDependents() {
-        return dependentRepository.findAll()
-                .stream()
-                .map(dependentMapper::toDTO)
-                .collect(Collectors.toList());
+    public PageDTO<DependentDTO> getAllDependents(int page, int size) {
+        log.info("Get all Dependents with page: {}, size: {}", page, size);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Dependent> dependentPage = dependentRepository.findAll(pageable);
+        return dependentMapper.toDependentPageDTO(dependentPage);
     }
 
     @Override

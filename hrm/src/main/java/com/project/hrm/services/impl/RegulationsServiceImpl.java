@@ -5,6 +5,9 @@ import com.project.hrm.dto.regulationsDTO.RegulationsDTO;
 import com.project.hrm.dto.regulationsDTO.RegulationsFilter;
 import com.project.hrm.dto.regulationsDTO.RegulationsUpdateDTO;
 import com.project.hrm.entities.Regulations;
+import com.project.hrm.enums.PayrollComponentType;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.RegulationsMapper;
 import com.project.hrm.repositories.RegulationsRepository;
 import com.project.hrm.services.RegulationsService;
@@ -76,20 +79,20 @@ public class RegulationsServiceImpl implements RegulationsService {
     public Regulations getEntityById(Integer id) {
         log.info("Get Regulations Entity by id: {}",  id);
         return regulationsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Regulations not found by id: " + id));
+                .orElseThrow(() -> new CustomException(Error.REGULATION_NOT_FOUND));
     }
 
     /**
      * Checks whether a {@link Regulations} exists with the given ID.
      *
-     * @param regulationsId the ID to check
+     * @param regulationId the ID to check
      * @return true if exists, false otherwise
      */
     @Transactional(readOnly = true)
     @Override
-    public Boolean checkExists(Integer regulationsId) {
-        log.info("Check existence of Regulations with id: {}", regulationsId);
-        return regulationsRepository.existsById(regulationsId);
+    public Boolean checkExists(Integer regulationId) {
+        log.info("Check existence of Regulations with id: {}", regulationId);
+        return regulationsRepository.existsById(regulationId);
     }
 
     /**
@@ -121,11 +124,8 @@ public class RegulationsServiceImpl implements RegulationsService {
     public RegulationsDTO update(RegulationsUpdateDTO regulationsUpdateDTO) {
         log.info("Update Regulations with ID: {}", regulationsUpdateDTO.getId());
 
-        // Tìm regulations hiện có
-        Regulations regulations = regulationsRepository.findById(regulationsUpdateDTO.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Regulations not found with id: " + regulationsUpdateDTO.getId()));
+        Regulations regulations = getEntityById(regulationsUpdateDTO.getId());
 
-        // Cập nhật các trường nếu không null
         if (regulationsUpdateDTO.getName() != null) {
             regulations.setName(regulationsUpdateDTO.getName());
         }
@@ -149,18 +149,18 @@ public class RegulationsServiceImpl implements RegulationsService {
     /**
      * Deletes a {@link Regulations} entity by its ID.
      *
-     * @param regulationsId the ID to delete
+     * @param regulationId the ID to delete
      * @throws EntityNotFoundException if not found
      */
     @Transactional
     @Override
-    public void delete(Integer regulationsId) {
-        log.info("Delete Regulations with id: {}", regulationsId);
+    public void delete(Integer regulationId) {
+        log.info("Delete Regulations with id: {}", regulationId);
 
-        if (checkExists(regulationsId)) {
-            regulationsRepository.deleteById(regulationsId);
+        if (checkExists(regulationId)) {
+            regulationsRepository.deleteById(regulationId);
         }else {
-            throw new EntityNotFoundException("Regulations not found by id: " + regulationsId);
+            throw new CustomException(Error.REGULATION_NOT_FOUND);
         }
     }
 
@@ -168,6 +168,18 @@ public class RegulationsServiceImpl implements RegulationsService {
     public Regulations getRegulationsByKey(String regulationsKey) {
         log.info("Get Regulations by regulationsKey: {}", regulationsKey);
         return regulationsRepository.findRegulationByKey(regulationsKey)
-                .orElseThrow(() -> new EntityNotFoundException("Regulations not found with key: " + regulationsKey));
+                .orElseThrow(() -> new CustomException(Error.REGULATION_NOT_FOUND));
+    }
+
+    @Override
+    public List<Regulations> findRegulationByType(PayrollComponentType type) {
+        log.info("Find Regulations by type: {}", type);
+        return regulationsRepository.findByType(type);
+    }
+
+    @Override
+    public List<Regulations> findAllById(Iterable<Integer> ids) {
+        log.info("Find Regulations by ids: {}", ids);
+        return regulationsRepository.findAllById(ids);
     }
 }

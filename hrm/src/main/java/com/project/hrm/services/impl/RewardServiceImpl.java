@@ -90,7 +90,7 @@ public class RewardServiceImpl implements RewardService {
 
     @Transactional(readOnly = true)
     @Override
-    public RewardDTO getDTo(Integer id) {
+    public RewardDTO getDTO(Integer id) {
         log.info("Get Reward DTO By ID {}", id);
         return rewardMapper.toDTO(getEntity(id));
     }

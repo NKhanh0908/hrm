@@ -113,15 +113,15 @@ public class DependentController {
         return ResponseEntity.ok(new APIResponse<>(true, "Get Dependents by Employee ID successfully", list, null, request.getRequestURI()));
     }
 
-    @GetMapping
-    @Operation(
-            summary = "Get all dependents",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "List of all dependents", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DependentDTO.class))))
-            }
-    )
-    public ResponseEntity<APIResponse<List<DependentDTO>>> getAll(HttpServletRequest request) {
-        List<DependentDTO> list = dependentService.getAllDependents();
-        return ResponseEntity.ok(new APIResponse<>(true, "Get All Dependents successfully", list, null, request.getRequestURI()));
-    }
+//    @GetMapping
+//    @Operation(
+//            summary = "Get all dependents",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "List of all dependents", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DependentDTO.class))))
+//            }
+//    )
+//    public ResponseEntity<APIResponse<List<DependentDTO>>> getAll(HttpServletRequest request) {
+//        List<DependentDTO> list = dependentService.getAllDependents();
+//        return ResponseEntity.ok(new APIResponse<>(true, "Get All Dependents successfully", list, null, request.getRequestURI()));
+//    }
 }

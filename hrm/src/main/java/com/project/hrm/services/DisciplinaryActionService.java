@@ -18,7 +18,7 @@ public interface DisciplinaryActionService {
 
     void deleteDisciplinaryAction(Integer id);
 
-    DisciplinaryActionDTO getDTo(Integer id);
+    DisciplinaryActionDTO getDTO(Integer id);
 
     DisciplinaryAction getEntity(Integer id);
 

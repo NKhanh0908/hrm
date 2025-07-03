@@ -1,10 +1,12 @@
 package com.project.hrm.services;
 
+import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.dependentDTO.DependentCreateDTO;
 import com.project.hrm.dto.dependentDTO.DependentDTO;
 import com.project.hrm.dto.dependentDTO.DependentUpdateDTO;
 import com.project.hrm.entities.Dependent;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,7 +26,7 @@ public interface DependentService {
 
     List<DependentDTO> getDependentsByEmployeeId(Integer employeeId);
 
-    List<DependentDTO> getAllDependents();
+    PageDTO<DependentDTO> getAllDependents(int page, int size);
 
     int countDependentsOfEmployee(Integer employeeId);
 }

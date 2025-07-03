@@ -2,12 +2,12 @@ package com.project.hrm.services.impl;
 
 import com.project.hrm.dto.disciplinaryActionDTO.DisciplinaryActionDTO;
 import com.project.hrm.dto.payrollComponentsDTO.*;
-import com.project.hrm.dto.regulationsDTO.RegulationsFilter;
 import com.project.hrm.dto.rewardDTO.RewardDTO;
 import com.project.hrm.entities.*;
 import com.project.hrm.enums.PayrollComponentType;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.PayrollComponentMapper;
-import com.project.hrm.mapper.RegulationsMapper;
 import com.project.hrm.repositories.PayrollComponentsRepository;
 import com.project.hrm.services.DisciplinaryActionService;
 import com.project.hrm.services.PayrollComponentsService;
@@ -24,9 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,7 +35,6 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
     private final PayrollComponentsRepository payrollComponentsRepository;
     private final PayrollComponentMapper payrollComponentMapper;
     private final RegulationsService regulationsService;
-    private final RegulationsMapper regulationsMapper;
     private final DisciplinaryActionService disciplinaryActionService;
     private final RewardService rewardService;
 
@@ -192,151 +189,157 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
         return payrollComponentMapper.convertPageEntityToPageDTO(payrollComponentsRepository.findAll(payrollComponentsSpecification, pageable));
     }
 
+    @Transactional
     @Override
     public List<PayrollComponentsDTO> createComponents(Payrolls payrolls) {
-        log.info("Create Payroll Components With Regulations");
-        RegulationsFilter regulationsFilter = new RegulationsFilter();
+        log.info("Create PayrollComponents for payroll ID: {}", payrolls.getId());
+        Objects.requireNonNull(payrolls, "Payrolls cannot be null");
+        Objects.requireNonNull(payrolls.getEmployee(), "Payrolls employee cannot be null");
+        Objects.requireNonNull(payrolls.getPayPeriod(), "Payrolls pay period cannot be null");
 
-        regulationsFilter.setPayrollComponentType(PayrollComponentType.TAX);
-        List<Regulations> regulationsTax = regulationsService.filter(regulationsFilter, Integer.MAX_VALUE, Integer.MAX_VALUE)
-                .stream()
-                .map(regulationsMapper::toRegulations)
-                .toList();
-
-        regulationsFilter.setPayrollComponentType(PayrollComponentType.INSURANCE);
-        List<Regulations> regulationsInsurance = regulationsService.filter(regulationsFilter, Integer.MAX_VALUE, Integer.MAX_VALUE)
-                .stream()
-                .map(regulationsMapper::toRegulations)
-                .toList();
-
+        List<Regulations> regulationsTax = regulationsService.findRegulationByType(PayrollComponentType.TAX);
+        List<Regulations> regulationsInsurance = regulationsService.findRegulationByType(PayrollComponentType.INSURANCE);
         List<PayrollComponents> payrollComponentsListReward = createComponentsTypeRewards(payrolls);
         List<PayrollComponents> payrollComponentsListDeduction = createComponentsTypeDeduction(payrolls);
         List<PayrollComponents> payrollComponentsListTax = createComponentsWithRegulations(payrolls, regulationsTax);
         List<PayrollComponents> payrollComponentsListInsurance = createComponentsWithRegulations(payrolls, regulationsInsurance);
 
-
-        List<PayrollComponents> componentsListReturn = Stream.of(payrollComponentsListTax, payrollComponentsListInsurance, payrollComponentsListReward, payrollComponentsListDeduction)
+        List<PayrollComponents> componentsListReturn = Stream.of(
+                        payrollComponentsListTax,
+                        payrollComponentsListInsurance,
+                        payrollComponentsListReward,
+                        payrollComponentsListDeduction)
                 .flatMap(Collection::stream)
                 .toList();
 
-        return componentsListReturn.stream()
+        return payrollComponentsRepository.saveAll(componentsListReturn).stream()
                 .map(payrollComponentMapper::toPayrollComponentsDTO)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public PayrollComponents getPayrollIdAndType(Integer payrollId, PayrollComponentType type) {
+    public PayrollComponents getPayrollComponentByPayrollIdAndType(Integer payrollId, PayrollComponentType type) {
         log.info("Get Payroll Components by Payroll id and type: {}, {}",payrollId, type);
-        return payrollComponentsRepository.findByPayrollIdAndType(payrollId, type);
+        return payrollComponentsRepository.findByPayrollIdAndType(payrollId, type)
+                .orElseThrow(() -> new EntityNotFoundException("Payroll Components with id: " + payrollId + " and type: " + type + " not found"));
     }
 
-    protected List<PayrollComponents> createComponentsWithRegulations(Payrolls payrolls,List<Regulations> regulations) {
-        List<PayrollComponents> components = new ArrayList<>();
+    protected List<PayrollComponents> createComponentsWithRegulations(Payrolls payrolls, List<Regulations> regulations) {
+        Objects.requireNonNull(payrolls, "Payrolls cannot be null");
+        Objects.requireNonNull(regulations, "Regulations list cannot be null");
 
-        for (Regulations regulation : regulations) {
-            if (regulation.getType().equals(PayrollComponentType.TAX)) {
-                PayrollComponents payrollComponents = new PayrollComponents();
+        return regulations.stream()
+                .map(regulation -> {
+                    Objects.requireNonNull(regulation.getName(), "Regulation name cannot be null");
+                    Objects.requireNonNull(regulation.getType(), "Regulation type cannot be null");
+                    if (regulation.getType() != PayrollComponentType.TAX &&
+                            regulation.getAmount() == null &&
+                            regulation.getPercentage() == null) {
+                        throw new CustomException(Error.REGULATION_INVALID_AMOUNT);
+                    }
 
-                payrollComponents.setName(regulation.getName());
-                payrollComponents.setType(regulation.getType());
-                payrollComponents.setAmount(null);
-                payrollComponents.setIsPercentage(true);
-                payrollComponents.setPercentage(null);
-                payrollComponents.setRegulation(regulation);
-                payrollComponents.setPayroll(payrolls);
+                    PayrollComponents.PayrollComponentsBuilder builder = PayrollComponents.builder()
+                            .name(regulation.getName())
+                            .type(regulation.getType())
+                            .payroll(payrolls)
+                            .regulation(regulation);
 
-                components.add(payrollComponents);
-            } else {
-                PayrollComponents payrollComponents = new PayrollComponents();
-
-                payrollComponents.setName(regulation.getName());
-                payrollComponents.setType(regulation.getType());
-                if (regulation.getAmount() != null) {
-                    payrollComponents.setAmount(regulation.getAmount());
-                } else payrollComponents.setAmount(null);
-
-                if (regulation.getPercentage() != null) {
-                    payrollComponents.setIsPercentage(true);
-                    payrollComponents.setPercentage(regulation.getPercentage());
-                } else {
-                    payrollComponents.setIsPercentage(false);
-                    payrollComponents.setPercentage(null);
-                }
-                payrollComponents.setRegulation(regulation);
-                payrollComponents.setPayroll(payrolls);
-
-                components.add(payrollComponents);
-            }
-
-        }
-        return payrollComponentsRepository.saveAll(components);
+                    if (regulation.getType() == PayrollComponentType.TAX) {
+                        builder.isPercentage(true).percentage(null).amount(null);
+                    } else {
+                        builder.amount(regulation.getAmount())
+                                .isPercentage(regulation.getPercentage() != null)
+                                .percentage(regulation.getPercentage());
+                    }
+                    return builder.build();
+                })
+                .toList();
     }
 
 
 
-    private List<PayrollComponents> createComponentsTypeDeduction(Payrolls payrolls) {
-        log.info("Create Payroll Components Type Deduction");
+    protected List<PayrollComponents> createComponentsTypeDeduction(Payrolls payrolls) {
+        log.info("Create PayrollComponents type DEDUCTION for payroll ID: {}", payrolls.getId());
+        Objects.requireNonNull(payrolls.getEmployee(), "Employee cannot be null");
+        Objects.requireNonNull(payrolls.getPayPeriod(), "Pay period cannot be null");
 
-        List<DisciplinaryActionDTO> disciplinaryActionList = disciplinaryActionService.getDisciplinaryActionByEmployeeIdAndDate(payrolls.getEmployee().getId(), payrolls.getPayPeriod().getStartDate(), payrolls.getPayPeriod().getEndDate());
+        List<DisciplinaryActionDTO> disciplinaryActions = disciplinaryActionService.getDisciplinaryActionByEmployeeIdAndDate(
+                payrolls.getEmployee().getId(),
+                payrolls.getPayPeriod().getStartDate(),
+                payrolls.getPayPeriod().getEndDate());
 
-        List<PayrollComponents> payrollComponentsDeduction = new ArrayList<>();
-        for (DisciplinaryActionDTO disciplinaryAction : disciplinaryActionList) {
-            PayrollComponents payrollComponents = new PayrollComponents();
+        Set<Integer> regulationIds = disciplinaryActions.stream()
+                .map(DisciplinaryActionDTO::getRegulationId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<Integer, Regulations> regulationMap = regulationIds.isEmpty() ? Map.of() :
+                regulationsService.findAllById(regulationIds).stream()
+                        .collect(Collectors.toMap(Regulations::getId, r -> r));
 
-            payrollComponents.setName(disciplinaryAction.getDescription());
-            payrollComponents.setType(PayrollComponentType.DEDUCTION);
-            payrollComponents.setPayroll(payrolls);
 
-            if (disciplinaryAction.getPenaltyAmount() != null) {
-                payrollComponents.setAmount(disciplinaryAction.getPenaltyAmount());
-            }
+        return disciplinaryActions.stream()
+                .map(action -> {
+                    Objects.requireNonNull(action.getDescription(), "Disciplinary action description cannot be null");
+                    if (action.getPenaltyAmount() == null && action.getRegulationId() == null) {
+                        throw new CustomException(Error.REGULATION_INVALID_AMOUNT);
+                    }
 
-            if (disciplinaryAction.getRegulationId() != null) {
-                Regulations regulation = regulationsService.getEntityById(disciplinaryAction.getRegulationId());
+                    PayrollComponents.PayrollComponentsBuilder builder = PayrollComponents.builder()
+                            .name(action.getDescription())
+                            .type(PayrollComponentType.DEDUCTION)
+                            .payroll(payrolls);
 
-                payrollComponents.setRegulation(regulation);
-
-                if (disciplinaryAction.getPenaltyAmount() == null) {
-                    payrollComponents.setAmount(regulation.getAmount());
-                }
-
-                payrollComponents.setPercentage(regulation.getPercentage());
-                payrollComponents.setIsPercentage(payrollComponents.getPercentage() != null);
-
-            } else payrollComponents.setRegulation(null);
-
-            payrollComponentsDeduction.add(payrollComponents);
-        }
-        return payrollComponentsRepository.saveAll(payrollComponentsDeduction);
+                    if (action.getRegulationId() != null) {
+                        Regulations regulation = regulationMap.get(action.getRegulationId());
+                        if (regulation == null) {
+                            throw new CustomException(Error.REGULATION_NOT_FOUND);
+                        }
+                        if (action.getPenaltyAmount() == null && regulation.getAmount() == null &&
+                                regulation.getPercentage() == null) {
+                            throw new CustomException(Error.REGULATION_INVALID_AMOUNT);
+                        }
+                        builder.regulation(regulation)
+                                .amount(action.getPenaltyAmount() != null ? action.getPenaltyAmount() : regulation.getAmount())
+                                .percentage(regulation.getPercentage())
+                                .isPercentage(regulation.getPercentage() != null);
+                    } else {
+                        builder.amount(action.getPenaltyAmount())
+                                .isPercentage(false)
+                                .percentage(null)
+                                .regulation(null);
+                    }
+                    return builder.build();
+                })
+                .toList();
     }
 
-    private List<PayrollComponents> createComponentsTypeRewards(Payrolls payrolls) {
-        log.info("Create Payroll Components Rewards");
+    protected List<PayrollComponents> createComponentsTypeRewards(Payrolls payrolls) {
+        log.info("Create PayrollComponents type REWARD for payroll ID: {}", payrolls.getId());
+        Objects.requireNonNull(payrolls.getEmployee(), "Employee cannot be null");
+        Objects.requireNonNull(payrolls.getPayPeriod(), "Pay period cannot be null");
 
-        List<RewardDTO> rewards = rewardService.getRewardByEmployeeIdAndDate(payrolls.getEmployee().getId(), payrolls.getPayPeriod().getStartDate(), payrolls.getPayPeriod().getEndDate());
+        List<RewardDTO> rewards = rewardService.getRewardByEmployeeIdAndDate(
+                payrolls.getEmployee().getId(),
+                payrolls.getPayPeriod().getStartDate(),
+                payrolls.getPayPeriod().getEndDate());
 
-        List<PayrollComponents> payrollComponentsReward = new ArrayList<>();
-        for (RewardDTO reward : rewards) {
-            PayrollComponents payrollComponents = new PayrollComponents();
-
-            payrollComponents.setName(reward.getTitle());
-            payrollComponents.setType(PayrollComponentType.REWARD);
-            payrollComponents.setPayroll(payrolls);
-
-            if (reward.getRewardAmount() != null) {
-                payrollComponents.setAmount(reward.getRewardAmount());
-            }
-
-            payrollComponents.setRegulation(null);
-            payrollComponents.setIsPercentage(reward.getIsPercentage() != null);
-
-            if (reward.getIsPercentage() != null) {
-                payrollComponents.setPercentage(reward.getPercentage());
-            } else payrollComponents.setPercentage(null);
-
-            payrollComponentsReward.add(payrollComponents);
-
-        }
-        return payrollComponentsRepository.saveAll(payrollComponentsReward);
+        return rewards.stream()
+                .map(reward -> {
+                    Objects.requireNonNull(reward.getTitle(), "Reward title cannot be null");
+                    if (reward.getRewardAmount() == null && reward.getPercentage() == null) {
+                        throw new CustomException(Error.REGULATION_INVALID_AMOUNT);
+                    }
+                    return PayrollComponents.builder()
+                            .name(reward.getTitle())
+                            .type(PayrollComponentType.REWARD)
+                            .payroll(payrolls)
+                            .amount(reward.getRewardAmount())
+                            .isPercentage(Boolean.TRUE.equals(reward.getIsPercentage()))
+                            .percentage(reward.getPercentage())
+                            .regulation(null)
+                            .build();
+                })
+                .toList();
     }
 }

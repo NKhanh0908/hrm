@@ -98,7 +98,7 @@ public class DisciplinaryActionServiceImpl implements DisciplinaryActionService 
 
     @Transactional(readOnly = true)
     @Override
-    public DisciplinaryActionDTO getDTo(Integer id) {
+    public DisciplinaryActionDTO getDTO(Integer id) {
         log.info("Get disciplinary action DTO by id: {}", id);
         return disciplinaryActionMapper.toDTO(getEntity(id));
     }

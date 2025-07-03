@@ -320,10 +320,10 @@ public class PayrollsServiceImpl implements PayrollsService {
     private BigDecimal totalAmountTaxPersonalIncomeTax(BigDecimal taxableIncome, Integer payrollId) {
         BigDecimal totalTax = BigDecimal.ZERO;
         for (ScaleOfTaxation level : ScaleOfTaxation.values()) {
-            totalTax = totalTax.add(level.taxCalculation(taxableIncome));
+            totalTax = totalTax.add(level.calculateTax(taxableIncome));
         }
 
-        PayrollComponents payrollComponents = payrollComponentsService.getPayrollIdAndType(payrollId, PayrollComponentType.TAX);
+        PayrollComponents payrollComponents = payrollComponentsService.getPayrollComponentByPayrollIdAndType(payrollId, PayrollComponentType.TAX);
         payrollComponents.setAmount(totalTax);
         payrollComponentsRepository.save(payrollComponents);
 

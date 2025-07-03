@@ -5,6 +5,8 @@ import com.project.hrm.dto.payPeriodsDTO.PayPeriodsDTO;
 import com.project.hrm.dto.payPeriodsDTO.PayPeriodsFilter;
 import com.project.hrm.dto.payPeriodsDTO.PayPeriodsUpdateDTO;
 import com.project.hrm.entities.PayPeriods;
+import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.PayPeriodMapper;
 import com.project.hrm.repositories.PayPeriodsRepository;
 import com.project.hrm.services.PayPeriodsService;
@@ -20,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @Slf4j
@@ -34,7 +35,7 @@ public class PayPeriodsServiceImpl implements PayPeriodsService {
     @Transactional
     @Override
     public PayPeriodsDTO create(PayPeriodsCreateDTO payPeriodsCreateDTO) {
-        log.info("Create PayPeriods ");
+        log.info("Create PayPeriods with code: {}", payPeriodsCreateDTO.getPayPeriodCode());
 
         PayPeriods payPeriods = payPeriodMapper.toPayPeriodsFromCreateDTO(payPeriodsCreateDTO);
         payPeriods.setId(IdGenerator.getGenerationId());
@@ -71,21 +72,21 @@ public class PayPeriodsServiceImpl implements PayPeriodsService {
 
     @Transactional
     @Override
-    public void delete(Integer Id) {
-        log.info("Delete PayPeriodsDTO with Id: {}", Id);
-        if (checkExistence(Id)){
-            payPeriodsRepository.deleteById(Id);
+    public void delete(Integer id) {
+        log.info("Delete PayPeriodsDTO with id: {}", id);
+        if (checkExistence(id)){
+            payPeriodsRepository.deleteById(id);
         }else {
-            throw new EntityNotFoundException("PayPeriods with Id: " + Id + " not found");
+            throw new CustomException(Error.PAY_PERIOD_NOT_FOUND);
         }
     }
 
 
     @Transactional(readOnly = true)
     @Override
-    public Boolean checkExistence(Integer Id) {
-        log.info("Check existence of PayPeriods with Id: {}", Id);
-        return payPeriodsRepository.existsById(Id);
+    public Boolean checkExistence(Integer id) {
+        log.info("Check existence of PayPeriods with id: {}", id);
+        return payPeriodsRepository.existsById(id);
     }
 
 
@@ -102,7 +103,7 @@ public class PayPeriodsServiceImpl implements PayPeriodsService {
     public PayPeriods getEntityById(Integer id) {
         log.info("Get PayPeriods by id: {}", id);
         return payPeriodsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Pay Periods not found with id: " + id));
+                .orElseThrow(() -> new CustomException(Error.PAY_PERIOD_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
@@ -120,9 +121,8 @@ public class PayPeriodsServiceImpl implements PayPeriodsService {
     @Transactional(readOnly = true)
     @Override
     public PayPeriods getPayPeriodsByDate(LocalDateTime startDate, LocalDateTime endDate) {
-        log.info("Check existence of PayPeriods with startDate: {}, endDate: {}", startDate, endDate);
-
-
-        return payPeriodsRepository.getByStartDateLessThanEqualAndEndDateGreaterThanEqual(endDate,startDate);
+        log.info("Get PayPeriods with startDate: {}, endDate: {}", startDate, endDate);
+        return payPeriodsRepository.getByStartDateLessThanEqualAndEndDateGreaterThanEqual(startDate, endDate)
+                .orElseThrow(() -> new CustomException(Error.PAY_PERIOD_INVALID_DATE_RANGE));
     }
 }

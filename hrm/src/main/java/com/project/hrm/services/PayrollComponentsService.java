@@ -30,5 +30,5 @@ public interface PayrollComponentsService {
 
     List<PayrollComponentsDTO> createComponents(Payrolls payrolls);
 
-    PayrollComponents getPayrollIdAndType(Integer payrollId, PayrollComponentType type);
+    PayrollComponents getPayrollComponentByPayrollIdAndType(Integer payrollId, PayrollComponentType type);
 }
