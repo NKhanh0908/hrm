@@ -34,7 +34,7 @@ HRM (Human Resource Management) là một hệ thống quản lý nhân sự to�
 - Quản lý quy trình phỏng vấn
 - Gửi thư mời phỏng vấn và thông báo tuyển dụng
 
-![Quản lý tuyển dụng](hrm-v2-module_recruitment.png)
+![Quản lý tuyển dụng](ScreenShot/hrm-v2-module_recruitment.png)
 
 ### 📝 Hợp đồng
 - Tạo và quản lý hợp đồng lao động
