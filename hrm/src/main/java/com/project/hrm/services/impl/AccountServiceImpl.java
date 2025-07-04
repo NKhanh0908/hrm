@@ -119,7 +119,7 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = accountMapper.convertCreateDTOToEntity(accountCreateDTO, employees);
         account.setId(IdGenerator.getGenerationId());
-        account.setPassword(passwordEncoder.encode(accountCreateDTO.getUsername()));
+        account.setPassword(passwordEncoder.encode(accountCreateDTO.getPassword()));
 
         return accountMapper.toDTO(accountRepository.save(account));
     }
