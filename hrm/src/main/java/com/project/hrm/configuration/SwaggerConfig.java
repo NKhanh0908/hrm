@@ -21,7 +21,7 @@ public class SwaggerConfig {
                                         .in(SecurityScheme.In.HEADER)
                         )
                 )
-                .addSecurityItem(new io.swagger.v3.oas.models.security.SecurityRequirement().addList("bearerAuth")) // dùng model class ở đây
+                .addSecurityItem(new io.swagger.v3.oas.models.security.SecurityRequirement().addList("bearerAuth"))
                 .info(new Info()
                         .title("Human resource Management System API Documentation")
                         .version("1.0")

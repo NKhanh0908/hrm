@@ -37,7 +37,6 @@ public class CloudinaryService {
     public Map<String, Object> upload(MultipartFile multipartFile) {
         File file = null;
         try {
-            // Tạo thông tin metadata
             String originalFileName = multipartFile.getOriginalFilename();
             Long fileSize = multipartFile.getSize();
             String customFileName = generateCustomFileName(originalFileName);
@@ -45,7 +44,6 @@ public class CloudinaryService {
             log.info("Uploading photo to cloud. Original: {}, Size: {} bytes, Custom Name: {}",
                     originalFileName, fileSize, customFileName);
 
-            // Chuyển đổi và upload
             file = convert(multipartFile, customFileName);
             String filePath = file.getAbsolutePath();
 
@@ -53,18 +51,16 @@ public class CloudinaryService {
             boolean isImage = contentType != null && contentType.startsWith("image");
 
             Map<String, Object> uploadOptions = new HashMap<>();
-            uploadOptions.put("public_id", customFileName); // Sử dụng tên tuỳ chỉnh
-            uploadOptions.put("resource_type", isImage ? "image" : "raw"); // Xác định loại tài nguyên
+            uploadOptions.put("public_id", customFileName);
+            uploadOptions.put("resource_type", isImage ? "image" : "raw");
 
             Map<String, Object> result = cloudinary.uploader().upload(file, uploadOptions);
 
-            // Bổ sung thông tin metadata
             result.put("originalFileName", originalFileName);
             result.put("fileSize", fileSize);
             result.put("customFileName", customFileName);
             result.put("localFilePath", filePath);
 
-            // Xoá file tạm
             if (!Files.deleteIfExists(file.toPath())) {
                 log.warn("Temporary file not found: {}", filePath);
             }
@@ -74,7 +70,6 @@ public class CloudinaryService {
             log.error("Upload failed: {}", e.getMessage());
             throw new RuntimeException("Upload failed", e);
         } finally {
-            // Đảm bảo xoá file tạm nếu có lỗi
             if (file != null && file.exists()) {
                 try {
                     Files.deleteIfExists(file.toPath());
