@@ -3,11 +3,9 @@ package com.project.hrm.services;
 import com.project.hrm.dto.payrollComponentsDTO.*;
 import com.project.hrm.entities.PayrollComponents;
 import com.project.hrm.entities.Payrolls;
-import com.project.hrm.entities.Regulations;
 import com.project.hrm.enums.PayrollComponentType;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service

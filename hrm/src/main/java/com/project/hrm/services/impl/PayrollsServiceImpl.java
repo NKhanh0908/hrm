@@ -67,9 +67,7 @@ public class PayrollsServiceImpl implements PayrollsService {
         log.info("Create PayrollsDTO");
         Payrolls payrolls = payrollsMapper.toPayrollsFromCreateDTO(payrollsCreateDTO);
 
-        payrolls.setId(IdGenerator.getGenerationId());
-
-        payrolls.setEmployee(employeeService.getEntityById(payrolls.getEmployee().getId()));
+        payrolls.setEmployee(employeeService.getEntityById(payrollsCreateDTO.getEmployeeId()));
 
         if (payPeriodsService.getPayPeriodsByDate(payrollsCreateDTO.getStartDate(), payrollsCreateDTO.getEndDate()) != null) {
             payrolls.setPayPeriod(payPeriodsService.getPayPeriodsByDate(payrollsCreateDTO.getStartDate(), payrollsCreateDTO.getEndDate()));
@@ -222,7 +220,7 @@ public class PayrollsServiceImpl implements PayrollsService {
 
     @Transactional
     @Override
-    public PayrollsResponseDTO getPayrollForEmployee(PayrollsCreateDTO payrollsCreateDTO) {
+    public PayrollsResponseDTO createPayrollForEmployee(PayrollsCreateDTO payrollsCreateDTO) {
         log.info("Get Payroll For Employee ID: {}", payrollsCreateDTO.getEmployeeId());
 
         PayrollsDTO payrollsDTO = create(payrollsCreateDTO);
@@ -237,7 +235,7 @@ public class PayrollsServiceImpl implements PayrollsService {
         int dayOff = dayOffService.countDayOffByEmployeeId(payrollsDTO.getEmployeeId(), payPeriods.getStartDate(), payPeriods.getEndDate());
         int dayOffNotAccept = dayOffService.countDayOffByEmployeeIdStatus(payrollsDTO.getEmployeeId(), payPeriods.getStartDate(), payPeriods.getEndDate());
 
-        List<PayrollComponentsDTO>  payrollComponentsDTOList = payrollComponentsService.createComponents(getEntityById(payrollsDTO.getPayPeriodId()));
+        List<PayrollComponentsDTO>  payrollComponentsDTOList = payrollComponentsService.createComponents(getEntityById(payrollsDTO.getId()));
 
         List<PayrollComponentsDTO> payrollComponentsDTOAdditionList = payrollComponentsDTOList.stream()
                 .filter(payrollComponentsDTO ->
@@ -323,16 +321,16 @@ public class PayrollsServiceImpl implements PayrollsService {
             totalTax = totalTax.add(level.calculateTax(taxableIncome));
         }
 
-        PayrollComponents payrollComponents = payrollComponentsService.getPayrollComponentByPayrollIdAndType(payrollId, PayrollComponentType.TAX);
-        payrollComponents.setAmount(totalTax);
-        payrollComponentsRepository.save(payrollComponents);
+        PayrollComponents payrollComponent = payrollComponentsService.getPayrollComponentByPayrollIdAndType(payrollId, PayrollComponentType.TAX);
+        payrollComponent.setAmount(totalTax);
+        payrollComponentsRepository.save(payrollComponent);
 
         return totalTax;
     }
 
     private BigDecimal totalAmountReceived(Double baseSalary, float summaryRegularTime, float summaryOverTime, List<PayrollComponentsDTO>  payrollComponentsDTOList){
         log.info("Summary Total Income");
-        Double totalStandardHoursInMonth = Double.valueOf(systemRegulationService.getValue(SystemRegulationKey.WORKDAYS_PER_MONTH));
+        Double totalStandardHoursInMonth = Double.parseDouble(systemRegulationService.getValue(SystemRegulationKey.WORKDAYS_PER_MONTH)) * Double.parseDouble(systemRegulationService.getValue(SystemRegulationKey.HOURLY_PER_ONE_DAY));
         double hourlyRate = baseSalary / totalStandardHoursInMonth;
 
         //Total charge by the hour worked
@@ -404,6 +402,7 @@ public class PayrollsServiceImpl implements PayrollsService {
     }
 
     private BigDecimal getBigDecimal(Double baseSalary, BigDecimal amountComponent, PayrollComponentsDTO payrollComponentsDTO) {
+        log.info("Calculation Subsidy and Reward Components: {}", payrollComponentsDTO);
         if (Boolean.TRUE.equals(payrollComponentsDTO.getIsPercentage())) {
             BigDecimal baseSalaryDecimal = BigDecimal.valueOf(baseSalary);
             float percentage = payrollComponentsDTO.getPercentage();

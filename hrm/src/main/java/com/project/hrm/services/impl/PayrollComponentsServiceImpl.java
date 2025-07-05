@@ -14,7 +14,6 @@ import com.project.hrm.services.PayrollComponentsService;
 import com.project.hrm.services.RegulationsService;
 import com.project.hrm.services.RewardService;
 import com.project.hrm.specifications.PayrollComponentsSpecifications;
-import com.project.hrm.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +49,6 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
         log.info("Create PayrollComponentsDTO");
 
         PayrollComponents payrollComponents = payrollComponentMapper.toPayrollComponentsFromCreateDTO(payrollComponentsCreateDTO);
-        payrollComponents.setId(IdGenerator.getGenerationId());
 
         payrollComponents.setRegulation(payrollComponentsCreateDTO.getRegulationId() != null
                 ? regulationsService.getEntityById(payrollComponentsCreateDTO.getRegulationId())
@@ -199,6 +197,8 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
 
         List<Regulations> regulationsTax = regulationsService.findRegulationByType(PayrollComponentType.TAX);
         List<Regulations> regulationsInsurance = regulationsService.findRegulationByType(PayrollComponentType.INSURANCE);
+        System.out.println(regulationsTax);
+        System.out.println(regulationsInsurance);
         List<PayrollComponents> payrollComponentsListReward = createComponentsTypeRewards(payrolls);
         List<PayrollComponents> payrollComponentsListDeduction = createComponentsTypeDeduction(payrolls);
         List<PayrollComponents> payrollComponentsListTax = createComponentsWithRegulations(payrolls, regulationsTax);
@@ -246,18 +246,19 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
                             .regulation(regulation);
 
                     if (regulation.getType() == PayrollComponentType.TAX) {
-                        builder.isPercentage(true).percentage(null).amount(null);
+                        builder.isPercentage(false).percentage(null).amount(null);
                     } else {
+                        boolean isPercentage = regulation.getPercentage() != null;
                         builder.amount(regulation.getAmount())
-                                .isPercentage(regulation.getPercentage() != null)
-                                .percentage(regulation.getPercentage());
+                                .percentage(regulation.getPercentage())
+                                .isPercentage(isPercentage);
+                        log.info("Create PayrollComponents isPercentage: {}", isPercentage);
                     }
+
                     return builder.build();
                 })
                 .toList();
     }
-
-
 
     protected List<PayrollComponents> createComponentsTypeDeduction(Payrolls payrolls) {
         log.info("Create PayrollComponents type DEDUCTION for payroll ID: {}", payrolls.getId());

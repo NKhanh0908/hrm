@@ -16,6 +16,7 @@ public class RewardMapper {
                 .isPercentage(rewardDTO.getIsPercentage())
                 .percentage(rewardDTO.getPercentage())
                 .rewardDate(rewardDTO.getRewardDate())
+                .rewardAmount(rewardDTO.getRewardAmount())
                 .appliedToPayroll(rewardDTO.getAppliedToPayroll())
                 .build();
     }
@@ -26,6 +27,7 @@ public class RewardMapper {
                 .title(reward.getTitle())
                 .reason(reward.getReason())
                 .rewardDate(reward.getRewardDate())
+                .rewardAmount(reward.getRewardAmount())
                 .isPercentage(reward.getIsPercentage())
                 .percentage(reward.getPercentage())
                 .rewardDate(reward.getRewardDate())

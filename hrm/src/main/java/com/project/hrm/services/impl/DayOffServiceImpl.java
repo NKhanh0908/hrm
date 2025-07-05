@@ -50,8 +50,6 @@ public class DayOffServiceImpl implements DayOffService {
 
         DayOff dayOff = dayOffMapper.toEntityFromDTO(dayOffCreateDTO);
 
-        dayOff.setId(IdGenerator.getGenerationId());
-
         dayOff.setEmployee(employeeService.getEntityById(dayOffCreateDTO.getEmployeeId()));
 
         return dayOffMapper.toDTO(dayOffRepository.save(dayOff));

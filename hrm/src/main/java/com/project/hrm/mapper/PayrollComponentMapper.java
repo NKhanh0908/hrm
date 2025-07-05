@@ -14,29 +14,31 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PayrollComponentMapper {
 
-    //Convert entities to DTOs
     public PayrollComponentsDTO toPayrollComponentsDTO(PayrollComponents payrollComponents) {
         return PayrollComponentsDTO.builder()
                 .id(payrollComponents.getId())
                 .name(payrollComponents.getName())
                 .type(payrollComponents.getType())
                 .amount(payrollComponents.getAmount())
+                .isPercentage(payrollComponents.getIsPercentage()) // Thêm ánh xạ isPercentage
                 .percentage(payrollComponents.getPercentage())
                 .regulationId(
                         payrollComponents.getRegulation() != null ? payrollComponents.getRegulation().getId() : null
                 )
+                .payrollsId(
+                        payrollComponents.getPayroll() != null ? payrollComponents.getPayroll().getId() : null
+                )
                 .build();
     }
 
-    //Convert DTOS to entities
     public PayrollComponents toPayrollComponents(PayrollComponentsDTO payrollComponentDTO) {
         return PayrollComponents.builder()
                 .id(payrollComponentDTO.getId())
                 .name(payrollComponentDTO.getName())
                 .type(payrollComponentDTO.getType())
                 .amount(payrollComponentDTO.getAmount())
+                .isPercentage(payrollComponentDTO.getIsPercentage()) // Đảm bảo ánh xạ isPercentage
                 .percentage(payrollComponentDTO.getPercentage())
-
                 .build();
     }
 
@@ -45,8 +47,8 @@ public class PayrollComponentMapper {
                 .name(payrollComponentsCreateDTO.getName())
                 .type(payrollComponentsCreateDTO.getType())
                 .amount(payrollComponentsCreateDTO.getAmount())
+                .isPercentage(payrollComponentsCreateDTO.getIsPercentage()) // Đảm bảo ánh xạ isPercentage
                 .percentage(payrollComponentsCreateDTO.getPercentage())
-
                 .build();
     }
 

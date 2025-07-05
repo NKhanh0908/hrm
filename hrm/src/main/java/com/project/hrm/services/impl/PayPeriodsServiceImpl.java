@@ -12,7 +12,6 @@ import com.project.hrm.repositories.PayPeriodsRepository;
 import com.project.hrm.services.PayPeriodsService;
 import com.project.hrm.specifications.PayPeriodsSpecifications;
 import com.project.hrm.utils.IdGenerator;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -38,7 +37,6 @@ public class PayPeriodsServiceImpl implements PayPeriodsService {
         log.info("Create PayPeriods with code: {}", payPeriodsCreateDTO.getPayPeriodCode());
 
         PayPeriods payPeriods = payPeriodMapper.toPayPeriodsFromCreateDTO(payPeriodsCreateDTO);
-        payPeriods.setId(IdGenerator.getGenerationId());
         return payPeriodMapper.toPayPeriodDTO(payPeriodsRepository.save(payPeriods));
     }
 
@@ -122,7 +120,13 @@ public class PayPeriodsServiceImpl implements PayPeriodsService {
     @Override
     public PayPeriods getPayPeriodsByDate(LocalDateTime startDate, LocalDateTime endDate) {
         log.info("Get PayPeriods with startDate: {}, endDate: {}", startDate, endDate);
+
+        if (startDate == null || endDate == null || endDate.isBefore(startDate)) {
+            log.error("Invalid date range: startDate={}, endDate={}", startDate, endDate);
+            throw new IllegalArgumentException("Invalid pay period date range: startDate must be before or equal to endDate");
+        }
+
         return payPeriodsRepository.getByStartDateLessThanEqualAndEndDateGreaterThanEqual(startDate, endDate)
-                .orElseThrow(() -> new CustomException(Error.PAY_PERIOD_INVALID_DATE_RANGE));
+                .orElse(null);
     }
 }

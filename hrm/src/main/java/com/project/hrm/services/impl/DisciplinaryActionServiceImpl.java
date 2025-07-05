@@ -34,7 +34,6 @@ public class DisciplinaryActionServiceImpl implements DisciplinaryActionService 
     public DisciplinaryActionDTO createDisciplinaryAction(DisciplinaryActionCreateDTO disciplinaryActionCreateDTO) {
         log.info("Create disciplinary action: {}", disciplinaryActionCreateDTO);
         DisciplinaryAction disciplinaryAction = disciplinaryActionMapper.toEntityFromCreateDTO(disciplinaryActionCreateDTO);
-        disciplinaryAction.setId(IdGenerator.getGenerationId());
 
         disciplinaryAction.setEmployee(employeeService.getEntityById(disciplinaryActionCreateDTO.getEmployeeId()));
 

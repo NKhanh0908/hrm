@@ -53,7 +53,6 @@ public class AttendanceServiceImpl implements AttendanceService{
     public AttendanceDTO create(AttendanceCreateDTO attendanceCreateDTO) {
         log.info("Create Attendance");
         Attendance attendance = attendanceMapper.toEntityFromCreateDTO(attendanceCreateDTO);
-        attendance.setId(IdGenerator.getGenerationId());
         attendance.setEmployee(employeeService.getEntityById(attendance.getEmployee().getId()));
 
         return attendanceMapper.toDTO(attendanceRepository.save(attendance));

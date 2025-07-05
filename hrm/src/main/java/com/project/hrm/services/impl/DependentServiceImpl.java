@@ -42,7 +42,6 @@ public class DependentServiceImpl implements DependentService {
         log.info("Create Dependent");
 
         Dependent dependent = dependentMapper.toEntityFromCreateDTO(dependentCreateDTO);
-        dependent.setId(IdGenerator.getGenerationId());
         dependent.setEmployee(employeeService.getEntityById(dependentCreateDTO.getEmployeeId()));
         return dependentMapper.toDTO(dependentRepository.save(dependent));
     }
