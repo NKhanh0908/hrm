@@ -25,6 +25,6 @@ public interface PayrollsService {
 
     List<PayrollsDTO> filterWithRange(PayrollsFilterWithRange payrollsFilterWithRange, int page, int size);
 
-    PayrollsResponseDTO getPayrollForEmployee(PayrollsCreateDTO payrollsCreateDTO);
+    PayrollsResponseDTO createPayrollForEmployee(PayrollsCreateDTO payrollsCreateDTO);
 
 }
