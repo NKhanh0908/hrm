@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Approvals {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne

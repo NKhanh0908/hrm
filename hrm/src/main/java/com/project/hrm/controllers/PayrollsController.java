@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -135,5 +136,26 @@ public class PayrollsController {
                                                                       HttpServletRequest request) {
         List<PayrollsDTO> result = payrollsService.filterWithRange(filterWithRange, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter payrolls with range successfully", result, null, request.getRequestURI()));
+    }
+
+    @PostMapping("/calculate")
+    @Operation(
+            summary = "Calculate Payroll for an Employee",
+            description = "Compute payroll including base salary, subsidies, deductions, violations and regulations.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    description = "Payroll creation data",
+                    content = @Content(schema = @Schema(implementation = PayrollsCreateDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Payroll calculated successfully",
+                            content = @Content(schema = @Schema(implementation = PayrollsResponseDTO.class)))
+            }
+    )
+
+    public ResponseEntity<PayrollsResponseDTO> getPayrollForEmployee(
+            @RequestBody @Valid PayrollsCreateDTO payrollsCreateDTO
+    ) {
+        return ResponseEntity.ok(payrollsService.createPayrollForEmployee(payrollsCreateDTO));
     }
 }

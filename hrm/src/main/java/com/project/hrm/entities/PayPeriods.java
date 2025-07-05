@@ -18,6 +18,7 @@ import java.util.List;
 @Entity
 public class PayPeriods {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String payPeriodCode;

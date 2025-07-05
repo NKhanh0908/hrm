@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 public class DayOff {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private LocalDateTime requestDay;

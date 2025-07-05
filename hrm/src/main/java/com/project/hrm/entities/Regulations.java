@@ -20,6 +20,7 @@ import java.util.List;
 @Entity
 public class Regulations {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String regulationKey;

@@ -24,6 +24,7 @@ public class SystemRegulationInitializer {
         defaultRegulations.put(SystemRegulationKey.DEPENDENT_DEDUCTION, new RegulationValueDescription("4400000", "Khấu trừ thân nhân phụ thuộc"));
         defaultRegulations.put(SystemRegulationKey.SELF_DEDUCTION, new RegulationValueDescription("11000000", "Khấu trừ đối với cá nhân nộp thuế"));
         defaultRegulations.put(SystemRegulationKey.WORKDAYS_PER_MONTH, new RegulationValueDescription("28", "Số ngày trong một tháng theo quy định"));
+        defaultRegulations.put(SystemRegulationKey.HOURLY_PER_ONE_DAY, new RegulationValueDescription("8", "Số giờ làm chính thức trong một ngày"));
 
         List<SystemRegulationKey> keys = new ArrayList<>(defaultRegulations.keySet());
         List<SystemRegulation> existingRegulations = systemRegulationRepository.findAllById(keys);

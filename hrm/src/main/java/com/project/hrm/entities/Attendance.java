@@ -15,8 +15,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "attendance", indexes = {
+    @Index(name = "idx_attendance_employee", columnList = "employee_id"),
+    @Index(name = "idx_attendance_date", columnList = "attendance_date"),
+    @Index(name = "idx_attendance_checkin", columnList = "check_in"),
+    @Index(name = "idx_attendance_employee_date", columnList = "employee_id, attendance_date"),
+    @Index(name = "idx_attendance_employee_checkout", columnList = "employee_id, check_out")
+})
 public class Attendance {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne

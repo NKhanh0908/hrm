@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 public class DisciplinaryAction {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String description; // Ví dụ: "Đi làm trễ", "Vi phạm nội quy phòng họp"

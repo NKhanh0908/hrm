@@ -17,8 +17,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "payrolls", indexes = {
+    @Index(name = "idx_payrolls_employee", columnList = "employee_id"),
+    @Index(name = "idx_payrolls_pay_period", columnList = "pay_period_id"),
+    @Index(name = "idx_payrolls_status", columnList = "status"),
+    @Index(name = "idx_payrolls_employee_period", columnList = "employee_id, pay_period_id")
+})
 public class Payrolls {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
