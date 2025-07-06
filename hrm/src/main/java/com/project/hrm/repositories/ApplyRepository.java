@@ -23,32 +23,9 @@ public interface ApplyRepository extends JpaRepository<Apply, Integer>, JpaSpeci
             @Param("status") String status
     );
 
-    @Query(value = """
-            SELECT cp.name, cp.email, rl.name as position_apply
-                        FROM (
-                            SELECT candidate_profile_id, recruitment_id
-                            FROM apply
-                            WHERE id = :id
-                        ) a
-                            INNER JOIN candidate_profile cp
-                                ON a.candidate_profile_id = cp.id
-                            INNER JOIN recruitment rm
-                                ON a.recruitment_id = rm.id
-                        INNER JOIN recruitment_requirements rr ON rm.recruitment_requirements_id = rr.id
-                        INNER JOIN role rl ON rr.role_id = rl.id
-        """, nativeQuery = true)
+    @Query(value = "CALL getInfoApply(:id);", nativeQuery = true)
     InfoApply getInfoApply(@Param("id") Integer id);
 
-    @Query(value = """
-            SELECT rl.id
-FROM (
-         SELECT recruitment_id
-         FROM apply
-         WHERE id = :applyId
-     ) a
-            INNER JOIN recruitment r ON a.recruitment_id = r.id
-    INNER JOIN recruitment_requirements rr ON r.recruitment_requirements_id = rr.id
-    INNER JOIN role rl ON rr.role_id = rl.id
-            """, nativeQuery = true)
+    @Query(value = "CALL get_role_id_by_apply_id(:applyId)", nativeQuery = true)
     Integer getRoleIdByApplyId(@Param("applyId") Integer applyId);
 }

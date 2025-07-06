@@ -10,6 +10,24 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery(
+                name = "getInfoApply",
+                procedureName = "getInfoApply",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "id_employee", type = Integer.class),
+                }
+        ),
+        @NamedStoredProcedureQuery(
+                name = "getRoleIdByApplyId",
+                procedureName = "get_role_id_by_apply_id",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "apply_id", type = Integer.class),
+                        @StoredProcedureParameter(mode = ParameterMode.OUT, name = "role_id", type = Integer.class),
+                }
+        )
+})
+
 @Data
 @Builder
 @NoArgsConstructor

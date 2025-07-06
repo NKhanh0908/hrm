@@ -17,21 +17,13 @@ import java.util.Optional;
 
 @Repository
 public interface ContractRepository extends JpaRepository<Contracts, Integer>, JpaSpecificationExecutor<Contracts> {
-    @Query("""
-          select case when count(c) > 0 then true else false end
-          from Contracts c
-          where c.employee.id = :employeeId
-          and c.role.id = :roleId
-          and c.contractStatus in ('SIGNED', 'ACTIVE', 'SUSPENDED')
-          and c.startDate <= coalesce(:newEnd, c.endDate)
-          and (c.endDate is null or c.endDate >= :newStart)
-        """)
+    @Query(value = "CALL exists_overlapping_active_contract(:employee_id, :role_id, :new_start, :new_end)", nativeQuery = true)
     boolean existsOverlappingActiveContract(
-            @Param("employeeId") Integer employeeId,
-            @Param("roleId")       Integer roleId,
-            @Param("newStart") LocalDateTime newStart,
-            @Param("newEnd") LocalDateTime newEnd
-    );
+            @Param("employee_id") Integer employeeId,
+            @Param("role_id")     Integer roleId,
+            @Param("new_start")   LocalDateTime newStart,
+            @Param("new_end")     LocalDateTime newEnd);
+
 
     @Query("""
           select c from Contracts c
@@ -85,26 +77,14 @@ public interface ContractRepository extends JpaRepository<Contracts, Integer>, J
             """, nativeQuery = true)
     List<TotalContractByStatus> getTotalContractByStatus();
 
-    @Query(value = """
-            SELECT
-                CASE
-                    WHEN base_salary < 10000000 THEN 'Less than 10m'
-                    WHEN base_salary BETWEEN 10000000 AND 20000000 THEN 'to 10-20m'
-                    WHEN base_salary BETWEEN 20000001 AND 30000000 THEN 'to 20-30m'
-                    ELSE 'More than 30m'
-                END AS salary_range,
-                COUNT(*) AS contract_count
-            FROM contracts
-            WHERE contract_status = :contractStatus
-            GROUP BY salary_range
-            ORDER BY MIN(base_salary)""", nativeQuery = true)
-    List<TotalContractByStatusAndSalary> getTotalContractByStatusAndSalary(@Param("contractStatus") ContractStatus contractStatus);
+    @Query(value = "CALL get_total_contract_by_status_and_salary(:contractStatus)", nativeQuery = true)
+    List<TotalContractByStatusAndSalary> getTotalContractByStatusAndSalary(@Param("contractStatus") String contractStatus);
 
     @Modifying
     @Query("""
-           UPDATE Contracts c 
-           SET c.contractStatus = 'ACTIVE' 
-           WHERE c.startDate <= :currentDate 
+           UPDATE Contracts c
+           SET c.contractStatus = 'ACTIVE'
+           WHERE c.startDate <= :currentDate
              AND c.contractStatus = 'SIGNED'
              AND c.endDate >= :currentDate
            """)
@@ -112,8 +92,8 @@ public interface ContractRepository extends JpaRepository<Contracts, Integer>, J
 
     @Modifying
     @Query("""
-           UPDATE Contracts c 
-           SET c.contractStatus = 'SUSPENDED' 
+           UPDATE Contracts c
+           SET c.contractStatus = 'SUSPENDED'
            WHERE c.endDate BETWEEN :currentDate AND :futureDate
              AND c.contractStatus = 'ACTIVE'
            """)
@@ -121,8 +101,8 @@ public interface ContractRepository extends JpaRepository<Contracts, Integer>, J
 
     @Modifying
     @Query("""
-           UPDATE Contracts c 
-           SET c.contractStatus = 'SUSPENDED' 
+           UPDATE Contracts c
+           SET c.contractStatus = 'SUSPENDED'
            WHERE c.endDate BETWEEN :currentDate AND :futureDate
              AND c.contractStatus = 'ACTIVE'
            """)
