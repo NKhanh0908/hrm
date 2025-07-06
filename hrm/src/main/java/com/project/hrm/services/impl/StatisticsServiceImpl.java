@@ -77,7 +77,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public List<TotalContractByStatusAndSalary> getTotalContractByStatusAndSalary(ContractStatus contractStatus) {
         log.info("Fetching total contracts by status [{}] and aggregated salary", contractStatus);
-        return contractRepository.getTotalContractByStatusAndSalary(contractStatus);
+        return contractRepository.getTotalContractByStatusAndSalary(contractStatus.name());
     }
 
 }
