@@ -10,7 +10,7 @@ import com.project.hrm.repositories.DocumentRepository;
 import com.project.hrm.services.AccountService;
 import com.project.hrm.services.DocumentTypeService;
 import com.project.hrm.services.DocumentsService;
-import com.project.hrm.services.ImageEmployeeService;
+import com.project.hrm.services.FileService;
 import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class DocumentsServiceImpl implements DocumentsService {
     private final DocumentRepository documentRepository;
     private final DocumentsMapper documentsMapper;
-    private final ImageEmployeeService imageEmployeeService;
+    private final FileService imageEmployeeService;
     private final AccountService accountService;
     private final DocumentTypeService documentTypeService;
 

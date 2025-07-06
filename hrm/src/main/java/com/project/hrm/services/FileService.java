@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @Server
-public interface ImageEmployeeService {
+public interface FileService {
     String saveImage(MultipartFile image);
     Map<String, Object> saveFile(MultipartFile file);
     void deleteImage(String url) throws IOException;

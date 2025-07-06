@@ -2,7 +2,7 @@ package com.project.hrm.services.impl;
 
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
-import com.project.hrm.services.ImageEmployeeService;
+import com.project.hrm.services.FileService;
 import com.project.hrm.utils.CloudinaryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.util.Map;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class ImageEmployeeServiceImpl implements ImageEmployeeService {
+public class FileServiceImpl implements FileService {
     private final CloudinaryService cloudinaryService;
 
     /**

@@ -11,7 +11,7 @@ import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.EmployeeMapper;
 import com.project.hrm.repositories.EmployeeRepository;
 import com.project.hrm.services.EmployeeService;
-import com.project.hrm.services.ImageEmployeeService;
+import com.project.hrm.services.FileService;
 import com.project.hrm.specifications.EmployeeSpecification;
 import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
@@ -23,16 +23,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @Slf4j
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
-    private final ImageEmployeeService imageEmployeeService;
+    private final FileService imageEmployeeService;
 
     private final EmployeeMapper employeeMapper;
 
