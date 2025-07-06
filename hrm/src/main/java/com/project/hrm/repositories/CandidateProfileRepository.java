@@ -10,8 +10,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CandidateProfileRepository extends JpaRepository<CandidateProfile, Integer>, JpaSpecificationExecutor<CandidateProfile> {
     @Query(value = """
-            SELECT c.* FROM apply a INNER JOIN candidate_profile c ON a.candidate_profile_id = c.id
-            WHERE a.id = :applyId
+            SELECT c.* FROM (
+                SELECT candidate_profile_id
+                FROM apply
+                WHERE id = :applyId
+            ) a INNER JOIN candidate_profile c ON a.candidate_profile_id = c.id
             """, nativeQuery = true)
     CandidateProfile findByApplyId(@Param("applyId") Integer applyId);
 
