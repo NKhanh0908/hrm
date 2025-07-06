@@ -1,11 +1,20 @@
 package com.project.hrm.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery(
+                name = "getDepartmentsByEmployeeId",
+                procedureName = "get_departments_by_employee_id",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "employee_id", type = Integer.class),
+                }
+        )
+})
 
 @Builder
 @Data

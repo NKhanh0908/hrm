@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -20,30 +21,13 @@ public interface EmployeeRepository extends JpaRepository<Employees, Integer>, J
     @Query(value = "SELECT * FROM employees e WHERE e.id = :employeeId AND status = 'ACTIVE'", nativeQuery = true)
     Employees findEmployeeIsActive(@Param("employeeId") Integer id);
 
-    @Query(value = """
-            SELECT d.id, d.department_name, count(*) as total
-            FROM employees e
-                INNER JOIN contracts c on e.id = c.employee_id
-                INNER JOIN role r on c.role_id = r.id
-                INNER JOIN departments d on r.departments_id = d.id
-                        GROUP BY d.id""", nativeQuery = true)
+    @Query(value = "CALL get_total_employee_by_department()", nativeQuery = true)
     List<TotalEmployeeByDepartment> getTotalEmployeeByDepartment();
 
-    @Query(value = """
-            SELECT r.id, r.name, count(*) as total
-            FROM employees e
-                INNER JOIN contracts c on e.id = c.employee_id
-                INNER JOIN role r on c.role_id = r.id
-                    GROUP BY r.id""", nativeQuery = true)
+    @Query(value = "CALL get_total_employee_by_role()", nativeQuery = true)
     List<TotalEmployeeByRole> getTotalEmployeeByRole();
 
-    @Query(value = """
-            SELECT r.id as role_id,  r.name as role_name, d.id as department_id, d.department_name, count(*) as total
-                FROM employees e
-                    INNER JOIN contracts c on e.id = c.employee_id
-                    INNER JOIN role r on c.role_id = r.id
-                    INNER JOIN departments d on r.departments_id = d.id
-                        GROUP BY r.id, d.id, d.department_name""", nativeQuery = true)
+    @Query(value = "CALL get_total_employee_by_department_and_role()", nativeQuery = true)
     List<TotalEmployeeByDepartmentAndRole> getTotalEmployeeByDepartmentAndRole();
 
     @Query(value = """
