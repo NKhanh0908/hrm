@@ -10,6 +10,7 @@ import com.project.hrm.entities.TrainingProgram;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.TrainingProgramMapper;
+import com.project.hrm.redis.RedisKeys;
 import com.project.hrm.repositories.TrainingProgramRepository;
 import com.project.hrm.services.*;
 import com.project.hrm.specifications.TrainingProgramSpecification;
@@ -31,6 +32,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
     private final RoleService roleService;
     private final AccountService accountService;
+    private final RedisService redisService;
 
     private final TrainingProgramMapper trainingProgramMapper;
 
@@ -117,7 +119,19 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Transactional(readOnly = true)
     @Override
     public TrainingProgramDTO getDTOById(Integer id) {
-        return trainingProgramMapper.convertToDTO(getEntityById(id));
+        String cacheKey = RedisKeys.trainingProgramKey(id);
+
+        TrainingProgramDTO cached = redisService.get(cacheKey, TrainingProgramDTO.class);
+        if (cached != null) {
+            log.info("Retrieved training program from cache: {}", id);
+            return cached;
+        }
+
+        TrainingProgramDTO result = trainingProgramMapper.convertToDTO(getEntityById(id));
+
+        redisService.set(cacheKey, result);
+
+        return result;
     }
 
     /**
