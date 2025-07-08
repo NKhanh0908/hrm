@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -118,5 +119,24 @@ public class RewardServiceImpl implements RewardService {
         return rewardList.stream()
                 .map(rewardMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Map<Integer, List<RewardDTO>> getBatchRewards(List<Integer> employeeIds, LocalDateTime startDate, LocalDateTime endDate) {
+        log.info("Getting batch rewards for {} employees", employeeIds.size());
+        Map<Integer, List<RewardDTO>> result = new java.util.HashMap<>();
+
+        List<Object[]> batchResults = rewardRepository.getBatchRewards(employeeIds, startDate, endDate);
+
+        for (Object[] row : batchResults) {
+            Integer employeeId = (Integer) row[0];
+            Reward reward = (Reward) row[1];
+
+            result.computeIfAbsent(employeeId, k -> new java.util.ArrayList<>())
+                    .add(rewardMapper.toDTO(reward));
+        }
+
+        return result;
     }
 }

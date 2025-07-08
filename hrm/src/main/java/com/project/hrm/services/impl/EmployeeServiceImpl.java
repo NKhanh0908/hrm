@@ -14,6 +14,7 @@ import com.project.hrm.services.EmployeeService;
 import com.project.hrm.services.FileService;
 import com.project.hrm.specifications.EmployeeSpecification;
 import com.project.hrm.utils.IdGenerator;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -73,6 +78,26 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("Found {} employees in department {}", employeesPage.getTotalElements(), departmentId);
 
         return employeeMapper.toEmployeePageDTO(employeesPage);
+    }
+
+    @Override
+    public Map<Integer, Employees> getBatchEmployeeForPayPeriod(List<Integer> employeeIds) {
+        log.info("Get batch employee for pay period by {} employees", employeeIds.size());
+        Map<Integer, Employees> employeesMap = new HashMap<>();
+
+        List<Object[]> batchEmployees = employeeRepository.getBatchEmployeeForPayPeriod(employeeIds);
+
+        for (Object[] batchEmployee : batchEmployees) {
+            Integer employeeId = (Integer) batchEmployee[0];
+            employeesMap.compute(employeeId, (k, employees) -> employees);
+        }
+        return employeesMap;
+    }
+
+    @Override
+    public List<Integer> getAllActiveEmployeeIds() {
+        log.info("Get all active employee ids");
+        return employeeRepository.getAllActiveEmployeeIds();
     }
 
     /**

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -168,4 +169,22 @@ public class DependentServiceImpl implements DependentService {
     public int countDependentsOfEmployee(Integer employeeId) {
         return dependentRepository.countByEmployeeId(employeeId);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Map<Integer, Integer> getDependentCountsForEmployees(List<Integer> employeeIds) {
+        log.info("Getting dependent counts for {} employees", employeeIds.size());
+        Map<Integer, Integer> result = new java.util.HashMap<>();
+
+        List<Object[]> batchResults = dependentRepository.getBatchDependentCount(employeeIds);
+
+        for (Object[] row : batchResults) {
+            Integer employeeId = (Integer) row[0];
+            Integer dependentCount = ((Number) row[1]).intValue();
+            result.put(employeeId, dependentCount);
+        }
+
+        return result;
+    }
+
 }

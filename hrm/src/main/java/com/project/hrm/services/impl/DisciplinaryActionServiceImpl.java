@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -125,5 +126,24 @@ public class DisciplinaryActionServiceImpl implements DisciplinaryActionService 
         return disciplinaryActionList.stream()
                 .map(disciplinaryActionMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Map<Integer, List<DisciplinaryActionDTO>> getBatchDisciplinaryActions(List<Integer> employeeIds, LocalDateTime startDate, LocalDateTime endDate) {
+        log.info("Getting batch disciplinary actions for {} employees", employeeIds.size());
+        Map<Integer, List<DisciplinaryActionDTO>> result = new java.util.HashMap<>();
+
+        List<Object[]> batchResults = disciplinaryActionRepository.getBatchDisciplinaryActions(employeeIds, startDate, endDate);
+
+        for (Object[] row : batchResults) {
+            Integer employeeId = (Integer) row[0];
+            DisciplinaryAction disciplinaryAction = (DisciplinaryAction) row[1];
+
+            result.computeIfAbsent(employeeId, k -> new java.util.ArrayList<>())
+                    .add(disciplinaryActionMapper.toDTO(disciplinaryAction));
+        }
+
+        return result;
     }
 }

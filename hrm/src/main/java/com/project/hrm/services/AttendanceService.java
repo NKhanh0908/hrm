@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface AttendanceService {
@@ -39,6 +40,10 @@ public interface AttendanceService {
     float getTotalRegularTimeAttendanceByPayPeriodsForEmployee(Integer employeesId, PayPeriods payPeriods);
 
     float getTotalOverTimeAttendanceByPayPeriodsForEmployee(Integer employeesId, PayPeriods payPeriods);
+
+    Map<Integer, Float> getBatchTotalRegularTime(List<Integer> employeeIds, PayPeriods payPeriods);
+
+    Map<Integer, Float> getBatchTotalOverTime(List<Integer> employeeIds, PayPeriods payPeriods);
 
 
 }

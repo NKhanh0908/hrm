@@ -13,6 +13,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +39,7 @@ public class SystemRegulationServiceImpl implements SystemRegulationService {
     }
 
     @Override
+    @Cacheable(value = "systemRegulations", key = "#key")
     public String getValue(SystemRegulationKey key) {
         log.info("Get system regulation value: {}", key);
         return systemRegulationRepository.findById(key)
@@ -46,6 +49,7 @@ public class SystemRegulationServiceImpl implements SystemRegulationService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "systemRegulations", key = "#key")
     public void setValue(SystemRegulationKey key, String value) {
         SystemRegulation regulation = systemRegulationRepository.findById(key)
                 .orElseThrow(() -> new EntityNotFoundException("Regulation not found: " + key));
@@ -55,6 +59,7 @@ public class SystemRegulationServiceImpl implements SystemRegulationService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "systemRegulations", allEntries = true)
     public SystemRegulationDTO createSystemRegulation(SystemRegulationCreateDTO systemRegulationCreateDTO) {
         log.info("Create system regulation: {}", systemRegulationCreateDTO);
 
@@ -71,6 +76,7 @@ public class SystemRegulationServiceImpl implements SystemRegulationService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "systemRegulations", key = "#systemRegulationUpdateDTO.key")
     public SystemRegulationDTO updateSystemRegulation(SystemRegulationUpdateDTO systemRegulationUpdateDTO) {
         log.info("Update system regulation: {}", systemRegulationUpdateDTO);
         if (!checkExistence(systemRegulationUpdateDTO.getKey())){
@@ -93,6 +99,7 @@ public class SystemRegulationServiceImpl implements SystemRegulationService {
     }
 
     @Override
+    @CacheEvict(value = "systemRegulations", key = "#key")
     public void deleteSystemRegulation(SystemRegulationKey key) {
         log.info("Deleting system regulation:{} ",key);
     }
