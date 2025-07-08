@@ -16,4 +16,10 @@ public interface DependentRepository extends JpaRepository<Dependent, Integer>, 
 
     @Query("SELECT COUNT(d) FROM Dependent d WHERE d.employee.id = :employeeId")
     int countByEmployeeId(@Param("employeeId") Integer employeeId);
+
+    @Query("SELECT d.employee.id as employeeId, COUNT(d) as dependentCount " +
+            "FROM Dependent d WHERE d.employee.id IN :employeeIds " +
+            "GROUP BY d.employee.id")
+    List<Object[]> getBatchDependentCount(@Param("employeeIds") List<Integer> employeeIds);
+
 }

@@ -28,4 +28,20 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Integer>
 
     @Query("SELECT COALESCE(SUM(a.otherTime), 0) FROM Attendance a WHERE a.employee = :employee AND a.attendanceDate BETWEEN :startDate AND :endDate")
     float getTotalOtherTime(@Param("employee") Employees employee, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT a.employee.id as employeeId, COALESCE(SUM(a.regularTime), 0) as totalRegularTime " +
+            "FROM Attendance a WHERE a.employee.id IN :employeeIds " +
+            "AND a.attendanceDate BETWEEN :startDate AND :endDate " +
+            "GROUP BY a.employee.id")
+    List<Object[]> getBatchTotalRegularTime(@Param("employeeIds") List<Integer> employeeIds,
+                                            @Param("startDate") LocalDateTime startDate,
+                                            @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT a.employee.id as employeeId, COALESCE(SUM(a.otherTime), 0) as totalOtherTime " +
+            "FROM Attendance a WHERE a.employee.id IN :employeeIds " +
+            "AND a.attendanceDate BETWEEN :startDate AND :endDate " +
+            "GROUP BY a.employee.id")
+    List<Object[]> getBatchTotalOtherTime(@Param("employeeIds") List<Integer> employeeIds,
+                                          @Param("startDate") LocalDateTime startDate,
+                                          @Param("endDate") LocalDateTime endDate);
 }

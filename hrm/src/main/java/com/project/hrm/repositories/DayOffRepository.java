@@ -23,4 +23,23 @@ public interface DayOffRepository extends JpaRepository<DayOff, Integer>, JpaSpe
 
     @Query("SELECT DISTINCT d.startDate FROM DayOff d WHERE d.employee.id = :employeeId AND d.startDate <= :endDate AND d.endDate >= :startDate AND d.status = :status")
     List<LocalDate> findDistinctDaysOffByEmployeeIdAndStatus(@Param("employeeId") Integer employeeId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("status") DayOffStatus status);
+
+    @Query("SELECT d.employee.id as employeeId, COUNT(DISTINCT d.startDate) as dayOffCount " +
+            "FROM DayOff d WHERE d.employee.id IN :employeeIds " +
+            "AND d.startDate <= :endDate AND d.endDate >= :startDate " +
+            "GROUP BY d.employee.id")
+    List<Object[]> getBatchDayOffCount(@Param("employeeIds") List<Integer> employeeIds,
+                                       @Param("startDate") LocalDateTime startDate,
+                                       @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT d.employee.id as employeeId, COUNT(DISTINCT d.startDate) as dayOffNotAcceptCount " +
+            "FROM DayOff d WHERE d.employee.id IN :employeeIds " +
+            "AND d.startDate <= :endDate AND d.endDate >= :startDate " +
+            "AND d.status = :status " +
+            "GROUP BY d.employee.id")
+    List<Object[]> getBatchDayOffNotAcceptCount(@Param("employeeIds") List<Integer> employeeIds,
+                                                @Param("startDate") LocalDateTime startDate,
+                                                @Param("endDate") LocalDateTime endDate,
+                                                @Param("status") DayOffStatus status);
+
 }
