@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +30,8 @@ public class PayrollsController {
             summary = "Create Payroll",
             description = "Create a new payroll record",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
                     description = "Payroll creation data",
+                    required = true,
                     content = @Content(schema = @Schema(implementation = PayrollsCreateDTO.class))
             ),
             responses = {
@@ -48,10 +47,10 @@ public class PayrollsController {
     @PutMapping
     @Operation(
             summary = "Update Payroll",
-            description = "Update an existing payroll record",
+            description = "Update an existing payroll",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
                     description = "Payroll update data",
+                    required = true,
                     content = @Content(schema = @Schema(implementation = PayrollsUpdateDTO.class))
             ),
             responses = {
@@ -95,10 +94,10 @@ public class PayrollsController {
     @PostMapping("/filter")
     @Operation(
             summary = "Filter Payrolls",
-            description = "Filter payroll records by attributes",
+            description = "Filter payrolls by attributes",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
                     description = "Filter criteria",
+                    required = true,
                     content = @Content(schema = @Schema(implementation = PayrollsFilter.class))
             ),
             responses = {
@@ -109,53 +108,87 @@ public class PayrollsController {
                                                                  @RequestParam(defaultValue = "0") int page,
                                                                  @RequestParam(defaultValue = "10") int size,
                                                                  HttpServletRequest request) {
-        List<PayrollsDTO> result = payrollsService.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter payrolls successfully", result, null, request.getRequestURI()));
+        List<PayrollsDTO> list = payrollsService.filter(filter, page, size);
+        return ResponseEntity.ok(new APIResponse<>(true, "Filter payrolls successfully", list, null, request.getRequestURI()));
     }
 
     @PostMapping("/filter-range")
     @Operation(
             summary = "Filter Payrolls with Range",
-            description = "Filter payrolls by income, deduction, and net salary range",
+            description = "Filter payrolls with salary or deduction ranges",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Range filter criteria",
                     required = true,
-                    description = "Filter criteria with ranges",
                     content = @Content(schema = @Schema(implementation = PayrollsFilterWithRange.class))
             ),
-            parameters = {
-                    @Parameter(name = "page", description = "Page number"),
-                    @Parameter(name = "size", description = "Page size")
-            },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Filtered payrolls with range", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PayrollsDTO.class))))
             }
     )
-    public ResponseEntity<APIResponse<List<PayrollsDTO>>> filterRange(@RequestBody PayrollsFilterWithRange filterWithRange,
+    public ResponseEntity<APIResponse<List<PayrollsDTO>>> filterRange(@RequestBody PayrollsFilterWithRange filter,
                                                                       @RequestParam(defaultValue = "0") int page,
                                                                       @RequestParam(defaultValue = "10") int size,
                                                                       HttpServletRequest request) {
-        List<PayrollsDTO> result = payrollsService.filterWithRange(filterWithRange, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter payrolls with range successfully", result, null, request.getRequestURI()));
+        List<PayrollsDTO> list = payrollsService.filterWithRange(filter, page, size);
+        return ResponseEntity.ok(new APIResponse<>(true, "Filter payrolls with range successfully", list, null, request.getRequestURI()));
     }
 
-    @PostMapping("/calculate")
+    @PostMapping("/calculate/single")
     @Operation(
-            summary = "Calculate Payroll for an Employee",
-            description = "Compute payroll including base salary, subsidies, deductions, violations and regulations.",
+            summary = "Calculate Payroll for Single Employee",
+            description = "Trigger payroll calculation for one employee",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Payroll input data",
                     required = true,
-                    description = "Payroll creation data",
                     content = @Content(schema = @Schema(implementation = PayrollsCreateDTO.class))
             ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Payroll calculated successfully",
-                            content = @Content(schema = @Schema(implementation = PayrollsResponseDTO.class)))
+                    @ApiResponse(responseCode = "200", description = "Payroll calculated", content = @Content(schema = @Schema(implementation = PayrollsResponseDTO.class)))
             }
     )
+    public ResponseEntity<APIResponse<PayrollsResponseDTO>> createPayrollForEmployee(@RequestBody PayrollsCreateDTO dto,
+                                                                                     HttpServletRequest request) {
+        PayrollsResponseDTO result = payrollsService.createPayrollForEmployee(dto);
+        return ResponseEntity.ok(new APIResponse<>(true, "Calculate payroll successfully", result, null, request.getRequestURI()));
+    }
 
-    public ResponseEntity<PayrollsResponseDTO> getPayrollForEmployee(
-            @RequestBody @Valid PayrollsCreateDTO payrollsCreateDTO
-    ) {
-        return ResponseEntity.ok(payrollsService.createPayrollForEmployee(payrollsCreateDTO));
+    @PostMapping("/calculate/department/{departmentId}")
+    @Operation(
+            summary = "Calculate Payrolls for Department",
+            description = "Batch payroll calculation for a specific department",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Payroll input template",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = PayrollsCreateDTO.class))
+            ),
+            parameters = @Parameter(name = "departmentId", description = "Department ID", required = true),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Payrolls calculated", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PayrollsResponseDTO.class))))
+            }
+    )
+    public ResponseEntity<APIResponse<List<PayrollsResponseDTO>>> createPayrollsForDepartment(@PathVariable Integer departmentId,
+                                                                                              @RequestBody PayrollsCreateDTO dto,
+                                                                                              HttpServletRequest request) {
+        List<PayrollsResponseDTO> result = payrollsService.createPayrollsForDepartment(departmentId, dto);
+        return ResponseEntity.ok(new APIResponse<>(true, "Calculate department payrolls successfully", result, null, request.getRequestURI()));
+    }
+
+    @PostMapping("/calculate/all")
+    @Operation(
+            summary = "Calculate Payrolls for All Employees",
+            description = "Trigger payroll generation for all employees",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Payroll input template",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = PayrollsCreateDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All payrolls calculated", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PayrollsResponseDTO.class))))
+            }
+    )
+    public ResponseEntity<APIResponse<List<PayrollsResponseDTO>>> createPayrollsForAllEmployee(@RequestBody PayrollsCreateDTO dto,
+                                                                                               HttpServletRequest request) {
+        List<PayrollsResponseDTO> result = payrollsService.createPayrollsForAllEmployee(dto);
+        return ResponseEntity.ok(new APIResponse<>(true, "Calculate all payrolls successfully", result, null, request.getRequestURI()));
     }
 }
