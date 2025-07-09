@@ -330,8 +330,8 @@ public class AttendanceServiceImpl implements AttendanceService{
 
         for (Object[] row : batchResults) {
             Integer employeeId = (Integer) row[0];
-            Float regularTime = (Float) row[1];
-            result.put(employeeId, regularTime != null ? regularTime : 0.0f);
+            Double regularTime = (Double) row[1];
+            result.put(employeeId, regularTime != null ? regularTime.floatValue() : 0.0f);
         }
 
         return result;
@@ -348,8 +348,8 @@ public class AttendanceServiceImpl implements AttendanceService{
 
         for (Object[] row : batchResults) {
             Integer employeeId = (Integer) row[0];
-            Float overTime = (Float) row[1];
-            result.put(employeeId, overTime != null ? overTime : 0.0f);
+            Double overTime = (Double) row[1]; // Xử lý kiểu Double
+            result.put(employeeId, overTime != null ? overTime.floatValue() : 0.0f);
         }
 
         return result;

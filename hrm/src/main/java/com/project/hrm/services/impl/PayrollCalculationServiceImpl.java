@@ -4,18 +4,18 @@ import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.attendanceDTO.AttendanceResponseForPayrollDTO;
 import com.project.hrm.dto.dayOffDTO.DayOffResponseForPayrollDTO;
 import com.project.hrm.dto.employeeDTO.EmployeeDTO;
+import com.project.hrm.dto.payPeriodsDTO.PayPeriodsCreateDTO;
 import com.project.hrm.dto.payrollComponentsDTO.PayrollComponentsDTO;
 import com.project.hrm.dto.payrollsDTO.PayrollsCreateDTO;
-import com.project.hrm.dto.payrollsDTO.PayrollsDTO;
 import com.project.hrm.dto.payrollsDTO.PayrollsResponseDTO;
 import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.PayPeriods;
 import com.project.hrm.entities.PayrollComponents;
 import com.project.hrm.entities.Payrolls;
-import com.project.hrm.enums.PayrollComponentType;
-import com.project.hrm.enums.ScaleOfTaxation;
-import com.project.hrm.enums.SystemRegulationKey;
+import com.project.hrm.enums.*;
+import com.project.hrm.mapper.PayPeriodMapper;
 import com.project.hrm.mapper.PayrollComponentMapper;
+import com.project.hrm.mapper.PayrollsMapper;
 import com.project.hrm.repositories.PayrollComponentsRepository;
 import com.project.hrm.repositories.PayrollsRepository;
 import com.project.hrm.services.*;
@@ -26,10 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,7 +35,8 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @Slf4j
 public class PayrollCalculationServiceImpl implements PayrollCalculationService {
-    private final PayrollsService payrollsService;
+    private final PayrollsMapper payrollsMapper;
+    private final PayPeriodMapper payPeriodMapper;
     private final SystemRegulationService systemRegulationService;
     private final PayPeriodsService payPeriodsService;
     private final AttendanceService attendanceService;
@@ -61,19 +60,19 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
         String selfDeduction = systemRegulationService.getValue(SystemRegulationKey.SELF_DEDUCTION);
 
 
-        PayrollsDTO payrollsDTO = payrollsService.create(payrollsCreateDTO);
+        Payrolls payroll = createForCalculation(payrollsCreateDTO);
 
         Double baseSalary = contractService.getCurrentActiveContract(payrollsCreateDTO.getEmployeeId()).getBaseSalary();
 
-        PayPeriods payPeriods = payPeriodsService.getEntityById(payrollsDTO.getPayPeriodId());
+        PayPeriods payPeriods = payPeriodsService.getEntityById(payroll.getPayPeriod().getId());
 
-        float summaryRegularTime = attendanceService.getTotalRegularTimeAttendanceByPayPeriodsForEmployee(payrollsDTO.getEmployeeId(), payPeriods);
-        float summaryOverTime = attendanceService.getTotalOverTimeAttendanceByPayPeriodsForEmployee(payrollsDTO.getEmployeeId(), payPeriods);
+        float summaryRegularTime = attendanceService.getTotalRegularTimeAttendanceByPayPeriodsForEmployee(payroll.getEmployee().getId(), payPeriods);
+        float summaryOverTime = attendanceService.getTotalOverTimeAttendanceByPayPeriodsForEmployee(payroll.getEmployee().getId(), payPeriods);
 
-        int dayOff = dayOffService.countDayOffByEmployeeId(payrollsDTO.getEmployeeId(), payPeriods.getStartDate(), payPeriods.getEndDate());
-        int dayOffNotAccept = dayOffService.countDayOffByEmployeeIdStatus(payrollsDTO.getEmployeeId(), payPeriods.getStartDate(), payPeriods.getEndDate());
+        int dayOff = dayOffService.countDayOffByEmployeeId(payroll.getEmployee().getId(), payPeriods.getStartDate(), payPeriods.getEndDate());
+        int dayOffNotAccept = dayOffService.countDayOffByEmployeeIdStatus(payroll.getEmployee().getId(), payPeriods.getStartDate(), payPeriods.getEndDate());
 
-        List<PayrollComponents>  payrollComponentsList = payrollComponentsService.createComponents(payrollsService.getEntityById(payrollsDTO.getId()));
+        List<PayrollComponents>  payrollComponentsList = payrollComponentsService.createComponents(payroll);
 
         List<PayrollComponents> payrollComponentsAdditionList = payrollComponentsList.stream()
                 .filter(payrollComponents ->
@@ -110,7 +109,7 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
         BigDecimal totalIncome = totalAmountReceived.subtract(totalAmountDisciplinary);
 
         //Deduction for tax
-        int countDependent = dependentService.countDependentsOfEmployee(payrollsDTO.getEmployeeId());
+        int countDependent = dependentService.countDependentsOfEmployee(payroll.getEmployee().getId());
         BigDecimal dependentDeduction = BigDecimal.valueOf(Long.parseLong(dependentDeductionSys));
 
         BigDecimal totalDeductionForTaxByDependent = BigDecimal.valueOf(countDependent).multiply(dependentDeduction);
@@ -147,9 +146,9 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
                 .flatMap(Collection::stream)
                 .toList());
         return new PayrollsResponseDTO(
-                payrollsDTO.getId(),
-                payrollsDTO.getEmployeeId(),
-                payrollsDTO.getPayPeriodId(),
+                payroll.getId(),
+                payroll.getEmployee().getId(),
+                payroll.getPayPeriod().getId(),
                 baseSalary,
                 payrollComponentsDTOAdditionList,
                 payrollComponentsDTODeductionList,
@@ -195,12 +194,16 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
 
         Map<Integer,Employees> employeesMap = employeeService.getBatchEmployeeForPayPeriod(employeeIds);
 
-        Map<Integer, Payrolls> payrollsMap = payrollsService.createWithPeriodAndEmployee(payrollsCreateDTOList, employeesMap, payPeriods);
+        log.info("Using employees: {}", employeesMap);
+
+        Map<Integer, Payrolls> payrollsMap = createWithPeriodAndEmployee(payrollsCreateDTOList, employeesMap, payPeriods);
 
         List<Payrolls> createdPayrolls = employeeIds.stream()
                 .filter(payrollsMap::containsKey)
                 .map(payrollsMap::get)
                 .collect(Collectors.toList());
+
+        log.info("Creating batch for {} payrolls  ", createdPayrolls);
 
         log.info("Preloading data for {} unique employees", employeeIds.size());
 
@@ -270,10 +273,8 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
 
                 BigDecimal netSalary = totalIncome.subtract(totalAmountTax.add(totalAmountInsurance));
 
-                payrollComponentsSave = Stream.of(payrollComponentsAdditionList,
-                                payrollComponentsDeductionList)
-                        .flatMap(Collection::stream)
-                        .toList();
+                payrollComponentsSave.addAll(payrollComponentsDeductionList);
+                payrollComponentsSave.addAll(payrollComponentsAdditionList);
 
                 AttendanceResponseForPayrollDTO attendanceResponseForPayrollDTO =
                         new AttendanceResponseForPayrollDTO(summaryRegularTime, summaryOverTime);
@@ -315,7 +316,6 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
 
         log.info("Batch payroll creation completed. Successfully created {} out of {} payrolls",
                 results.size(), payrollsCreateDTOList.size());
-        payrollsRepository.saveAll(createdPayrolls);
         payrollComponentsRepository.saveAll(payrollComponentsSave);
         return results;
     }
@@ -326,12 +326,14 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
         log.info("Creating batch payrolls for department {}", departmentId);
 
         // Lấy tất cả nhân viên trong phòng ban
-        PageDTO<EmployeeDTO> employeesPage = employeeService.filterByDepartmentID(departmentId, Short.MAX_VALUE, Short.MAX_VALUE);
-
+        PageDTO<EmployeeDTO> employeesPage = employeeService.filterByDepartmentID(departmentId, 0, Short.MAX_VALUE);
+        log.info("Employees page content: {}", employeesPage.getContent());
         // Trích xuất danh sách ID từ Page
         List<Integer> employeeIds = employeesPage.getContent().stream()
                 .map(EmployeeDTO::getId)
                 .toList();
+
+        log.info("Creating batch payrolls for list employee {}", employeeIds);
 
         // Tạo PayrollsCreateDTO cho mỗi nhân viên
         List<PayrollsCreateDTO> payrollsCreateDTOList = employeeIds.stream()
@@ -339,10 +341,13 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
                     PayrollsCreateDTO dto = new PayrollsCreateDTO();
                     dto.setEmployeeId(employeeId);
                     dto.setStartDate(template.getStartDate());
+                    dto.setStatus(PayrollStatus.PENDING);
                     dto.setEndDate(template.getEndDate());
                     return dto;
                 })
                 .toList();
+
+        log.info("Creating batch payrolls for list create dto {}", payrollsCreateDTOList);
 
         return createBatchPayrolls(payrollsCreateDTOList);
     }
@@ -382,7 +387,7 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No PayrollComponent with type TAX found"));
 
-        payrollComponentOpt.setAmount(totalTax);
+        payrollComponentOpt.setAmount(totalTax.compareTo(BigDecimal.ZERO) > 0 ? totalTax : BigDecimal.ZERO);
         return totalTax;
     }
 
@@ -468,4 +473,58 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
         return amountComponent;
     }
 
+    private Payrolls createForCalculation(PayrollsCreateDTO payrollsCreateDTO) {
+        log.info("Create PayrollsDTO from Calculation");
+        Payrolls payrolls = payrollsMapper.toPayrollsFromCreateDTO(payrollsCreateDTO);
+
+        payrolls.setEmployee(employeeService.getEntityById(payrollsCreateDTO.getEmployeeId()));
+
+        if (payPeriodsService.getPayPeriodsByDate(payrollsCreateDTO.getStartDate(), payrollsCreateDTO.getEndDate()) != null) {
+            payrolls.setPayPeriod(payPeriodsService.getPayPeriodsByDate(payrollsCreateDTO.getStartDate(), payrollsCreateDTO.getEndDate()));
+        } else {
+            PayPeriodsCreateDTO payPeriodsCreateDTO = new PayPeriodsCreateDTO();
+            payPeriodsCreateDTO.setStartDate(payrollsCreateDTO.getStartDate());
+            payPeriodsCreateDTO.setEndDate(payrollsCreateDTO.getEndDate());
+            payPeriodsCreateDTO.setStatus(PayPeriodStatus.valueOf("OPEN"));
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'T'MM-yyyy");
+            String formatted = payPeriodsCreateDTO.getStartDate().format(formatter);
+
+            payPeriodsCreateDTO.setPayPeriodCode(formatted);
+
+            PayPeriods payPeriods = payPeriodMapper.toPayPeriods(payPeriodsService.create(payPeriodsCreateDTO));
+
+            payrolls.setPayPeriod(payPeriods);
+        }
+
+        return payrollsRepository.save(payrolls);
+    }
+
+    public Map<Integer, Payrolls> createWithPeriodAndEmployee(List<PayrollsCreateDTO> payrollsCreateDTO, Map<Integer, Employees> employeesList, PayPeriods payPeriod) {
+        log.info("Create Payrolls with Employees for PayPeriods");
+        Map<Integer, Payrolls> payrollsMap = new HashMap<>();
+
+        List<Payrolls> payrolls = payrollsCreateDTO.stream()
+                .map(dto -> {
+                    Payrolls payroll = payrollsMapper.toPayrollsFromCreateDTO(dto);
+                    Employees employee = employeesList.get(dto.getEmployeeId());
+                    if (employee != null) {
+                        payroll.setEmployee(employee);
+                        payroll.setPayPeriod(payPeriod);
+                    }
+                    return payroll;
+                })
+                .filter(payroll -> payroll.getEmployee() != null) // Lọc bỏ các payroll không có employee hợp lệ
+                .toList();
+        payrollsRepository.saveAll(payrolls);
+
+        for (Payrolls payroll : payrolls) {
+            Integer employeeId = payroll.getEmployee().getId();
+            payrollsMap.put(employeeId, payroll);
+        }
+
+        log.info("Create Payrolls with Employees {}", payrollsMap);
+
+        return payrollsMap;
+    }
 }

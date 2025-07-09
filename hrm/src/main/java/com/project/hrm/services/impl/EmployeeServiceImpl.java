@@ -82,15 +82,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Map<Integer, Employees> getBatchEmployeeForPayPeriod(List<Integer> employeeIds) {
-        log.info("Get batch employee for pay period by {} employees", employeeIds.size());
+        log.info("Get batch employee for pay period by {} employees: {}", employeeIds.size(), employeeIds);
         Map<Integer, Employees> employeesMap = new HashMap<>();
 
         List<Object[]> batchEmployees = employeeRepository.getBatchEmployeeForPayPeriod(employeeIds);
+        log.info("Found {} employees from repository: {}", batchEmployees.size(), batchEmployees);
 
         for (Object[] batchEmployee : batchEmployees) {
             Integer employeeId = (Integer) batchEmployee[0];
-            employeesMap.compute(employeeId, (k, employees) -> employees);
+            Employees employee = (Employees) batchEmployee[1];
+            employeesMap.put(employeeId, employee);
+            log.debug("Added employee to map: ID = {}, Employee = {}", employeeId, employee);
         }
+
+        log.info("Returning employeesMap with {} entries", employeesMap.size());
         return employeesMap;
     }
 

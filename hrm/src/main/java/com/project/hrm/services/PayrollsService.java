@@ -14,8 +14,6 @@ import java.util.Map;
 public interface PayrollsService {
     PayrollsDTO create(PayrollsCreateDTO payrollsCreateDTO);
 
-    Map<Integer, Payrolls> createWithPeriodAndEmployee(List<PayrollsCreateDTO> payrollsCreateDTO, Map<Integer,Employees> employeesList, PayPeriods payPeriod);
-
     PayrollsDTO update(PayrollsUpdateDTO payrollsUpdateDTO);
 
     void delete(Integer Id);

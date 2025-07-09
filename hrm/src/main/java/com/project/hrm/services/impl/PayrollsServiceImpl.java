@@ -1,18 +1,11 @@
 package com.project.hrm.services.impl;
 
-import com.project.hrm.dto.attendanceDTO.AttendanceResponseForPayrollDTO;
-import com.project.hrm.dto.dayOffDTO.DayOffResponseForPayrollDTO;
 import com.project.hrm.dto.payPeriodsDTO.PayPeriodsCreateDTO;
-import com.project.hrm.dto.payrollComponentsDTO.PayrollComponentsDTO;
 import com.project.hrm.dto.payrollsDTO.*;
 import com.project.hrm.entities.*;
 import com.project.hrm.enums.PayPeriodStatus;
-import com.project.hrm.enums.PayrollComponentType;
-import com.project.hrm.enums.ScaleOfTaxation;
-import com.project.hrm.enums.SystemRegulationKey;
 import com.project.hrm.mapper.PayPeriodMapper;
 import com.project.hrm.mapper.PayrollsMapper;
-import com.project.hrm.repositories.PayrollComponentsRepository;
 import com.project.hrm.repositories.PayrollsRepository;
 import com.project.hrm.services.*;
 import com.project.hrm.specifications.PayrollsSpecifications;
@@ -25,13 +18,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -81,31 +71,7 @@ public class PayrollsServiceImpl implements PayrollsService {
         return payrollsMapper.toPayrollsDTO(payrollsRepository.save(payrolls));
     }
 
-    @Override
-    public Map<Integer, Payrolls> createWithPeriodAndEmployee(List<PayrollsCreateDTO> payrollsCreateDTO, Map<Integer, Employees> employeesList, PayPeriods payPeriod) {
-        log.info("Create Payrolls with Employees for PayPeriods");
-        Map<Integer, Payrolls> payrollsMap = new HashMap<>();
 
-        List<Payrolls> payrolls = payrollsCreateDTO.stream()
-                .map(dto -> {
-                    Payrolls payroll = payrollsMapper.toPayrollsFromCreateDTO(dto);
-                    Employees employee = employeesList.get(dto.getEmployeeId());
-                    if (employee != null) {
-                        payroll.setEmployee(employee);
-                        payroll.setPayPeriod(payPeriod);
-                    }
-                    return payroll;
-                })
-                .filter(payroll -> payroll.getEmployee() != null) // Lọc bỏ các payroll không có employee hợp lệ
-                .toList();
-
-        for (Payrolls payroll : payrolls) {
-            Integer employeeId = payroll.getEmployee().getId();
-            payrollsMap.put(employeeId, payroll);
-        }
-
-        return payrollsMap;
-    }
 
     /**
      * Updates an existing {@link Payrolls} entity using the provided {@link PayrollsUpdateDTO}.
