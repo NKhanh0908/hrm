@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface RewardService {
@@ -25,5 +26,8 @@ public interface RewardService {
     Boolean checkExist(Integer id);
 
     List<RewardDTO> getRewardByEmployeeIdAndDate(Integer id, LocalDateTime startDate, LocalDateTime endDate);
+
+    Map<Integer, List<RewardDTO>> getBatchRewards(List<Integer> employeeIds, LocalDateTime startDate, LocalDateTime endDate);
+
 
 }

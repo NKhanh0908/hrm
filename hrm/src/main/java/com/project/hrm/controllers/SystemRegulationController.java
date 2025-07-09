@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,110 +24,104 @@ import java.util.List;
 @RestController
 @RequestMapping("/system-regulations")
 @RequiredArgsConstructor
-@Tag(name = "System Regulation Controller", description = "Manage system-wide configuration settings")
+@Tag(name = "System Regulation Controller", description = "Manage system regulation records")
 public class SystemRegulationController {
 
     private final SystemRegulationService systemRegulationService;
 
     @GetMapping
     @Operation(
-            summary = "Get all system regulations",
+            summary = "Get All System Regulations",
+            description = "Retrieve all system regulation records",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Get list all system regulations successfully",
-                            content = @Content(array = @ArraySchema(schema =@Schema(implementation = SystemRegulationDTO.class))))
+                    @ApiResponse(responseCode = "200", description = "System regulations retrieved successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = SystemRegulationDTO.class))))
             }
     )
     public ResponseEntity<APIResponse<List<SystemRegulationDTO>>> getAllSystemRegulations(HttpServletRequest request) {
-        List<SystemRegulationDTO> systemRegulationDTOList = systemRegulationService.getAllSystemRegulations();
-        return ResponseEntity.ok(new APIResponse<>(true, "Get value successfully", systemRegulationDTOList, null, request.getRequestURI()));
+        List<SystemRegulationDTO> result = systemRegulationService.getAllSystemRegulations();
+        return ResponseEntity.ok(new APIResponse<>(true, "Get all system regulations successfully", result, null, request.getRequestURI()));
     }
 
-    @GetMapping("/{key}")
+    @GetMapping("/value")
     @Operation(
-            summary = "Get system regulation value by key",
-            parameters = @Parameter(name = "key", description = "Key of the system regulation", required = true),
+            summary = "Get System Regulation Value by Key",
+            description = "Retrieve the value of a system regulation by its key",
+            parameters = @Parameter(name = "key", description = "System Regulation Key", required = true),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Value retrieved successfully",
-                            content = @Content(schema = @Schema(implementation = String.class)))
+                    @ApiResponse(responseCode = "200", description = "System regulation value found", content = @Content(schema = @Schema(implementation = String.class)))
             }
     )
-    public ResponseEntity<APIResponse<String>> getValue(@PathVariable SystemRegulationKey key,
-                                                        HttpServletRequest request) {
-        String value = systemRegulationService.getValue(key);
-        return ResponseEntity.ok(new APIResponse<>(true, "Get value successfully", value, null, request.getRequestURI()));
+    public ResponseEntity<APIResponse<String>> getValue(@RequestParam SystemRegulationKey key, HttpServletRequest request) {
+        String result = systemRegulationService.getValue(key);
+        return ResponseEntity.ok(new APIResponse<>(true, "Get system regulation value successfully", result, null, request.getRequestURI()));
     }
 
-    @PutMapping("/{key}")
+    @PutMapping("/value")
     @Operation(
-            summary = "Set system regulation value by key",
-            description = "Update the value of a system regulation",
-            parameters = @Parameter(name = "key", description = "Key of the system regulation", required = true),
+            summary = "Set System Regulation Value",
+            description = "Set the value for a system regulation by its key",
+            parameters = @Parameter(name = "key", description = "System Regulation Key", required = true),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "New value",
                     required = true,
+                    description = "New value for the system regulation",
                     content = @Content(schema = @Schema(implementation = String.class))
             ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Value updated successfully")
+                    @ApiResponse(responseCode = "200", description = "System regulation value set successfully")
             }
     )
-    public ResponseEntity<APIResponse<Void>> setValue(@PathVariable SystemRegulationKey key,
-                                                      @RequestBody String value,
-                                                      HttpServletRequest request) {
+    public ResponseEntity<APIResponse<Void>> setValue(@RequestParam SystemRegulationKey key, @RequestBody String value, HttpServletRequest request) {
         systemRegulationService.setValue(key, value);
-        return ResponseEntity.ok(new APIResponse<>(true, "Update value successfully", null, null, request.getRequestURI()));
+        return ResponseEntity.ok(new APIResponse<>(true, "Set system regulation value successfully", null, null, request.getRequestURI()));
     }
 
     @PostMapping
     @Operation(
-            summary = "Create system regulation",
-            description = "Create a new system configuration rule",
+            summary = "Create System Regulation",
+            description = "Create a new system regulation record",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
+                    description = "System regulation creation data",
                     content = @Content(schema = @Schema(implementation = SystemRegulationCreateDTO.class))
             ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Created successfully",
-                            content = @Content(schema = @Schema(implementation = SystemRegulationDTO.class)))
+                    @ApiResponse(responseCode = "200", description = "System regulation created successfully", content = @Content(schema = @Schema(implementation = SystemRegulationDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<SystemRegulationDTO>> create(@RequestBody SystemRegulationCreateDTO dto,
-                                                                   HttpServletRequest request) {
+    public ResponseEntity<APIResponse<SystemRegulationDTO>> create(@Valid @RequestBody SystemRegulationCreateDTO dto, HttpServletRequest request) {
         SystemRegulationDTO result = systemRegulationService.createSystemRegulation(dto);
-        return ResponseEntity.ok(new APIResponse<>(true, "Create regulation successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(new APIResponse<>(true, "Create system regulation successfully", result, null, request.getRequestURI()));
     }
 
     @PutMapping
     @Operation(
-            summary = "Update system regulation",
-            description = "Update an existing system configuration rule",
+            summary = "Update System Regulation",
+            description = "Update an existing system regulation record",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
+                    description = "System regulation update data",
                     content = @Content(schema = @Schema(implementation = SystemRegulationUpdateDTO.class))
             ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Updated successfully",
-                            content = @Content(schema = @Schema(implementation = SystemRegulationDTO.class)))
+                    @ApiResponse(responseCode = "200", description = "System regulation updated successfully", content = @Content(schema = @Schema(implementation = SystemRegulationDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<SystemRegulationDTO>> update(@RequestBody SystemRegulationUpdateDTO dto,
-                                                                   HttpServletRequest request) {
+    public ResponseEntity<APIResponse<SystemRegulationDTO>> update(@Valid @RequestBody SystemRegulationUpdateDTO dto, HttpServletRequest request) {
         SystemRegulationDTO result = systemRegulationService.updateSystemRegulation(dto);
-        return ResponseEntity.ok(new APIResponse<>(true, "Update regulation successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(new APIResponse<>(true, "Update system regulation successfully", result, null, request.getRequestURI()));
     }
 
-    @DeleteMapping("/{key}")
+    @DeleteMapping
     @Operation(
-            summary = "Delete system regulation",
-            description = "Remove a system configuration rule by key",
-            parameters = @Parameter(name = "key", description = "Key of the system regulation", required = true),
+            summary = "Delete System Regulation",
+            description = "Delete a system regulation by its key",
+            parameters = @Parameter(name = "key", description = "System Regulation Key", required = true),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Deleted successfully")
+                    @ApiResponse(responseCode = "200", description = "System regulation deleted successfully")
             }
     )
-    public ResponseEntity<APIResponse<Void>> delete(@PathVariable SystemRegulationKey key,
-                                                    HttpServletRequest request) {
+    public ResponseEntity<APIResponse<Void>> delete(@RequestParam SystemRegulationKey key, HttpServletRequest request) {
         systemRegulationService.deleteSystemRegulation(key);
-        return ResponseEntity.ok(new APIResponse<>(true, "Delete regulation successfully", null, null, request.getRequestURI()));
+        return ResponseEntity.ok(new APIResponse<>(true, "Delete system regulation successfully", null, null, request.getRequestURI()));
     }
 }

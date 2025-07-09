@@ -42,4 +42,12 @@ public interface EmployeeRepository extends JpaRepository<Employees, Integer>, J
         INNER JOIN role r ON c.role_id = r.id
         WHERE r.departments_id = :departmentId""", nativeQuery = true)
     Page<Employees> findByDepartmentId(@Param("departmentId") Integer departmentId, Pageable pageable);
+
+    @Query("SELECT e.id as employeeId, e as Employee " +
+            "FROM Employees e WHERE e.id in :employeeIds")
+    List<Object[]> getBatchEmployeeForPayPeriod(@Param("employeeIds") List<Integer> employeeIds);
+
+    @Query("SELECT id as employeeId " +
+            "FROM Employees WHERE status = 'ACTIVE'")
+    List<Integer> getAllActiveEmployeeIds();
 }

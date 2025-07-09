@@ -6,9 +6,9 @@ import com.project.hrm.dto.dependentDTO.DependentDTO;
 import com.project.hrm.dto.dependentDTO.DependentUpdateDTO;
 import com.project.hrm.entities.Dependent;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface DependentService {
@@ -29,4 +29,6 @@ public interface DependentService {
     PageDTO<DependentDTO> getAllDependents(int page, int size);
 
     int countDependentsOfEmployee(Integer employeeId);
+
+    Map<Integer, Integer> getDependentCountsForEmployees(List<Integer> employeeIds);
 }

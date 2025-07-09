@@ -29,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -315,5 +317,41 @@ public class AttendanceServiceImpl implements AttendanceService{
         log.info("Get total over time attendance for employeeId: {} payPeriods: {}", employeesId, payPeriods);
         Employees employees = employeeService.getEmployeeIsActive(employeesId);
         return attendanceRepository.getTotalOtherTime(employees, payPeriods.getStartDate(), payPeriods.getEndDate());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Map<Integer, Float> getBatchTotalRegularTime(List<Integer> employeeIds, PayPeriods payPeriods) {
+        log.info("Getting batch total regular time for {} employees", employeeIds.size());
+        Map<Integer, Float> result = new java.util.HashMap<>();
+
+        List<Object[]> batchResults = attendanceRepository.getBatchTotalRegularTime(employeeIds,
+                payPeriods.getStartDate(), payPeriods.getEndDate());
+
+        for (Object[] row : batchResults) {
+            Integer employeeId = (Integer) row[0];
+            Double regularTime = (Double) row[1];
+            result.put(employeeId, regularTime != null ? regularTime.floatValue() : 0.0f);
+        }
+
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Map<Integer, Float> getBatchTotalOverTime(List<Integer> employeeIds, PayPeriods payPeriods) {
+        log.info("Getting batch total overtime for {} employees", employeeIds.size());
+        Map<Integer, Float> result = new java.util.HashMap<>();
+
+        List<Object[]> batchResults = attendanceRepository.getBatchTotalOtherTime(employeeIds,
+                payPeriods.getStartDate(), payPeriods.getEndDate());
+
+        for (Object[] row : batchResults) {
+            Integer employeeId = (Integer) row[0];
+            Double overTime = (Double) row[1]; // Xử lý kiểu Double
+            result.put(employeeId, overTime != null ? overTime.floatValue() : 0.0f);
+        }
+
+        return result;
     }
 }

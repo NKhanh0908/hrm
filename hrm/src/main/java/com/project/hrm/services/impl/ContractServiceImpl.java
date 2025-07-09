@@ -492,6 +492,23 @@ public class ContractServiceImpl implements ContractService {
         return outputStream.toByteArray();
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Map<Integer, Double> getBaseSalariesForEmployees(List<Integer> employeeIds) {
+        log.info("Getting base salaries for {} employees", employeeIds.size());
+        Map<Integer, Double> result = new HashMap<>();
+
+        List<Object[]> batchResults = contractRepository.getBatchCurrentActiveContracts(employeeIds);
+
+        for (Object[] row : batchResults) {
+            Integer employeeId = (Integer) row[0];
+            Double baseSalary = (Double) row[1];
+            result.put(employeeId, baseSalary);
+        }
+
+        return result;
+    }
+
     private Map<String, Object> convertToReportMap(ContractDTO contract) {
         Map<String, Object> map = new HashMap<>();
 

@@ -27,4 +27,6 @@ public interface PayPeriodsService {
     List<PayPeriodsDTO> filter(PayPeriodsFilter payPeriodsFilter, int page, int size);
 
     PayPeriods getPayPeriodsByDate(LocalDateTime startDate, LocalDateTime endDate);
+
+    PayPeriods getOrCreatePayPeriod(LocalDateTime startDate, LocalDateTime endDate);
 }

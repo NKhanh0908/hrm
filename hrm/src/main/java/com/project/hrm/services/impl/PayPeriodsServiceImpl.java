@@ -5,13 +5,13 @@ import com.project.hrm.dto.payPeriodsDTO.PayPeriodsDTO;
 import com.project.hrm.dto.payPeriodsDTO.PayPeriodsFilter;
 import com.project.hrm.dto.payPeriodsDTO.PayPeriodsUpdateDTO;
 import com.project.hrm.entities.PayPeriods;
+import com.project.hrm.enums.PayPeriodStatus;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.PayPeriodMapper;
 import com.project.hrm.repositories.PayPeriodsRepository;
 import com.project.hrm.services.PayPeriodsService;
 import com.project.hrm.specifications.PayPeriodsSpecifications;
-import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -128,5 +129,28 @@ public class PayPeriodsServiceImpl implements PayPeriodsService {
 
         return payPeriodsRepository.getByStartDateLessThanEqualAndEndDateGreaterThanEqual(startDate, endDate)
                 .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PayPeriods getOrCreatePayPeriod(LocalDateTime startDate, LocalDateTime endDate) {
+        PayPeriods payPeriods = getPayPeriodsByDate(startDate, endDate);
+        if (payPeriods == null) {
+            // Tạo PayPeriods mới nếu chưa tồn tại
+            PayPeriodsCreateDTO payPeriodsCreateDTO = new PayPeriodsCreateDTO();
+            payPeriodsCreateDTO.setStartDate(startDate);
+            payPeriodsCreateDTO.setEndDate(endDate);
+            payPeriodsCreateDTO.setStatus(PayPeriodStatus.OPEN);
+
+            java.time.format.DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'T'MM-yyyy");
+            String formatted = startDate.format(formatter);
+            payPeriodsCreateDTO.setPayPeriodCode(formatted);
+
+            payPeriods = payPeriodMapper.toPayPeriods(create(payPeriodsCreateDTO));
+            log.info("Created new pay period: {}", payPeriods.getPayPeriodCode());
+        } else {
+            log.info("Using existing pay period: {}", payPeriods.getPayPeriodCode());
+        }
+        return payPeriods;
     }
 }

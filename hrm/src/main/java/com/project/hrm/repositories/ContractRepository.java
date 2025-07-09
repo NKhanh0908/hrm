@@ -110,4 +110,16 @@ public interface ContractRepository extends JpaRepository<Contracts, Integer>, J
             @Param("currentDate") LocalDateTime currentDate,
             @Param("futureDate") LocalDateTime futureDate
     );
+
+    @Query("""
+          SELECT c.employee.id as employeeId, c.baseSalary as baseSalary
+          FROM Contracts c
+          WHERE c.employee.id IN :employeeIds
+            AND c.contractStatus IN ('ACTIVE', 'SIGNED')
+          ORDER BY
+            CASE WHEN c.contractStatus = 'ACTIVE' THEN 1 ELSE 2 END,
+            c.startDate DESC
+        """)
+    List<Object[]> getBatchCurrentActiveContracts(@Param("employeeIds") List<Integer> employeeIds);
+
 }

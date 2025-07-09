@@ -3,13 +3,12 @@ package com.project.hrm.services;
 import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.dayOffDTO.*;
 import com.project.hrm.entities.DayOff;
-import com.project.hrm.entities.Employees;
 import com.project.hrm.entities.PayPeriods;
-import com.project.hrm.enums.EmployeeStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface DayOffService {
@@ -34,5 +33,10 @@ public interface DayOffService {
     int countDayOffByEmployeeId(Integer employeeId, LocalDateTime startDate, LocalDateTime endDate);
 
     int countDayOffByEmployeeIdStatus(Integer employeeId, LocalDateTime startDate, LocalDateTime endDate);
+
+    Map<Integer, Integer> getBatchDayOffCount(List<Integer> employeeIds, PayPeriods payPeriods);
+
+    Map<Integer, Integer> getBatchDayOffNotAcceptCount(List<Integer> employeeIds, PayPeriods payPeriods);
+
 
 }

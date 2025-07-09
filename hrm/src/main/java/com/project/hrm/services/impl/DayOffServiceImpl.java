@@ -3,6 +3,7 @@ package com.project.hrm.services.impl;
 import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.dayOffDTO.*;
 import com.project.hrm.entities.DayOff;
+import com.project.hrm.entities.PayPeriods;
 import com.project.hrm.enums.DayOffStatus;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -234,5 +236,41 @@ public class DayOffServiceImpl implements DayOffService {
         log.info("Count Day Offs status by Employee Id: {}", employeeId);
         List<LocalDate> distinctDays = dayOffRepository.findDistinctDaysOffByEmployeeIdAndStatus(employeeId, startDate, endDate, DayOffStatus.PENDING);
         return distinctDays.size();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Map<Integer, Integer> getBatchDayOffCount(List<Integer> employeeIds, PayPeriods payPeriods) {
+        log.info("Getting batch day off count for {} employees", employeeIds.size());
+        Map<Integer, Integer> result = new java.util.HashMap<>();
+
+        List<Object[]> batchResults = dayOffRepository.getBatchDayOffCount(employeeIds,
+                payPeriods.getStartDate(), payPeriods.getEndDate());
+
+        for (Object[] row : batchResults) {
+            Integer employeeId = (Integer) row[0];
+            Integer dayOffCount = ((Number) row[1]).intValue();
+            result.put(employeeId, dayOffCount);
+        }
+
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Map<Integer, Integer> getBatchDayOffNotAcceptCount(List<Integer> employeeIds, PayPeriods payPeriods) {
+        log.info("Getting batch day off not accept count for {} employees", employeeIds.size());
+        Map<Integer, Integer> result = new java.util.HashMap<>();
+
+        List<Object[]> batchResults = dayOffRepository.getBatchDayOffNotAcceptCount(employeeIds,
+                payPeriods.getStartDate(), payPeriods.getEndDate(), DayOffStatus.PENDING);
+
+        for (Object[] row : batchResults) {
+            Integer employeeId = (Integer) row[0];
+            Integer dayOffNotAcceptCount = ((Number) row[1]).intValue();
+            result.put(employeeId, dayOffNotAcceptCount);
+        }
+
+        return result;
     }
 }

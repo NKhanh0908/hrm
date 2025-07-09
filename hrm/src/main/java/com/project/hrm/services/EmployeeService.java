@@ -9,6 +9,7 @@ import com.project.hrm.entities.Employees;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface EmployeeService {
@@ -29,4 +30,8 @@ public interface EmployeeService {
     PageDTO<EmployeeDTO> filter(EmployeeFilter employeeFilter, int page, int size);
 
     PageDTO<EmployeeDTO> filterByDepartmentID(Integer departmentId, int page, int size);
+
+    Map<Integer ,Employees> getBatchEmployeeForPayPeriod(List<Integer> employeeIds);
+
+    List<Integer> getAllActiveEmployeeIds();
 }

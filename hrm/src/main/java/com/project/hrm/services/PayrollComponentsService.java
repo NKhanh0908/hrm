@@ -7,6 +7,7 @@ import com.project.hrm.enums.PayrollComponentType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface PayrollComponentsService {
@@ -26,7 +27,9 @@ public interface PayrollComponentsService {
 
     List<PayrollComponentsDTO> filterWithRange(PayrollComponentsFilterWithRange payrollComponentsFilterWithRange, int page, int size);
 
-    List<PayrollComponentsDTO> createComponents(Payrolls payrolls);
+    List<PayrollComponents> createComponents(Payrolls payrolls);
 
     PayrollComponents getPayrollComponentByPayrollIdAndType(Integer payrollId, PayrollComponentType type);
+
+    Map<Integer, List<PayrollComponents>> createBatchComponents(List<Payrolls> payrolls);
 }

@@ -189,7 +189,7 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
 
     @Transactional
     @Override
-    public List<PayrollComponentsDTO> createComponents(Payrolls payrolls) {
+    public List<PayrollComponents> createComponents(Payrolls payrolls) {
         log.info("Create PayrollComponents for payroll ID: {}", payrolls.getId());
         Objects.requireNonNull(payrolls, "Payrolls cannot be null");
         Objects.requireNonNull(payrolls.getEmployee(), "Payrolls employee cannot be null");
@@ -204,17 +204,13 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
         List<PayrollComponents> payrollComponentsListTax = createComponentsWithRegulations(payrolls, regulationsTax);
         List<PayrollComponents> payrollComponentsListInsurance = createComponentsWithRegulations(payrolls, regulationsInsurance);
 
-        List<PayrollComponents> componentsListReturn = Stream.of(
+        return Stream.of(
                         payrollComponentsListTax,
                         payrollComponentsListInsurance,
                         payrollComponentsListReward,
                         payrollComponentsListDeduction)
                 .flatMap(Collection::stream)
                 .toList();
-
-        return payrollComponentsRepository.saveAll(componentsListReturn).stream()
-                .map(payrollComponentMapper::toPayrollComponentsDTO)
-                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -223,6 +219,70 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
         log.info("Get Payroll Components by Payroll id and type: {}, {}",payrollId, type);
         return payrollComponentsRepository.findByPayrollIdAndType(payrollId, type)
                 .orElseThrow(() -> new EntityNotFoundException("Payroll Components with id: " + payrollId + " and type: " + type + " not found"));
+    }
+
+    @Transactional
+    @Override
+    public Map<Integer, List<PayrollComponents>> createBatchComponents(List<Payrolls> payrollsList) {
+        log.info("Creating batch components for {} payrolls", payrollsList.size());
+        Map<Integer, List<PayrollComponents>> result = new HashMap<>();
+
+        if (payrollsList.isEmpty()) {
+            return result;
+        }
+
+        // Preload all data needed for components creation
+        List<Integer> employeeIds = payrollsList.stream()
+                .map(payroll -> payroll.getEmployee().getId())
+                .distinct()
+                .toList();
+
+        PayPeriods payPeriod = payrollsList.getFirst().getPayPeriod(); // All payrolls should have same pay period
+
+        // Batch load all data
+        Map<Integer, List<DisciplinaryActionDTO>> disciplinaryActionsMap =
+                disciplinaryActionService.getBatchDisciplinaryActions(employeeIds, payPeriod.getStartDate(), payPeriod.getEndDate());
+
+        Map<Integer, List<RewardDTO>> rewardsMap =
+                rewardService.getBatchRewards(employeeIds, payPeriod.getStartDate(), payPeriod.getEndDate());
+
+        // Cache regulations to avoid multiple queries
+        List<Regulations> regulationsTax = regulationsService.findRegulationByType(PayrollComponentType.TAX);
+        List<Regulations> regulationsInsurance = regulationsService.findRegulationByType(PayrollComponentType.INSURANCE);
+
+        // Create components for each payroll using preloaded data
+        for (Payrolls payroll : payrollsList) {
+            try {
+                Integer employeeId = payroll.getEmployee().getId();
+
+                // Get preloaded data for this employee
+                List<DisciplinaryActionDTO> disciplinaryActions =
+                        disciplinaryActionsMap.getOrDefault(employeeId, new ArrayList<>());
+                List<RewardDTO> rewards =
+                        rewardsMap.getOrDefault(employeeId, new ArrayList<>());
+
+                // Create components using preloaded data
+                List<PayrollComponents> components = new ArrayList<>();
+
+                // Add tax and insurance components
+                components.addAll(createComponentsWithRegulations(payroll, regulationsTax));
+                components.addAll(createComponentsWithRegulations(payroll, regulationsInsurance));
+
+                // Add reward components
+                components.addAll(createComponentsTypeRewardsWithPreloadedData(payroll, rewards));
+
+                // Add deduction components
+                components.addAll(createComponentsTypeDeductionWithPreloadedData(payroll, disciplinaryActions));
+
+                result.put(payroll.getId(), components);
+
+            } catch (Exception e) {
+                log.error("Error creating components for payroll {}: {}", payroll.getId(), e.getMessage(), e);
+                result.put(payroll.getId(), new ArrayList<>());
+            }
+        }
+
+        return result;
     }
 
     protected List<PayrollComponents> createComponentsWithRegulations(Payrolls payrolls, List<Regulations> regulations) {
@@ -270,6 +330,10 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
                 payrolls.getPayPeriod().getStartDate(),
                 payrolls.getPayPeriod().getEndDate());
 
+        return createComponentsDeductionReturnListDTO(payrolls, disciplinaryActions);
+    }
+
+    protected List<PayrollComponents> createComponentsDeductionReturnListDTO(Payrolls payrolls, List<DisciplinaryActionDTO> disciplinaryActions) {
         Set<Integer> regulationIds = disciplinaryActions.stream()
                 .map(DisciplinaryActionDTO::getRegulationId)
                 .filter(Objects::nonNull)
@@ -315,6 +379,14 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
                 .toList();
     }
 
+    protected List<PayrollComponents> createComponentsTypeDeductionWithPreloadedData(Payrolls payrolls, List<DisciplinaryActionDTO> disciplinaryActions) {
+        log.info("Create PayrollComponents type DEDUCTION for payroll ID: {} with preloaded data", payrolls.getId());
+        Objects.requireNonNull(payrolls.getEmployee(), "Employee cannot be null");
+        Objects.requireNonNull(payrolls.getPayPeriod(), "Pay period cannot be null");
+
+        return createComponentsDeductionReturnListDTO(payrolls, disciplinaryActions);
+    }
+
     protected List<PayrollComponents> createComponentsTypeRewards(Payrolls payrolls) {
         log.info("Create PayrollComponents type REWARD for payroll ID: {}", payrolls.getId());
         Objects.requireNonNull(payrolls.getEmployee(), "Employee cannot be null");
@@ -325,6 +397,18 @@ public class PayrollComponentsServiceImpl implements PayrollComponentsService {
                 payrolls.getPayPeriod().getStartDate(),
                 payrolls.getPayPeriod().getEndDate());
 
+        return createComponentsRewardReturnListDTO(payrolls, rewards);
+    }
+
+    protected List<PayrollComponents> createComponentsTypeRewardsWithPreloadedData(Payrolls payrolls, List<RewardDTO> rewards) {
+        log.info("Create PayrollComponents type REWARD for payroll ID: {} with preloaded data", payrolls.getId());
+        Objects.requireNonNull(payrolls.getEmployee(), "Employee cannot be null");
+        Objects.requireNonNull(payrolls.getPayPeriod(), "Pay period cannot be null");
+
+        return createComponentsRewardReturnListDTO(payrolls, rewards);
+    }
+
+    protected List<PayrollComponents> createComponentsRewardReturnListDTO(Payrolls payrolls, List<RewardDTO> rewards) {
         return rewards.stream()
                 .map(reward -> {
                     Objects.requireNonNull(reward.getTitle(), "Reward title cannot be null");

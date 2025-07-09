@@ -10,6 +10,7 @@ import com.project.hrm.enums.ContractStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface ContractService {
@@ -32,5 +33,7 @@ public interface ContractService {
     byte[] generateContractReport(Integer id) throws Exception ;
 
     byte[] generateContractListReport(List<ContractDTO> contracts) throws Exception;
+
+    Map<Integer, Double> getBaseSalariesForEmployees(List<Integer> employeeIds);
 
 }
