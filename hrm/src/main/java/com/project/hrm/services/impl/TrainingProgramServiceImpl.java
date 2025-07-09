@@ -24,6 +24,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -92,6 +94,14 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         }
 
         TrainingProgram updated = trainingProgramRepository.save(program);
+
+        TrainingProgramDTO result = trainingProgramMapper.convertToDTO(updated);
+
+        String cacheKey = RedisKeys.trainingProgramKey(result.getId());
+        if(redisService.hasKey(cacheKey)){
+            redisService.del(cacheKey);
+        }
+
         return trainingProgramMapper.convertToDTO(updated);
     }
 
@@ -129,7 +139,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
         TrainingProgramDTO result = trainingProgramMapper.convertToDTO(getEntityById(id));
 
-        redisService.set(cacheKey, result);
+        redisService.set(cacheKey, result, Duration.ofMinutes(10));
 
         return result;
     }
@@ -147,12 +157,25 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     public PageDTO<TrainingProgramDTO> filter(TrainingProgramFilter trainingProgramFilter, int page, int size) {
         log.info("Filtering training programs: {}", trainingProgramFilter);
 
+        String cacheKey = String.format("%s:page:%d:size:%d:filter:%s",
+                RedisKeys.TRAINING_PROGRAMS_LIST, page, size, trainingProgramFilter.toString());
+
+        PageDTO<TrainingProgramDTO> cache = redisService.get(cacheKey, PageDTO.class);
+        if(cache != null){
+            log.info("Retrieved training programs from cache: {}", cacheKey);
+            return cache;
+        }
+
         Specification<TrainingProgram> trainingProgramSpecification = TrainingProgramSpecification.filter((trainingProgramFilter));
 
         Pageable pageable = PageRequest.of(page, size);
 
         Page<TrainingProgram> trainingProgramPage = trainingProgramRepository.findAll(trainingProgramSpecification, pageable);
 
-        return trainingProgramMapper.toTrainingProgramPageDTO(trainingProgramPage);
+        PageDTO<TrainingProgramDTO> result = trainingProgramMapper.toTrainingProgramPageDTO(trainingProgramPage);
+
+        redisService.set(cacheKey, result, Duration.ofMinutes(10));
+
+        return result;
     }
 }
