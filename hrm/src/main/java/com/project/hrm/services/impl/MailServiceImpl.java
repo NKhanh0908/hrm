@@ -1,13 +1,12 @@
 package com.project.hrm.services.impl;
 
-import com.project.hrm.dto.applyDTO.JobOfferDetailsDTO;
+import com.project.hrm.recruitment.dto.applyDTO.JobOfferDetailsDTO;
 import com.project.hrm.dto.othersDTO.InfoApply;
 import com.project.hrm.dto.othersDTO.InterviewLetter;
 import com.project.hrm.services.MailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.javamail.JavaMailSender;
