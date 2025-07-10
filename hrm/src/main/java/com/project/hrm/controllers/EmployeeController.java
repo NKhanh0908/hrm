@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,10 +33,23 @@ public class EmployeeController {
 
         private final EmployeeService employeeService;
 
-        @PostMapping
-        @Operation(summary = "Create new employee", description = "Creates a new employee in the system", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Employee creation data", required = true, content = @Content(schema = @Schema(implementation = EmployeeCreateDTO.class))), responses = {
-                        @ApiResponse(responseCode = "201", description = "Employee created successfully", content = @Content(schema = @Schema(implementation = EmployeeDTO.class)))
-        })
+        @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        @Operation(
+                summary = "Create new employee",
+                description = "Creates a new employee in the system with form-data support",
+                requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                        description = "Employee creation data",
+                        required = true,
+                        content = @Content(
+                                mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                                schema = @Schema(implementation = EmployeeCreateDTO.class)
+                        )
+                ),
+                responses = {
+                        @ApiResponse(responseCode = "201", description = "Employee created successfully",
+                                content = @Content(schema = @Schema(implementation = EmployeeDTO.class)))
+                }
+        )
         public ResponseEntity<APIResponse<EmployeeDTO>> create(@ModelAttribute EmployeeCreateDTO employeeCreateDTO,
                         HttpServletRequest request) {
                 EmployeeDTO result = employeeService.create(employeeCreateDTO);
@@ -44,15 +58,29 @@ public class EmployeeController {
                                                 request.getRequestURI()));
         }
 
-        @PutMapping
-        @Operation(summary = "Update existing employee", description = "Updates the information of an existing employee", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Employee update data", required = true, content = @Content(schema = @Schema(implementation = EmployeeUpdateDTO.class))), responses = {
-                        @ApiResponse(responseCode = "200", description = "Employee updated successfully", content = @Content(schema = @Schema(implementation = EmployeeDTO.class)))
-        })
-        public ResponseEntity<APIResponse<EmployeeDTO>> update(@ModelAttribute EmployeeUpdateDTO employeeUpdateDTO,
-                        HttpServletRequest request) {
+        @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        @Operation(
+                summary = "Update existing employee",
+                description = "Updates the information of an existing employee with form-data support",
+                requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                        description = "Employee update data",
+                        required = true,
+                        content = @Content(
+                                mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                                schema = @Schema(implementation = EmployeeUpdateDTO.class)
+                        )
+                ),
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Employee updated successfully",
+                                content = @Content(schema = @Schema(implementation = EmployeeDTO.class)))
+                }
+        )
+        public ResponseEntity<APIResponse<EmployeeDTO>> update(
+                @ModelAttribute EmployeeUpdateDTO employeeUpdateDTO,
+                HttpServletRequest request) {
                 EmployeeDTO result = employeeService.update(employeeUpdateDTO);
                 return ResponseEntity.ok(new APIResponse<>(true, "Employee updated successfully", result, null,
-                                request.getRequestURI()));
+                        request.getRequestURI()));
         }
 
         @DeleteMapping("/{id}")
