@@ -1,6 +1,6 @@
 package com.project.hrm.services;
 
-import com.project.hrm.dto.applyDTO.JobOfferDetailsDTO;
+import com.project.hrm.recruitment.dto.applyDTO.JobOfferDetailsDTO;
 import com.project.hrm.dto.othersDTO.InfoApply;
 import com.project.hrm.dto.othersDTO.InterviewLetter;
 import org.springframework.stereotype.Service;
