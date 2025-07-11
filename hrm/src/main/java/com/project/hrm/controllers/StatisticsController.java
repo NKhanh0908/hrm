@@ -2,7 +2,7 @@ package com.project.hrm.controllers;
 
 import com.project.hrm.dto.APIResponse;
 import com.project.hrm.dto.statisticsDTO.*;
-import com.project.hrm.enums.ContractStatus;
+import com.project.hrm.employee.enums.ContractStatus;
 import com.project.hrm.services.StatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

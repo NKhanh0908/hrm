@@ -1,6 +1,6 @@
 package com.project.hrm.document.entity;
 
-import com.project.hrm.entities.Employees;
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.document.enums.DocumentApprovalsStatus;
 import jakarta.persistence.*;
 import lombok.*;

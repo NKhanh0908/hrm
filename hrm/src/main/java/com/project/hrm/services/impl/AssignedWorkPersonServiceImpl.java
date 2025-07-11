@@ -5,14 +5,14 @@ import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonCreateDTO;
 import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonDTO;
 import com.project.hrm.dto.assignedWorkPersonDTO.AssignedWorkPersonUpdateDTO;
 import com.project.hrm.entities.AssignedWorkPerson;
-import com.project.hrm.entities.Employees;
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.AssignedWorkPersonMapper;
 import com.project.hrm.repositories.AssignedWorkPersonRepository;
 import com.project.hrm.services.AccountService;
 import com.project.hrm.services.AssignedWorkPersonService;
-import com.project.hrm.services.EmployeeService;
+import com.project.hrm.employee.service.EmployeeService;
 import com.project.hrm.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @Slf4j

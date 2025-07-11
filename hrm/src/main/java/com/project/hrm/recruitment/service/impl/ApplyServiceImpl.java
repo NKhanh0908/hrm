@@ -1,12 +1,14 @@
 package com.project.hrm.recruitment.service.impl;
 
 import com.project.hrm.dto.PageDTO;
+import com.project.hrm.employee.service.ContractService;
+import com.project.hrm.employee.service.EmployeeService;
 import com.project.hrm.recruitment.dto.applyDTO.*;
 import com.project.hrm.recruitment.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.recruitment.dto.candidateProfileDTO.CandidateProfileUpdateDTO;
-import com.project.hrm.dto.contractDTO.ContractCreateDTO;
-import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
-import com.project.hrm.dto.employeeDTO.EmployeeDTO;
+import com.project.hrm.employee.dto.contractDTO.ContractCreateDTO;
+import com.project.hrm.employee.dto.employeeDTO.EmployeeCreateDTO;
+import com.project.hrm.employee.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.dto.othersDTO.InfoApply;
 import com.project.hrm.dto.othersDTO.InterviewLetter;
 import com.project.hrm.recruitment.entity.Apply;

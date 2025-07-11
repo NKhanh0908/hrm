@@ -3,7 +3,7 @@ package com.project.hrm.recruitment.mapper;
 import com.project.hrm.dto.PageDTO;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentCreateDTO;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentDTO;
-import com.project.hrm.entities.Employees;
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.recruitment.entity.Recruitment;
 import com.project.hrm.recruitment.entity.RecruitmentRequirements;
 import com.project.hrm.recruitment.enums.RecruitmentStatus;

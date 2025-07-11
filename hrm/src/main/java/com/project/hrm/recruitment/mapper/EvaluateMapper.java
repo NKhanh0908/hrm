@@ -1,11 +1,11 @@
 package com.project.hrm.recruitment.mapper;
 
 import com.project.hrm.dto.PageDTO;
-import com.project.hrm.mapper.EmployeeMapper;
+import com.project.hrm.employee.mapper.EmployeeMapper;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.recruitment.entity.CandidateProfile;
-import com.project.hrm.entities.Employees;
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.recruitment.entity.Evaluate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

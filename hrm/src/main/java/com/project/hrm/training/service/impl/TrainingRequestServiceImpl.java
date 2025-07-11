@@ -1,11 +1,12 @@
 package com.project.hrm.training.service.impl;
 
 import com.project.hrm.dto.PageDTO;
+import com.project.hrm.employee.service.EmployeeService;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestCreateDTO;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestDTO;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestFilter;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestUpdateDTO;
-import com.project.hrm.entities.Employees;
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.training.entity.TrainingProgram;
 import com.project.hrm.training.entity.TrainingRequest;
 import com.project.hrm.training.enums.TrainingRequestStatus;

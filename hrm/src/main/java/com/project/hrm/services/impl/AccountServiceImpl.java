@@ -4,14 +4,14 @@ import com.project.hrm.dto.accountDTO.AccountCreateDTO;
 import com.project.hrm.dto.accountDTO.AccountDTO;
 import com.project.hrm.dto.accountDTO.AuthenticationDTO;
 import com.project.hrm.dto.accountDTO.FormLoginDTO;
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.entities.Account;
-import com.project.hrm.entities.Employees;
 import com.project.hrm.exceptions.CustomException;
 import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.AccountMapper;
 import com.project.hrm.repositories.AccountRepository;
 import com.project.hrm.services.AccountService;
-import com.project.hrm.services.EmployeeService;
+import com.project.hrm.employee.service.EmployeeService;
 import com.project.hrm.services.RoleService;
 import com.project.hrm.utils.IdGenerator;
 import com.project.hrm.utils.JwtTokenUtil;
@@ -91,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
      * <p>Process:
      * <ol>
      *   <li>Check if the requested username already exists.</li>
-     *   <li>Retrieve associated {@link com.project.hrm.entities.Employees} by ID.</li>
+     *   <li>Retrieve associated {@link Employees} by ID.</li>
      *   <li>Retrieve associated {@link com.project.hrm.entities.Role} by ID.</li>
      *   <li>Encode the password and populate account entity fields.</li>
      *   <li>Persist the new account via {@link com.project.hrm.repositories.AccountRepository}.</li>

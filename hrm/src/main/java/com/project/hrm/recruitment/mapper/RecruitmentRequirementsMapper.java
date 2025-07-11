@@ -2,7 +2,7 @@ package com.project.hrm.recruitment.mapper;
 
 import com.project.hrm.dto.PageDTO;
 import com.project.hrm.mapper.DepartmentMapper;
-import com.project.hrm.mapper.EmployeeMapper;
+import com.project.hrm.employee.mapper.EmployeeMapper;
 import com.project.hrm.recruitment.dto.recruitmentRequirementDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.recruitment.dto.recruitmentRequirementDTO.RecruitmentRequirementsDTO;
 import com.project.hrm.recruitment.entity.RecruitmentRequirements;

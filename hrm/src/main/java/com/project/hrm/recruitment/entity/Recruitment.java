@@ -1,7 +1,7 @@
 package com.project.hrm.recruitment.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.project.hrm.entities.Employees;
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.recruitment.enums.RecruitmentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

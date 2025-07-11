@@ -1,6 +1,6 @@
 package com.project.hrm.recruitment.entity;
 
-import com.project.hrm.entities.Employees;
+import com.project.hrm.employee.entity.Employees;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;

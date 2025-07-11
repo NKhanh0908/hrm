@@ -1,5 +1,6 @@
 package com.project.hrm.entities;
 
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.enums.AccountRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

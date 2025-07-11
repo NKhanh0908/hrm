@@ -1,7 +1,7 @@
 package com.project.hrm.recruitment.dto.evaluateDTO;
 
 import com.project.hrm.recruitment.dto.candidateProfileDTO.CandidateProfileDTO;
-import com.project.hrm.dto.employeeDTO.EmployeeDTO;
+import com.project.hrm.employee.dto.employeeDTO.EmployeeDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

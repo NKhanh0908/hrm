@@ -1,6 +1,6 @@
 package com.project.hrm.training.entity;
 
-import com.project.hrm.entities.Employees;
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.entities.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

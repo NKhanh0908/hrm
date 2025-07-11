@@ -1,14 +1,13 @@
 package com.project.hrm.service;
 
-import com.project.hrm.dto.employeeDTO.EmployeeCreateDTO;
-import com.project.hrm.dto.employeeDTO.EmployeeDTO;
-import com.project.hrm.entities.Employees;
-import com.project.hrm.enums.EmployeeStatus;
+import com.project.hrm.employee.dto.employeeDTO.EmployeeCreateDTO;
+import com.project.hrm.employee.dto.employeeDTO.EmployeeDTO;
+import com.project.hrm.employee.entity.Employees;
+import com.project.hrm.employee.enums.EmployeeStatus;
 import com.project.hrm.exceptions.CustomException;
-import com.project.hrm.mapper.EmployeeMapper;
-import com.project.hrm.repositories.EmployeeRepository;
-import com.project.hrm.services.EmployeeService;
-import com.project.hrm.services.impl.EmployeeServiceImpl;
+import com.project.hrm.employee.mapper.EmployeeMapper;
+import com.project.hrm.employee.repository.EmployeeRepository;
+import com.project.hrm.employee.service.impl.EmployeeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;

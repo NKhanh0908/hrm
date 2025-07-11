@@ -5,7 +5,7 @@ import com.project.hrm.dto.performanceReviewDetailDTO.PerformanceReviewDetailCre
 import com.project.hrm.dto.performanceReviewDetailDTO.PerformanceReviewDetailDTO;
 import com.project.hrm.dto.performanceReviewDetailDTO.PerformanceReviewDetailFilter;
 import com.project.hrm.dto.performanceReviewDetailDTO.PerformanceReviewDetailUpdateDTO;
-import com.project.hrm.entities.Employees;
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.entities.PerformanceReview;
 import com.project.hrm.entities.PerformanceReviewDetail;
 import com.project.hrm.exceptions.CustomException;
@@ -13,7 +13,7 @@ import com.project.hrm.exceptions.Error;
 import com.project.hrm.mapper.PerformanceReviewDetailMapper;
 import com.project.hrm.repositories.PerformanceReviewDetailRepository;
 import com.project.hrm.services.AccountService;
-import com.project.hrm.services.EmployeeService;
+import com.project.hrm.employee.service.EmployeeService;
 import com.project.hrm.services.PerformanceReviewDetailService;
 import com.project.hrm.services.PerformanceReviewService;
 import com.project.hrm.specifications.PerformanceReviewDetailSpecification;

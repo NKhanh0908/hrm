@@ -1,7 +1,7 @@
 package com.project.hrm.services;
 
 import com.project.hrm.dto.statisticsDTO.*;
-import com.project.hrm.enums.ContractStatus;
+import com.project.hrm.employee.enums.ContractStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

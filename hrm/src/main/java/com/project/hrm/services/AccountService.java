@@ -4,7 +4,7 @@ import com.project.hrm.dto.accountDTO.AccountCreateDTO;
 import com.project.hrm.dto.accountDTO.AccountDTO;
 import com.project.hrm.dto.accountDTO.AuthenticationDTO;
 import com.project.hrm.dto.accountDTO.FormLoginDTO;
-import com.project.hrm.entities.Employees;
+import com.project.hrm.employee.entity.Employees;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,9 +1,9 @@
 package com.project.hrm.services.impl;
 
 import com.project.hrm.dto.statisticsDTO.*;
-import com.project.hrm.enums.ContractStatus;
-import com.project.hrm.repositories.ContractRepository;
-import com.project.hrm.repositories.EmployeeRepository;
+import com.project.hrm.employee.enums.ContractStatus;
+import com.project.hrm.employee.repository.ContractRepository;
+import com.project.hrm.employee.repository.EmployeeRepository;
 import com.project.hrm.services.StatisticsService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
