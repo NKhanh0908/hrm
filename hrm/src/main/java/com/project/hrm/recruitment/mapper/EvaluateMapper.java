@@ -1,6 +1,6 @@
 package com.project.hrm.recruitment.mapper;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.mapper.EmployeeMapper;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateDTO;

@@ -1,8 +1,8 @@
 package com.project.hrm.employee.repository;
 
-import com.project.hrm.dto.statisticsDTO.TotalEmployeeByDepartment;
-import com.project.hrm.dto.statisticsDTO.TotalEmployeeByDepartmentAndRole;
-import com.project.hrm.dto.statisticsDTO.TotalEmployeeByRole;
+import com.project.hrm.statistics.dto.TotalEmployeeByDepartment;
+import com.project.hrm.statistics.dto.TotalEmployeeByDepartmentAndRole;
+import com.project.hrm.statistics.dto.TotalEmployeeByRole;
 import com.project.hrm.employee.entity.Employees;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

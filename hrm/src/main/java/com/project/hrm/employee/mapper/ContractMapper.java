@@ -1,11 +1,11 @@
 package com.project.hrm.employee.mapper;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.dto.contractDTO.ContractCreateDTO;
 import com.project.hrm.employee.dto.contractDTO.ContractDTO;
 import com.project.hrm.employee.entity.Contracts;
 import com.project.hrm.employee.entity.Employees;
-import com.project.hrm.entities.Role;
+import com.project.hrm.department.entity.Role;
 import com.project.hrm.employee.enums.ContractStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

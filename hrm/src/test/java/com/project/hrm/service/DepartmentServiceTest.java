@@ -1,25 +1,23 @@
 package com.project.hrm.service;
 
-import com.project.hrm.dto.departmentDTO.DepartmentCreateDTO;
-import com.project.hrm.dto.departmentDTO.DepartmentDTO;
-import com.project.hrm.entities.Departments;
-import com.project.hrm.exceptions.CustomException;
-import com.project.hrm.exceptions.Error;
-import com.project.hrm.mapper.DepartmentMapper;
-import com.project.hrm.repositories.DepartmentRepository;
-import com.project.hrm.services.impl.DepartmentServiceImpl;
+import com.project.hrm.department.dto.departmentDTO.DepartmentCreateDTO;
+import com.project.hrm.department.dto.departmentDTO.DepartmentDTO;
+import com.project.hrm.department.entity.Departments;
+import com.project.hrm.common.exceptions.CustomException;
+import com.project.hrm.common.exceptions.Error;
+import com.project.hrm.department.mapper.DepartmentMapper;
+import com.project.hrm.department.repository.DepartmentRepository;
+import com.project.hrm.department.service.impl.DepartmentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
 import java.util.Collections;
 import java.util.Optional;
 
-import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

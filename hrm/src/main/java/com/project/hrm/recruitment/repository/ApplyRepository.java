@@ -1,6 +1,6 @@
 package com.project.hrm.recruitment.repository;
 
-import com.project.hrm.dto.othersDTO.InfoApply;
+import com.project.hrm.recruitment.dto.othersDTO.InfoApply;
 import com.project.hrm.recruitment.entity.Apply;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

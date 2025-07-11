@@ -1,6 +1,6 @@
 package com.project.hrm.employee.controller;
 
-import com.project.hrm.dto.APIResponse;
+import com.project.hrm.common.response.APIResponse;
 import com.project.hrm.employee.dto.rewardDTO.RewardCreateDTO;
 import com.project.hrm.employee.dto.rewardDTO.RewardDTO;
 import com.project.hrm.employee.dto.rewardDTO.RewardUpdateDTO;

@@ -1,7 +1,7 @@
 package com.project.hrm.recruitment.controller;
 
-import com.project.hrm.dto.APIResponse;
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.APIResponse;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.recruitment.enums.RecruitmentStatus;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentCreateDTO;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentDTO;

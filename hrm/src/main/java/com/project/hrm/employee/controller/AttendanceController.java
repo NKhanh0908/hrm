@@ -1,7 +1,7 @@
 package com.project.hrm.employee.controller;
 
-import com.project.hrm.dto.APIResponse;
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.APIResponse;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.dto.attendanceDTO.*;
 import com.project.hrm.employee.service.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;

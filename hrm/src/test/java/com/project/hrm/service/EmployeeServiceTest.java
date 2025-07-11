@@ -4,7 +4,7 @@ import com.project.hrm.employee.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.employee.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.employee.enums.EmployeeStatus;
-import com.project.hrm.exceptions.CustomException;
+import com.project.hrm.common.exceptions.CustomException;
 import com.project.hrm.employee.mapper.EmployeeMapper;
 import com.project.hrm.employee.repository.EmployeeRepository;
 import com.project.hrm.employee.service.impl.EmployeeServiceImpl;

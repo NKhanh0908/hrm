@@ -1,21 +1,21 @@
 package com.project.hrm.recruitment.service.impl;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateFilter;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateUpdateDTO;
 import com.project.hrm.recruitment.entity.CandidateProfile;
 import com.project.hrm.recruitment.entity.Evaluate;
-import com.project.hrm.exceptions.CustomException;
-import com.project.hrm.exceptions.Error;
+import com.project.hrm.common.exceptions.CustomException;
+import com.project.hrm.common.exceptions.Error;
 import com.project.hrm.recruitment.mapper.EvaluateMapper;
 import com.project.hrm.recruitment.repository.EvaluateRepository;
-import com.project.hrm.services.AccountService;
+import com.project.hrm.auth.service.AccountService;
 import com.project.hrm.recruitment.service.CandidateProfileService;
 import com.project.hrm.recruitment.service.EvaluateService;
 import com.project.hrm.recruitment.specification.EvaluateSpecification;
-import com.project.hrm.utils.IdGenerator;
+import com.project.hrm.common.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

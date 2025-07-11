@@ -1,7 +1,7 @@
 package com.project.hrm.recruitment.service;
 
-import com.project.hrm.dto.PageDTO;
-import com.project.hrm.dto.othersDTO.InterviewLetter;
+import com.project.hrm.common.response.PageDTO;
+import com.project.hrm.recruitment.dto.othersDTO.InterviewLetter;
 import com.project.hrm.recruitment.dto.applyDTO.*;
 import com.project.hrm.recruitment.entity.Apply;
 import com.project.hrm.recruitment.enums.ApplyStatus;

@@ -1,6 +1,6 @@
 package com.project.hrm.document.service;
 
-import com.project.hrm.entities.Account;
+import com.project.hrm.auth.entity.Account;
 
 public interface PermissionService {
     boolean canApproveDocument(Account acc, Integer documentId);

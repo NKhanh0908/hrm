@@ -1,10 +1,10 @@
 package com.project.hrm.document.controller;
 
-import com.project.hrm.dto.APIResponse;
+import com.project.hrm.common.response.APIResponse;
 import com.project.hrm.document.dto.documentDTO.DocumentsCreateDTO;
 import com.project.hrm.document.dto.documentDTO.DocumentsDTO;
 import com.project.hrm.document.dto.documentDTO.DocumentsUpdateDTO;
-import com.project.hrm.entities.Account;
+import com.project.hrm.auth.entity.Account;
 import com.project.hrm.document.service.DocumentsService;
 import com.project.hrm.document.service.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;

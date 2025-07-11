@@ -1,6 +1,6 @@
 package com.project.hrm.employee.mapper;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.dto.dayOffDTO.DayOffCreateDTO;
 import com.project.hrm.employee.dto.dayOffDTO.DayOffDTO;
 import com.project.hrm.employee.entity.DayOff;

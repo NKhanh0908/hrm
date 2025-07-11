@@ -1,19 +1,19 @@
 package com.project.hrm.employee.service.impl;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.employee.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.employee.dto.employeeDTO.EmployeeFilter;
 import com.project.hrm.employee.dto.employeeDTO.EmployeeUpdateDTO;
 import com.project.hrm.employee.entity.Employees;
-import com.project.hrm.exceptions.CustomException;
-import com.project.hrm.exceptions.Error;
+import com.project.hrm.common.exceptions.CustomException;
+import com.project.hrm.common.exceptions.Error;
 import com.project.hrm.employee.mapper.EmployeeMapper;
 import com.project.hrm.employee.repository.EmployeeRepository;
 import com.project.hrm.employee.service.EmployeeService;
-import com.project.hrm.services.FileService;
+import com.project.hrm.common.service.FileService;
 import com.project.hrm.employee.specification.EmployeeSpecification;
-import com.project.hrm.utils.IdGenerator;
+import com.project.hrm.common.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,7 @@
 package com.project.hrm.recruitment.controller;
 
-import com.project.hrm.dto.APIResponse;
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.APIResponse;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateCreateDTO;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateDTO;
 import com.project.hrm.recruitment.dto.evaluateDTO.EvaluateFilter;

@@ -1,7 +1,7 @@
 package com.project.hrm.payroll.controllers;
 
-import com.project.hrm.dto.APIResponse;
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.APIResponse;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.payroll.dto.approvalsDTO.ApprovalsCreateDTO;
 import com.project.hrm.payroll.dto.approvalsDTO.ApprovalsDTO;
 import com.project.hrm.payroll.dto.approvalsDTO.ApprovalsFilter;

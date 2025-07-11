@@ -1,7 +1,7 @@
 package com.project.hrm.employee.repository;
 
-import com.project.hrm.dto.statisticsDTO.TotalContractByStatus;
-import com.project.hrm.dto.statisticsDTO.TotalContractByStatusAndSalary;
+import com.project.hrm.statistics.dto.TotalContractByStatus;
+import com.project.hrm.statistics.dto.TotalContractByStatusAndSalary;
 import com.project.hrm.employee.entity.Contracts;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

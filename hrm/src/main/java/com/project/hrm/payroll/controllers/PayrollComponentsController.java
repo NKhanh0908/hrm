@@ -1,6 +1,6 @@
 package com.project.hrm.payroll.controllers;
 
-import com.project.hrm.dto.APIResponse;
+import com.project.hrm.common.response.APIResponse;
 import com.project.hrm.payroll.dto.payrollComponentsDTO.PayrollComponentsCreateDTO;
 import com.project.hrm.payroll.dto.payrollComponentsDTO.PayrollComponentsDTO;
 import com.project.hrm.payroll.dto.payrollComponentsDTO.PayrollComponentsFilter;

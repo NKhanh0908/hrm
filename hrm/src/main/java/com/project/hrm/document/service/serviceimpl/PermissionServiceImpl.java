@@ -1,8 +1,8 @@
 package com.project.hrm.document.service.serviceimpl;
 
-import com.project.hrm.entities.Account;
+import com.project.hrm.auth.entity.Account;
 import com.project.hrm.document.entity.Documents;
-import com.project.hrm.enums.AccountRole;
+import com.project.hrm.auth.enums.AccountRole;
 import com.project.hrm.document.enums.DocumentAccess;
 import com.project.hrm.document.repository.DocumentAccessesRepository;
 import com.project.hrm.document.service.DocumentsService;

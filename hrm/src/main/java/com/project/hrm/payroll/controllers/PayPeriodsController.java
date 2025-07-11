@@ -1,6 +1,6 @@
 package com.project.hrm.payroll.controllers;
 
-import com.project.hrm.dto.APIResponse;
+import com.project.hrm.common.response.APIResponse;
 import com.project.hrm.payroll.dto.payPeriodsDTO.PayPeriodsCreateDTO;
 import com.project.hrm.payroll.dto.payPeriodsDTO.PayPeriodsDTO;
 import com.project.hrm.payroll.dto.payPeriodsDTO.PayPeriodsFilter;

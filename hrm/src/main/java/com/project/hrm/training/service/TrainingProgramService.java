@@ -1,6 +1,6 @@
 package com.project.hrm.training.service;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.training.dto.trainingProgramDTO.TrainingProgramCreateDTO;
 import com.project.hrm.training.dto.trainingProgramDTO.TrainingProgramDTO;
 import com.project.hrm.training.dto.trainingProgramDTO.TrainingProgramFilter;

@@ -1,12 +1,12 @@
 package com.project.hrm.employee.service.impl;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.dto.dayOffDTO.*;
 import com.project.hrm.employee.entity.DayOff;
 import com.project.hrm.payroll.entities.PayPeriods;
 import com.project.hrm.employee.enums.DayOffStatus;
-import com.project.hrm.exceptions.CustomException;
-import com.project.hrm.exceptions.Error;
+import com.project.hrm.common.exceptions.CustomException;
+import com.project.hrm.common.exceptions.Error;
 import com.project.hrm.employee.mapper.DayOffMapper;
 import com.project.hrm.employee.repository.DayOffRepository;
 import com.project.hrm.employee.service.DayOffService;

@@ -1,6 +1,6 @@
 package com.project.hrm.document.controller;
 
-import com.project.hrm.dto.APIResponse;
+import com.project.hrm.common.response.APIResponse;
 import com.project.hrm.document.dto.documentDTO.DocumentFilterDTO;
 import com.project.hrm.document.dto.documentApprovalsDTO.DocumentApprovalsCreateDTO;
 import com.project.hrm.document.dto.documentApprovalsDTO.DocumentApprovalsDTO;

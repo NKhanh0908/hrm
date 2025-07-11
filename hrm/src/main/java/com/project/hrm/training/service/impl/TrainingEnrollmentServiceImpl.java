@@ -1,6 +1,7 @@
 package com.project.hrm.training.service.impl;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.auth.service.AccountService;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentCreateDTO;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentDTO;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentFilter;
@@ -10,16 +11,15 @@ import com.project.hrm.training.entity.TrainingEnrollment;
 import com.project.hrm.training.entity.TrainingRequest;
 import com.project.hrm.training.entity.TrainingSession;
 import com.project.hrm.training.enums.EnrollmentStatus;
-import com.project.hrm.exceptions.CustomException;
-import com.project.hrm.exceptions.Error;
+import com.project.hrm.common.exceptions.CustomException;
+import com.project.hrm.common.exceptions.Error;
 import com.project.hrm.training.mapper.TrainingEnrollmentMapper;
 import com.project.hrm.training.repository.TrainingEnrollmentRepository;
-import com.project.hrm.services.*;
 import com.project.hrm.training.specification.TrainingEnrollmentSpecification;
 import com.project.hrm.training.service.TrainingEnrollmentService;
 import com.project.hrm.training.service.TrainingRequestService;
 import com.project.hrm.training.service.TrainingSessionService;
-import com.project.hrm.utils.IdGenerator;
+import com.project.hrm.common.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

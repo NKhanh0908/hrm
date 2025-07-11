@@ -1,6 +1,6 @@
 package com.project.hrm.document.controller;
 
-import com.project.hrm.dto.APIResponse;
+import com.project.hrm.common.response.APIResponse;
 import com.project.hrm.document.dto.documentAccessesDTO.DocumentAccessesCreateDTO;
 import com.project.hrm.document.dto.documentAccessesDTO.DocumentAccessesDTO;
 import com.project.hrm.document.dto.documentAccessesDTO.DocumentAccessesUpdateDTO;

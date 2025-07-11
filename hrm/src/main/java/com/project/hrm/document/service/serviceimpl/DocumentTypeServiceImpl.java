@@ -7,7 +7,7 @@ import com.project.hrm.document.entity.DocumentTypes;
 import com.project.hrm.document.mapper.DocumentTypeMapper;
 import com.project.hrm.document.repository.DocumentTypesRepository;
 import com.project.hrm.document.service.DocumentTypeService;
-import com.project.hrm.utils.IdGenerator;
+import com.project.hrm.common.utils.IdGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

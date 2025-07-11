@@ -8,7 +8,7 @@ import com.project.hrm.employee.mapper.RewardMapper;
 import com.project.hrm.employee.repository.RewardRepository;
 import com.project.hrm.employee.service.EmployeeService;
 import com.project.hrm.employee.service.RewardService;
-import com.project.hrm.utils.IdGenerator;
+import com.project.hrm.common.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

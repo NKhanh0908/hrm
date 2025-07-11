@@ -1,6 +1,6 @@
 package com.project.hrm.payroll.services.impl;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.dto.attendanceDTO.AttendanceResponseForPayrollDTO;
 import com.project.hrm.employee.dto.dayOffDTO.DayOffResponseForPayrollDTO;
 import com.project.hrm.employee.dto.employeeDTO.EmployeeDTO;

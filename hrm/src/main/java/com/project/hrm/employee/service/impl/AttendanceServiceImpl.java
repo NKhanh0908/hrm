@@ -1,6 +1,6 @@
 package com.project.hrm.employee.service.impl;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.dto.attendanceDTO.*;
 import com.project.hrm.employee.dto.disciplinaryActionDTO.DisciplinaryActionCreateDTO;
 import com.project.hrm.employee.entity.Attendance;
@@ -12,14 +12,14 @@ import com.project.hrm.payroll.entities.PayPeriods;
 import com.project.hrm.employee.enums.AttendanceType;
 import com.project.hrm.systemRegulation.enums.SystemRegulationKey;
 import com.project.hrm.employee.enums.ViolationSeverity;
-import com.project.hrm.exceptions.CustomException;
-import com.project.hrm.exceptions.Error;
+import com.project.hrm.common.exceptions.CustomException;
+import com.project.hrm.common.exceptions.Error;
 import com.project.hrm.employee.mapper.AttendanceMapper;
 import com.project.hrm.payroll.services.RegulationsService;
 import com.project.hrm.employee.repository.AttendanceRepository;
 import com.project.hrm.employee.specification.AttendanceSpecifications;
 import com.project.hrm.systemRegulation.service.SystemRegulationService;
-import com.project.hrm.utils.IdGenerator;
+import com.project.hrm.common.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

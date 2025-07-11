@@ -1,6 +1,6 @@
 package com.project.hrm.payroll.controllers;
 
-import com.project.hrm.dto.APIResponse;
+import com.project.hrm.common.response.APIResponse;
 import com.project.hrm.payroll.dto.payrollsDTO.*;
 import com.project.hrm.payroll.services.PayrollsService;
 import io.swagger.v3.oas.annotations.Operation;

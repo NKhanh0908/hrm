@@ -1,6 +1,7 @@
 package com.project.hrm.training.service.impl;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.auth.service.AccountService;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.service.EmployeeService;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestCreateDTO;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestDTO;
@@ -10,16 +11,15 @@ import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.training.entity.TrainingProgram;
 import com.project.hrm.training.entity.TrainingRequest;
 import com.project.hrm.training.enums.TrainingRequestStatus;
-import com.project.hrm.exceptions.CustomException;
-import com.project.hrm.exceptions.Error;
+import com.project.hrm.common.exceptions.CustomException;
+import com.project.hrm.common.exceptions.Error;
 import com.project.hrm.training.mapper.TrainingRequestMapper;
 import com.project.hrm.training.repository.TrainingRequestRepository;
-import com.project.hrm.services.*;
 import com.project.hrm.training.specification.TrainingRequestSpecification;
 import com.project.hrm.training.service.TrainingEnrollmentService;
 import com.project.hrm.training.service.TrainingProgramService;
 import com.project.hrm.training.service.TrainingRequestService;
-import com.project.hrm.utils.IdGenerator;
+import com.project.hrm.common.utils.IdGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;

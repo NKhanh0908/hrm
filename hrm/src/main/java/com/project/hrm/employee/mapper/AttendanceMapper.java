@@ -1,6 +1,6 @@
 package com.project.hrm.employee.mapper;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.dto.attendanceDTO.AttendanceCreateDTO;
 import com.project.hrm.employee.dto.attendanceDTO.AttendanceDTO;
 import com.project.hrm.employee.entity.Attendance;

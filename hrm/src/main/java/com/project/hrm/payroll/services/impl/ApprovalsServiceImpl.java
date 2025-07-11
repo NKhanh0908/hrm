@@ -1,6 +1,6 @@
 package com.project.hrm.payroll.services.impl;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.payroll.dto.approvalsDTO.ApprovalsCreateDTO;
 import com.project.hrm.payroll.dto.approvalsDTO.ApprovalsDTO;
 import com.project.hrm.payroll.dto.approvalsDTO.ApprovalsFilter;
@@ -12,7 +12,7 @@ import com.project.hrm.payroll.services.ApprovalsService;
 import com.project.hrm.employee.service.EmployeeService;
 import com.project.hrm.payroll.services.PayrollsService;
 import com.project.hrm.payroll.specifications.ApprovalsSpecifications;
-import com.project.hrm.utils.IdGenerator;
+import com.project.hrm.common.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

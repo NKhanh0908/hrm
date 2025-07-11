@@ -1,7 +1,7 @@
 package com.project.hrm.training.controller;
 
-import com.project.hrm.dto.APIResponse;
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.APIResponse;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentCreateDTO;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentDTO;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentFilter;

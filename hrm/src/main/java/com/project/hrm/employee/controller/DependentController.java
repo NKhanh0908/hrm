@@ -1,7 +1,7 @@
 package com.project.hrm.employee.controller;
 
-import com.project.hrm.dto.APIResponse;
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.APIResponse;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.dto.dependentDTO.DependentCreateDTO;
 import com.project.hrm.employee.dto.dependentDTO.DependentDTO;
 import com.project.hrm.employee.dto.dependentDTO.DependentUpdateDTO;

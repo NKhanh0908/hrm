@@ -1,6 +1,6 @@
 package com.project.hrm.training.mapper;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.training.dto.trainingSession.TrainingSessionCreateDTO;
 import com.project.hrm.training.dto.trainingSession.TrainingSessionDTO;
 import com.project.hrm.training.entity.TrainingSession;

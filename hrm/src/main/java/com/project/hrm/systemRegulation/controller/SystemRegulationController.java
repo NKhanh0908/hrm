@@ -1,6 +1,6 @@
 package com.project.hrm.systemRegulation.controller;
 
-import com.project.hrm.dto.APIResponse;
+import com.project.hrm.common.response.APIResponse;
 import com.project.hrm.systemRegulation.dto.systemRegulationDTO.SystemRegulationCreateDTO;
 import com.project.hrm.systemRegulation.dto.systemRegulationDTO.SystemRegulationDTO;
 import com.project.hrm.systemRegulation.dto.systemRegulationDTO.SystemRegulationUpdateDTO;

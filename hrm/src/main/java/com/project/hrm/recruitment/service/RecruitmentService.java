@@ -1,6 +1,6 @@
 package com.project.hrm.recruitment.service;
 
-import com.project.hrm.dto.PageDTO;
+import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentCreateDTO;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentDTO;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentFilter;
