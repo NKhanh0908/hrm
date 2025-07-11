@@ -1,6 +1,7 @@
 package com.project.hrm.entities;
 
 import com.project.hrm.enums.ViolationSeverity;
+import com.project.hrm.payrollManager.entities.Regulations;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -3,11 +3,8 @@ package com.project.hrm.services;
 import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.attendanceDTO.*;
 import com.project.hrm.entities.Attendance;
-import com.project.hrm.entities.Employees;
-import com.project.hrm.entities.PayPeriods;
-import org.springframework.cglib.core.Local;
+import com.project.hrm.payrollManager.entities.PayPeriods;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;

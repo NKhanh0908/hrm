@@ -3,7 +3,7 @@ package com.project.hrm.services;
 import com.project.hrm.dto.PageDTO;
 import com.project.hrm.dto.dayOffDTO.*;
 import com.project.hrm.entities.DayOff;
-import com.project.hrm.entities.PayPeriods;
+import com.project.hrm.payrollManager.entities.PayPeriods;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
