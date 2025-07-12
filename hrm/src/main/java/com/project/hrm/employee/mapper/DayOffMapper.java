@@ -42,7 +42,7 @@ public class DayOffMapper {
                 .startDate(dayOffCreateDTO.getStartDate())
                 .endDate(dayOffCreateDTO.getEndDate())
                 .reason(dayOffCreateDTO.getReason())
-                .status(DayOffStatus.valueOf(dayOffCreateDTO.getStatus()))
+                .status(DayOffStatus.PENDING)
                 .build();
     }
 

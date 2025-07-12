@@ -82,17 +82,18 @@ public class EmployeeMapper {
 
     public Employees employeeCreateToEmployee(EmployeeCreateDTO dto) {
         return Employees.builder()
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
+                .firstName(dto.getFirstName() != null ? dto.getFirstName() : "Unknown")
+                .lastName(dto.getLastName() != null ? dto.getLastName() : "")
                 .status(EmployeeStatus.ACTIVE)
-                .email(dto.getEmail())
-                .phone(dto.getPhone())
-                .gender(dto.getGender())
-                .dateOfBirth(dto.getDateOfBirth())
-                .citizenIdentificationCard(dto.getCitizenIdentificationCard())
-                .address(dto.getAddress())
+                .email(dto.getEmail() != null ? dto.getEmail() : "")
+                .phone(dto.getPhone() != null ? dto.getPhone() : "")
+                .gender(dto.getGender() != null ? dto.getGender() : "OTHER")
+                .dateOfBirth(dto.getDateOfBirth() != null ? dto.getDateOfBirth() : null)
+                .citizenIdentificationCard(dto.getCitizenIdentificationCard() != null ? dto.getCitizenIdentificationCard() : "UNKNOWN")
+                .address(dto.getAddress() != null ? dto.getAddress() : "")
                 .build();
     }
+
 
     public Employees employeeUpdateToEmployee(EmployeeUpdateDTO dto) {
         return Employees.builder()

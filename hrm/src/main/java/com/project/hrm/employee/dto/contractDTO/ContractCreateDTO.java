@@ -1,5 +1,6 @@
 package com.project.hrm.employee.dto.contractDTO;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContractCreateDTO {
+
+    @NotBlank(message = "Title Contract is required")
     private String title;
+
     private LocalDateTime contractSigningDate;
     private LocalDateTime startDate;
     private LocalDateTime endDate;

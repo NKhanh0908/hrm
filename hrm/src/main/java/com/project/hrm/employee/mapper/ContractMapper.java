@@ -36,19 +36,20 @@ public class ContractMapper {
                 .build();
     }
 
-    public Contracts convertCreateDTOToEntity(ContractCreateDTO contractCreateDTO, Employees employees, Role role){
+    public Contracts convertCreateDTOToEntity(ContractCreateDTO contractCreateDTO, Employees employees, Role role) {
         return Contracts.builder()
-                .title(contractCreateDTO.getTitle())
-                .baseSalary(contractCreateDTO.getBaseSalary())
-                .startDate(contractCreateDTO.getStartDate())
-                .endDate(contractCreateDTO.getEndDate())
-                .description(contractCreateDTO.getDescription())
+                .title(contractCreateDTO.getTitle() != null ? contractCreateDTO.getTitle() : "Untitled Contract")
+                .baseSalary(contractCreateDTO.getBaseSalary() != null ? contractCreateDTO.getBaseSalary() : 0.0)
+                .startDate(contractCreateDTO.getStartDate() != null ? contractCreateDTO.getStartDate() : null)
+                .endDate(contractCreateDTO.getEndDate() != null ? contractCreateDTO.getEndDate() : null)
+                .description(contractCreateDTO.getDescription() != null ? contractCreateDTO.getDescription() : "")
                 .contractStatus(ContractStatus.SIGNED)
-                .contractSigningDate(contractCreateDTO.getContractSigningDate())
+                .contractSigningDate(contractCreateDTO.getContractSigningDate() != null ? contractCreateDTO.getContractSigningDate() : null)
                 .employee(employees)
                 .role(role)
                 .build();
     }
+
 
     public List<ContractDTO> convertPageToList(Page<Contracts> contractsPage){
         return  contractsPage.getContent()
