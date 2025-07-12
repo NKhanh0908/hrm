@@ -173,7 +173,6 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
                     TrainingEnrollmentCreateDTO trainingEnrollmentCreateDTO = new TrainingEnrollmentCreateDTO();
                     trainingEnrollmentCreateDTO.setTrainingRequestId(trainingRequest);
                     trainingEnrollmentCreateDTO.setTrainingSessionId(trainingSessionDTO.getTrainingProgramId());
-                    trainingEnrollmentCreateDTO.setStatus("ENROLLED");
 
                     return create(trainingEnrollmentCreateDTO);
                 })

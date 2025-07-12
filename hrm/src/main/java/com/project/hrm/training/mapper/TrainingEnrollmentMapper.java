@@ -18,10 +18,10 @@ public class TrainingEnrollmentMapper {
         return TrainingEnrollment.builder()
                 .enrollmentDate(LocalDateTime.now())
                 .completionDate(null)
-                .attendanceRate(trainingEnrollmentCreateDTO.getAttendanceRate())
-                .testScore(trainingEnrollmentCreateDTO.getTestScore())
-                .feedback(trainingEnrollmentCreateDTO.getFeedback())
-                .status(EnrollmentStatus.valueOf(trainingEnrollmentCreateDTO.getStatus()))
+                .attendanceRate(trainingEnrollmentCreateDTO.getAttendanceRate() != null ? trainingEnrollmentCreateDTO.getAttendanceRate() : 0.0)
+                .testScore(trainingEnrollmentCreateDTO.getTestScore() != null ? trainingEnrollmentCreateDTO.getTestScore() : 0.0)
+                .feedback(trainingEnrollmentCreateDTO.getFeedback() != null ? trainingEnrollmentCreateDTO.getFeedback() : null)
+                .status(EnrollmentStatus.ENROLLED)
                 .build();
     }
 

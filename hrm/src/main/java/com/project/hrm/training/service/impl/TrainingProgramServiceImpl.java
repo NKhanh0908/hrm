@@ -83,9 +83,6 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         if (trainingProgramUpdateDTO.getDescription() != null) {
             program.setDescription(trainingProgramUpdateDTO.getDescription());
         }
-        if (trainingProgramUpdateDTO.getCreateAt() != null) {
-            program.setCreateAt(trainingProgramUpdateDTO.getCreateAt());
-        }
         if (trainingProgramUpdateDTO.getMaterials() != null) {
             program.setMaterials(trainingProgramUpdateDTO.getMaterials());
         }
