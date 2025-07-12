@@ -1,6 +1,9 @@
 package com.project.hrm.auth.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,12 +14,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountCreateDTO {
+
+    @NotBlank(message = "Username must not be blank")
+    @Size(min = 4, max = 50, message = "Username must be between 4 and 50 characters")
     private String username;
+
+    @NotBlank(message = "Password must not be blank")
+    @Size(min = 5, message = "Password must be at least 8 characters")
     private String password;
 
-    @NotNull(message = "Employee id account is required")
+    @NotNull(message = "Employee ID is required")
     private Integer employeeId;
 
-    @NotNull(message = "Role id account is required")
+    @NotNull(message = "Role is required")
+    @Pattern(regexp = "ADMIN|HR|MANAGER|SUPERVISOR|EMPLOYEE", message = "Role must be one of: ADMIN, HR, MANAGER, SUPERVISOR, EMPLOYEE")
     private String role;
 }
