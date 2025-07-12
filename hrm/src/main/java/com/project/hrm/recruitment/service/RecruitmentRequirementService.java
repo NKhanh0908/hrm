@@ -23,6 +23,8 @@ public interface RecruitmentRequirementService {
 
     RecruitmentRequirementsDTO getDTOById(Integer id);
 
+    void generateRecruitment(Integer id);
+
     PageDTO<RecruitmentRequirementsDTO> filterRecruitmentRequirements(RecruitmentRequirementFilter recruitmentRequirementFilter, int page, int size);
 
 }

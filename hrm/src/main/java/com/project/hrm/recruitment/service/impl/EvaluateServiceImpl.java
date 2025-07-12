@@ -109,10 +109,6 @@ public class EvaluateServiceImpl implements EvaluateService {
             evaluate.setFeedback(evaluateUpdateDTO.getFeedback());
         }
 
-        if (evaluateUpdateDTO.getFeedbackAt() != null) {
-            evaluate.setFeedbackAt(evaluateUpdateDTO.getFeedbackAt());
-        }
-
         if (evaluateUpdateDTO.getCandidateId() != null) {
             CandidateProfile candidate = candidateProfileService.getEntityById(evaluateUpdateDTO.getCandidateId());
             evaluate.setCandidateProfile(candidate);

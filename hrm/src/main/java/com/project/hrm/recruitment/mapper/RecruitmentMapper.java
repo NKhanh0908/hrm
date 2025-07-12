@@ -46,11 +46,11 @@ public class RecruitmentMapper {
     public Recruitment convertCreateToEntity(RecruitmentCreateDTO recruitmentCreateDTO,
             RecruitmentRequirements recruitmentRequirements, Employees employees) {
         return Recruitment.builder()
-                .contactPhone(recruitmentCreateDTO.getContactPhone())
-                .email(recruitmentCreateDTO.getEmail())
-                .deadline(recruitmentCreateDTO.getDeadline())
+                .contactPhone(recruitmentCreateDTO.getContactPhone() != null ? recruitmentCreateDTO.getContactPhone() : "")
+                .email(recruitmentCreateDTO.getEmail() != null ? recruitmentCreateDTO.getEmail() : "")
+                .deadline(recruitmentCreateDTO.getDeadline() != null ? recruitmentCreateDTO.getDeadline() : null)
                 .status(RecruitmentStatus.ARCHIVED)
-                .jobDescription(recruitmentCreateDTO.getJobDescription())
+                .jobDescription(recruitmentCreateDTO.getJobDescription() != null ? recruitmentCreateDTO.getJobDescription() : null)
                 .recruitmentRequirements(recruitmentRequirements)
                 .createAt(LocalDateTime.now())
                 .approveBy(employees)

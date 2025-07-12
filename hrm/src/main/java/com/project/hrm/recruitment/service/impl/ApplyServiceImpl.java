@@ -117,10 +117,6 @@ public class ApplyServiceImpl implements ApplyService {
 
         Apply apply = getEntityById(applyUpdateDTO.getId());
 
-        if (applyUpdateDTO.getApplyAt() != null) {
-            apply.setApplyAt(applyUpdateDTO.getApplyAt());
-        }
-
         if (applyUpdateDTO.getStatus() != null) {
             apply.setApplyStatus(ApplyStatus.valueOf(applyUpdateDTO.getStatus()));
         }

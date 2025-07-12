@@ -1,6 +1,7 @@
 package com.project.hrm.recruitment.service.impl;
 
 import com.project.hrm.common.response.PageDTO;
+import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentCreateDTO;
 import com.project.hrm.recruitment.dto.recruitmentRequirementDTO.RecruitmentRequirementFilter;
 import com.project.hrm.recruitment.dto.recruitmentRequirementDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.recruitment.dto.recruitmentRequirementDTO.RecruitmentRequirementsDTO;
@@ -15,11 +16,13 @@ import com.project.hrm.recruitment.repository.RecruitmentRequirementsRepository;
 import com.project.hrm.auth.service.AccountService;
 import com.project.hrm.recruitment.service.RecruitmentRequirementService;
 import com.project.hrm.department.service.RoleService;
+import com.project.hrm.recruitment.service.RecruitmentService;
 import com.project.hrm.recruitment.specification.RecruitmentRequirementsSpecification;
 import com.project.hrm.common.utils.IdGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,14 +32,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class RecruitmentRequirementServiceImpl implements RecruitmentRequirementService {
     private final RecruitmentRequirementsRepository recruitmentRequirementsRepository;
 
     private final AccountService accountService;
     private final RoleService roleService;
+    private final RecruitmentService recruitmentService;
 
     private final RecruitmentRequirementsMapper recruitmentRequirementsMapper;
+
+    public RecruitmentRequirementServiceImpl(
+            RecruitmentRequirementsRepository recruitmentRequirementsRepository,
+            AccountService accountService,
+            RoleService roleService,
+            @Lazy RecruitmentService recruitmentService,
+            RecruitmentRequirementsMapper recruitmentRequirementsMapper
+    ){
+        this.recruitmentRequirementsRepository = recruitmentRequirementsRepository;
+        this.accountService = accountService;
+        this.roleService = roleService;
+        this.recruitmentService = recruitmentService;
+        this.recruitmentRequirementsMapper = recruitmentRequirementsMapper;
+    }
 
     /**
      * Filters recruitment requirements based on the provided filter criteria with pagination support.
@@ -94,6 +111,19 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
         return recruitmentRequirementsMapper
                 .toDTO(getEntityById(id));
+    }
+
+    /**
+     *
+     *
+     * @param id
+     */
+    @Override
+    public void generateRecruitment(Integer id) {
+        RecruitmentCreateDTO recruitmentCreateDTO = new RecruitmentCreateDTO();
+        recruitmentCreateDTO.setRecruitmentRequirementId(id);
+
+        recruitmentService.create(recruitmentCreateDTO);
     }
 
     /**
@@ -155,6 +185,9 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
         if (recruitmentRequirementsUpdateDTO.getStatus() != null) {
             entity.setStatus(RecruitmentRequirementsStatus.valueOf(recruitmentRequirementsUpdateDTO.getStatus()));
+            if(recruitmentRequirementsUpdateDTO.getStatus().equalsIgnoreCase("APPROVED")){
+                generateRecruitment(entity.getId());
+            }
         }
 
         if (recruitmentRequirementsUpdateDTO.getRoleId() != null) {
@@ -167,6 +200,8 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         return recruitmentRequirementsMapper.toDTO(
                 recruitmentRequirementsRepository.save(entity));
     }
+
+
 
     /**
      * Change the status on an existing RecruitmentRequirements.
@@ -192,6 +227,10 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
         }
 
         RecruitmentRequirements entity = getEntityById(id);
+
+        if(entity.getStatus().equals(RecruitmentRequirementsStatus.APPROVED)){
+            generateRecruitment(entity.getId());
+        }
 
         return recruitmentRequirementsMapper.toDTO(entity);
     }

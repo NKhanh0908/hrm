@@ -86,9 +86,6 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         if (dto.getExperience() != null) {
             existing.setExperience(dto.getExperience());
         }
-        if (dto.getCreateProfileAt() != null) {
-            existing.setCreateProfileAt(dto.getCreateProfileAt());
-        }
 
         CandidateProfile updated = candidateProfileRepository.save(existing);
 
