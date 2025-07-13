@@ -1,5 +1,6 @@
 package com.project.hrm.employee.service.impl;
 
+import com.project.hrm.auth.service.AccountService;
 import com.project.hrm.common.redis.RedisKeys;
 import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.common.service.RedisService;
@@ -41,6 +42,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final FileService imageEmployeeService;
     //private final RedisService redisService;
     private final RoleService roleService;
+    private final AccountService accountService;
 
     private final EmployeeMapper employeeMapper;
 
@@ -152,6 +154,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("Find Employee by id: {}", id);
 
         return employeeMapper.toEmployeeDTO(getEntityById(id));
+    }
+
+    /**
+     * Get the currently authenticated employee's information.
+     *
+     * @return the DTO representation of the current logged-in employee
+     */
+    @Override
+    public EmployeeDTO getCurrentEmployee() {
+        return employeeMapper.toEmployeeDTO(accountService.getPrincipal());
     }
 
     /**

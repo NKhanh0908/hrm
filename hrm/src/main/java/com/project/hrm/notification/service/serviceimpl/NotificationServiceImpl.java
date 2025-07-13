@@ -44,19 +44,21 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationDTO> markAsRead(Integer id) {
+    public NotificationDTO markAsRead(Integer id) {
         Notification notification = getEntityById(id);
         notification.setRead(true);
         notificationRepository.save(notification);
+        return notificationMapper.covertEntityToDTO(notification);
     }
 
     @Override
     public List<NotificationDTO> markAllAsRead(Integer recipientId) {
-        List<Notification> notifications = notificationRepository.findAllByRecipientIdAndReadFalse(recipientId);
+        List<Notification> notifications = notificationRepository.findAllByRecipientIdAndIsReadFalse(recipientId);
         for (Notification notification : notifications) {
             notification.setRead(true);
         }
         notificationRepository.saveAll(notifications);
+        return notificationMapper.convertPageToListDTO(notifications);
     }
 
     @Override

@@ -101,6 +101,27 @@ public class EmployeeController {
                                 request.getRequestURI()));
         }
 
+        @GetMapping("/current")
+        @Operation(
+                summary = "Get current employee",
+                description = "Retrieves information of the currently authenticated employee",
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "Current employee retrieved successfully",
+                                content = @Content(schema = @Schema(implementation = EmployeeDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "Unauthorized - not authenticated")
+                }
+        )
+        public ResponseEntity<APIResponse<EmployeeDTO>> getCurrentEmployee(HttpServletRequest request) {
+                EmployeeDTO result = employeeService.getCurrentEmployee();
+                return ResponseEntity.ok(new APIResponse<>(
+                        true,
+                        "Current employee retrieved successfully",
+                        result,
+                        null,
+                        request.getRequestURI()
+                ));
+        }
+
         @GetMapping("/check-exists/{id}")
         @Operation(summary = "Check if employee exists by ID", description = "Checks whether an employee with the specified ID exists", responses = {
                         @ApiResponse(responseCode = "200", description = "Check successful", content = @Content(schema = @Schema(implementation = Boolean.class)))

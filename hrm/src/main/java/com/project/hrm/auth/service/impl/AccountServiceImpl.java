@@ -18,6 +18,7 @@ import com.project.hrm.common.utils.IdGenerator;
 import com.project.hrm.auth.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
@@ -37,7 +37,19 @@ public class AccountServiceImpl implements AccountService {
     private final AccountMapper accountMapper;
 
     private final EmployeeService employeeService;
-    private final RoleService roleService;
+
+    public AccountServiceImpl(PasswordEncoder passwordEncoder,
+                              JwtTokenUtil jwtTokenUtil,
+                              AccountRepository accountRepository,
+                              AccountMapper accountMapper,
+                              @Lazy EmployeeService employeeService) {
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.accountRepository = accountRepository;
+        this.accountMapper = accountMapper;
+        this.employeeService = employeeService;
+
+    }
 
     /**
      * Authenticates a user based on the provided credentials and generates JWT tokens.

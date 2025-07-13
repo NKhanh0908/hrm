@@ -23,6 +23,8 @@ public interface EmployeeService {
 
     EmployeeDTO getDTOById(Integer id);
 
+    EmployeeDTO getCurrentEmployee();
+
     Boolean checkExists(Integer employeeId);
 
     Employees getEmployeeIsActive(Integer employeeId);

@@ -11,7 +11,7 @@ public interface NotificationService {
     NotificationDTO create(NotificationCreateDTO notificationCreateDTO);
     NotificationDTO getDTOById(Integer id);
     Notification getEntityById(Integer id);
-    List<NotificationDTO> markAsRead(Integer id);
+    NotificationDTO markAsRead(Integer id);
     List<NotificationDTO> markAllAsRead(Integer recipientId);
     void delete(Integer id);
     List<NotificationDTO> filter(NotificationFilterDTO notificationFilterDTO, Integer page, Integer size);

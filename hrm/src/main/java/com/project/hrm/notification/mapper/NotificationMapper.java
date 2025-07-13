@@ -5,11 +5,14 @@ import com.project.hrm.notification.dto.NotificationCreateDTO;
 import com.project.hrm.notification.dto.NotificationDTO;
 import com.project.hrm.notification.entity.Notification;
 import com.project.hrm.notification.enums.NotificationType;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+@Component
 public class NotificationMapper {
     public Notification covertCreateDTOToEntity(NotificationCreateDTO notificationCreateDTO) {
         return Notification.builder()

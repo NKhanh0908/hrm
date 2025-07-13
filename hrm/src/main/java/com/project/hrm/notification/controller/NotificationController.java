@@ -105,8 +105,8 @@ public class NotificationController {
                             content = @Content(schema = @Schema(implementation = NotificationDTO.class)))
             }
     )
-    public ResponseEntity<APIResponse<List<NotificationDTO>>> markAsRead(@RequestParam Integer notificationId, HttpServletRequest request) {
-        List<NotificationDTO> result = notificationService.markAsRead(notificationId);
+    public ResponseEntity<APIResponse<NotificationDTO>> markAsRead(@RequestParam Integer notificationId, HttpServletRequest request) {
+        NotificationDTO result = notificationService.markAsRead(notificationId);
         return ResponseEntity.ok(new APIResponse<>(true, "Notification marked as read successfully",result, null, request.getRequestURI()));
     }
 
