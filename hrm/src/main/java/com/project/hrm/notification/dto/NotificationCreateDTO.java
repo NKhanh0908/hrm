@@ -1,5 +1,6 @@
 package com.project.hrm.notification.dto;
 
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.notification.enums.NotificationType;
 import com.project.hrm.notification.enums.SenderType;
 import jakarta.validation.constraints.NotBlank;
@@ -24,22 +25,20 @@ public class NotificationCreateDTO {
     private String message;
 
     @NotNull(message = "Sender ID is required")
-    private Integer senderId;
+    private Integer sender;
 
     @NotNull(message = "Sender type is required")
     private SenderType senderType;
 
     @NotNull(message = "Recipient ID is required")
-    private Long recipientId;
+    private Integer recipient;
 
     @NotNull(message = "Notification type is required")
-    private NotificationType notificationType;
+    private String notificationType;
 
     private String module;
 
-    private Long referenceId;
-
-    private String url;
+    private Integer referenceId;
 
     private String metadata;
 }

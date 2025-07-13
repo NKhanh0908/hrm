@@ -18,16 +18,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Notification {
     @Id
-    private Long id;
+    private Integer id;
     private String title;
     private String message;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "recipient_id", nullable = false)
     private Employees recipient;
 
-    @Column(nullable = false)
-    private Integer senderId;
+    @ManyToOne
+    @JoinColumn(name = "sender_id", nullable = false)
+    private Employees senderId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -42,11 +43,9 @@ public class Notification {
 
     private LocalDateTime createdAt;
 
-    private String url;
-
     private String module;
 
-    private Long referenceId;
+    private Integer referenceId;
 
     @Column(columnDefinition = "json")
     private String metadata;

@@ -2,6 +2,7 @@ package com.project.hrm.notification.enums;
 
 public enum NotificationType {
     REQUEST_DOCUMENT_ACCESS,
+    DOCUMENT_ACCESS_GRANTED,
     NEW_APPLY,
     PAYROLL_APPROVED,
     PERFORMANCE_REVIEW_REMINDER,
@@ -10,5 +11,6 @@ public enum NotificationType {
     EMPLOYEE_CREATED,
     EMPLOYEE_TERMINATED,
     RECRUITMENT_RESULT,
+    DOCUMENT_APPROVAL,
     GENERAL_ANNOUNCEMENT
 }
