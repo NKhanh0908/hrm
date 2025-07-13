@@ -26,10 +26,9 @@ public class EmployeeSpecification {
                 predicates.add(criteriaBuilder.like(root.get("email"), "%" + employeeFilter.getEmail()+ "%" ));
             }
 
-            if(employeeFilter.getStatus() != null && !employeeFilter.getStatus().isEmpty()){
+            if(employeeFilter.getStatus() != null ){
                 try {
-                    EmployeeStatus status = EmployeeStatus.valueOf(employeeFilter.getStatus());
-                    predicates.add(criteriaBuilder.equal(root.get("status"), status));
+                    predicates.add(criteriaBuilder.equal(root.get("status"), employeeFilter.getStatus()));
                 } catch (IllegalArgumentException ex) {
                     throw new CustomException(Error.INVALID_ENUM_VALUE);
                 }

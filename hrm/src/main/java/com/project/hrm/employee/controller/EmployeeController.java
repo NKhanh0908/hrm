@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -123,7 +124,7 @@ public class EmployeeController {
                 }
         )
         public ResponseEntity<APIResponse<PageDTO<EmployeeDTO>>> filter(
-                @ModelAttribute EmployeeFilter employeeFilter,
+                @ParameterObject @ModelAttribute EmployeeFilter employeeFilter,
                 @RequestParam(defaultValue = "0") int page,
                 @RequestParam(defaultValue = "10") int size,
                 HttpServletRequest request) {
