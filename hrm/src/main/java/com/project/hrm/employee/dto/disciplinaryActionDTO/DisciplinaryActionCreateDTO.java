@@ -1,6 +1,7 @@
 package com.project.hrm.employee.dto.disciplinaryActionDTO;
 
 import com.project.hrm.employee.enums.ViolationSeverity;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,11 +15,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DisciplinaryActionCreateDTO {
+    @NotBlank(message = "Description cannot be blank")
+    @Size(max = 500, message = "Description cannot exceed 500 characters")
     private String description;
+
+    @NotNull(message = "Date cannot be null")
+    @PastOrPresent(message = "Date must be today or in the past")
     private LocalDateTime date;
+
+    @NotNull(message = "Employee ID cannot be null")
+    @Positive(message = "Employee ID must be a positive number")
     private Integer employeeId;
+
+    @Positive(message = "Regulation ID must be a positive number")
     private Integer regulationId;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "Penalty amount cannot be negative")
     private BigDecimal penaltyAmount;
+
     private Boolean resolved = false;
+
+    @NotNull(message = "Severity cannot be null")
     private ViolationSeverity severity;
 }

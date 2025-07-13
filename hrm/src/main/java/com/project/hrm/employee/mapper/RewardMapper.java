@@ -22,6 +22,9 @@ public class RewardMapper {
     }
 
     public RewardDTO toDTO(Reward reward) {
+        if (reward == null) {
+            throw new IllegalArgumentException("Reward entity cannot be null");
+        }
         return RewardDTO.builder()
                 .id(reward.getId())
                 .title(reward.getTitle())
@@ -32,14 +35,14 @@ public class RewardMapper {
                 .percentage(reward.getPercentage())
                 .rewardDate(reward.getRewardDate())
                 .appliedToPayroll(reward.getAppliedToPayroll())
-                .employeeId(reward.getEmployee().getId())
+                .employeeId(reward.getEmployee() != null ? reward.getEmployee().getId() : null)
                 .build();
     }
 
     public Reward toEntityFromCreateDTO(RewardCreateDTO rewardCreateDTO) {
         return Reward.builder()
                 .title(rewardCreateDTO.getTitle())
-                .reason(rewardCreateDTO.getReason())
+                .reason(rewardCreateDTO.getReason() != null ? rewardCreateDTO.getReason() : "Not reason")
                 .rewardDate(rewardCreateDTO.getRewardDate())
                 .isPercentage(rewardCreateDTO.getIsPercentage())
                 .percentage(rewardCreateDTO.getPercentage())

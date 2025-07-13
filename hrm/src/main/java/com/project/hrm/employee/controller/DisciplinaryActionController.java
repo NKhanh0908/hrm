@@ -14,11 +14,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,12 +47,16 @@ public class DisciplinaryActionController {
                     content = @Content(schema = @Schema(implementation = DisciplinaryActionCreateDTO.class))
             ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Disciplinary action created successfully", content = @Content(schema = @Schema(implementation = DisciplinaryActionDTO.class)))
+                    @ApiResponse(responseCode = "200", description = "Disciplinary action created successfully", content = @Content(schema = @Schema(implementation = DisciplinaryActionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input data")
             }
     )
-    public ResponseEntity<APIResponse<DisciplinaryActionDTO>> create(@Valid @RequestBody DisciplinaryActionCreateDTO dto, HttpServletRequest request) {
-        DisciplinaryActionDTO result = disciplinaryActionService.createDisciplinaryAction(dto);
-        return ResponseEntity.ok(new APIResponse<>(true, "Create disciplinary action successfully", result, null, request.getRequestURI()));
+    public ResponseEntity<APIResponse<DisciplinaryActionDTO>> create(@Valid @RequestBody DisciplinaryActionCreateDTO dto, BindingResult result, HttpServletRequest request) {
+        if (result.hasErrors()) {
+            return handleValidationErrors(result, request);
+        }
+        DisciplinaryActionDTO created = disciplinaryActionService.createDisciplinaryAction(dto);
+        return ResponseEntity.ok(new APIResponse<>(true, "Disciplinary action created successfully", created, null, request.getRequestURI()));
     }
 
     @PutMapping
@@ -58,12 +69,16 @@ public class DisciplinaryActionController {
                     content = @Content(schema = @Schema(implementation = DisciplinaryActionUpdateDTO.class))
             ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Disciplinary action updated successfully", content = @Content(schema = @Schema(implementation = DisciplinaryActionDTO.class)))
+                    @ApiResponse(responseCode = "200", description = "Disciplinary action updated successfully", content = @Content(schema = @Schema(implementation = DisciplinaryActionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input data")
             }
     )
-    public ResponseEntity<APIResponse<DisciplinaryActionDTO>> update(@Valid @RequestBody DisciplinaryActionUpdateDTO dto, HttpServletRequest request) {
-        DisciplinaryActionDTO result = disciplinaryActionService.updateDisciplinaryAction(dto);
-        return ResponseEntity.ok(new APIResponse<>(true, "Update disciplinary action successfully", result, null, request.getRequestURI()));
+    public ResponseEntity<APIResponse<DisciplinaryActionDTO>> update(@Valid @RequestBody DisciplinaryActionUpdateDTO dto, BindingResult result, HttpServletRequest request) {
+        if (result.hasErrors()) {
+            return handleValidationErrors(result, request);
+        }
+        DisciplinaryActionDTO updated = disciplinaryActionService.updateDisciplinaryAction(dto);
+        return ResponseEntity.ok(new APIResponse<>(true, "Disciplinary action updated successfully", updated, null, request.getRequestURI()));
     }
 
     @GetMapping("/{id}")
@@ -71,12 +86,13 @@ public class DisciplinaryActionController {
             summary = "Get Disciplinary Action by ID",
             parameters = @Parameter(name = "id", description = "Disciplinary Action ID", required = true),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Disciplinary action found", content = @Content(schema = @Schema(implementation = DisciplinaryActionDTO.class)))
+                    @ApiResponse(responseCode = "200", description = "Disciplinary action found", content = @Content(schema = @Schema(implementation = DisciplinaryActionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid ID")
             }
     )
-    public ResponseEntity<APIResponse<DisciplinaryActionDTO>> getById(@PathVariable Integer id, HttpServletRequest request) {
+    public ResponseEntity<APIResponse<DisciplinaryActionDTO>> getById(@PathVariable @Positive(message = "Disciplinary action ID must be a positive number") Integer id, HttpServletRequest request) {
         DisciplinaryActionDTO result = disciplinaryActionService.getDTO(id);
-        return ResponseEntity.ok(new APIResponse<>(true, "Get disciplinary action successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(new APIResponse<>(true, "Disciplinary action retrieved successfully", result, null, request.getRequestURI()));
     }
 
     @DeleteMapping("/{id}")
@@ -84,12 +100,13 @@ public class DisciplinaryActionController {
             summary = "Delete Disciplinary Action by ID",
             parameters = @Parameter(name = "id", description = "Disciplinary Action ID", required = true),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Disciplinary action deleted successfully")
+                    @ApiResponse(responseCode = "200", description = "Disciplinary action deleted successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid ID")
             }
     )
-    public ResponseEntity<APIResponse<Void>> delete(@PathVariable Integer id, HttpServletRequest request) {
+    public ResponseEntity<APIResponse<Void>> delete(@PathVariable @Positive(message = "Disciplinary action ID must be a positive number") Integer id, HttpServletRequest request) {
         disciplinaryActionService.deleteDisciplinaryAction(id);
-        return ResponseEntity.ok(new APIResponse<>(true, "Delete disciplinary action successfully", null, null, request.getRequestURI()));
+        return ResponseEntity.ok(new APIResponse<>(true, "Disciplinary action deleted successfully", null, null, request.getRequestURI()));
     }
 
     @GetMapping("/employee/{employeeId}")
@@ -98,21 +115,34 @@ public class DisciplinaryActionController {
             description = "Retrieve disciplinary actions for an employee within a specific date range",
             parameters = {
                     @Parameter(name = "employeeId", description = "Employee ID", required = true),
-                    @Parameter(name = "startDate", description = "Start date of the range", required = true),
-                    @Parameter(name = "endDate", description = "End date of the range", required = true)
+                    @Parameter(name = "startDate", description = "Start date of the range (ISO format: yyyy-MM-dd'T'HH:mm:ss[.SSS...])", required = true),
+                    @Parameter(name = "endDate", description = "End date of the range (ISO format: yyyy-MM-dd'T'HH:mm:ss[.SSS...])", required = true)
             },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Disciplinary actions found for employee", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DisciplinaryActionDTO.class))))
+                    @ApiResponse(responseCode = "200", description = "Disciplinary actions found for employee", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DisciplinaryActionDTO.class)))),
+                    @ApiResponse(responseCode = "400", description = "Invalid employee ID or date range")
             }
     )
     public ResponseEntity<APIResponse<List<DisciplinaryActionDTO>>> getDisciplinaryActionByEmployeeIdAndDate(
-            @PathVariable Integer employeeId,
-            @RequestParam String startDate,
-            @RequestParam String endDate,
+            @PathVariable @Positive(message = "Employee ID must be a positive number") Integer employeeId,
+            @RequestParam @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?", message = "Start date must be in ISO format (yyyy-MM-dd'T'HH:mm:ss[.SSS...])") String startDate,
+            @RequestParam @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?", message = "End date must be in ISO format (yyyy-MM-dd'T'HH:mm:ss[.SSS...])") String endDate,
             HttpServletRequest request) {
-        List<DisciplinaryActionDTO> result = disciplinaryActionService.getDisciplinaryActionByEmployeeIdAndDate(
-                employeeId, LocalDateTime.parse(startDate), LocalDateTime.parse(endDate));
-        return ResponseEntity.ok(new APIResponse<>(true, "Get disciplinary actions by employee successfully", result, null, request.getRequestURI()));
+        try {
+            LocalDateTime start = LocalDateTime.parse(startDate);
+            LocalDateTime end = LocalDateTime.parse(endDate);
+            if (end.isBefore(start)) {
+                List<String> errors = new ArrayList<>();
+                errors.add("End date must be after or equal to start date");
+                return ResponseEntity.badRequest().body(new APIResponse<>(false, "Validation failed", null, errors, request.getRequestURI()));
+            }
+            List<DisciplinaryActionDTO> result = disciplinaryActionService.getDisciplinaryActionByEmployeeIdAndDate(employeeId, start, end);
+            return ResponseEntity.ok(new APIResponse<>(true, "Disciplinary actions retrieved successfully", result, null, request.getRequestURI()));
+        } catch (DateTimeParseException e) {
+            List<String> errors = new ArrayList<>();
+            errors.add("Invalid date format: " + e.getMessage());
+            return ResponseEntity.badRequest().body(new APIResponse<>(false, "Validation failed", null, errors, request.getRequestURI()));
+        }
     }
 
     @PostMapping("/batch")
@@ -125,20 +155,41 @@ public class DisciplinaryActionController {
                     content = @Content(schema = @Schema(implementation = List.class))
             ),
             parameters = {
-                    @Parameter(name = "startDate", description = "Start date of the range", required = true),
-                    @Parameter(name = "endDate", description = "End date of the range", required = true)
+                    @Parameter(name = "startDate", description = "Start date of the range (ISO format: yyyy-MM-dd'T'HH:mm:ss[.SSS...])", required = true),
+                    @Parameter(name = "endDate", description = "End date of the range (ISO format: yyyy-MM-dd'T'HH:mm:ss[.SSS...])", required = true)
             },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Batch disciplinary actions retrieved", content = @Content(schema = @Schema(implementation = Map.class)))
+                    @ApiResponse(responseCode = "200", description = "Batch disciplinary actions retrieved", content = @Content(schema = @Schema(implementation = Map.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid employee IDs or date range")
             }
     )
     public ResponseEntity<APIResponse<Map<Integer, List<DisciplinaryActionDTO>>>> getBatchDisciplinaryActions(
-            @RequestBody List<Integer> employeeIds,
-            @RequestParam String startDate,
-            @RequestParam String endDate,
+            @RequestBody @NotEmpty(message = "Employee IDs list cannot be empty") List<@Positive(message = "Employee ID must be a positive number") Integer> employeeIds,
+            @RequestParam @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?", message = "Start date must be in ISO format (yyyy-MM-dd'T'HH:mm:ss[.SSS...])") String startDate,
+            @RequestParam @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?", message = "End date must be in ISO format (yyyy-MM-dd'T'HH:mm:ss[.SSS...])") String endDate,
             HttpServletRequest request) {
-        Map<Integer, List<DisciplinaryActionDTO>> result = disciplinaryActionService.getBatchDisciplinaryActions(
-                employeeIds, LocalDateTime.parse(startDate), LocalDateTime.parse(endDate));
-        return ResponseEntity.ok(new APIResponse<>(true, "Get batch disciplinary actions successfully", result, null, request.getRequestURI()));
+        try {
+            LocalDateTime start = LocalDateTime.parse(startDate);
+            LocalDateTime end = LocalDateTime.parse(endDate);
+            if (end.isBefore(start)) {
+                List<String> errors = new ArrayList<>();
+                errors.add("End date must be after or equal to start date");
+                return ResponseEntity.badRequest().body(new APIResponse<>(false, "Validation failed", null, errors, request.getRequestURI()));
+            }
+            Map<Integer, List<DisciplinaryActionDTO>> result = disciplinaryActionService.getBatchDisciplinaryActions(employeeIds, start, end);
+            return ResponseEntity.ok(new APIResponse<>(true, "Batch disciplinary actions retrieved successfully", result, null, request.getRequestURI()));
+        } catch (DateTimeParseException e) {
+            List<String> errors = new ArrayList<>();
+            errors.add("Invalid date format: " + e.getMessage());
+            return ResponseEntity.badRequest().body(new APIResponse<>(false, "Validation failed", null, errors, request.getRequestURI()));
+        }
+    }
+
+    private <T> ResponseEntity<APIResponse<T>> handleValidationErrors(BindingResult result, HttpServletRequest request) {
+        List<String> errors = new ArrayList<>();
+        for (FieldError error : result.getFieldErrors()) {
+            errors.add(error.getField());
+        }
+        return ResponseEntity.badRequest().body(new APIResponse<>(false, "Validation failed", null, errors, request.getRequestURI()));
     }
 }

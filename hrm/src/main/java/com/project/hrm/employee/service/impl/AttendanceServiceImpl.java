@@ -235,7 +235,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         // Create attendance
         Attendance attendance = new Attendance();
-        attendance.setId(IdGenerator.getGenerationId());
         attendance.setEmployee(employee);
         attendance.setCheckIn(now);
         attendance.setShiftType(AttendanceType.REGULAR);
