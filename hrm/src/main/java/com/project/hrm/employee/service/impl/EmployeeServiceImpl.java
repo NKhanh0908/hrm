@@ -27,6 +27,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         PageDTO<EmployeeDTO> result = employeeMapper.toEmployeePageDTO(employeeRepository.findAll(spec, pageable));
 
-        redisService.set(cacheKey, result);
+        redisService.set(cacheKey, result, Duration.ofMinutes(10));
 
         return result;
     }
