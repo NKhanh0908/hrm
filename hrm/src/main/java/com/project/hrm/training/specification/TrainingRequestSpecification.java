@@ -16,9 +16,9 @@ public class TrainingRequestSpecification {
                         criteriaBuilder.equal(root.get("requestDate"), filter.getRequestDate()));
             }
 
-            if (filter.getStatus() != null && !filter.getStatus().isEmpty()) {
+            if (filter.getStatus() != null) {
                 predicate = criteriaBuilder.and(predicate,
-                        criteriaBuilder.equal(root.get("status"), TrainingRequestStatus.valueOf(filter.getStatus())));
+                        criteriaBuilder.equal(root.get("status"), filter.getStatus()));
             }
 
             if (filter.getTargetEmployeeId() != null) {
