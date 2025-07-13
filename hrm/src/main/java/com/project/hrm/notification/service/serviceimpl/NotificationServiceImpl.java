@@ -1,6 +1,8 @@
 package com.project.hrm.notification.service.serviceimpl;
 
+import com.project.hrm.auth.service.AccountService;
 import com.project.hrm.common.utils.IdGenerator;
+import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.notification.dto.NotificationCreateDTO;
 import com.project.hrm.notification.dto.NotificationDTO;
 import com.project.hrm.notification.dto.NotificationFilterDTO;
@@ -23,6 +25,7 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
+    private final AccountService accountService;
 
     @Transactional
     @Override
@@ -72,5 +75,12 @@ public class NotificationServiceImpl implements NotificationService {
         Pageable pageable = PageRequest.of(page, size);
         return notificationMapper.convertPageToListDTO(
                 notificationRepository.findAll(specification, pageable).getContent());
+    }
+
+    @Override
+    public List<NotificationDTO> getNotificationsForCurrentEmployee() {
+        Employees currentEmployee = accountService.getPrincipal();
+        List<Notification> notifications = notificationRepository.findByRecipientId(currentEmployee.getId());
+        return notificationMapper.convertPageToListDTO(notifications);
     }
 }

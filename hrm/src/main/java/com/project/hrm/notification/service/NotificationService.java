@@ -15,4 +15,5 @@ public interface NotificationService {
     List<NotificationDTO> markAllAsRead(Integer recipientId);
     void delete(Integer id);
     List<NotificationDTO> filter(NotificationFilterDTO notificationFilterDTO, Integer page, Integer size);
+    List<NotificationDTO> getNotificationsForCurrentEmployee();
 }

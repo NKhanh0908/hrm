@@ -144,4 +144,20 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(new APIResponse<>(true, "Notification deleted successfully", null, null, request.getRequestURI()));
     }
+
+    @GetMapping("/notifications-current-employee")
+    @Operation(
+            summary = "Get notifications for current employee",
+            description = "Retrieve all notifications for the currently authenticated employee",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Notifications retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = NotificationDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "No notifications found for the current employee",
+                            content = @Content(schema = @Schema(implementation = NotificationDTO.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<List<NotificationDTO>>> getNotificationsForCurrentEmployee(HttpServletRequest request) {
+        List<NotificationDTO> result = notificationService.getNotificationsForCurrentEmployee();
+        return ResponseEntity.ok(new APIResponse<>(true, "Notifications retrieved successfully", result, null, request.getRequestURI()));
+    }
 }
