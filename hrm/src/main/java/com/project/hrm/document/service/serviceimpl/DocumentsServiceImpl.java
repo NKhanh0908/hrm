@@ -43,6 +43,7 @@ public class DocumentsServiceImpl implements DocumentsService {
             documents.setFileSize((Long) fileDetails.get("fileSize"));
         }
 
+
         documents.setUploadedBy(accountService.getPrincipal());
         documents.setDocumentTypes(documentTypeService.getEntityById(documentsCreateDTO.getDocumentTypeId()));
 

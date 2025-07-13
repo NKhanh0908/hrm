@@ -18,6 +18,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -159,5 +161,11 @@ public class NotificationController {
     public ResponseEntity<APIResponse<List<NotificationDTO>>> getNotificationsForCurrentEmployee(HttpServletRequest request) {
         List<NotificationDTO> result = notificationService.getNotificationsForCurrentEmployee();
         return ResponseEntity.ok(new APIResponse<>(true, "Notifications retrieved successfully", result, null, request.getRequestURI()));
+    }
+
+    @MessageMapping("/send-notification")
+    @SendTo("/topic/notifications")
+    public NotificationDTO sendNotification(NotificationCreateDTO notificationCreateDTO) {
+        return notificationService.create(notificationCreateDTO);
     }
 }
