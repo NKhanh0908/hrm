@@ -15,11 +15,15 @@ import java.util.stream.Collectors;
 public class RegulationsMapper {
     //Convert entities to DTOs
     public RegulationsDTO toRegulationsDTO(Regulations regulations) {
+        if (regulations == null) {
+            throw new IllegalArgumentException("Regulations entity cannot be null");
+        }
         return RegulationsDTO.builder()
                 .id(regulations.getId())
                 .name(regulations.getName())
-                .amount(regulations.getAmount())
-                .percentage(regulations.getPercentage())
+                .type(regulations.getType())
+                .amount(regulations.getAmount() != null ? regulations.getAmount() : null)
+                .percentage(regulations.getPercentage() != null ? regulations.getPercentage() : null)
                 .applicableSalary(regulations.getApplicableSalary())
                 .effectiveDate(regulations.getEffectiveDate())
                 .build();
@@ -30,8 +34,9 @@ public class RegulationsMapper {
         return Regulations.builder()
                 .id(dto.getId())
                 .name(dto.getName())
-                .amount(dto.getAmount())
-                .percentage(dto.getPercentage())
+                .type(dto.getType())
+                .amount(dto.getAmount() != null ? dto.getAmount() : null)
+                .percentage(dto.getPercentage() != null ? dto.getPercentage() : null)
                 .applicableSalary(dto.getApplicableSalary())
                 .effectiveDate(dto.getEffectiveDate())
                 .build();
@@ -42,8 +47,9 @@ public class RegulationsMapper {
         return Regulations.builder()
                 .regulationKey(createDTO.getRegulationKey())
                 .name(createDTO.getName())
-                .amount(createDTO.getAmount())
-                .percentage(createDTO.getPercentage())
+                .type(createDTO.getType())
+                .amount(createDTO.getAmount() != null ? createDTO.getAmount() : null)
+                .percentage(createDTO.getPercentage() != null ? createDTO.getPercentage() : null)
                 .applicableSalary(createDTO.getApplicableSalary())
                 .effectiveDate(createDTO.getEffectiveDate())
                 .build();
