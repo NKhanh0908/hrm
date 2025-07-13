@@ -1,5 +1,6 @@
 package com.project.hrm.employee.dto.contractDTO;
 
+import com.project.hrm.employee.enums.ContractStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,5 @@ public class ContractFilter {
     private LocalDateTime contractSigningDateTo;
     private LocalDateTime periodStart;
     private LocalDateTime periodEnd;
-    private String status;
+    private ContractStatus status;
 }

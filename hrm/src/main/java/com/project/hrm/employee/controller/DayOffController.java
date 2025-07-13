@@ -6,6 +6,7 @@ import com.project.hrm.employee.dto.dayOffDTO.*;
 import com.project.hrm.payroll.entities.PayPeriods;
 import com.project.hrm.employee.service.DayOffService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -79,17 +80,34 @@ public class DayOffController {
         return ResponseEntity.ok(new APIResponse<>(true, "Get day offs by employee successfully", result, null, request.getRequestURI()));
     }
 
-    @PostMapping("/filter")
-    @Operation(summary = "Filter Day Offs", responses = {
-            @ApiResponse(responseCode = "200", description = "Filtered", content = @Content(schema = @Schema(implementation = PageDTO.class)))
-    })
-    public ResponseEntity<APIResponse<PageDTO<DayOffDTO>>> filter(@RequestBody DayOffFilter filter,
-                                                                  @RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "10") int size,
-                                                                  HttpServletRequest request) {
+    @GetMapping("/filter")
+    @Operation(
+            summary = "Filter Day Offs",
+            description = "Filter day off records by attributes like employee, date range, reason, status, etc.",
+            parameters = {
+                    @Parameter(name = "page", description = "Page number", example = "0"),
+                    @Parameter(name = "size", description = "Page size", example = "10")
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered",
+                            content = @Content(schema = @Schema(implementation = PageDTO.class))
+                    )
+            }
+    )
+    public ResponseEntity<APIResponse<PageDTO<DayOffDTO>>> filter(
+            @ModelAttribute DayOffFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
         PageDTO<DayOffDTO> result = dayOffService.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter day offs successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filter day offs successfully", result, null, request.getRequestURI())
+        );
     }
+
 
     @PostMapping("/filter-dynamic")
     @Operation(summary = "Dynamic Filter Day Offs", responses = {

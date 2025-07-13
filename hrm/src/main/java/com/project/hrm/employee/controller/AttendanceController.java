@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,48 +94,52 @@ public class AttendanceController {
         return ResponseEntity.ok(new APIResponse<>(true, "Delete attendance successfully", null, null, request.getRequestURI()));
     }
 
-    @PostMapping("/filter")
+    @GetMapping("/filter")
     @Operation(
             summary = "Filter Attendances",
             description = "Filter attendance records by attributes",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    description = "Filter criteria",
-                    content = @Content(schema = @Schema(implementation = AttendanceFilter.class))
-            ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered attendances",
-                            content = @Content(schema = @Schema(implementation = PageDTO.class)))
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered attendances",
+                            content = @Content(schema = @Schema(implementation = PageDTO.class))
+                    )
             }
     )
-    public ResponseEntity<APIResponse<PageDTO<AttendanceDTO>>> filter(@RequestBody AttendanceFilter filter,
-                                                                      @RequestParam(defaultValue = "0") int page,
-                                                                      @RequestParam(defaultValue = "10") int size,
-                                                                      HttpServletRequest request) {
+    public ResponseEntity<APIResponse<PageDTO<AttendanceDTO>>> filter(
+            @ParameterObject @ModelAttribute AttendanceFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
         PageDTO<AttendanceDTO> result = attendanceService.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter attendance successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filter attendance successfully", result, null, request.getRequestURI())
+        );
     }
 
-    @PostMapping("/filter-range")
+    @GetMapping("/filter-range")
     @Operation(
             summary = "Filter Attendances with Range",
             description = "Filter attendances by check-in/out time or date range",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    description = "Range filter criteria",
-                    content = @Content(schema = @Schema(implementation = AttendanceFilterWithRange.class))
-            ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered attendances with range",
-                            content = @Content(schema = @Schema(implementation = PageDTO.class)))
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered attendances with range",
+                            content = @Content(schema = @Schema(implementation = PageDTO.class))
+                    )
             }
     )
-    public ResponseEntity<APIResponse<PageDTO<AttendanceDTO>>> filterRange(@RequestBody AttendanceFilterWithRange filterWithRange,
-                                                                           @RequestParam(defaultValue = "0") int page,
-                                                                           @RequestParam(defaultValue = "10") int size,
-                                                                           HttpServletRequest request) {
+    public ResponseEntity<APIResponse<PageDTO<AttendanceDTO>>> filterRange(
+            @ParameterObject @ModelAttribute AttendanceFilterWithRange filterWithRange,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
         PageDTO<AttendanceDTO> result = attendanceService.filterWithRange(filterWithRange, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter attendance with range successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filter attendance with range successfully", result, null, request.getRequestURI())
+        );
     }
 
     @PostMapping("/check-in")

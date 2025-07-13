@@ -40,7 +40,7 @@ public class ContractSpecification {
                 );
             }
 
-            if(filter.getStatus() != null && !filter.getStatus().isEmpty()){
+            if(filter.getStatus() != null){
                 predicates.add(cb.like(
                         (root.get("contract_status")),
                         "%" + filter.getStatus() + "%"

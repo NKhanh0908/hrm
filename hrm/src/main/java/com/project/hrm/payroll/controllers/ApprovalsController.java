@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -98,25 +99,28 @@ public class ApprovalsController {
         return ResponseEntity.ok(new APIResponse<>(true, "Delete Approval successfully", null, null, request.getRequestURI()));
     }
 
-    @PostMapping("/filter")
+    @GetMapping("/filter")
     @Operation(
             summary = "Filter approvals",
             description = "Filter approvals by various conditions",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Approval filter conditions",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = ApprovalsFilter.class))
-            ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered approvals list", content = @Content(schema = @Schema(implementation = PageDTO.class)))
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered approvals list",
+                            content = @Content(schema = @Schema(implementation = PageDTO.class))
+                    )
             }
     )
-    public ResponseEntity<APIResponse<PageDTO<ApprovalsDTO>>> filter(@RequestBody ApprovalsFilter filter,
-                                                                  @RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "10") int size,
-                                                                  HttpServletRequest request) {
+    public ResponseEntity<APIResponse<PageDTO<ApprovalsDTO>>> filter(
+            @ParameterObject @ModelAttribute ApprovalsFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
         PageDTO<ApprovalsDTO> result = approvalsService.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter Approvals successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filter Approvals successfully", result, null, request.getRequestURI())
+        );
     }
 
     @GetMapping("/filter-by-date")

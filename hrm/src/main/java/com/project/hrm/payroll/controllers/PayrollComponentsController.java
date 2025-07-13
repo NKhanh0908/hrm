@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -96,54 +97,52 @@ public class PayrollComponentsController {
         return ResponseEntity.ok(new APIResponse<>(true, "Delete payroll component successfully", null, null, request.getRequestURI()));
     }
 
-    @PostMapping("/filter")
+    @GetMapping("/filter")
     @Operation(
             summary = "Filter Payroll Components",
             description = "Filter payroll component records by attributes",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    description = "Filter criteria",
-                    content = @Content(schema = @Schema(implementation = PayrollComponentsFilter.class))
-            ),
-            parameters = {
-                    @Parameter(name = "page", description = "Page number"),
-                    @Parameter(name = "size", description = "Page size")
-            },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered payroll components", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PayrollComponentsDTO.class))))
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered payroll components",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = PayrollComponentsDTO.class)))
+                    )
             }
     )
-    public ResponseEntity<APIResponse<List<PayrollComponentsDTO>>> filter(@RequestBody PayrollComponentsFilter filter,
-                                                                          @RequestParam(defaultValue = "0") int page,
-                                                                          @RequestParam(defaultValue = "10") int size,
-                                                                          HttpServletRequest request) {
+    public ResponseEntity<APIResponse<List<PayrollComponentsDTO>>> filter(
+            @ParameterObject @ModelAttribute PayrollComponentsFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
         List<PayrollComponentsDTO> result = payrollComponentsService.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter payroll components successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filter payroll components successfully", result, null, request.getRequestURI())
+        );
     }
 
-    @PostMapping("/filter-range")
+    @GetMapping("/filter-range")
     @Operation(
             summary = "Filter Payroll Components with Range",
             description = "Filter payroll component records by range of attributes",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    description = "Filter criteria with ranges",
-                    content = @Content(schema = @Schema(implementation = PayrollComponentsFilterWithRange.class))
-            ),
-            parameters = {
-                    @Parameter(name = "page", description = "Page number"),
-                    @Parameter(name = "size", description = "Page size")
-            },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered payroll components with range", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PayrollComponentsDTO.class))))
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered payroll components with range",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = PayrollComponentsDTO.class)))
+                    )
             }
     )
-    public ResponseEntity<APIResponse<List<PayrollComponentsDTO>>> filterRange(@RequestBody PayrollComponentsFilterWithRange filterWithRange,
-                                                                               @RequestParam(defaultValue = "0") int page,
-                                                                               @RequestParam(defaultValue = "10") int size,
-                                                                               HttpServletRequest request) {
+    public ResponseEntity<APIResponse<List<PayrollComponentsDTO>>> filterRange(
+            @ParameterObject @ModelAttribute PayrollComponentsFilterWithRange filterWithRange,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
         List<PayrollComponentsDTO> result = payrollComponentsService.filterWithRange(filterWithRange, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter payroll components with range successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filter payroll components with range successfully", result, null, request.getRequestURI())
+        );
     }
 
     @GetMapping("/payroll/{payrollId}")

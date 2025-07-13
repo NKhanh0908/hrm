@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,29 +96,28 @@ public class PayPeriodsController {
         return ResponseEntity.ok(new APIResponse<>(true, "Delete pay period successfully", null, null, request.getRequestURI()));
     }
 
-    @PostMapping("/filter")
+    @GetMapping("/filter")
     @Operation(
             summary = "Filter Pay Periods",
             description = "Filter pay period records by attributes",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    description = "Filter criteria",
-                    content = @Content(schema = @Schema(implementation = PayPeriodsFilter.class))
-            ),
-            parameters = {
-                    @Parameter(name = "page", description = "Page number"),
-                    @Parameter(name = "size", description = "Page size")
-            },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered pay periods", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PayPeriodsDTO.class))))
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered pay periods",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = PayPeriodsDTO.class)))
+                    )
             }
     )
-    public ResponseEntity<APIResponse<List<PayPeriodsDTO>>> filter(@RequestBody PayPeriodsFilter filter,
-                                                                   @RequestParam(defaultValue = "0") int page,
-                                                                   @RequestParam(defaultValue = "10") int size,
-                                                                   HttpServletRequest request) {
+    public ResponseEntity<APIResponse<List<PayPeriodsDTO>>> filter(
+            @ParameterObject @ModelAttribute PayPeriodsFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
         List<PayPeriodsDTO> result = payPeriodsService.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter pay periods successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filter pay periods successfully", result, null, request.getRequestURI())
+        );
     }
 
     @GetMapping("/by-date")

@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -96,29 +97,28 @@ public class RegulationsController {
         return ResponseEntity.ok(new APIResponse<>(true, "Delete regulation successfully", null, null, request.getRequestURI()));
     }
 
-    @PostMapping("/filter")
+    @GetMapping("/filter")
     @Operation(
             summary = "Filter Regulations",
             description = "Filter regulation records by attributes",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    description = "Filter criteria",
-                    content = @Content(schema = @Schema(implementation = RegulationsFilter.class))
-            ),
-            parameters = {
-                    @Parameter(name = "page", description = "Page number"),
-                    @Parameter(name = "size", description = "Page size")
-            },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered regulations", content = @Content(array = @ArraySchema(schema = @Schema(implementation = RegulationsDTO.class))))
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered regulations",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = RegulationsDTO.class)))
+                    )
             }
     )
-    public ResponseEntity<APIResponse<List<RegulationsDTO>>> filter(@RequestBody RegulationsFilter filter,
-                                                                    @RequestParam(defaultValue = "0") int page,
-                                                                    @RequestParam(defaultValue = "10") int size,
-                                                                    HttpServletRequest request) {
+    public ResponseEntity<APIResponse<List<RegulationsDTO>>> filter(
+            @ParameterObject @ModelAttribute RegulationsFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
         List<RegulationsDTO> result = regulationsService.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter regulations successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filter regulations successfully", result, null, request.getRequestURI())
+        );
     }
 
     @GetMapping("/by-key")
