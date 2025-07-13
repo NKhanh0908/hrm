@@ -140,3 +140,16 @@ BEGIN
     WHERE r.departments_id = dep_id
     LIMIT limit_size OFFSET offset_val;
 END;
+
+CREATE TRIGGER trg_update_active_contract
+    AFTER UPDATE ON contracts
+    FOR EACH ROW
+BEGIN
+    IF NOT (OLD.contract_status <=> NEW.contract_status) THEN
+        IF (NEW.contract_status = 'ACTIVE') THEN
+            UPDATE employees
+                set role_id = NEW.role_id
+            where id = NEW.employee_id;
+        end if;
+    END IF;
+END$$
