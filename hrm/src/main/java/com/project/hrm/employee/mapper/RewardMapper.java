@@ -44,8 +44,9 @@ public class RewardMapper {
                 .title(rewardCreateDTO.getTitle())
                 .reason(rewardCreateDTO.getReason() != null ? rewardCreateDTO.getReason() : "Not reason")
                 .rewardDate(rewardCreateDTO.getRewardDate())
-                .isPercentage(rewardCreateDTO.getIsPercentage())
-                .percentage(rewardCreateDTO.getPercentage())
+                .rewardAmount(rewardCreateDTO.getRewardAmount() != null ? rewardCreateDTO.getRewardAmount() : null)
+                .isPercentage(rewardCreateDTO.getIsPercentage() != null ? rewardCreateDTO.getIsPercentage() : false)
+                .percentage(rewardCreateDTO.getPercentage() != null ? rewardCreateDTO.getPercentage() : null)
                 .rewardDate(rewardCreateDTO.getRewardDate())
                 .appliedToPayroll(rewardCreateDTO.getAppliedToPayroll())
                 .build();
