@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,26 +96,28 @@ public class TrainingRequestController {
         return ResponseEntity.ok(new APIResponse<>(true, "Get TrainingRequest successfully", dto, null, request.getRequestURI()));
     }
 
-    @Operation(summary = "Filter training requests", description = "Filter training requests with criteria and pagination",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Training request filter object",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = TrainingRequestFilter.class))
-            ),
+    @GetMapping("/filter")
+    @Operation(
+            summary = "Filter training requests",
+            description = "Filter training requests with criteria and pagination",
             parameters = {
                     @Parameter(name = "page", description = "Page number (0-based)", example = "0"),
                     @Parameter(name = "size", description = "Page size", example = "10")
             },
-            responses = @ApiResponse(responseCode = "200", description = "Filtered list",
-                    content = @Content(schema = @Schema(implementation = PageDTO.class)))
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "Filtered list",
+                    content = @Content(schema = @Schema(implementation = PageDTO.class))
+            )
     )
-    @PostMapping("/filter")
     public ResponseEntity<APIResponse<PageDTO<TrainingRequestDTO>>> filter(
-            @RequestBody TrainingRequestFilter filter,
+            @ParameterObject @ModelAttribute TrainingRequestFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
+
         PageDTO<TrainingRequestDTO> results = trainingRequestService.filter(filter, page, size);
         return ResponseEntity.ok(new APIResponse<>(true, "Filter TrainingRequests successfully", results, null, request.getRequestURI()));
     }
+
 }
