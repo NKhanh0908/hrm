@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,17 +73,27 @@ public class CandidateProfileController {
                                 request.getRequestURI()));
         }
 
-        @PostMapping("/filter")
-        @Operation(summary = "Filter Candidate Profiles", description = "Returns a filtered list of candidate profiles based on various criteria such as name, email, skills, etc.", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filtering criteria for candidate profiles", required = true, content = @Content(schema = @Schema(implementation = CandidateProfileFilter.class))), responses = {
-                        @ApiResponse(responseCode = "200", description = "Candidate profiles filtered successfully", content = @Content(schema = @Schema(implementation = PageDTO.class)))
-        })
+        @GetMapping("/filter")
+        @Operation(
+                summary = "Filter Candidate Profiles",
+                description = "Returns a filtered list of candidate profiles based on various criteria such as name, email, phone, recruitmentId.",
+                responses = {
+                        @ApiResponse(
+                                responseCode = "200",
+                                description = "Candidate profiles filtered successfully",
+                                content = @Content(schema = @Schema(implementation = PageDTO.class))
+                        )
+                }
+        )
         public ResponseEntity<APIResponse<PageDTO<CandidateProfileDTO>>> filter(
-                        @RequestBody CandidateProfileFilter candidateProfileFilter,
-                        @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
+                @ParameterObject @ModelAttribute CandidateProfileFilter candidateProfileFilter,
+                @RequestParam(defaultValue = "0") int page,
+                @RequestParam(defaultValue = "10") int size,
+                HttpServletRequest request) {
 
                 PageDTO<CandidateProfileDTO> results = candidateProfileService.filter(candidateProfileFilter, page, size);
-                return ResponseEntity.ok(new APIResponse<>(true, "Candidate profiles filtered successfully", results,
-                                null, request.getRequestURI()));
+                return ResponseEntity.ok(
+                        new APIResponse<>(true, "Candidate profiles filtered successfully", results, null, request.getRequestURI())
+                );
         }
 }

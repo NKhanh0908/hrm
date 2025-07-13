@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -95,26 +96,25 @@ public class FeedbackEmployeeController {
      * @param request the HTTP servlet request
      * @return list of {@link FeedbackEmployeeDTO}
      */
-    @PostMapping("/filter")
-    @Operation(summary = "Filter employee feedback",
+    @GetMapping("/filter")
+    @Operation(
+            summary = "Filter employee feedback",
             description = "Filter feedback records by reviewer, review ID, date range, etc.",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Feedback filter conditions", required = true,
-                    content = @Content(schema = @Schema(implementation = FeedbackEmployeeFilter.class))
-            ),
-            parameters = {
-                    @Parameter(name = "page", description = "Page number (0-based)", example = "0"),
-                    @Parameter(name = "size", description = "Page size", example = "10")
-            },
-            responses = @ApiResponse(responseCode = "200", description = "Filtered feedback list",
-                    content = @Content(schema = @Schema(implementation = PageDTO.class)))
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "Filtered feedback list",
+                    content = @Content(schema = @Schema(implementation = PageDTO.class))
+            )
     )
     public ResponseEntity<APIResponse<PageDTO<FeedbackEmployeeDTO>>> filter(
-            @RequestBody FeedbackEmployeeFilter filter,
+            @ParameterObject @ModelAttribute FeedbackEmployeeFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
+
         PageDTO<FeedbackEmployeeDTO> results = feedbackEmployeeService.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filtered feedback retrieved successfully", results, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filtered feedback retrieved successfully", results, null, request.getRequestURI())
+        );
     }
 }

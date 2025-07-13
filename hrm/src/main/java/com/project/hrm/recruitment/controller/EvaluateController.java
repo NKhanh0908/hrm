@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,16 +72,27 @@ public class EvaluateController {
                                 request.getRequestURI()));
         }
 
-        @PostMapping("/filter")
-        @Operation(summary = "Filter evaluations", description = "Filters evaluations based on various criteria", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filter criteria", required = true, content = @Content(schema = @Schema(implementation = EvaluateFilter.class))), responses = {
-                        @ApiResponse(responseCode = "200", description = "Evaluations filtered successfully", content = @Content(schema = @Schema(implementation = PageDTO.class)))
-        })
+        @GetMapping("/filter")
+        @Operation(
+                summary = "Filter evaluations",
+                description = "Filters evaluations based on various criteria such as candidate or evaluator (employee)",
+                responses = {
+                        @ApiResponse(
+                                responseCode = "200",
+                                description = "Evaluations filtered successfully",
+                                content = @Content(schema = @Schema(implementation = PageDTO.class))
+                        )
+                }
+        )
         public ResponseEntity<APIResponse<PageDTO<EvaluateDTO>>> filter(
-                        @RequestBody EvaluateFilter filter,
-                        @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
+                @ParameterObject @ModelAttribute EvaluateFilter filter,
+                @RequestParam(defaultValue = "0") int page,
+                @RequestParam(defaultValue = "10") int size,
+                HttpServletRequest request) {
+
                 PageDTO<EvaluateDTO> results = evaluateService.filter(filter, page, size);
-                return ResponseEntity.ok(new APIResponse<>(true, "Evaluations filtered successfully", results, null,
-                                request.getRequestURI()));
+                return ResponseEntity.ok(
+                        new APIResponse<>(true, "Evaluations filtered successfully", results, null, request.getRequestURI())
+                );
         }
 }

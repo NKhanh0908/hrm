@@ -37,11 +37,11 @@ public class PerformanceReviewSpecification {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), filter.getCreatedAtTo()));
             }
 
-            if (filter.getStatus() != null && !filter.getStatus().isBlank()) {
+            if (filter.getStatus() != null) {
                 try {
                     predicates.add(criteriaBuilder.equal(
                             root.get("status"),
-                            PerformanceReviewStatus.valueOf(filter.getStatus().toUpperCase())
+                            PerformanceReviewStatus.valueOf(filter.getStatus().name())
                     ));
                 } catch (IllegalArgumentException e) {
                     throw new CustomException(Error.INVALID_ENUM_VALUE);

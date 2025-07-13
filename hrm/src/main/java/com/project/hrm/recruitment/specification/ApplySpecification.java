@@ -17,7 +17,7 @@ public class ApplySpecification {
                 predicates.add(criteriaBuilder.equal(root.get("applyAt"), filter.getApplyAt()));
             }
 
-            if (filter.getStatus() != null && !filter.getStatus().isEmpty()) {
+            if (filter.getStatus() != null) {
                 predicates.add(criteriaBuilder.like(
                         (root.get("status")),
                         "%" + filter.getStatus() + "%"

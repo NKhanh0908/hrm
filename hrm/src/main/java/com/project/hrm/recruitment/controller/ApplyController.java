@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,20 +66,27 @@ public class ApplyController {
                                 request.getRequestURI()));
         }
 
-        @PostMapping("/filter")
-        @Operation(summary = "Filter applies", description = "Filter apply by period of time apply, status, position, or recruitmentID with pagination.", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filter conditions", required = true, content = @Content(schema = @Schema(implementation = ApplyFilter.class))), parameters = {
-                        @Parameter(name = "page", description = "Page number (0-based)", required = false, example = "0"),
-                        @Parameter(name = "size", description = "Page size", required = false, example = "10")
-        }, responses = {
-                        @ApiResponse(responseCode = "200", description = "Filtered apply list", content = @Content(schema = @Schema(implementation = PageDTO.class)))
-        })
-        public ResponseEntity<APIResponse<PageDTO<ApplyDTO>>> filter(@RequestBody ApplyFilter applyFilter,
-                                                                     @RequestParam(defaultValue = "0") int page,
-                                                                     @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
-            PageDTO<ApplyDTO> applyDTOList = applyService.filter(applyFilter, page, size);
-                return ResponseEntity.ok(new APIResponse<>(true, "Filter Apply successfully", applyDTOList, null,
-                                request.getRequestURI()));
-        }
+    @GetMapping("/filter")
+    @Operation(
+            summary = "Filter applies",
+            description = "Filter apply by period of time apply, status, position, or recruitmentID with pagination.",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "Filtered apply list",
+                    content = @Content(schema = @Schema(implementation = PageDTO.class))
+            )
+    )
+    public ResponseEntity<APIResponse<PageDTO<ApplyDTO>>> filter(
+            @ParameterObject @ModelAttribute ApplyFilter applyFilter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+
+        PageDTO<ApplyDTO> applyDTOList = applyService.filter(applyFilter, page, size);
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filter Apply successfully", applyDTOList, null, request.getRequestURI())
+        );
+    }
 
         @PutMapping("/{id}/status")
         @Operation(summary = "Update Apply Status", description = "Set a new status on an existing application", parameters = {

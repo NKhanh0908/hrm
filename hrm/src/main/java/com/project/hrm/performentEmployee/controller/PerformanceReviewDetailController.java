@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,28 +79,25 @@ public class PerformanceReviewDetailController {
         return ResponseEntity.ok(new APIResponse<>(true, "Retrieved successfully", result, null, request.getRequestURI()));
     }
 
-    @PostMapping("/filter")
+    @GetMapping("/filter")
     @Operation(
             summary = "Filter performance review details",
             description = "Filter performance review detail records based on criteria",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Filter conditions",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = PerformanceReviewDetailFilter.class))
-            ),
-            parameters = {
-                    @Parameter(name = "page", description = "Page number", required = false, example = "0"),
-                    @Parameter(name = "size", description = "Page size", required = false, example = "10")
-            },
-            responses = @ApiResponse(responseCode = "200", description = "Filtered successfully", content = @Content(schema = @Schema(implementation = PageDTO.class)))
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "Filtered successfully",
+                    content = @Content(schema = @Schema(implementation = PageDTO.class))
+            )
     )
     public ResponseEntity<APIResponse<PageDTO<PerformanceReviewDetailDTO>>> filter(
-            @RequestBody PerformanceReviewDetailFilter filter,
+            @ParameterObject @ModelAttribute PerformanceReviewDetailFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request
     ) {
         PageDTO<PerformanceReviewDetailDTO> results = service.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filtered successfully", results, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filtered successfully", results, null, request.getRequestURI())
+        );
     }
 }
