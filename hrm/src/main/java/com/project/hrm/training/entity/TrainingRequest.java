@@ -42,5 +42,4 @@ public class TrainingRequest {
     @ManyToOne
     @JoinColumn
     private TrainingProgram requestedProgram;
-
 }

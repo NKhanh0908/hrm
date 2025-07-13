@@ -54,4 +54,6 @@ public class Apply {
     @JsonBackReference
     private CandidateProfile candidateProfile;
 
+    @Version
+    private Integer version;
 }

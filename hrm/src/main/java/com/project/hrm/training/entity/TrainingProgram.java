@@ -32,4 +32,5 @@ public class TrainingProgram {
     @ManyToOne
     @JoinColumn
     private Employees createBy;
+
 }

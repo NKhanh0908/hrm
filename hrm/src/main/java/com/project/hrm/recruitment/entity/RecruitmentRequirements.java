@@ -37,6 +37,6 @@ public class RecruitmentRequirements {
     @ManyToOne
     @JoinColumn(name = "on_upload")
     @JsonBackReference
-    private Employees requirements; // request
+    private Employees requirements;
 
 }

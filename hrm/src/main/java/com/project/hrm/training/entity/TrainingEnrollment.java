@@ -38,4 +38,7 @@ public class TrainingEnrollment {
     @ManyToOne
     @JoinColumn
     private Employees employee;
+
+    @Version
+    private Integer version;
 }
