@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -119,23 +120,24 @@ public class TrainingSessionController {
                 result, null, request.getRequestURI()));
     }
 
-    @PostMapping("/filter")
-    @Operation(summary = "Filter training sessions",
-            description = "Filters training sessions based on location, cost, coordinator, etc.",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Filter conditions",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = TrainingSessionFilter.class))),
+    @GetMapping("/filter")
+    @Operation(
+            summary = "Filter training sessions",
+            description = "Filters training sessions based on name, program, coordinator, etc.",
             parameters = {
-                    @Parameter(name = "page", description = "Page number (0-based)", required = false),
-                    @Parameter(name = "size", description = "Page size", required = false)
+                    @Parameter(name = "page", description = "Page number (0-based)", required = false, example = "0"),
+                    @Parameter(name = "size", description = "Page size", required = false, example = "10")
             },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Filtered list of training sessions",
-                            content = @Content(schema = @Schema(implementation = PageDTO.class)))
-            })
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered list of training sessions",
+                            content = @Content(schema = @Schema(implementation = PageDTO.class))
+                    )
+            }
+    )
     public ResponseEntity<APIResponse<PageDTO<TrainingSessionDTO>>> filterTrainingSessions(
-            @RequestBody TrainingSessionFilter filter,
+            @ParameterObject @ModelAttribute TrainingSessionFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
@@ -145,4 +147,5 @@ public class TrainingSessionController {
                 "Filtered training sessions retrieved successfully",
                 result, null, request.getRequestURI()));
     }
+
 }

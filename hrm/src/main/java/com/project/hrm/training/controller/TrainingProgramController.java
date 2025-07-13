@@ -8,12 +8,14 @@ import com.project.hrm.training.dto.trainingProgramDTO.TrainingProgramFilter;
 import com.project.hrm.training.dto.trainingProgramDTO.TrainingProgramUpdateDTO;
 import com.project.hrm.training.service.TrainingProgramService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,23 +78,29 @@ public class TrainingProgramController {
         return ResponseEntity.ok(new APIResponse<>(true, "Training program retrieved successfully", result, null, request.getRequestURI()));
     }
 
-    @PostMapping("/filter")
-    @Operation(summary = "Filter training programs",
+    @GetMapping("/filter")
+    @Operation(
+            summary = "Filter training programs",
             description = "Filter training programs based on multiple criteria with pagination",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Filter data", required = true,
-                    content = @Content(schema = @Schema(implementation = TrainingProgramFilter.class))),
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Training programs filtered successfully",
-                            content = @Content(schema = @Schema(implementation = PageDTO.class)))
-            })
+            parameters = {
+                    @Parameter(name = "page", description = "Page number (0-based)", example = "0"),
+                    @Parameter(name = "size", description = "Page size", example = "10")
+            },
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "Training programs filtered successfully",
+                    content = @Content(schema = @Schema(implementation = PageDTO.class))
+            )
+    )
     public ResponseEntity<APIResponse<PageDTO<TrainingProgramDTO>>> filter(
-            @RequestBody TrainingProgramFilter filter,
+            @ParameterObject @ModelAttribute TrainingProgramFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
 
         PageDTO<TrainingProgramDTO> result = trainingProgramService.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Training programs filtered successfully", result, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Training programs filtered successfully", result, null, request.getRequestURI())
+        );
     }
 }

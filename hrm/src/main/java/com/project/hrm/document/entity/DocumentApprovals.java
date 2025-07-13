@@ -24,15 +24,15 @@ public class DocumentApprovals {
     @Column(nullable = false)
     private DocumentApprovalsStatus documentApprovalsStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Documents documents;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Employees approvedBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Employees requestedBy;
 }

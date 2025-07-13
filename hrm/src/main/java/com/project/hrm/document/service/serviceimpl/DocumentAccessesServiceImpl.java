@@ -8,10 +8,15 @@ import com.project.hrm.document.enums.DocumentAccess;
 import com.project.hrm.document.mapper.DocumentAccessesMapper;
 import com.project.hrm.document.repository.DocumentAccessesRepository;
 import com.project.hrm.auth.service.AccountService;
+import com.project.hrm.document.repository.DocumentApproverRepository;
 import com.project.hrm.document.service.DocumentAccessesService;
 import com.project.hrm.document.service.DocumentsService;
 import com.project.hrm.document.specification.DocumentAccessesSpecification;
 import com.project.hrm.common.utils.IdGenerator;
+import com.project.hrm.notification.dto.NotificationCreateDTO;
+import com.project.hrm.notification.enums.NotificationType;
+import com.project.hrm.notification.enums.SenderType;
+import com.project.hrm.notification.service.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +33,8 @@ public class DocumentAccessesServiceImpl implements DocumentAccessesService {
     private final DocumentAccessesMapper documentAccessesMapper;
     private final AccountService accountService;
     private final DocumentsService documentService;
+    private final NotificationService notificationService;
+    private final DocumentApproverRepository documentApproverRepository;
 
     @Transactional
     @Override
@@ -55,6 +62,7 @@ public class DocumentAccessesServiceImpl implements DocumentAccessesService {
         }
         documentAccesses.setDocuments(documentService.getEntityById(documentAccessesUpdateDTO.getDocumentId()));
         documentAccesses.setEmployees(accountService.getPrincipal());
+        notifyDocumentAccessCreated(documentAccesses);
         return documentAccessesMapper.covertEntityToDTO(documentAccessesRepository.save(documentAccesses));
     }
 
@@ -72,4 +80,20 @@ public class DocumentAccessesServiceImpl implements DocumentAccessesService {
         Pageable pageable = PageRequest.of(page, size);
         return documentAccessesMapper.convertPageToListDTO(documentAccessesRepository.findAll(spec, pageable).getContent());
     }
+
+    public void notifyDocumentAccessCreated(DocumentAccesses access) {
+        notificationService.create(
+                NotificationCreateDTO.builder()
+                        .title("Được cấp quyền truy cập")
+                        .message("Bạn được cấp quyền truy cập vào tài liệu: " + access.getDocuments().getTitle())
+                        .recipient(access.getEmployees().getId())
+                        .sender(access.getDocuments().getUploadedBy().getId())
+                        .senderType(SenderType.EMPLOYEE)
+                        .notificationType(NotificationType.DOCUMENT_ACCESS_GRANTED.name())
+                        .module("document")
+                        .referenceId(access.getDocuments().getId())
+                        .build()
+        );
+    }
+
 }

@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -75,17 +76,29 @@ public class RecruitmentController {
                                 request.getRequestURI()));
         }
 
-        @PostMapping("/filter")
-        @Operation(summary = "Filter recruitment posts", description = "Filters recruitment posts based on given criteria", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Filter conditions", required = true, content = @Content(schema = @Schema(implementation = RecruitmentFilter.class))), responses = {
-                        @ApiResponse(responseCode = "200", description = "Recruitments filtered successfully", content = @Content(schema = @Schema(implementation = PageDTO.class)))
-        })
+
+        @GetMapping("/filter")
+        @Operation(
+                summary = "Filter recruitment posts",
+                description = "Filters recruitment posts based on given criteria",
+                responses = {
+                        @ApiResponse(
+                                responseCode = "200",
+                                description = "Recruitments filtered successfully",
+                                content = @Content(schema = @Schema(implementation = PageDTO.class))
+                        )
+                }
+        )
         public ResponseEntity<APIResponse<PageDTO<RecruitmentDTO>>> filter(
-                        @RequestBody RecruitmentFilter filter,
-                        @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(defaultValue = "10") int size, HttpServletRequest request) {
+                @ParameterObject @ModelAttribute RecruitmentFilter filter,
+                @RequestParam(defaultValue = "0") int page,
+                @RequestParam(defaultValue = "10") int size,
+                HttpServletRequest request) {
+
                 PageDTO<RecruitmentDTO> results = recruitmentService.filter(filter, page, size);
-                return ResponseEntity.ok(new APIResponse<>(true, "Recruitments filtered successfully", results, null,
-                                request.getRequestURI()));
+                return ResponseEntity.ok(
+                        new APIResponse<>(true, "Recruitments filtered successfully", results, null, request.getRequestURI())
+                );
         }
 
         @PostMapping("/approve")

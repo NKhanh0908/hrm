@@ -33,8 +33,7 @@ public class RecruitmentRequirementsSpecification {
                         "%" + recruitmentRequirementFilter.getPositions().toLowerCase() + "%"));
             }
 
-            if (recruitmentRequirementFilter.getStatus() != null
-                    && !recruitmentRequirementFilter.getStatus().isEmpty()) {
+            if (recruitmentRequirementFilter.getStatus() != null) {
                 predicates.add(cb.equal((root.get("status")),
                         "%" + recruitmentRequirementFilter.getStatus() + "%"));
             }

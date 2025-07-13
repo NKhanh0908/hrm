@@ -19,7 +19,7 @@ public class RecruitmentSpecification {
                 ));
             }
 
-            if(filter.getStatus() != null && !filter.getStatus().isEmpty()){
+            if(filter.getStatus() != null){
                 predicates.add(criteriaBuilder.like(
                         (root.get("status")),
                         "%" + filter.getStatus() + "%"

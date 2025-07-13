@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -109,26 +110,29 @@ public class TrainingEnrollmentController {
         return ResponseEntity.ok(new APIResponse<>(true, "Get TrainingEnrollment successfully", dto, null, request.getRequestURI()));
     }
 
-    @Operation(summary = "Filter training enrollments", description = "Filter training enrollments using provided criteria with pagination",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Filter conditions for training enrollments",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = TrainingEnrollmentFilter.class))
-            ),
+    @GetMapping("/filter")
+    @Operation(
+            summary = "Filter training enrollments",
+            description = "Filter training enrollments using provided criteria with pagination",
             parameters = {
                     @Parameter(name = "page", description = "Page number (0-based)", example = "0"),
                     @Parameter(name = "size", description = "Page size", example = "10")
             },
-            responses = @ApiResponse(responseCode = "200", description = "Filtered training enrollment list",
-                    content = @Content(schema = @Schema(implementation = PageDTO.class)))
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "Filtered training enrollment list",
+                    content = @Content(schema = @Schema(implementation = PageDTO.class))
+            )
     )
-    @PostMapping("/filter")
     public ResponseEntity<APIResponse<PageDTO<TrainingEnrollmentDTO>>> filter(
-            @RequestBody TrainingEnrollmentFilter filter,
+            @ParameterObject @ModelAttribute TrainingEnrollmentFilter filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
+
         PageDTO<TrainingEnrollmentDTO> results = trainingEnrollmentService.filter(filter, page, size);
-        return ResponseEntity.ok(new APIResponse<>(true, "Filter TrainingEnrollments successfully", results, null, request.getRequestURI()));
+        return ResponseEntity.ok(
+                new APIResponse<>(true, "Filter TrainingEnrollments successfully", results, null, request.getRequestURI())
+        );
     }
 }

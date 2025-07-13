@@ -5,15 +5,22 @@ import com.project.hrm.document.dto.documentApprovalsDTO.DocumentApprovalsCreate
 import com.project.hrm.document.dto.documentApprovalsDTO.DocumentApprovalsDTO;
 import com.project.hrm.document.dto.documentApprovalsDTO.DocumentApprovalsUpdateDTO;
 import com.project.hrm.document.entity.DocumentApprovals;
+import com.project.hrm.document.entity.DocumentApprover;
 import com.project.hrm.document.entity.Documents;
 import com.project.hrm.document.enums.DocumentApprovalsStatus;
 import com.project.hrm.document.mapper.DocumentApprovalsMapper;
 import com.project.hrm.document.repository.DocumentApprovalsRepository;
 import com.project.hrm.auth.service.AccountService;
+import com.project.hrm.document.repository.DocumentApproverRepository;
 import com.project.hrm.document.service.DocumentApprovalsService;
 import com.project.hrm.document.service.DocumentsService;
 import com.project.hrm.document.specification.DocumentApprovalsSpecification;
 import com.project.hrm.common.utils.IdGenerator;
+import com.project.hrm.notification.dto.NotificationCreateDTO;
+import com.project.hrm.notification.enums.NotificationType;
+import com.project.hrm.notification.enums.SenderType;
+import com.project.hrm.notification.service.NotificationService;
+import com.project.hrm.notification.utils.NotificationUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +39,8 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
     private final DocumentApprovalsRepository documentApprovalsRepository;
     private final DocumentsService documentsService;
     private final AccountService accountService;
+    private final NotificationService notificationService;
+    private final DocumentApproverRepository documentApproverRepository;
 
     @Transactional
     @Override
@@ -47,7 +56,11 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
         documentApprovals.setDocuments(document);
         documentApprovals.setRequestedBy(accountService.getPrincipal());
 
+
+
         log.info(documentApprovals.toString());
+        notifyApproversForDocument(document);
+
 
         return documentApprovalsMapper.covertEntityToDTO(documentApprovalsRepository.save(documentApprovals));
     }
@@ -112,4 +125,21 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
         return documentApprovalsMapper.convertPageToListDTO(
                 documentApprovalsRepository.findAll(spec, pageable).getContent());
     }
+
+    public void notifyApproversForDocument(Documents document) {
+        List<DocumentApprover> approvers = documentApproverRepository.findByDocumentId(document.getId());
+        for (DocumentApprover da : approvers) {
+            notificationService.create(NotificationCreateDTO.builder()
+                    .title("Tài liệu cần phê duyệt")
+                    .message("Bạn có một tài liệu mới cần duyệt: " + document.getTitle())
+                    .recipient(da.getApprover().getId())
+                    .sender(document.getUploadedBy().getId())
+                    .senderType(SenderType.EMPLOYEE)
+                    .notificationType(NotificationType.DOCUMENT_APPROVAL.name())
+                    .module("document")
+                    .referenceId(document.getId())
+                    .build());
+        }
+    }
+
 }

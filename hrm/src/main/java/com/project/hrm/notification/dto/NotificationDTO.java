@@ -19,10 +19,13 @@ public class NotificationDTO {
     private String message;
     private String senderName;
     private Integer senderId;
+    private Integer recipientId;
     private NotificationType notificationType;
     private SenderType senderType;
     private boolean isRead;
     private LocalDateTime createdAt;
+    private Integer referenceId;
+    private String module;
     private String url;
     private String metadata;
 }
