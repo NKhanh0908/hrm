@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -159,8 +158,8 @@ public class RewardController {
     )
     public ResponseEntity<APIResponse<Map<Integer, List<RewardDTO>>>> getBatchRewards(
             @RequestBody @NotEmpty(message = "Employee IDs list cannot be empty") List<@Positive(message = "Employee ID must be a positive number") Integer> employeeIds,
-            @RequestParam @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}", message = "Start date must be in ISO format (yyyy-MM-dd'T'HH:mm:ss)") String startDate,
-            @RequestParam @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}", message = "End date must be in ISO format (yyyy-MM-dd'T'HH:mm:ss)") String endDate,
+            @RequestParam @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?", message = "Start date must be in ISO format (yyyy-MM-dd'T'HH:mm:ss[.SSS...])") String startDate,
+            @RequestParam @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?", message = "End date must be in ISO format (yyyy-MM-dd'T'HH:mm:ss[.SSS...])") String endDate,
             HttpServletRequest request) {
         LocalDateTime start = LocalDateTime.parse(startDate);
         LocalDateTime end = LocalDateTime.parse(endDate);

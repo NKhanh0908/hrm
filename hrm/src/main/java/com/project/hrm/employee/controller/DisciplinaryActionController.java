@@ -18,6 +18,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -26,9 +28,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/disciplinary-actions")
 @RequiredArgsConstructor
@@ -145,30 +150,41 @@ public class DisciplinaryActionController {
         }
     }
 
-    @PostMapping("/batch")
+    @GetMapping("/batch")
     @Operation(
             summary = "Get Batch Disciplinary Actions",
             description = "Retrieve disciplinary actions for multiple employees within a date range",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    description = "List of employee IDs",
-                    content = @Content(schema = @Schema(implementation = List.class))
-            ),
             parameters = {
-                    @Parameter(name = "startDate", description = "Start date of the range (ISO format: yyyy-MM-dd'T'HH:mm:ss[.SSS...])", required = true),
-                    @Parameter(name = "endDate", description = "End date of the range (ISO format: yyyy-MM-dd'T'HH:mm:ss[.SSS...])", required = true)
+                    @Parameter(name = "employeeIds", description = "Comma-separated list of employee IDs (e.g., 1,2,3)", required = true, example = "1,2,3"),
+                    @Parameter(name = "startDate", description = "Start date of the range (ISO format: yyyy-MM-dd'T'HH:mm:ss[.SSS...])", required = true, example = "2025-07-01T00:00:00"),
+                    @Parameter(name = "endDate", description = "End date of the range (ISO format: yyyy-MM-dd'T'HH:mm:ss[.SSS...])", required = true, example = "2025-07-31T23:59:59")
             },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Batch disciplinary actions retrieved", content = @Content(schema = @Schema(implementation = Map.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid employee IDs or date range")
+                    @ApiResponse(responseCode = "400", description = "Invalid employee IDs or date range"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
     public ResponseEntity<APIResponse<Map<Integer, List<DisciplinaryActionDTO>>>> getBatchDisciplinaryActions(
-            @RequestBody @NotEmpty(message = "Employee IDs list cannot be empty") List<@Positive(message = "Employee ID must be a positive number") Integer> employeeIds,
+            @RequestParam @NotEmpty(message = "Employee IDs list cannot be empty") @Pattern(regexp = "^\\d+(,\\d+)*$", message = "Employee IDs must be a comma-separated list of positive numbers") String employeeIds,
             @RequestParam @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?", message = "Start date must be in ISO format (yyyy-MM-dd'T'HH:mm:ss[.SSS...])") String startDate,
             @RequestParam @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?", message = "End date must be in ISO format (yyyy-MM-dd'T'HH:mm:ss[.SSS...])") String endDate,
             HttpServletRequest request) {
+        log.info("Getting batch disciplinary actions for employee IDs: {}, startDate: {}, endDate: {}", employeeIds, startDate, endDate);
         try {
+            // Chuyển đổi employeeIds từ chuỗi sang List<Integer>
+            List<Integer> employeeIdList = Arrays.stream(employeeIds.split(","))
+                    .map(String::trim)
+                    .map(Integer::parseInt)
+                    .filter(id -> id > 0)
+                    .collect(Collectors.toList());
+
+            if (employeeIdList.isEmpty()) {
+                List<String> errors = new ArrayList<>();
+                errors.add("Employee IDs list cannot be empty or contain invalid values");
+                return ResponseEntity.badRequest().body(new APIResponse<>(false, "Validation failed", null, errors, request.getRequestURI()));
+            }
+
             LocalDateTime start = LocalDateTime.parse(startDate);
             LocalDateTime end = LocalDateTime.parse(endDate);
             if (end.isBefore(start)) {
@@ -176,12 +192,23 @@ public class DisciplinaryActionController {
                 errors.add("End date must be after or equal to start date");
                 return ResponseEntity.badRequest().body(new APIResponse<>(false, "Validation failed", null, errors, request.getRequestURI()));
             }
-            Map<Integer, List<DisciplinaryActionDTO>> result = disciplinaryActionService.getBatchDisciplinaryActions(employeeIds, start, end);
+
+            Map<Integer, List<DisciplinaryActionDTO>> result = disciplinaryActionService.getBatchDisciplinaryActions(employeeIdList, start, end);
             return ResponseEntity.ok(new APIResponse<>(true, "Batch disciplinary actions retrieved successfully", result, null, request.getRequestURI()));
         } catch (DateTimeParseException e) {
+            log.error("Invalid date format: {}", e.getMessage(), e);
             List<String> errors = new ArrayList<>();
             errors.add("Invalid date format: " + e.getMessage());
             return ResponseEntity.badRequest().body(new APIResponse<>(false, "Validation failed", null, errors, request.getRequestURI()));
+        } catch (NumberFormatException e) {
+            log.error("Invalid employee IDs format: {}", e.getMessage(), e);
+            List<String> errors = new ArrayList<>();
+            errors.add("Employee IDs must be valid positive numbers");
+            return ResponseEntity.badRequest().body(new APIResponse<>(false, "Validation failed", null, errors, request.getRequestURI()));
+        } catch (Exception e) {
+            log.error("Error retrieving batch disciplinary actions: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new APIResponse<>(false, "Failed to retrieve batch disciplinary actions", null, List.of(e.getMessage()), request.getRequestURI()));
         }
     }
 
