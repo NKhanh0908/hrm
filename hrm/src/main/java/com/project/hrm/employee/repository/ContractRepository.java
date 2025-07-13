@@ -93,7 +93,7 @@ public interface ContractRepository extends JpaRepository<Contracts, Integer>, J
     @Query("""
            UPDATE Contracts c
            SET c.contractStatus = 'SUSPENDED'
-           WHERE c.endDate BETWEEN :currentDate AND :futureDate
+           WHERE c.endDate <= :currentDate
              AND c.contractStatus = 'ACTIVE'
            """)
     int expireActiveContracts(@Param("currentDate") LocalDateTime currentDate);

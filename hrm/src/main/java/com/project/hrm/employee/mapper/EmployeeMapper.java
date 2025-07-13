@@ -23,16 +23,20 @@ public class EmployeeMapper {
     public EmployeeDTO toEmployeeDTO(Employees employees) {
         return EmployeeDTO.builder()
                 .id(employees.getId())
-                .firstName(employees.getFirstName())
-                .lastName(employees.getLastName())
-                .email(employees.getEmail())
-                .phone(employees.getPhone())
-                .gender(employees.getGender())
-                .dateOfBirth(employees.getDateOfBirth())
-                .citizenIdentificationCard(employees.getCitizenIdentificationCard())
-                .address(employees.getAddress())
-                .image(employees.getImage())
+                .firstName(employees.getFirstName() != null ? employees.getFirstName() : "Unknown")
+                .lastName(employees.getLastName() != null ? employees.getLastName() : null)
+                .email(employees.getEmail() != null ? employees.getEmail() : null)
+                .phone(employees.getPhone() != null ? employees.getPhone() : null)
+                .gender(employees.getGender() != null ? employees.getGender() : "OTHER")
+                .dateOfBirth(employees.getDateOfBirth() != null ? employees.getDateOfBirth() : null)
+                .citizenIdentificationCard(employees.getCitizenIdentificationCard() != null ? employees.getCitizenIdentificationCard() : null)
+                .address(employees.getAddress() != null ? employees.getAddress() : null)
+                .image(employees.getImage() != null ? employees.getImage() : null)
                 .status(employees.getStatus().toString())
+                .roleId(employees.getRole() != null ? employees.getRole().getId() : null)
+                .roleName(employees.getRole() != null ? employees.getRole().getName() : null)
+                .departmentId(employees.getRole() != null ? employees.getRole().getDepartments().getId() : null)
+                .departmentName(employees.getRole() != null ? employees.getRole().getDepartments().getDepartmentName() : null)
                 .build();
     }
 
@@ -83,14 +87,14 @@ public class EmployeeMapper {
     public Employees employeeCreateToEmployee(EmployeeCreateDTO dto) {
         return Employees.builder()
                 .firstName(dto.getFirstName() != null ? dto.getFirstName() : "Unknown")
-                .lastName(dto.getLastName() != null ? dto.getLastName() : "")
-                .status(EmployeeStatus.ACTIVE)
-                .email(dto.getEmail() != null ? dto.getEmail() : "")
-                .phone(dto.getPhone() != null ? dto.getPhone() : "")
-                .gender(dto.getGender() != null ? dto.getGender() : "OTHER")
+                .lastName(dto.getLastName() != null ? dto.getLastName() : null)
+                .status(EmployeeStatus.PROBATION)
+                .email(dto.getEmail() != null ? dto.getEmail() : null)
+                .phone(dto.getPhone() != null ? dto.getPhone() : null)
+                .gender(dto.getGender() != null ? dto.getGender() : null)
                 .dateOfBirth(dto.getDateOfBirth() != null ? dto.getDateOfBirth() : null)
-                .citizenIdentificationCard(dto.getCitizenIdentificationCard() != null ? dto.getCitizenIdentificationCard() : "UNKNOWN")
-                .address(dto.getAddress() != null ? dto.getAddress() : "")
+                .citizenIdentificationCard(dto.getCitizenIdentificationCard() != null ? dto.getCitizenIdentificationCard() : null)
+                .address(dto.getAddress() != null ? dto.getAddress() : null)
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.project.hrm.employee.entity;
 
+import com.project.hrm.department.entity.Role;
 import com.project.hrm.employee.enums.EmployeeStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -53,6 +54,10 @@ public class Employees {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EmployeeStatus status;
+
+    @ManyToOne
+    @JoinColumn
+    private Role role;
 
     public String fullName() {
         return firstName + " " + lastName;

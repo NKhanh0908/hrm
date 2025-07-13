@@ -36,4 +36,5 @@ public class EmployeeCreateDTO {
     private String address;
     private MultipartFile image;
     private String citizenIdentificationCard;
+    private Integer roleId;
 }

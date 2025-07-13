@@ -50,4 +50,5 @@ public class EmployeeUpdateDTO {
     private String citizenIdentificationCard;
 
     private String status;
+    private Integer roleId;
 }

@@ -9,6 +9,8 @@ public class EmployeeFilter {
     private String name;
     private String email;
     private String gender;
-    private LocalDate address;
+    private String address;
     private String status;
+    private Integer roleId;
+    private Integer departmentId;
 }
