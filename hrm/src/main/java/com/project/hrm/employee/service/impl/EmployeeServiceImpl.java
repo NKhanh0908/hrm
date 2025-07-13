@@ -1,6 +1,10 @@
 package com.project.hrm.employee.service.impl;
 
+import com.project.hrm.common.redis.RedisKeys;
 import com.project.hrm.common.response.PageDTO;
+import com.project.hrm.common.service.RedisService;
+import com.project.hrm.department.entity.Role;
+import com.project.hrm.department.service.RoleService;
 import com.project.hrm.employee.dto.employeeDTO.EmployeeCreateDTO;
 import com.project.hrm.employee.dto.employeeDTO.EmployeeDTO;
 import com.project.hrm.employee.dto.employeeDTO.EmployeeFilter;
@@ -34,8 +38,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     private final FileService imageEmployeeService;
+    private final RedisService redisService;
+    private final RoleService roleService;
 
     private final EmployeeMapper employeeMapper;
+
 
     /**
      * Filters employees based on the given {@link EmployeeFilter} conditions with
@@ -51,10 +58,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     public PageDTO<EmployeeDTO> filter(EmployeeFilter employeeFilter, int page, int size) {
         log.info("Filter EmployeeDTO");
 
+        String cacheKey = String.format("%s:page:%d:size:%d:filter:%s",
+                RedisKeys.EMPLOYEES_LIST, page, size, employeeFilter.toString());
+        PageDTO<EmployeeDTO> cache = redisService.get(cacheKey, PageDTO.class);
+        if (cache != null) {
+            log.info("Retrieved employee from cache: {}", cacheKey);
+            return cache;
+        }
+
         Specification<Employees> spec = EmployeeSpecification.filterEmployee(employeeFilter);
         Pageable pageable = PageRequest.of(page, size);
 
-        return employeeMapper.toEmployeePageDTO(employeeRepository.findAll(spec, pageable));
+        PageDTO<EmployeeDTO> result = employeeMapper.toEmployeePageDTO(employeeRepository.findAll(spec, pageable));
+
+        redisService.set(cacheKey, result);
+
+        return result;
     }
 
     /**
@@ -176,11 +195,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("Create Employee");
 
         Employees employee = employeeMapper.employeeCreateToEmployee(employeeCreateDTO);
+        if(employeeCreateDTO.getRoleId()!=null){
+            Role role = roleService.getEntityById(employeeCreateDTO.getRoleId());
+            employee.setRole(role);
+        }
 
         employee.setId(IdGenerator.getGenerationId());
+
         if(employeeCreateDTO.getImage()!= null){
             employee.setImage(imageEmployeeService.saveImage(employeeCreateDTO.getImage()));
         }
+
+        redisService.deletePattern("employees:list:*");
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
     }
@@ -196,37 +222,44 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO update(EmployeeUpdateDTO employeeUpdateDTO) {
         log.info("Update Employee");
 
-        Employees employees = employeeMapper.toEntity(getDTOById(employeeUpdateDTO.getId()));
+        Employees employee = employeeMapper.toEntity(getDTOById(employeeUpdateDTO.getId()));
 
         if (employeeUpdateDTO.getFirstName() != null)
-            employees.setFirstName(employeeUpdateDTO.getFirstName());
+            employee.setFirstName(employeeUpdateDTO.getFirstName());
 
         if (employeeUpdateDTO.getLastName() != null)
-            employees.setLastName(employeeUpdateDTO.getLastName());
+            employee.setLastName(employeeUpdateDTO.getLastName());
 
         if (employeeUpdateDTO.getEmail() != null)
-            employees.setEmail(employeeUpdateDTO.getEmail());
+            employee.setEmail(employeeUpdateDTO.getEmail());
 
         if (employeeUpdateDTO.getPhone() != null)
-            employees.setPhone(employeeUpdateDTO.getPhone());
+            employee.setPhone(employeeUpdateDTO.getPhone());
 
         if (employeeUpdateDTO.getGender() != null)
-            employees.setGender(employeeUpdateDTO.getGender());
+            employee.setGender(employeeUpdateDTO.getGender());
 
         if (employeeUpdateDTO.getDateOfBirth() != null)
-            employees.setDateOfBirth(employeeUpdateDTO.getDateOfBirth());
+            employee.setDateOfBirth(employeeUpdateDTO.getDateOfBirth());
 
         if (employeeUpdateDTO.getCitizenIdentificationCard() != null)
-            employees.setCitizenIdentificationCard(employeeUpdateDTO.getCitizenIdentificationCard());
+            employee.setCitizenIdentificationCard(employeeUpdateDTO.getCitizenIdentificationCard());
 
         if (employeeUpdateDTO.getAddress() != null)
-            employees.setAddress(employeeUpdateDTO.getAddress());
+            employee.setAddress(employeeUpdateDTO.getAddress());
 
         if (employeeUpdateDTO.getImage() != null && !employeeUpdateDTO.getImage().isEmpty()){
-            employees.setImage(imageEmployeeService.saveImage(employeeUpdateDTO.getImage()));
+            employee.setImage(imageEmployeeService.saveImage(employeeUpdateDTO.getImage()));
         }
 
-        return employeeMapper.toEmployeeDTO(employeeRepository.save(employees));
+        if(employeeUpdateDTO.getRoleId() != null){
+            Role role = roleService.getEntityById(employeeUpdateDTO.getRoleId());
+            employee.setRole(role);
+        }
+
+        redisService.deletePattern("employees:list:*");
+
+        return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
     }
 
     /**
@@ -242,6 +275,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (checkExists(employeeId)) {
             employeeRepository.deleteById(employeeId);
+
+            redisService.deletePattern("employees:list:*");
         } else {
             throw new CustomException(Error.EMPLOYEE_NOT_FOUND);
         }

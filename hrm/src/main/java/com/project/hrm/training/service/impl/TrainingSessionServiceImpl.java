@@ -1,6 +1,8 @@
 package com.project.hrm.training.service.impl;
 
+import com.project.hrm.common.redis.RedisKeys;
 import com.project.hrm.common.response.PageDTO;
+import com.project.hrm.common.service.RedisService;
 import com.project.hrm.training.dto.trainingSession.TrainingSessionCreateDTO;
 import com.project.hrm.training.dto.trainingSession.TrainingSessionDTO;
 import com.project.hrm.training.dto.trainingSession.TrainingSessionFilter;
@@ -26,6 +28,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -36,6 +39,7 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
 
     private final EmployeeService employeeService;
     private final TrainingProgramService trainingProgramService;
+    private final RedisService redisService;
 
     private final TrainingSessionMapper trainingSessionMapper;
 
@@ -60,6 +64,8 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
 
         TrainingSession savedSession = trainingSessionRepository.save(trainingSession);
         log.info("Successfully created training session with ID: {}", savedSession.getId());
+
+        redisService.deletePattern("training:sessions:list:*");
 
         return trainingSessionMapper.convertEntityToDTO(savedSession);
     }
@@ -113,6 +119,9 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
         }
 
         TrainingSession saved = trainingSessionRepository.save(session);
+
+        redisService.deletePattern("training:sessions:list:*");
+
         return trainingSessionMapper.convertEntityToDTO(saved);
     }
 
@@ -125,7 +134,6 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
     @Transactional(readOnly = true)
     @Override
     public TrainingSessionDTO getDTOById(Integer id) {
-        log.info("Fetching training session DTO with ID: {}", id);
         return trainingSessionMapper.convertEntityToDTO(getEntityById(id));
     }
 
@@ -175,12 +183,25 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
     public PageDTO<TrainingSessionDTO> filter(TrainingSessionFilter trainingSessionFilter, int page, int size) {
         log.info("Filtering training sessions with filter: {}, page: {}, size: {}", trainingSessionFilter, page, size);
 
+        String cacheKey = String.format("%s:page:%d:size:%d:filter:%s",
+                RedisKeys.TRAINING_SESSIONS_LIST, page, size, trainingSessionFilter.toString());
+
+        PageDTO<TrainingSessionDTO> cache = redisService.get(cacheKey, PageDTO.class);
+        if(cache != null) {
+            log.info("Retrieved training session from cache: {}", cacheKey);
+            return cache;
+        }
+
         Specification<TrainingSession> trainingSessionSpecification = TrainingSessionSpecification.filter(trainingSessionFilter);
 
         Pageable pageable = PageRequest.of(page, size);
 
         Page<TrainingSession> trainingSessionPage = trainingSessionRepository.findAll(trainingSessionSpecification, pageable);
 
-        return trainingSessionMapper.toTrainingSessionPageDTO(trainingSessionPage);
+        PageDTO<TrainingSessionDTO> result = trainingSessionMapper.toTrainingSessionPageDTO(trainingSessionPage);
+
+        redisService.set(cacheKey, result, Duration.ofMinutes(10));
+
+        return result;
     }
 }

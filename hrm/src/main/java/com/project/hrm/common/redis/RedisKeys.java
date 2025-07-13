@@ -6,21 +6,28 @@ public class RedisKeys {
     // Training Program Keys
     public static final String TRAINING_PROGRAM_PREFIX = "training:program:";
     public static final String TRAINING_PROGRAMS_LIST = "training:programs:list";
-    public static final String TRAINING_PROGRAM_SESSIONS = "training:program:sessions:";
 
     // Training Session Keys
-    public static final String TRAINING_SESSION_PREFIX = "training:session:";
     public static final String TRAINING_SESSIONS_LIST = "training:sessions:list";
+
+    // Recruitment Keys
+    public static final String RECRUITMENT_PREFIX = "recruitment:";
+    public static final String RECRUITMENT_LIST = "recruitment:list:";
+
+    // Employee Keys
+    public static final String EMPLOYEE_PREFIX = "employee:";
+    public static final String EMPLOYEES_LIST = "employees:list";
 
     public static String trainingProgramKey(Integer programId) {
         return TRAINING_PROGRAM_PREFIX + programId;
     }
 
-    public static String trainingSessionKey(Integer sessionId) {
-        return TRAINING_SESSION_PREFIX + sessionId;
+    public static String recruitmentKey(Integer recruitmentId) {
+        return RECRUITMENT_PREFIX + recruitmentId;
     }
 
-    public static String programSessionsKey(Integer programId) {
-        return TRAINING_PROGRAM_SESSIONS + programId;
+    public static String employeeKey(Integer employeeId) {
+        return EMPLOYEE_PREFIX + employeeId;
     }
+
 }

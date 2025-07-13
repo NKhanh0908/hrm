@@ -200,11 +200,13 @@ public class ApplyServiceImpl implements ApplyService {
         ApplyDTO applyDTO = updateStatus(applyId, ApplyStatus.HIRED);
 
         CandidateProfile candidateProfile = candidateProfileService.getEntityByApplyId(applyId);
+        Integer roleId = getRoleIdByApplyId(applyId);
 
         EmployeeCreateDTO employeeCreateDTO = new EmployeeCreateDTO();
         employeeCreateDTO.setFirstName(candidateProfile.getName());
         employeeCreateDTO.setEmail(candidateProfile.getEmail());
         employeeCreateDTO.setPhone(candidateProfile.getPhone());
+        employeeCreateDTO.setRoleId(roleId);
 
         EmployeeDTO employeeDTO = employeeService.create(employeeCreateDTO);
 
@@ -212,7 +214,7 @@ public class ApplyServiceImpl implements ApplyService {
         contractCreateDTO.setTitle("Virtual Contract");
         contractCreateDTO.setDescription("Temporary contract after candidate has passed the interview round");
         contractCreateDTO.setEmployeeId(employeeDTO.getId());
-        contractCreateDTO.setRoleId(getRoleIdByApplyId(applyId));
+        contractCreateDTO.setRoleId(roleId);
         contractService.create(contractCreateDTO);
 
         InfoApply infoApply = applyRepository.getInfoApply(applyId);

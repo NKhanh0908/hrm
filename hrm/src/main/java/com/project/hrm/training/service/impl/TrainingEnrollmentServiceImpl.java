@@ -7,6 +7,7 @@ import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentDTO;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentFilter;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentUpdateDTO;
 import com.project.hrm.training.dto.trainingSession.TrainingSessionDTO;
+import com.project.hrm.training.dto.trainingSession.TrainingSessionFilter;
 import com.project.hrm.training.entity.TrainingEnrollment;
 import com.project.hrm.training.entity.TrainingRequest;
 import com.project.hrm.training.entity.TrainingSession;
@@ -166,7 +167,13 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
     @Transactional
     @Override
     public List<TrainingEnrollmentDTO> generateTrainingEnroll(Integer requestedProgramId, Integer trainingRequest) {
-        List<TrainingSessionDTO> trainingSessionDTOS = trainingSessionService.getAllByTrainingProgramId(requestedProgramId);
+
+        TrainingSessionFilter trainingSessionFilter = new TrainingSessionFilter();
+        trainingSessionFilter.setTrainingProgramId(requestedProgramId);
+
+        PageDTO<TrainingSessionDTO> pageDTO = trainingSessionService.filter(trainingSessionFilter, 0, Integer.MAX_VALUE);
+
+        List<TrainingSessionDTO> trainingSessionDTOS = pageDTO.getContent();
 
         return trainingSessionDTOS.stream()
                 .map(trainingSessionDTO -> {

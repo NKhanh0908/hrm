@@ -60,6 +60,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         trainingProgram.setCreateBy(accountService.getPrincipal());
         trainingProgram.setTargetRole(role);
 
+        redisService.deletePattern("training:programs:list:*");
+
         return trainingProgramMapper.convertToDTO(trainingProgramRepository.save(trainingProgram));
     }
 
@@ -101,6 +103,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         if(redisService.hasKey(cacheKey)){
             redisService.del(cacheKey);
         }
+
+        redisService.deletePattern("training:programs:list:*");
 
         return trainingProgramMapper.convertToDTO(updated);
     }

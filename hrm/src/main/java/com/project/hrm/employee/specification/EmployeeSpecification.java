@@ -1,7 +1,10 @@
 package com.project.hrm.employee.specification;
 
+import com.project.hrm.common.exceptions.CustomException;
+import com.project.hrm.common.exceptions.Error;
 import com.project.hrm.employee.dto.employeeDTO.EmployeeFilter;
 import com.project.hrm.employee.entity.Employees;
+import com.project.hrm.employee.enums.EmployeeStatus;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -24,10 +27,13 @@ public class EmployeeSpecification {
             }
 
             if(employeeFilter.getStatus() != null && !employeeFilter.getStatus().isEmpty()){
-                predicates.add(criteriaBuilder.like(
-                        (root.get("status")),
-                        "%" + employeeFilter.getStatus() + "%"
-                ));
+                try {
+                    EmployeeStatus status = EmployeeStatus.valueOf(employeeFilter.getStatus());
+                    predicates.add(criteriaBuilder.equal(root.get("status"), status));
+                } catch (IllegalArgumentException ex) {
+                    throw new CustomException(Error.INVALID_ENUM_VALUE);
+                }
+
             }
 
             if(employeeFilter.getGender()!= null && !employeeFilter.getGender().isEmpty()){
@@ -36,6 +42,14 @@ public class EmployeeSpecification {
 
             if(employeeFilter.getAddress() != null){
                 predicates.add(criteriaBuilder.equal(root.get("address"), employeeFilter.getAddress()));
+            }
+
+            if (employeeFilter.getRoleId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("role").get("id"), employeeFilter.getRoleId()));
+            }
+
+            if (employeeFilter.getDepartmentId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("role").get("departments").get("id"), employeeFilter.getDepartmentId()));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

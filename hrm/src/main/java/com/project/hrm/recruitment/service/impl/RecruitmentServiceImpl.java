@@ -1,7 +1,9 @@
 package com.project.hrm.recruitment.service.impl;
 
+import com.project.hrm.common.redis.RedisKeys;
 import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.auth.entity.Account;
+import com.project.hrm.common.service.RedisService;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentCreateDTO;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentDTO;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentFilter;
@@ -38,6 +40,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     private final RecruitmentMapper recruitmentMapper;
 
     private final RecruitmentRequirementService recruitmentRequirementService;
+    private final RedisService redisService;
 
     /**
      * Filters recruitment entries based on the given filter criteria and paginates
@@ -53,11 +56,24 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     @Override
     public PageDTO<RecruitmentDTO> filter(RecruitmentFilter recruitmentFilter, int page, int size) {
         log.info("Filter Recruitment");
+
+        String cacheKey = String.format("%s:page:%d:size:%d:filter:%s",
+                RedisKeys.RECRUITMENT_LIST, page, size, recruitmentFilter.toString());
+
+        PageDTO<RecruitmentDTO> cache = redisService.get(cacheKey, PageDTO.class);
+        if(cache != null) {
+            log.info("Retrieved Recruitment from cache: {}", cacheKey);
+
+            return cache;
+        }
+
         Specification<Recruitment> recruitmentSpecification = RecruitmentSpecification.filter(recruitmentFilter);
 
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Recruitment> recruitmentPage = recruitmentRepository.findAll(recruitmentSpecification, pageable);
+
+        redisService.set(cacheKey, recruitmentPage);
 
         return recruitmentMapper.toRecruitmentPageDTO(recruitmentPage);
     }
@@ -121,6 +137,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
                 principal.getEmployees());
         recruitment.setId(IdGenerator.getGenerationId());
 
+        redisService.deletePattern("recruitment:list:*");
+
         return recruitmentMapper.toDTO(recruitmentRepository.save(recruitment));
     }
 
@@ -139,6 +157,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
         log.info("Create Requirement after approved Recruitment Requirement");
 
         recruitmentRequirementService.updateStatus(recruitmentCreateDTO.getRecruitmentRequirementId(), RecruitmentRequirementsStatus.APPROVED);
+
+        redisService.deletePattern("recruitment:list:*");
 
         return create(recruitmentCreateDTO);
     }
@@ -184,6 +204,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
             recruitment.setRecruitmentRequirements(recruitmentRequirements);
         }
 
+        redisService.deletePattern("recruitment:list:*");
+
         return recruitmentMapper.toDTO(
                 recruitmentRepository.save(recruitment));
     }
@@ -215,6 +237,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
             throw new CustomException(Error.RECRUITMENT_UNABLE_TO_UPDATE);
         }
 
+        redisService.deletePattern("recruitment:list:*");
+
         return getDTOById(id);
     }
 
@@ -233,6 +257,7 @@ public class RecruitmentServiceImpl implements RecruitmentService {
 
         recruitmentRepository.delete(recruitment);
 
+        redisService.deletePattern("recruitment:list:*");
     }
 
 }
