@@ -1,5 +1,6 @@
 package com.project.hrm.document.service.serviceimpl;
 
+import com.project.hrm.department.service.DepartmentService;
 import com.project.hrm.document.dto.documentDTO.DocumentsCreateDTO;
 import com.project.hrm.document.dto.documentDTO.DocumentsDTO;
 import com.project.hrm.document.dto.documentDTO.DocumentsUpdateDTO;
@@ -8,6 +9,7 @@ import com.project.hrm.document.enums.DocumentsStatus;
 import com.project.hrm.document.mapper.DocumentsMapper;
 import com.project.hrm.document.repository.DocumentRepository;
 import com.project.hrm.auth.service.AccountService;
+import com.project.hrm.document.service.DocumentApproverService;
 import com.project.hrm.document.service.DocumentTypeService;
 import com.project.hrm.document.service.DocumentsService;
 import com.project.hrm.common.service.FileService;
@@ -26,6 +28,8 @@ public class DocumentsServiceImpl implements DocumentsService {
     private final FileService imageEmployeeService;
     private final AccountService accountService;
     private final DocumentTypeService documentTypeService;
+    private final DepartmentService departmentService;
+    private final DocumentApproverService documentApproverService;
 
     @Transactional
     @Override
@@ -43,9 +47,11 @@ public class DocumentsServiceImpl implements DocumentsService {
             documents.setFileSize((Long) fileDetails.get("fileSize"));
         }
 
-
+        documents.setDepartment(departmentService.getEntityById(documentsCreateDTO.getDepartmentId()));
         documents.setUploadedBy(accountService.getPrincipal());
         documents.setDocumentTypes(documentTypeService.getEntityById(documentsCreateDTO.getDocumentTypeId()));
+
+        documentApproverService.createApproversForDocument(documents);
 
         return documentsMapper.convertEntityToDTO(documentRepository.save(documents));
     }

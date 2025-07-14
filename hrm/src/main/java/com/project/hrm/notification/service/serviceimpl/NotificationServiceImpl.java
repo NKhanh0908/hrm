@@ -106,9 +106,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     public void pushNotificationToUser(Employees recipient, Notification notification) {
         NotificationDTO notificationDTO = notificationMapper.covertEntityToDTO(notification);
+        String account = accountService.getUsernameByEmployeeId(recipient.getId());
         // Gửi đến user theo username (cần đảm bảo username là unique và client subscribe đúng topic)
         messagingTemplate.convertAndSendToUser(
-                recipient.fullName(),  // user destination (user’s unique name)
+                account,  // user destination (user’s unique name)
                 "/queue/notifications",   // topic dành cho user này
                 notificationDTO
         );
