@@ -396,6 +396,7 @@ public enum Error {
     OTP_MAX_ATTEMPTS_EXCEEDED(39005, "Maximum OTP attempts exceeded", HttpStatus.TOO_MANY_REQUESTS),
     OTP_ALREADY_SENT(39006, "OTP has already been sent", HttpStatus.BAD_REQUEST),
     OTP_SEND_FAILED(39007, "Failed to send OTP", HttpStatus.INTERNAL_SERVER_ERROR),
+    OTP_REQUIRED(39008, "OTP is required for this operation", HttpStatus.UNAUTHORIZED)
 
 
     ;

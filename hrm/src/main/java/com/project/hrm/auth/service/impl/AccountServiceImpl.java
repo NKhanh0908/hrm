@@ -242,6 +242,10 @@ public class AccountServiceImpl implements AccountService {
     public OtpVerificationResponseDTO verifyOtp(OtpVerificationDTO otpVerificationDTO) {
         log.info("Verifying OTP for email: {}", otpVerificationDTO.getEmail());
 
+        if(!otpVerificationDTO.getIsVerify()){
+                throw new CustomException(Error.OTP_REQUIRED);
+        }
+
         // Validate email exists
         accountRepository.getAccountByEmail(otpVerificationDTO.getEmail())
                 .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND));
