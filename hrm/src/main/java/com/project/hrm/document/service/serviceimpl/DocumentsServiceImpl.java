@@ -49,11 +49,14 @@ public class DocumentsServiceImpl implements DocumentsService {
 
         documents.setDepartment(departmentService.getEntityById(documentsCreateDTO.getDepartmentId()));
         documents.setUploadedBy(accountService.getPrincipal());
+
         documents.setDocumentTypes(documentTypeService.getEntityById(documentsCreateDTO.getDocumentTypeId()));
+
+        Documents saved = documentRepository.save(documents);
 
         documentApproverService.createApproversForDocument(documents);
 
-        return documentsMapper.convertEntityToDTO(documentRepository.save(documents));
+        return documentsMapper.convertEntityToDTO(saved);
     }
 
     @Transactional

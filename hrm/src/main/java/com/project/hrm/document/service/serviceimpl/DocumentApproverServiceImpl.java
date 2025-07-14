@@ -1,6 +1,7 @@
 package com.project.hrm.document.service.serviceimpl;
 
 import com.project.hrm.auth.dto.AccountDTO;
+import com.project.hrm.auth.entity.Account;
 import com.project.hrm.auth.enums.AccountRole;
 import com.project.hrm.auth.service.AccountService;
 import com.project.hrm.common.utils.IdGenerator;
@@ -63,17 +64,24 @@ public class DocumentApproverServiceImpl implements DocumentApproverService {
                 log.info("Creating department approvers for document: {}", document.getId());
                 Departments uploaderDept = document.getUploadedBy().getRole().getDepartments();
                 log.info("Uploader department: {}", document.getUploadedBy().getId());
+                log.info("Uploader department ID: {}", uploaderDept.getId());
 
                 AccountDTO accountDTO = accountService.getAccountByEmployeeId(document.getUploadedBy().getId());
                 log.info("Uploader account role: {}", accountDTO.getRole());
                 AccountRole uploaderRole = AccountRole.valueOf(accountDTO.getRole());
+                log.info("Uploader role: {}", uploaderRole);
                 List<AccountRole> roles = List.of(AccountRole.MANAGER, AccountRole.SUPERVISOR);
                 List<Employees> deptApprovers = employeeRepository
                         .findApproversByDepartmentAndRoles(uploaderDept.getId(), roles.stream().map(Enum::name).toList());
+                log.info("Found {} approvers in department: {}", deptApprovers.size(), uploaderDept.getId());
 
                 yield deptApprovers.stream()
                         .filter(emp -> {
-                            AccountRole approverRole = AccountRole.valueOf(emp.getRole().getName());
+                            log.info("Emp ID: {}, Role name: {}", emp.getId(), emp.getRole().getName());
+                            AccountDTO employee = accountService.getAccountByEmployeeId(emp.getId());
+                            log.info("Employee account role: {}", employee.toString());
+                            AccountRole approverRole = AccountRole.valueOf(employee.getRole());
+                            log.info("Approver role: {}", approverRole);
                             if (emp.getId().equals(document.getUploadedBy().getId())) {
                                 return false;
                             }
@@ -92,10 +100,7 @@ public class DocumentApproverServiceImpl implements DocumentApproverService {
                         .toList();
             }
         };
-
-        if (approvers.isEmpty()) {
-            return null;
-        }
+        log.info("Creating approvers for document: {}", approvers.toString());
 
         List<DocumentApprover> createDTO = approvers.stream()
                 .map(approver -> DocumentApprover.builder()
@@ -107,6 +112,7 @@ public class DocumentApproverServiceImpl implements DocumentApproverService {
                 .toList();
 
         List<DocumentApprover> saved = documentApproverRepository.saveAll(createDTO);
+        log.info("[DocumentApproverServiceImpl] - Đã tạo {} bản ghi DocumentApprover cho document ID: {}", saved.size(), document.getId());
 
         return documentApproverMapper.convertPageToListDTO(saved);
     }

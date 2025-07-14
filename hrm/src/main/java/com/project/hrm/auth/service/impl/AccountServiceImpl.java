@@ -189,8 +189,8 @@ public class AccountServiceImpl implements AccountService {
         log.info("Retrieving account for employee ID: {}", employeeId);
         return accountMapper.toDTO(
                 accountRepository.getAccountByEmployeeId(employeeId)
-                        .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND))
-        );
+                        .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND)
+        ));
     }
 
     /**

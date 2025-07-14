@@ -35,6 +35,7 @@ public class DocumentsMapper {
                 .documentTypeId(documents.getDocumentTypes().getId())
                 .uploadedById(documents.getUploadedBy().getId())
                 .departmentId(documents.getDepartment().getId())
+                .departmentName(documents.getDepartment().getDepartmentName())
                 .build();
     }
     public List<DocumentsDTO> convertPageToListDTO(List<Documents> documentsList) {
