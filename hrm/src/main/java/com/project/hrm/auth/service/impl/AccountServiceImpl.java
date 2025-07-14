@@ -162,6 +162,37 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * @return
+     */
+    @Override
+    public Account getAccountAuth() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new CustomException(Error.UNAUTHORIZED);
+        }
+
+        Account account = (Account) authentication.getPrincipal();
+
+        log.info("User principal: {}", account);
+
+        return account;
+    }
+
+    /**
+     * Retrieves the {@link AccountDTO} associated with a given employee ID.
+     * @param employeeId the ID of the employee whose account is to be retrieved
+     * @return the {@link AccountDTO} of the employee
+     */
+    @Override
+    public AccountDTO getAccountByEmployeeId(Integer employeeId) {
+        log.info("Retrieving account for employee ID: {}", employeeId);
+        return accountMapper.toDTO(
+                accountRepository.getAccountByEmployeeId(employeeId)
+                        .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND))
+        );
+    }
+
+    /**
      * Retrieves the {@link Employees} entity associated with the currently
      * authenticated user (principal) from the Spring Security context.
      *
@@ -182,15 +213,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public Employees getPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new CustomException(Error.UNAUTHORIZED);
-        }
-
-        Account account = (Account) authentication.getPrincipal();
-
-        log.info("User principal: {}", account);
-        return account.getEmployees();
+        return getAccountAuth().getEmployees();
     }
 
     /**

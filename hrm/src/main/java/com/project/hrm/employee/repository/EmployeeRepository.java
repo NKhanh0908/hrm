@@ -54,8 +54,10 @@ public interface EmployeeRepository extends JpaRepository<Employees, Integer>, J
             value = """
         SELECT e.* FROM employees e
         JOIN account a ON a.employees_id = e.id
-        WHERE e.department_id = :departmentId
-          AND a.account_role IN (:roles)
+        JOIN role r ON e.role_id = r.id
+        JOIN departments d ON r.departments_id = d.id
+        WHERE d.id = :departmentId
+          AND a.role IN (:roles)
     """,
             nativeQuery = true
     )
@@ -68,7 +70,7 @@ public interface EmployeeRepository extends JpaRepository<Employees, Integer>, J
             value = """
         SELECT e.* FROM employees e
         JOIN account a ON a.employees_id = e.id
-        WHERE a.account_role IN (:roles)
+        WHERE a.role IN (:roles)
           AND e.status IN ('ACTIVE', 'INACTIVE', 'PROBATION')
     """,
             nativeQuery = true

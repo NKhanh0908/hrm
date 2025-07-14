@@ -17,7 +17,5 @@ public class AccountDTO {
     private LocalDateTime createAt;
     private Boolean status;
     private Integer employeeId;
-    private String employeeName;
-    private Integer roleId;
-    private String roleName;
+    private String role;
 }

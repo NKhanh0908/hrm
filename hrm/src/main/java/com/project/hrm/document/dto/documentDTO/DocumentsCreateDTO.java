@@ -1,5 +1,6 @@
 package com.project.hrm.document.dto.documentDTO;
 
+import com.project.hrm.document.enums.DocumentScope;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -32,4 +33,6 @@ public class DocumentsCreateDTO {
     private Integer uploadedById;
 
     private Integer departmentId;
+
+    private DocumentScope documentScope;
 }

@@ -1,6 +1,8 @@
 package com.project.hrm.document.service.serviceimpl;
 
+import com.project.hrm.auth.dto.AccountDTO;
 import com.project.hrm.auth.enums.AccountRole;
+import com.project.hrm.auth.service.AccountService;
 import com.project.hrm.common.utils.IdGenerator;
 import com.project.hrm.department.entity.Departments;
 import com.project.hrm.department.service.DepartmentService;
@@ -19,11 +21,13 @@ import com.project.hrm.employee.repository.EmployeeRepository;
 import com.project.hrm.employee.service.EmployeeService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class DocumentApproverServiceImpl implements DocumentApproverService {
     private final DocumentApproverMapper documentApproverMapper;
@@ -31,29 +35,38 @@ public class DocumentApproverServiceImpl implements DocumentApproverService {
     private final EmployeeService employeeService;
     private final DocumentsService documentsService;
     private final EmployeeRepository employeeRepository;
+    private final AccountService accountService;
 
     public DocumentApproverServiceImpl(DocumentApproverMapper documentApproverMapper,
                                    DocumentApproverRepository documentApproverRepository,
                                    EmployeeService employeeService,
                                    @Lazy DocumentsService documentsService,
-                                   EmployeeRepository employeeRepository) {
+                                   EmployeeRepository employeeRepository,
+                                       AccountService accountService) {
         this.documentApproverMapper = documentApproverMapper;
         this.documentApproverRepository = documentApproverRepository;
         this.employeeService = employeeService;
         this.documentsService = documentsService;
         this.employeeRepository = employeeRepository;
+        this.accountService = accountService;
     }
 
     @Transactional
     @Override
     public List<DocumentApproverDTO> createApproversForDocument(Documents document) {
+        log.info("Creating approvers for document: {}", document.getId());
+
         List<Employees> approvers = switch (document.getDocumentScope()) {
             case PERSONAL, RESTRICTED -> List.of();
 
             case DEPARTMENT -> {
+                log.info("Creating department approvers for document: {}", document.getId());
                 Departments uploaderDept = document.getUploadedBy().getRole().getDepartments();
-                AccountRole uploaderRole = AccountRole.valueOf(document.getUploadedBy().getRole().getName());
+                log.info("Uploader department: {}", document.getUploadedBy().getId());
 
+                AccountDTO accountDTO = accountService.getAccountByEmployeeId(document.getUploadedBy().getId());
+                log.info("Uploader account role: {}", accountDTO.getRole());
+                AccountRole uploaderRole = AccountRole.valueOf(accountDTO.getRole());
                 List<AccountRole> roles = List.of(AccountRole.MANAGER, AccountRole.SUPERVISOR);
                 List<Employees> deptApprovers = employeeRepository
                         .findApproversByDepartmentAndRoles(uploaderDept.getId(), roles.stream().map(Enum::name).toList());
@@ -70,6 +83,7 @@ public class DocumentApproverServiceImpl implements DocumentApproverService {
             }
 
             case COMPANY -> {
+                log.info("Creating company approvers for document: {}", document.getId());
                 List<AccountRole> roles = List.of(AccountRole.HR, AccountRole.ADMIN);
                 yield employeeRepository
                         .findByRoleAndAllowedStatus_Native(roles.stream().map(Enum::name).toList())

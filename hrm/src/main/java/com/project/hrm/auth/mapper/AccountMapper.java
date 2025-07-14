@@ -18,8 +18,7 @@ public class AccountMapper {
                 .createAt(account.getCreateAt())
                 .status(account.getStatus())
                 .employeeId(account.getEmployees().getId())
-                .employeeName(account.getEmployees().fullName())
-                .roleName(account.getRole().name())
+                .role(account.getRole().name())
                 .build();
     }
 

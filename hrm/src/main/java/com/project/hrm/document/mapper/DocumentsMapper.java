@@ -18,6 +18,7 @@ public class DocumentsMapper {
                 .description(documentsCreateDTO.getDescription())
                 .uploadDate(LocalDateTime.now())
                 .documentStatus(DocumentsStatus.PENDING)
+                .documentScope(documentsCreateDTO.getDocumentScope())
                 .build();
     }
 
