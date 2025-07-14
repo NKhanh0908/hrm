@@ -18,6 +18,8 @@ public interface AccountService {
 
     AccountDTO getAccountByEmployeeId(Integer employeeId);
 
+    AccountDTO forgotPassword(String email);
+
     Employees getPrincipal();
 
     String getUsernameByEmployeeId(Integer employeeId);

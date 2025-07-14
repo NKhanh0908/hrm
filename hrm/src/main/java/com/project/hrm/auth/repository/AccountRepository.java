@@ -24,4 +24,11 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
                     on a.employees_id = e.id
                 where e.id = :employeeId""", nativeQuery = true)
     Optional<Account> getAccountByEmployeeId(@Param("employeeId") Integer employeeId);
+
+    @Query(value = """
+            select a.*
+                from account a inner join employees e
+                    on a.employees_id = e.id
+                where e.email = :email""", nativeQuery = true)
+    Optional<Account> getAccountByEmail(@Param("email") String email);
 }

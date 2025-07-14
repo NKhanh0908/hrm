@@ -193,6 +193,21 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * Initiates the password recovery process for a user identified by their email address.
+     * @param email the email address of the user requesting password recovery
+     * @return an {@link AccountDTO} containing the user's account information
+     */
+    @Override
+    public AccountDTO forgotPassword(String email) {
+        log.info("Initiating password recovery for email: {}", email);
+        Account account = accountRepository.getAccountByEmail(email)
+                .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND));
+
+
+        return null;
+    }
+
+    /**
      * Retrieves the {@link Employees} entity associated with the currently
      * authenticated user (principal) from the Spring Security context.
      *
