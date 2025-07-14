@@ -30,4 +30,6 @@ public class DocumentsCreateDTO {
 
     @NotNull(message = "Uploader ID is required")
     private Integer uploadedById;
+
+    private Integer departmentId;
 }

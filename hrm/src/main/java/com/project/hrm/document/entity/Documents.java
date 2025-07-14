@@ -1,5 +1,7 @@
 package com.project.hrm.document.entity;
 
+import com.project.hrm.department.entity.Departments;
+import com.project.hrm.document.enums.DocumentScope;
 import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.document.enums.DocumentsStatus;
 import jakarta.persistence.*;
@@ -33,4 +35,12 @@ public class Documents {
     @ManyToOne
     @JoinColumn
     private Employees uploadedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", nullable = false)
+    private Departments department;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DocumentScope documentScope;
 }

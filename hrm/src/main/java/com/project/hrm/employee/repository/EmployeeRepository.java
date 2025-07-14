@@ -49,4 +49,33 @@ public interface EmployeeRepository extends JpaRepository<Employees, Integer>, J
     @Query("SELECT id as employeeId " +
             "FROM Employees WHERE status = 'ACTIVE'")
     List<Integer> getAllActiveEmployeeIds();
+
+    @Query(
+            value = """
+        SELECT e.* FROM employees e
+        JOIN account a ON a.employees_id = e.id
+        WHERE e.department_id = :departmentId
+          AND a.account_role IN (:roles)
+    """,
+            nativeQuery = true
+    )
+    List<Employees> findApproversByDepartmentAndRoles(
+            @Param("departmentId") Integer departmentId,
+            @Param("roles") List<String> roles
+    );
+
+    @Query(
+            value = """
+        SELECT e.* FROM employees e
+        JOIN account a ON a.employees_id = e.id
+        WHERE a.account_role IN (:roles)
+          AND e.status IN ('ACTIVE', 'INACTIVE', 'PROBATION')
+    """,
+            nativeQuery = true
+    )
+    List<Employees> findByRoleAndAllowedStatus_Native(
+            @Param("roles") List<String> roles
+    );
+
+
 }

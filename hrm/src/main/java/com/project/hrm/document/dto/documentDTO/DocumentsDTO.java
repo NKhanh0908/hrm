@@ -20,7 +20,13 @@ public class DocumentsDTO {
     private String fileType;
     private Long fileSize;
     private LocalDateTime uploadDate;
+
     private String documentStatus;
     private Integer documentTypeId;
+
     private Integer uploadedById;
+
+    private Integer departmentId;
+    private String departmentName;
+
 }
