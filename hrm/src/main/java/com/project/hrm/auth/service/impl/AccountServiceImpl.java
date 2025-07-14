@@ -169,6 +169,16 @@ public class AccountServiceImpl implements AccountService {
         return account.getEmployees();
     }
 
+    /**
+     * @param employeeId
+     * @return
+     */
+    @Override
+    public String getUsernameByEmployeeId(Integer employeeId) {
+
+        return accountRepository.getUserNameByEmployeeId(employeeId);
+    }
+
 
     private boolean usernameExists(String username) {
         return accountRepository.findByUsername(username).isPresent();

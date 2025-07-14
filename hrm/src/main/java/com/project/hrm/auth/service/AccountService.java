@@ -15,5 +15,6 @@ public interface AccountService {
 
     Employees getPrincipal();
 
+    String getUsernameByEmployeeId(Integer employeeId);
 
 }
