@@ -19,18 +19,30 @@ import com.project.hrm.employee.repository.EmployeeRepository;
 import com.project.hrm.employee.service.EmployeeService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class DocumentApproverServiceImpl implements DocumentApproverService {
     private final DocumentApproverMapper documentApproverMapper;
     private final DocumentApproverRepository documentApproverRepository;
     private final EmployeeService employeeService;
     private final DocumentsService documentsService;
     private final EmployeeRepository employeeRepository;
+
+    public DocumentApproverServiceImpl(DocumentApproverMapper documentApproverMapper,
+                                   DocumentApproverRepository documentApproverRepository,
+                                   EmployeeService employeeService,
+                                   @Lazy DocumentsService documentsService,
+                                   EmployeeRepository employeeRepository) {
+        this.documentApproverMapper = documentApproverMapper;
+        this.documentApproverRepository = documentApproverRepository;
+        this.employeeService = employeeService;
+        this.documentsService = documentsService;
+        this.employeeRepository = employeeRepository;
+    }
 
     @Transactional
     @Override

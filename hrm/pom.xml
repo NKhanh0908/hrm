@@ -145,6 +145,12 @@
 			<version>32.1.2-jre</version> <!-- Hoặc phiên bản mới nhất -->
 		</dependency>
 
+		<!-- Bucket4j core -->
+		<dependency>
+			<groupId>com.github.vladimir-bukhtoyarov</groupId>
+			<artifactId>bucket4j-core</artifactId>
+			<version>8.0.1</version>
+		</dependency>
 
 	</dependencies>
 
