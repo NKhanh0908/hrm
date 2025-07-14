@@ -4,6 +4,7 @@ import com.project.hrm.auth.dto.AccountCreateDTO;
 import com.project.hrm.auth.dto.AccountDTO;
 import com.project.hrm.auth.dto.AuthenticationDTO;
 import com.project.hrm.auth.dto.FormLoginDTO;
+import com.project.hrm.auth.util.LoginAttemptService;
 import com.project.hrm.department.entity.Role;
 import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.auth.entity.Account;
@@ -25,6 +26,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 @Slf4j
@@ -37,18 +40,20 @@ public class AccountServiceImpl implements AccountService {
     private final AccountMapper accountMapper;
 
     private final EmployeeService employeeService;
+    private final LoginAttemptService loginAttemptService;
 
     public AccountServiceImpl(PasswordEncoder passwordEncoder,
                               JwtTokenUtil jwtTokenUtil,
                               AccountRepository accountRepository,
                               AccountMapper accountMapper,
-                              @Lazy EmployeeService employeeService) {
+                              @Lazy EmployeeService employeeService,
+                              LoginAttemptService loginAttemptService) {
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenUtil = jwtTokenUtil;
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
         this.employeeService = employeeService;
-
+        this.loginAttemptService = loginAttemptService;
     }
 
     /**
@@ -76,11 +81,30 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountRepository.findByUsername(name)
                     .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND));
 
+//            String ip = RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes
+//                    ? ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getRemoteAddr()
+//                    : "unknown";
+//            String key = name + ":" + ip;
+
+            if (loginAttemptService.isBlocked(name)) {
+                throw new CustomException(Error.ACCOUNT_LOCKED_TEMPORARILY);
+            }
+
             log.info("Account: {}", account);
 
             if (!passwordEncoder.matches(formLoginDTO.getPassword(), account.getPassword())) {
-                throw new CustomException(Error.ACCOUNT_INVALID_PASSWORD);
+                loginAttemptService.loginFailed(name);
+
+                int remaining = loginAttemptService.getRemainingAttempts(name);
+                log.warn("Login attempt failed for user: {}, remaining attempts: {}", name, remaining);
+                if (remaining <= 0) {
+                    throw new CustomException(Error.ACCOUNT_LOCKED_TEMPORARILY);
+                } else {
+                    throw new CustomException(Error.ACCOUNT_INVALID_PASSWORD);
+                }
             }
+
+            loginAttemptService.loginSucceeded(name);
 
             try {
                 String jwtToken = jwtTokenUtil.generateToken((UserDetails) account);
@@ -170,8 +194,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * @param employeeId
-     * @return
+     * Retrieves the username associated with a given employee ID.
+     * @param employeeId the ID of the employee whose username is to be retrieved
+     * @return the username of the employee, or null if no account is found
      */
     @Override
     public String getUsernameByEmployeeId(Integer employeeId) {

@@ -139,6 +139,13 @@
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>32.1.2-jre</version> <!-- Hoặc phiên bản mới nhất -->
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

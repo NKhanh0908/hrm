@@ -13,6 +13,8 @@ public enum Error {
     UNAUTHORIZED(401, "Unauthorized", HttpStatus.UNAUTHORIZED),
     FORBIDDEN(403, "Forbidden", HttpStatus.FORBIDDEN),
     CONFLICT(409, "Conflict", HttpStatus.CONFLICT),
+    METHOD_NOT_ALLOWED(405, "Method not allowed", HttpStatus.METHOD_NOT_ALLOWED),
+    TOO_MANY_REQUESTS(429, "Too many requests", HttpStatus.TOO_MANY_REQUESTS),
 
     // Server Error
     UNCATEGORIZED_EXCEPTION(9999, "Unclassified error", HttpStatus.INTERNAL_SERVER_ERROR),
@@ -34,6 +36,7 @@ public enum Error {
     ACCOUNT_USERNAME_TO_SHORT(1008, "Username account to short", HttpStatus.BAD_REQUEST),
     ACCOUNT_USERNAME_TO_LONG(1008, "Username account to long", HttpStatus.BAD_REQUEST),
     ACCOUNT_PASSWORD_TO_SHORT(1008, "Password account to short", HttpStatus.BAD_REQUEST),
+    ACCOUNT_LOCKED_TEMPORARILY(1009, "Account is temporarily locked due to too many failed login attempts", HttpStatus.FORBIDDEN),
 
     // Employee-related errors
     EMPLOYEE_NOT_FOUND(2001, "Employee not found", HttpStatus.NOT_FOUND),

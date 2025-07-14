@@ -3,6 +3,7 @@ package com.project.hrm.common.security;
 import com.project.hrm.auth.enums.AccountRole;
 import com.project.hrm.auth.service.impl.OurUserDetailsService;
 import com.project.hrm.auth.configuration.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -66,10 +67,12 @@ public class WebSecurityConfiguration {
     }
 
     @Bean
+    @Qualifier("daoAuthenticationProvider")
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(ourUserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
+
 }
