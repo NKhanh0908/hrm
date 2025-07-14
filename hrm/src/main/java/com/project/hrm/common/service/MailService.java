@@ -12,4 +12,6 @@ public interface MailService{
     void notificationForHired(InfoApply infoApply, JobOfferDetailsDTO jobOfferDetailsDTO);
 
     void notificationForRejection(InfoApply infoApply);
+
+    void sendOtpEmail(String email, String otp, int expiryMinutes);
 }

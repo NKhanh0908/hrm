@@ -8,7 +8,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 @EnableAsync
-public class AsyncConfig {
+public class EmailAsyncConfig  {
 
     @Bean(name = "emailInterviewTaskExecutor")
     public TaskExecutor emailTaskExecutor() {
@@ -39,6 +39,17 @@ public class AsyncConfig {
         executor.setMaxPoolSize(5);
         executor.setQueueCapacity(100);
         executor.setThreadNamePrefix("email-reject-async-");
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean("emailOtpTaskExecutor")
+    public TaskExecutor emailOtpTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(5);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("EmailOTP-");
         executor.initialize();
         return executor;
     }

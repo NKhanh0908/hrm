@@ -1,10 +1,7 @@
 package com.project.hrm.auth.controller;
 
+import com.project.hrm.auth.dto.*;
 import com.project.hrm.common.response.APIResponse;
-import com.project.hrm.auth.dto.AccountCreateDTO;
-import com.project.hrm.auth.dto.AccountDTO;
-import com.project.hrm.auth.dto.AuthenticationDTO;
-import com.project.hrm.auth.dto.FormLoginDTO;
 import com.project.hrm.auth.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,6 +77,105 @@ public class AccountController {
                         accountDTO,
                         null,
                         request.getRequestURI()));
+    }
+
+    @PostMapping("/forgot-password")
+    @Operation(
+            summary = "Forgot Password",
+            description = "Initiates password reset process by sending OTP to user's email",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "User's email for password reset",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = ForgotPasswordRequestDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "OTP sent successfully",
+                            content = @Content(schema = @Schema(implementation = ForgotPasswordResponseDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "Account not found"),
+                    @ApiResponse(responseCode = "400", description = "OTP already sent recently")
+            }
+    )
+    public ResponseEntity<APIResponse<ForgotPasswordResponseDTO>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequestDTO requestDTO,
+            HttpServletRequest request) {
+
+        ForgotPasswordResponseDTO response = accountService.forgotPassword(requestDTO.getEmail());
+
+        return ResponseEntity.ok(new APIResponse<>(
+                true,
+                "OTP sent successfully to your email",
+                response,
+                null,
+                request.getRequestURI()
+        ));
+    }
+
+    @PostMapping("/verify-otp")
+    @Operation(
+            summary = "Verify OTP",
+            description = "Verifies OTP for password reset",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "OTP verification data",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = OtpVerificationDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "OTP verification result",
+                            content = @Content(schema = @Schema(implementation = OtpVerificationResponseDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Invalid OTP or expired"),
+                    @ApiResponse(responseCode = "404", description = "Account not found")
+            }
+    )
+    public ResponseEntity<APIResponse<OtpVerificationResponseDTO>> verifyOtp(
+            @Valid @RequestBody OtpVerificationDTO otpVerificationDTO,
+            HttpServletRequest request) {
+
+        OtpVerificationResponseDTO response = accountService.verifyOtp(otpVerificationDTO);
+
+        return ResponseEntity.ok(new APIResponse<>(
+                true,
+                response.getMessage(),
+                response,
+                null,
+                request.getRequestURI()
+        ));
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(
+            summary = "Reset Password",
+            description = "Resets user password using OTP verification",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Password reset data with OTP",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = ResetPasswordDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Password reset successfully",
+                            content = @Content(schema = @Schema(implementation = String.class))
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Invalid OTP or password"),
+                    @ApiResponse(responseCode = "404", description = "Account not found")
+            }
+    )
+    public ResponseEntity<APIResponse<String>> resetPassword(
+            @Valid @RequestBody ResetPasswordDTO resetPasswordDTO,
+            HttpServletRequest request) {
+
+        String message = accountService.resetPassword(resetPasswordDTO);
+
+        return ResponseEntity.ok(new APIResponse<>(
+                true,
+                message,
+                message,
+                null,
+                request.getRequestURI()
+        ));
     }
 
 }

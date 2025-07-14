@@ -1,9 +1,6 @@
 package com.project.hrm.auth.service;
 
-import com.project.hrm.auth.dto.AccountCreateDTO;
-import com.project.hrm.auth.dto.AccountDTO;
-import com.project.hrm.auth.dto.AuthenticationDTO;
-import com.project.hrm.auth.dto.FormLoginDTO;
+import com.project.hrm.auth.dto.*;
 import com.project.hrm.auth.entity.Account;
 import com.project.hrm.employee.entity.Employees;
 import org.springframework.stereotype.Service;
@@ -18,10 +15,13 @@ public interface AccountService {
 
     AccountDTO getAccountByEmployeeId(Integer employeeId);
 
-    AccountDTO forgotPassword(String email);
-
     Employees getPrincipal();
 
     String getUsernameByEmployeeId(Integer employeeId);
 
+    ForgotPasswordResponseDTO forgotPassword(String email);
+
+    OtpVerificationResponseDTO verifyOtp(OtpVerificationDTO otpVerificationDTO);
+
+    String resetPassword(ResetPasswordDTO resetPasswordDTO);
 }

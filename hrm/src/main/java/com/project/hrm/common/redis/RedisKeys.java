@@ -18,6 +18,10 @@ public class RedisKeys {
     public static final String EMPLOYEE_PREFIX = "employee:";
     public static final String EMPLOYEES_LIST = "employees:list";
 
+    // OTP Keys
+    public static final String OTP_PREFIX = "otp:";
+    public static final String OTP_ATTEMPT_PREFIX = "otp_attempt:";
+
     public static String trainingProgramKey(Integer programId) {
         return TRAINING_PROGRAM_PREFIX + programId;
     }
@@ -28,6 +32,14 @@ public class RedisKeys {
 
     public static String employeeKey(Integer employeeId) {
         return EMPLOYEE_PREFIX + employeeId;
+    }
+
+    public static String otpKey(String email) {
+        return OTP_PREFIX + email;
+    }
+
+    public static String otpAttemptKey(String email) {
+        return OTP_ATTEMPT_PREFIX + email;
     }
 
 }

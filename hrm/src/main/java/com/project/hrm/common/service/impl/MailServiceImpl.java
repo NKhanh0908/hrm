@@ -80,6 +80,24 @@ public class MailServiceImpl implements MailService {
     }
 
     /**
+     *  Sends an OTP email for verification purposes.
+     *
+     * @param email recipient's email address
+     * @param otp one-time password to be sent
+     * @param expiryMinutes the number of minutes until the OTP expires
+     */
+    @Async("emailOtpTaskExecutor")
+    @Override
+    public void sendOtpEmail(String email, String otp, int expiryMinutes) {
+        log.info("Sending OTP email to: {}", email);
+
+        String subject = "Password Reset OTP - HRM Enterprise";
+        String content = getOtpEmailContent(email, otp, expiryMinutes);
+
+        sendMail(email, subject, content);
+    }
+
+    /**
      * Generates the HTML content for an interview invitation email.
      *
      * @param infoApply       applicant info
@@ -213,6 +231,57 @@ public class MailServiceImpl implements MailService {
                 infoApply.getName(),
                 infoApply.getPositionApply()
         );
+    }
+
+    /**
+     * Generates HTML content for OTP email
+     * @param email recipient email
+     * @param otp the OTP code
+     * @param expiryMinutes OTP expiry time in minutes
+     * @return HTML content for OTP email
+     */
+    private String getOtpEmailContent(String email, String otp, int expiryMinutes) {
+        return """
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h2 style="color: #2c3e50; margin-bottom: 20px;">Password Reset Request</h2>
+            
+            <p>Dear User,</p>
+            
+            <p>We received a request to reset your password for your SGU Enterprise account associated with <strong>%s</strong>.</p>
+            
+            <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; border-left: 4px solid #3498db; margin: 20px 0;">
+                <h3 style="color: #2c3e50; margin-bottom: 10px;">Your OTP Code:</h3>
+                <div style="font-size: 32px; font-weight: bold; color: #3498db; letter-spacing: 5px; text-align: center; padding: 15px; background-color: #f1f3f4; border-radius: 4px;">
+                    %s
+                </div>
+            </div>
+            
+            <div style="background-color: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #ffc107; margin: 20px 0;">
+                <p style="margin: 0; color: #856404;"><strong>Important:</strong></p>
+                <ul style="margin: 10px 0; color: #856404;">
+                    <li>This OTP will expire in <strong>%d minutes</strong></li>
+                    <li>You have a maximum of <strong>5 attempts</strong> to enter the correct OTP</li>
+                    <li>Do not share this OTP with anyone</li>
+                </ul>
+            </div>
+            
+            <p>If you did not request this password reset, please ignore this email. Your password will remain unchanged.</p>
+            
+            <p>For security reasons, please do not reply to this email. If you need assistance, please contact our support team.</p>
+            
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+            
+            <p style="color: #7f8c8d; font-size: 14px;">
+                Best regards,<br/>
+                IT Support Team<br/>
+                SGU Enterprise Information System
+            </p>
+        </div>
+    </body>
+    </html>
+    """.formatted(email, otp, expiryMinutes);
     }
 
     /**

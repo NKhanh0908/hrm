@@ -37,6 +37,8 @@ public enum Error {
     ACCOUNT_USERNAME_TO_LONG(1008, "Username account to long", HttpStatus.BAD_REQUEST),
     ACCOUNT_PASSWORD_TO_SHORT(1008, "Password account to short", HttpStatus.BAD_REQUEST),
     ACCOUNT_LOCKED_TEMPORARILY(1009, "Account is temporarily locked due to too many failed login attempts", HttpStatus.FORBIDDEN),
+    PASSWORD_RESET_FAILED(1010, "Password reset failed", HttpStatus.INTERNAL_SERVER_ERROR),
+    PASSWORD_RESET_INVALID_REQUEST(1011, "Invalid password reset request", HttpStatus.BAD_REQUEST),
 
     // Employee-related errors
     EMPLOYEE_NOT_FOUND(2001, "Employee not found", HttpStatus.NOT_FOUND),
@@ -385,6 +387,17 @@ public enum Error {
     DOCUMENT_APPROVAL_SELF_APPROVAL_NOT_ALLOWED(38010, "Self approval is not allowed", HttpStatus.BAD_REQUEST),
     DOCUMENT_APPROVAL_DEADLINE_EXCEEDED(38011, "Document approval deadline exceeded", HttpStatus.BAD_REQUEST),
     DOCUMENT_APPROVAL_INVALID_DATE(38012, "Invalid document approval date", HttpStatus.BAD_REQUEST),
+
+    // OTP related errors
+    OTP_NOT_FOUND(39001, "OTP not found", HttpStatus.NOT_FOUND),
+    OTP_EXPIRED_OR_INVALID(39002, "OTP expired or invalid", HttpStatus.UNAUTHORIZED),
+    OTP_INVALID(39003, "Invalid OTP", HttpStatus.UNAUTHORIZED),
+    OTP_ALREADY_USED(39004, "OTP has already been used", HttpStatus.BAD_REQUEST),
+    OTP_MAX_ATTEMPTS_EXCEEDED(39005, "Maximum OTP attempts exceeded", HttpStatus.TOO_MANY_REQUESTS),
+    OTP_ALREADY_SENT(39006, "OTP has already been sent", HttpStatus.BAD_REQUEST),
+    OTP_SEND_FAILED(39007, "Failed to send OTP", HttpStatus.INTERNAL_SERVER_ERROR),
+
+
     ;
 
     private final int code;

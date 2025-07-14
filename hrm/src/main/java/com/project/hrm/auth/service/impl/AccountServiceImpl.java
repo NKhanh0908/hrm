@@ -1,10 +1,9 @@
 package com.project.hrm.auth.service.impl;
 
-import com.project.hrm.auth.dto.AccountCreateDTO;
-import com.project.hrm.auth.dto.AccountDTO;
-import com.project.hrm.auth.dto.AuthenticationDTO;
-import com.project.hrm.auth.dto.FormLoginDTO;
+import com.project.hrm.auth.dto.*;
 import com.project.hrm.auth.util.LoginAttemptService;
+import com.project.hrm.auth.util.OtpService;
+import com.project.hrm.common.service.MailService;
 import com.project.hrm.department.entity.Role;
 import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.auth.entity.Account;
@@ -14,10 +13,8 @@ import com.project.hrm.auth.mapper.AccountMapper;
 import com.project.hrm.auth.repository.AccountRepository;
 import com.project.hrm.auth.service.AccountService;
 import com.project.hrm.employee.service.EmployeeService;
-import com.project.hrm.department.service.RoleService;
 import com.project.hrm.common.utils.IdGenerator;
 import com.project.hrm.auth.util.JwtTokenUtil;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
@@ -26,8 +23,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 @Slf4j
@@ -41,19 +36,25 @@ public class AccountServiceImpl implements AccountService {
 
     private final EmployeeService employeeService;
     private final LoginAttemptService loginAttemptService;
+    private final OtpService otpService;
+    private final MailService mailService;
 
     public AccountServiceImpl(PasswordEncoder passwordEncoder,
                               JwtTokenUtil jwtTokenUtil,
                               AccountRepository accountRepository,
                               AccountMapper accountMapper,
                               @Lazy EmployeeService employeeService,
-                              LoginAttemptService loginAttemptService) {
+                              LoginAttemptService loginAttemptService,
+                              OtpService otpService,
+                              MailService mailService) {
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenUtil = jwtTokenUtil;
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
         this.employeeService = employeeService;
         this.loginAttemptService = loginAttemptService;
+        this.otpService = otpService;
+        this.mailService = mailService;
     }
 
     /**
@@ -194,17 +195,104 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * Initiates the password recovery process for a user identified by their email address.
+     *
      * @param email the email address of the user requesting password recovery
      * @return an {@link AccountDTO} containing the user's account information
      */
     @Override
-    public AccountDTO forgotPassword(String email) {
-        log.info("Initiating password recovery for email: {}", email);
+    public ForgotPasswordResponseDTO forgotPassword(String email) {
+        log.info("Initiating password reset for email: {}", email);
+
+        // Validate email exists
         Account account = accountRepository.getAccountByEmail(email)
                 .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND));
 
+        // Check if OTP already exists (rate limiting)
+        if (otpService.otpExists(email)) {
+            throw new CustomException(Error.OTP_ALREADY_SENT);
+        }
+        try {
+            // Generate OTP
+            String otp = otpService.generateOtp(email);
 
-        return null;
+            // Send OTP email
+            mailService.sendOtpEmail(email, otp, otpService.getOtpExpiryMinutes());
+
+            log.info("OTP sent successfully to email: {}", email);
+
+            return ForgotPasswordResponseDTO.builder()
+                    .message("OTP has been sent to your email")
+                    .email(email)
+                    .expiryMinutes(otpService.getOtpExpiryMinutes())
+                    .maxAttempts(otpService.getMaxOtpAttempts())
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Failed to send OTP to email: {}", email, e);
+            throw new CustomException(Error.OTP_SEND_FAILED);
+        }
+    }
+
+    /**
+     * Verifies the OTP provided by the user for password recovery.
+     * @param otpVerificationDTO the DTO containing the email and OTP to verify
+     * @return an {@link OtpVerificationResponseDTO} indicating whether the OTP is valid
+     */
+    @Override
+    public OtpVerificationResponseDTO verifyOtp(OtpVerificationDTO otpVerificationDTO) {
+        log.info("Verifying OTP for email: {}", otpVerificationDTO.getEmail());
+
+        // Validate email exists
+        accountRepository.getAccountByEmail(otpVerificationDTO.getEmail())
+                .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND));
+
+        // Validate OTP
+        boolean isValid = otpService.validateOtp(otpVerificationDTO.getEmail(), otpVerificationDTO.getOtp());
+
+        return OtpVerificationResponseDTO.builder()
+                .message(isValid ? "OTP verified successfully" : "Invalid OTP")
+                .email(otpVerificationDTO.getEmail())
+                .isValid(isValid)
+                .build();
+    }
+
+    /**
+     *  Resets the password for a user identified by their email address.
+     *
+     * @param resetPasswordDTO the DTO containing the email, OTP, and new password
+     * @return a success message indicating the password has been reset
+     */
+    @Override
+    public String resetPassword(ResetPasswordDTO resetPasswordDTO) {
+        log.info("Resetting password for email: {}", resetPasswordDTO.getEmail());
+
+        // Validate email exists
+        Account account = accountRepository.getAccountByEmail(resetPasswordDTO.getEmail())
+                .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND));
+
+        // Validate password length
+        if (resetPasswordDTO.getNewPassword().length() < 5) {
+            throw new CustomException(Error.ACCOUNT_PASSWORD_TO_SHORT);
+        }
+
+        try {
+            // Validate OTP
+            // otpService.validateOtp(resetPasswordDTO.getEmail(), resetPasswordDTO.getOtp());
+
+            // Update password
+            account.setPassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()));
+            accountRepository.save(account);
+
+            log.info("Password reset successfully for email: {}", resetPasswordDTO.getEmail());
+
+            return "Password has been reset successfully";
+
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Failed to reset password for email: {}", resetPasswordDTO.getEmail(), e);
+            throw new CustomException(Error.PASSWORD_RESET_FAILED);
+        }
     }
 
     /**
