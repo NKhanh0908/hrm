@@ -1,10 +1,13 @@
 package com.project.hrm.document.repository;
 
 import com.project.hrm.document.entity.DocumentApprovals;
+import com.project.hrm.document.enums.DocumentApprovalsStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface DocumentApprovalsRepository extends JpaRepository<DocumentApprovals,Integer>, JpaSpecificationExecutor<DocumentApprovals> {
     @Query(
@@ -12,4 +15,6 @@ public interface DocumentApprovalsRepository extends JpaRepository<DocumentAppro
             nativeQuery = true
     )
     boolean existsByDocumentsIdAndRequestedById(@Param("documentId") Integer documentId, @Param("requestedById") Integer requestedById);
+
+    List<DocumentApprovals> findByDocumentApprovalsStatus(DocumentApprovalsStatus status);
 }

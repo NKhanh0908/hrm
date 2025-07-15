@@ -26,9 +26,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -55,8 +57,6 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
         Documents document = documentsService.getEntityById(documentApprovalsCreateDTO.getDocumentId());
         documentApprovals.setDocuments(document);
         documentApprovals.setRequestedBy(accountService.getPrincipal());
-
-
 
         log.info(documentApprovals.toString());
         notifyApproversForDocument(document);
@@ -113,6 +113,57 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
             log.error("Invalid status '{}' supplied for TrainingEnrollment ID {}", status, id);
             throw ex;
         }
+        DocumentApprovals saved = documentApprovalsRepository.save(documentApprovals);
+
+        Integer requesterId = saved.getRequestedBy().getId();
+        Integer approverId = saved.getApprovedBy().getId();
+        String documentTitle = saved.getDocuments().getTitle();
+        Integer documentId = saved.getDocuments().getId();
+
+        switch (saved.getDocumentApprovalsStatus()) {
+            case APPROVED -> {
+                notificationService.create(NotificationCreateDTO.builder()
+                        .title("Tài liệu đã được phê duyệt")
+                        .message("Tài liệu '" + documentTitle + "' đã được duyệt bởi "
+                                + saved.getApprovedBy().fullName())
+                        .recipient(requesterId)
+                        .sender(approverId)
+                        .senderType(SenderType.EMPLOYEE)
+                        .notificationType(NotificationType.DOCUMENT_APPROVED.name())
+                        .module("document")
+                        .referenceId(documentId)
+                        .build());
+            }
+            case REJECTED -> {
+                notificationService.create(NotificationCreateDTO.builder()
+                        .title("Tài liệu bị từ chối")
+                        .message("Tài liệu '" + documentTitle + "' đã bị từ chối bởi "
+                                + saved.getApprovedBy().fullName())
+                        .recipient(requesterId)
+                        .sender(approverId)
+                        .senderType(SenderType.EMPLOYEE)
+                        .notificationType(NotificationType.DOCUMENT_REJECTED.name())
+                        .module("document")
+                        .referenceId(documentId)
+                        .build());
+            }
+            case CANCELLED -> {
+                notificationService.create(NotificationCreateDTO.builder()
+                        .title("Yêu cầu phê duyệt bị hủy")
+                        .message("Yêu cầu phê duyệt tài liệu '" + documentTitle + "' đã bị hủy.")
+                        .recipient(requesterId)
+                        .sender(approverId)
+                        .senderType(SenderType.EMPLOYEE)
+                        .notificationType(NotificationType.DOCUMENT_CANCELLED.name())
+                        .module("document")
+                        .referenceId(documentId)
+                        .build());
+            }
+            default -> {
+                // PENDING hoặc trạng thái khác không cần thông báo
+            }
+        }
+
         return documentApprovalsMapper.covertEntityToDTO(documentApprovalsRepository.save(documentApprovals));
     }
 
@@ -142,4 +193,29 @@ public class DocumentApprovalsServiceImpl implements DocumentApprovalsService {
         }
     }
 
+    @Scheduled(cron = "0 0 * * * *")
+    @Transactional
+    public void expirePendingApprovals() {
+        List<DocumentApprovals> pendingApprovals = documentApprovalsRepository.findByDocumentApprovalsStatus(DocumentApprovalsStatus.PENDING);
+
+        for (DocumentApprovals approval : pendingApprovals) {
+            // Thời gian giới hạn: 3 ngày kể từ createdAt
+            LocalDateTime expiredThreshold = approval.getRequestedAt().plusDays(3);
+            if (expiredThreshold.isBefore(LocalDateTime.now())) {
+                approval.setDocumentApprovalsStatus(DocumentApprovalsStatus.EXPIRED);
+                documentApprovalsRepository.save(approval);
+
+                // Gửi thông báo
+                notificationService.create(NotificationCreateDTO.builder()
+                        .title("Yêu cầu phê duyệt đã hết hạn")
+                        .message("Tài liệu '" + approval.getDocuments().getTitle() + "' đã hết hạn phê duyệt.")
+                        .recipient(approval.getRequestedBy().getId())
+                        .senderType(SenderType.SYSTEM)
+                        .notificationType(NotificationType.DOCUMENT_EXPIRED.name())
+                        .module("document")
+                        .referenceId(approval.getDocuments().getId())
+                        .build());
+            }
+        }
+    }
 }

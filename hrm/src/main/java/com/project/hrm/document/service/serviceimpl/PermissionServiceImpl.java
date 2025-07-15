@@ -37,25 +37,92 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public boolean canApproveDocument(Account acc, Integer documentId) {
-        return false;
+        Documents doc = documentsService.getEntityById(documentId);
+        Integer empId = acc.getEmployees().getId();
+        if (hasRole(acc, AccountRole.ADMIN) || hasRole(acc, AccountRole.HR)) {
+            return true;
+        }
+        if (doc.getUploadedBy().getId().equals(empId)) {
+            return true;
+        }
+        switch (doc.getDocumentScope()) {
+            case PERSONAL:
+                return false;
+
+            case DEPARTMENT:
+                Integer uploaderDeptId = doc.getUploadedBy().getRole().getDepartments().getId();
+                Integer userDeptId = acc.getEmployees().getRole().getDepartments().getId();
+                if (!uploaderDeptId.equals(userDeptId)) return false;
+                return hasAccess(empId, documentId, List.of(DocumentAccess.APPROVE, DocumentAccess.FULL_ACCESS));
+
+            case COMPANY:
+                return hasAccess(empId, documentId, List.of(DocumentAccess.APPROVE, DocumentAccess.FULL_ACCESS));
+
+            case RESTRICTED:
+                return hasAccess(empId, documentId, List.of(DocumentAccess.APPROVE, DocumentAccess.FULL_ACCESS));
+        }
+        return hasAccess(empId, documentId, List.of(DocumentAccess.APPROVE, DocumentAccess.FULL_ACCESS));
     }
 
     @Override
     public boolean canViewDocument(Account acc, Integer documentId) {
+        Documents doc = documentsService.getEntityById(documentId);
+        Integer empId = acc.getEmployees().getId();
+        Integer userDeptId = acc.getEmployees().getRole().getDepartments().getId();
+
         if(hasRole(acc, AccountRole.ADMIN) || hasRole(acc, AccountRole.HR)) {
             return true;
         }
-        Documents doc = documentsService.getEntityById(documentId);
-        Integer empId = acc.getEmployees().getId();
+
         if (doc.getUploadedBy().getId().equals(empId)) {
             return true;
+        }
+
+        switch (doc.getDocumentScope()) {
+            case PERSONAL:
+                return false;
+
+            case DEPARTMENT:
+
+                Integer uploaderDeptId = doc.getUploadedBy().getRole().getDepartments().getId();
+                if (!uploaderDeptId.equals(userDeptId)) return false;
+                return hasAccess(empId, documentId, List.of(DocumentAccess.VIEW, DocumentAccess.DOWNLOAD, DocumentAccess.FULL_ACCESS));
+
+            case COMPANY:
+                return hasAccess(empId, documentId, List.of(DocumentAccess.VIEW, DocumentAccess.DOWNLOAD, DocumentAccess.FULL_ACCESS));
+
+            case RESTRICTED:
+                return hasAccess(empId, documentId, List.of(DocumentAccess.VIEW, DocumentAccess.DOWNLOAD, DocumentAccess.FULL_ACCESS));
         }
         return hasAccess(empId, documentId, List.of(DocumentAccess.VIEW, DocumentAccess.DOWNLOAD));
     }
 
     @Override
     public boolean canDownloadDocument(Account acc, Integer documentId) {
-        return false;
+        Documents doc = documentsService.getEntityById(documentId);
+        Integer empId = acc.getEmployees().getId();
+        Integer userDeptId = acc.getEmployees().getRole().getDepartments().getId();
+
+        if(hasRole(acc, AccountRole.ADMIN) || hasRole(acc, AccountRole.HR)) {
+            return true;
+        }
+        if (doc.getUploadedBy().getId().equals(empId)) {
+            return true;
+        }
+
+        switch (doc.getDocumentScope()) {
+            case PERSONAL:
+                return false;
+            case DEPARTMENT:
+                Integer uploaderDeptId = doc.getUploadedBy().getRole().getDepartments().getId();
+                if (!uploaderDeptId.equals(userDeptId)) return false;
+                return hasAccess(empId, documentId, List.of(DocumentAccess.DOWNLOAD, DocumentAccess.FULL_ACCESS));
+            case COMPANY:
+                return hasAccess(empId, documentId, List.of(DocumentAccess.DOWNLOAD, DocumentAccess.FULL_ACCESS));
+            case RESTRICTED:
+                return hasAccess(empId, documentId, List.of(DocumentAccess.DOWNLOAD, DocumentAccess.FULL_ACCESS));
+        }
+        return hasAccess(empId, documentId, List.of(DocumentAccess.DOWNLOAD));
     }
 
     @Override
@@ -65,6 +132,28 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public boolean canDeleteDocument(Account acc, Integer documentId) {
-        return false;
+        Documents doc = documentsService.getEntityById(documentId);
+        Integer empId = acc.getEmployees().getId();
+        if (hasRole(acc, AccountRole.ADMIN) || hasRole(acc, AccountRole.HR)) {
+            return true;
+        }
+        if (doc.getUploadedBy().getId().equals(empId)) {
+            return true;
+        }
+
+        switch (doc.getDocumentScope()) {
+            case PERSONAL:
+                return false;
+            case DEPARTMENT:
+                Integer uploaderDeptId = doc.getUploadedBy().getRole().getDepartments().getId();
+                Integer userDeptId = acc.getEmployees().getRole().getDepartments().getId();
+                if (!uploaderDeptId.equals(userDeptId)) return false;
+                return hasAccess(empId, documentId, List.of(DocumentAccess.FULL_ACCESS));
+            case COMPANY:
+                return hasAccess(empId, documentId, List.of(DocumentAccess.FULL_ACCESS));
+            case RESTRICTED:
+                return hasAccess(empId, documentId, List.of(DocumentAccess.FULL_ACCESS));
+    }
+        return hasAccess(empId, documentId, List.of(DocumentAccess.FULL_ACCESS));
     }
 }
