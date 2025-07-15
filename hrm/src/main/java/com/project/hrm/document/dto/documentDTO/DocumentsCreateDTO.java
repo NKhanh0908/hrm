@@ -29,9 +29,6 @@ public class DocumentsCreateDTO {
     @NotNull(message = "Document type ID is required")
     private Integer documentTypeId;
 
-    @NotNull(message = "Uploader ID is required")
-    private Integer uploadedById;
-
     private Integer departmentId;
 
     private DocumentScope documentScope;
