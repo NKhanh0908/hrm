@@ -83,6 +83,18 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationMapper.covertEntityToDTO(notification);
     }
 
+    /**
+     *
+     * Check if a notification exists by its reference ID.
+     * @param module  the module name to which the notification belongs
+     * @param id the reference ID of the notification
+     * @return true if a notification exists with the given reference ID, false otherwise
+     */
+    @Override
+    public boolean existsNotificationByReferenceId(String module, Integer id) {
+        return notificationRepository.existsNotificationByReferenceId(module, id);
+    }
+
     @Transactional
     @Override
     public List<NotificationDTO> markAllAsRead(Integer recipientId) {

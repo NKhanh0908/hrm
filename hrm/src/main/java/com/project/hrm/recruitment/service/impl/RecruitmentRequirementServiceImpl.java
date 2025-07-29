@@ -1,7 +1,13 @@
 package com.project.hrm.recruitment.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hrm.common.response.PageDTO;
+import com.project.hrm.notification.dto.NotificationCreateDTO;
+import com.project.hrm.notification.enums.SenderType;
+import com.project.hrm.notification.service.NotificationService;
 import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentCreateDTO;
+import com.project.hrm.recruitment.dto.recruitmentDTO.RecruitmentDTO;
 import com.project.hrm.recruitment.dto.recruitmentRequirementDTO.RecruitmentRequirementFilter;
 import com.project.hrm.recruitment.dto.recruitmentRequirementDTO.RecruitmentRequirementsCreateDTO;
 import com.project.hrm.recruitment.dto.recruitmentRequirementDTO.RecruitmentRequirementsDTO;
@@ -19,6 +25,7 @@ import com.project.hrm.department.service.RoleService;
 import com.project.hrm.recruitment.service.RecruitmentService;
 import com.project.hrm.recruitment.specification.RecruitmentRequirementsSpecification;
 import com.project.hrm.common.utils.IdGenerator;
+import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +45,7 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
     private final AccountService accountService;
     private final RoleService roleService;
     private final RecruitmentService recruitmentService;
+    private final NotificationService notificationService;
 
     private final RecruitmentRequirementsMapper recruitmentRequirementsMapper;
 
@@ -46,13 +54,15 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
             AccountService accountService,
             RoleService roleService,
             @Lazy RecruitmentService recruitmentService,
-            RecruitmentRequirementsMapper recruitmentRequirementsMapper
+            RecruitmentRequirementsMapper recruitmentRequirementsMapper,
+            NotificationService notificationService
     ){
         this.recruitmentRequirementsRepository = recruitmentRequirementsRepository;
         this.accountService = accountService;
         this.roleService = roleService;
         this.recruitmentService = recruitmentService;
         this.recruitmentRequirementsMapper = recruitmentRequirementsMapper;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -114,16 +124,15 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
     }
 
     /**
+     * Generates a recruitment based on the provided recruitment requirement ID.
      *
-     *
-     * @param id
+     * @param id the ID of the recruitment requirement for which to generate a recruitment.
      */
     @Override
     public void generateRecruitment(Integer id) {
         RecruitmentCreateDTO recruitmentCreateDTO = new RecruitmentCreateDTO();
         recruitmentCreateDTO.setRecruitmentRequirementId(id);
 
-        recruitmentService.create(recruitmentCreateDTO);
     }
 
     /**
@@ -232,7 +241,35 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
             generateRecruitment(entity.getId());
         }
 
-        return recruitmentRequirementsMapper.toDTO(entity);
+        RecruitmentRequirementsDTO recruitmentRequirementsDTO = recruitmentRequirementsMapper.toDTO(entity);
+
+        getNotificationCreateDTO(recruitmentRequirementsDTO);
+
+        return recruitmentRequirementsDTO;
+    }
+
+    private void getNotificationCreateDTO(RecruitmentRequirementsDTO recruitmentRequirementsDTO) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String metadataJson = null;
+        try {
+            metadataJson = objectMapper.writeValueAsString(recruitmentRequirementsDTO);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        NotificationCreateDTO createDTO = new NotificationCreateDTO();
+        createDTO.setTitle("Recruitment Requirement Update");
+        createDTO.setMessage("Recruitment requirement with ID " + recruitmentRequirementsDTO.getId() + " has been updated. " +
+                "Please check the details for more information.");
+        createDTO.setSender(accountService.getPrincipal().getId());
+        createDTO.setSenderType(SenderType.EMPLOYEE);
+        createDTO.setRecipient(recruitmentRequirementsDTO.getEmployeeId());
+        createDTO.setNotificationType("RECRUITMENT_RESULT");
+        createDTO.setModule("RECRUITMENT");
+        createDTO.setReferenceId(recruitmentRequirementsDTO.getId());
+        createDTO.setMetadata(metadataJson);
+
+        notificationService.create(createDTO);
     }
 
     /**

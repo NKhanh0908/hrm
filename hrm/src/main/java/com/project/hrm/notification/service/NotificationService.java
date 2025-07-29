@@ -12,6 +12,7 @@ public interface NotificationService {
     NotificationDTO getDTOById(Integer id);
     Notification getEntityById(Integer id);
     NotificationDTO markAsRead(Integer id);
+    boolean existsNotificationByReferenceId(String module, Integer id);
     List<NotificationDTO> markAllAsRead(Integer recipientId);
     void delete(Integer id);
     List<NotificationDTO> filter(NotificationFilterDTO notificationFilterDTO, Integer page, Integer size);

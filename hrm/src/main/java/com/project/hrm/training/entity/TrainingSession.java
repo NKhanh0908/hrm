@@ -1,5 +1,6 @@
 package com.project.hrm.training.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.hrm.employee.entity.Employees;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class TrainingSession {
 
     @ManyToOne
     @JoinColumn
+    @JsonBackReference
     private TrainingProgram trainingProgram;
 
     @ManyToOne

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @Builder
@@ -27,5 +28,6 @@ public class NotificationDTO {
     private Integer referenceId;
     private String module;
     private String url;
-    private String metadata;
+    private Map<String, Object> metadata;
+
 }

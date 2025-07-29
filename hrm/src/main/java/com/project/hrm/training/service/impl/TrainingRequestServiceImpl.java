@@ -156,8 +156,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
 
         TrainingRequestDTO trainingRequestDTO = trainingRequestMapper.convertEntityToDTO(trainingRequestRepository.save(trainingRequest));
 
-        NotificationCreateDTO createDTO = getNotificationCreateDTO(trainingRequestDTO);
-        notificationService.create(createDTO);
+        getNotificationCreateDTO(trainingRequestDTO);
 
         if (trainingRequestDTO.getStatus().name().equals(TrainingRequestStatus.APPROVED.name())){
             trainingEnrollmentService.generateTrainingEnroll(trainingRequestDTO.getRequestedProgramId(), trainingRequest.getId());
@@ -166,7 +165,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
         return trainingRequestDTO;
     }
 
-    private NotificationCreateDTO getNotificationCreateDTO(TrainingRequestDTO trainingRequestDTO) {
+    private void getNotificationCreateDTO(TrainingRequestDTO trainingRequestDTO) {
         ObjectMapper objectMapper = new ObjectMapper();
         String metadataJson = null;
         try {
@@ -185,7 +184,11 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
         createDTO.setModule("TRAINING");
         createDTO.setReferenceId(trainingRequestDTO.getId());
         createDTO.setMetadata(metadataJson);
-        return createDTO;
+
+        notificationService.create(createDTO);
+
+        createDTO.setRecipient(trainingRequestDTO.getTargetEmployeeId());
+        notificationService.create(createDTO);
     }
 
 

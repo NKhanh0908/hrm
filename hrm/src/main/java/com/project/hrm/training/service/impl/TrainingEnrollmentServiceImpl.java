@@ -1,11 +1,16 @@
 package com.project.hrm.training.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hrm.auth.service.AccountService;
 import com.project.hrm.common.response.PageDTO;
+import com.project.hrm.notification.dto.NotificationCreateDTO;
+import com.project.hrm.notification.enums.SenderType;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentCreateDTO;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentDTO;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentFilter;
 import com.project.hrm.training.dto.trainingEnrollmentDTO.TrainingEnrollmentUpdateDTO;
+import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestDTO;
 import com.project.hrm.training.dto.trainingSession.TrainingSessionDTO;
 import com.project.hrm.training.dto.trainingSession.TrainingSessionFilter;
 import com.project.hrm.training.entity.TrainingEnrollment;
@@ -149,6 +154,7 @@ public class TrainingEnrollmentServiceImpl implements TrainingEnrollmentService 
 
         if(!trainingEnrollmentRepository.existsActiveEnrollment(saved.getTrainingSession().getId(), saved.getTrainingRequest().getId())){
             trainingRequestService.updateStatus(saved.getTrainingRequest().getId(), "FULFILLED");
+
         }
 
         return trainingEnrollmentMapper.convertEntityToDTO(saved);

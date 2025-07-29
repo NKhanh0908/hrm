@@ -13,6 +13,7 @@ public enum NotificationType {
     EMPLOYEE_TERMINATED,
 
     RECRUITMENT_RESULT,
+    APPLY,
 
     TRAINING_REQUEST_UPDATE,
 

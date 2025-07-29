@@ -25,11 +25,6 @@ public class TrainingRequestCreateDTO {
     @Size(max = 1000, message = "Expected outcome must not exceed 1000 characters")
     private String expectedOutcome;
 
-    @NotNull(message = "Request date is required")
-    private LocalDateTime requestDate;
-
-    private LocalDateTime approvedDate;
-
     @NotBlank(message = "Priority is required")
     @Pattern(
             regexp = "LOW|MEDIUM|HIGH|URGENT",

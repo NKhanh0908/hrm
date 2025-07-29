@@ -1,9 +1,14 @@
 package com.project.hrm.recruitment.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.common.service.MailService;
 import com.project.hrm.employee.service.ContractService;
 import com.project.hrm.employee.service.EmployeeService;
+import com.project.hrm.notification.dto.NotificationCreateDTO;
+import com.project.hrm.notification.enums.SenderType;
+import com.project.hrm.notification.service.NotificationService;
 import com.project.hrm.recruitment.dto.applyDTO.*;
 import com.project.hrm.recruitment.dto.candidateProfileDTO.CandidateProfileDTO;
 import com.project.hrm.recruitment.dto.candidateProfileDTO.CandidateProfileUpdateDTO;
@@ -54,6 +59,7 @@ public class ApplyServiceImpl implements ApplyService {
     private final EmployeeService employeeService;
     private final ContractService contractService;
     private final MailService mailService;
+    private final NotificationService notificationService;
 
     /**
      * Creates a new Apply entity using the provided creation DTO.
@@ -100,7 +106,37 @@ public class ApplyServiceImpl implements ApplyService {
                 candidateProfileMapper.toEntity(candidateProfileDTO));
         apply.setId(IdGenerator.getGenerationId());
 
-        return applyMapper.toDTO(applyRepository.save(apply));
+        ApplyDTO applyDTO = applyMapper.toDTO(apply);
+
+        generateNotification(applyDTO);
+
+        return applyDTO;
+    }
+
+    private void generateNotification(ApplyDTO applyDTO){
+        if(notificationService.existsNotificationByReferenceId("APPLY", applyDTO.getId())) {
+            return;
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String metadataJson = null;
+        try {
+            metadataJson = objectMapper.writeValueAsString(applyDTO);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        NotificationCreateDTO createDTO = new NotificationCreateDTO();
+        createDTO.setTitle("Recruitment Application Update");
+        createDTO.setMessage("Your application for the position has been updated. Please check your profile for details.");
+        createDTO.setSenderType(SenderType.EMPLOYEE);
+        createDTO.setRecipient(applyDTO.getRecruitmentDTO().getRecruitmentRequirementsDTO().getEmployeeId());
+        createDTO.setNotificationType("APPLY");
+        createDTO.setModule("APPLY");
+        createDTO.setReferenceId(applyDTO.getId());
+        createDTO.setMetadata(metadataJson);
+
+        notificationService.create(createDTO);
     }
 
     /**

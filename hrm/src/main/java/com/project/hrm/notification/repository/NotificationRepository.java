@@ -23,4 +23,12 @@ public interface NotificationRepository extends JpaRepository<Notification,Integ
     )
     List<Notification> findAllByRecipientIdAndIsReadFalse(@Param("recipientId") Integer recipientId);
 
+    @Query(value = """
+            select IF(count(*) > 0, true, false)
+            from notification n
+            where n.module = :module
+              and n.metadata ->> '$.id' = :id""", nativeQuery = true)
+    boolean existsNotificationByReferenceId(@Param("module") String module, @Param("id") Integer id);
+
+
 }
