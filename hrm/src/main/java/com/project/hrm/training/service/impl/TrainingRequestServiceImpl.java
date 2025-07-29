@@ -1,8 +1,13 @@
 package com.project.hrm.training.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hrm.auth.service.AccountService;
 import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.service.EmployeeService;
+import com.project.hrm.notification.dto.NotificationCreateDTO;
+import com.project.hrm.notification.enums.SenderType;
+import com.project.hrm.notification.service.NotificationService;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestCreateDTO;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestDTO;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestFilter;
@@ -40,6 +45,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
     private final TrainingProgramService trainingProgramService;
     private final AccountService accountService;
     private final TrainingEnrollmentService trainingEnrollmentService;
+    private final NotificationService notificationService;
 
     private final TrainingRequestMapper trainingRequestMapper;
 
@@ -49,7 +55,8 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
             TrainingProgramService trainingProgramService,
             AccountService accountService,
             TrainingRequestMapper trainingRequestMapper,
-            @Lazy TrainingEnrollmentService trainingEnrollmentService
+            @Lazy TrainingEnrollmentService trainingEnrollmentService,
+            NotificationService notificationService
     ){
         this.trainingRequestRepository = trainingRequestRepository;
         this.employeeService = employeeService;
@@ -57,7 +64,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
         this.accountService = accountService;
         this.trainingEnrollmentService = trainingEnrollmentService;
         this.trainingRequestMapper = trainingRequestMapper;
-
+        this.notificationService = notificationService;
     }
 
     /**
@@ -149,11 +156,36 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
 
         TrainingRequestDTO trainingRequestDTO = trainingRequestMapper.convertEntityToDTO(trainingRequestRepository.save(trainingRequest));
 
+        NotificationCreateDTO createDTO = getNotificationCreateDTO(trainingRequestDTO);
+        notificationService.create(createDTO);
+
         if (trainingRequestDTO.getStatus().name().equals(TrainingRequestStatus.APPROVED.name())){
             trainingEnrollmentService.generateTrainingEnroll(trainingRequestDTO.getRequestedProgramId(), trainingRequest.getId());
         }
 
-        return trainingRequestMapper.convertEntityToDTO(trainingRequestRepository.save(trainingRequest));
+        return trainingRequestDTO;
+    }
+
+    private NotificationCreateDTO getNotificationCreateDTO(TrainingRequestDTO trainingRequestDTO) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String metadataJson = null;
+        try {
+            metadataJson = objectMapper.writeValueAsString(trainingRequestDTO);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        NotificationCreateDTO createDTO = new NotificationCreateDTO();
+        createDTO.setTitle("Training Request Status Update");
+        createDTO.setMessage("Your training request has been updated to " + trainingRequestDTO.getStatus().name() + ".");
+        createDTO.setSender(accountService.getPrincipal().getId());
+        createDTO.setSenderType(SenderType.EMPLOYEE);
+        createDTO.setRecipient(trainingRequestDTO.getEmployeeRequestId());
+        createDTO.setNotificationType("TRAINING_REQUEST_UPDATE");
+        createDTO.setModule("TRAINING");
+        createDTO.setReferenceId(trainingRequestDTO.getId());
+        createDTO.setMetadata(metadataJson);
+        return createDTO;
     }
 
 

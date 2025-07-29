@@ -27,8 +27,8 @@ public class Notification {
     private Employees recipient;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id", nullable = false)
-    private Employees senderId;
+    @JoinColumn(name = "sender_id")
+    private Employees sender;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -12,16 +12,18 @@ import com.project.hrm.notification.mapper.NotificationMapper;
 import com.project.hrm.notification.repository.NotificationRepository;
 import com.project.hrm.notification.service.NotificationService;
 import com.project.hrm.notification.specification.NotificationSpecification;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
@@ -35,17 +37,28 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public NotificationDTO create(NotificationCreateDTO notificationCreateDTO) {
+        log.info("Creating notification: {}", notificationCreateDTO);
+
         Notification notification = notificationMapper.covertCreateDTOToEntity(notificationCreateDTO);
         notification.setId(IdGenerator.getGenerationId());
+
+        if(notificationCreateDTO.getSender() != null) {
+            Employees sender = employeeService.getEntityById(notificationCreateDTO.getSender());
+            notification.setSender(sender);
+        }
 
         Employees recipient = employeeService.getEntityById(notificationCreateDTO.getRecipient());
         notification.setRecipient(recipient);
 
+        log.info("Notification save: {}", notification);
+
         Notification savedNotification = notificationRepository.save(notification);
 
-        // Gửi thông báo đến người dùng
-        pushNotificationToUser(recipient, savedNotification);
-        return notificationMapper.covertEntityToDTO(savedNotification);
+        NotificationDTO notificationDTO = notificationMapper.covertEntityToDTO(savedNotification);
+
+        pushNotificationToUser(recipient, notificationDTO);
+
+        return notificationDTO;
     }
 
     @Transactional
@@ -87,7 +100,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.deleteById(id);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<NotificationDTO> filter(NotificationFilterDTO notificationFilterDTO, Integer page, Integer size) {
         Specification<Notification> specification = NotificationSpecification.filter(notificationFilterDTO);
@@ -96,7 +109,7 @@ public class NotificationServiceImpl implements NotificationService {
                 notificationRepository.findAll(specification, pageable).getContent());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<NotificationDTO> getNotificationsForCurrentEmployee() {
         Employees currentEmployee = accountService.getPrincipal();
@@ -104,8 +117,7 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationMapper.convertPageToListDTO(notifications);
     }
 
-    public void pushNotificationToUser(Employees recipient, Notification notification) {
-        NotificationDTO notificationDTO = notificationMapper.covertEntityToDTO(notification);
+    private void pushNotificationToUser(Employees recipient, NotificationDTO notificationDTO) {
         String account = accountService.getUsernameByEmployeeId(recipient.getId());
         messagingTemplate.convertAndSendToUser(
                 account,

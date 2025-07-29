@@ -33,13 +33,13 @@ public class NotificationMapper {
                 .title(notification.getTitle())
                 .message(notification.getMessage())
                 .recipientId(notification.getRecipient().getId())
-                .senderId(notification.getSenderId().getId())
+                .senderId(notification.getSender() != null ? notification.getSender().getId() : null)
                 .notificationType(notification.getNotificationType())
                 .senderType(notification.getSenderType())
                 .isRead(notification.isRead())
                 .createdAt(notification.getCreatedAt())
                 .module(notification.getModule())
-                .referenceId(notification.getReferenceId())
+                .referenceId(notification.getReferenceId() != null ? notification.getReferenceId() : null)
                 .metadata(notification.getMetadata())
                 .build();
     }
