@@ -23,6 +23,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 @Slf4j
@@ -82,21 +84,21 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountRepository.findByUsername(name)
                     .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND));
 
-//            String ip = RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes
-//                    ? ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getRemoteAddr()
-//                    : "unknown";
-//            String key = name + ":" + ip;
+            String ip = RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes
+                    ? ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getRemoteAddr()
+                    : "unknown";
+            String key = name + ":" + ip;
 
-            if (loginAttemptService.isBlocked(name)) {
+            if (loginAttemptService.isBlocked(key)) {
                 throw new CustomException(Error.ACCOUNT_LOCKED_TEMPORARILY);
             }
 
             log.info("Account: {}", account);
 
             if (!passwordEncoder.matches(formLoginDTO.getPassword(), account.getPassword())) {
-                loginAttemptService.loginFailed(name);
+                loginAttemptService.loginFailed(key);
 
-                int remaining = loginAttemptService.getRemainingAttempts(name);
+                int remaining = loginAttemptService.getRemainingAttempts(key);
                 log.warn("Login attempt failed for user: {}, remaining attempts: {}", name, remaining);
                 if (remaining <= 0) {
                     throw new CustomException(Error.ACCOUNT_LOCKED_TEMPORARILY);
@@ -163,7 +165,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * @return
+     *  Retrieves the currently authenticated user's account information.
+     *
+     * @return the {@link Account} of the currently authenticated user
      */
     @Override
     public Account getAccountAuth() {
