@@ -1,6 +1,8 @@
 package com.project.hrm.notification.enums;
 
 public enum NotificationType {
+    GLOBAL_ANNOUNCEMENT,
+
     NEW_APPLY,
 
     PAYROLL_APPROVED,

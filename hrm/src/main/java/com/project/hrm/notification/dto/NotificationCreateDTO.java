@@ -24,10 +24,8 @@ public class NotificationCreateDTO {
     @Size(max = 255, message = "Title must not exceed 255 characters")
     private String message;
 
-    @NotNull(message = "Sender ID is required")
     private Integer sender;
 
-    @NotNull(message = "Sender type is required")
     private SenderType senderType;
 
     @NotNull(message = "Recipient ID is required")

@@ -13,6 +13,8 @@ import java.util.List;
 public interface NotificationService {
     NotificationDTO create(NotificationCreateDTO notificationCreateDTO);
 
+    NotificationDTO createGlobalNotification(NotificationCreateDTO notificationCreateDTO);
+
     NotificationDTO getDTOById(Integer id);
 
     Notification getEntityById(Integer id);
@@ -21,7 +23,7 @@ public interface NotificationService {
 
     Notification existsNotificationByReferenceId(String module, Integer id);
 
-    List<NotificationDTO> markAllAsRead(Integer recipientId);
+    void markAllAsRead(Integer recipientId);
 
     void delete(Integer id);
 

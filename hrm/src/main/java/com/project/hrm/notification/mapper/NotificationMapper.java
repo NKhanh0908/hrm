@@ -26,8 +26,8 @@ public class NotificationMapper {
                 .senderType(notificationCreateDTO.getSenderType())
                 .isRead(false)
                 .createdAt(LocalDateTime.now())
-                .module(notificationCreateDTO.getModule())
-                .metadata(notificationCreateDTO.getMetadata())
+                .module(notificationCreateDTO.getModule() != null ? notificationCreateDTO.getModule() : null)
+                .metadata(notificationCreateDTO.getMetadata() != null ? notificationCreateDTO.getMetadata() : null)
                 .referenceId(notificationCreateDTO.getReferenceId() != null ? notificationCreateDTO.getReferenceId() : null)
                 .build();
     }

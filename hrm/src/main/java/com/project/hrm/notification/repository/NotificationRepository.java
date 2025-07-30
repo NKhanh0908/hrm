@@ -5,6 +5,7 @@ import com.project.hrm.employee.entity.Employees;
 import com.project.hrm.notification.entity.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -29,6 +30,14 @@ public interface NotificationRepository extends JpaRepository<Notification,Integ
             where n.module = :module
               and n.metadata ->> '$.id' = :id""", nativeQuery = true)
     Notification existsNotificationByReferenceId(@Param("module") String module, @Param("id") Integer id);
+
+
+    @Modifying
+    @Query(
+            value = "UPDATE notification n SET n.is_read = true WHERE n.recipient_id = :recipientId",
+            nativeQuery = true
+    )
+    void markAllAsRead(@Param("recipientId") Integer recipientId);
 
 
 }

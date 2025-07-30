@@ -124,9 +124,9 @@ public class NotificationController {
                     @ApiResponse(responseCode = "404", description = "Recipient not found")
             }
     )
-    public ResponseEntity<APIResponse<List<NotificationDTO>>> markAllAsRead(@RequestParam Integer recipientId, HttpServletRequest request) {
-        List<NotificationDTO> result = notificationService.markAllAsRead(recipientId);
-        return ResponseEntity.ok(new APIResponse<>(true, "All notifications marked as read successfully", result, null, request.getRequestURI()));
+    public ResponseEntity<APIResponse<String>> markAllAsRead(@RequestParam Integer recipientId, HttpServletRequest request) {
+        notificationService.markAllAsRead(recipientId);
+        return ResponseEntity.ok(new APIResponse<>(true, "All notifications marked as read successfully", "Successfully mark all as read notification", null, request.getRequestURI()));
     }
 
     @DeleteMapping("/{notificationId}")
