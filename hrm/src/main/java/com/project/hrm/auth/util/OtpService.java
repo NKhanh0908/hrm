@@ -25,8 +25,8 @@ public class OtpService {
 
     public String generateOtp(String email) {
         String otp = generateRandomOtp();
-        String otpKey = RedisKeys.OTP_PREFIX + email;
-        String attemptKey = RedisKeys.OTP_ATTEMPT_PREFIX + email;
+        String otpKey = RedisKeys.otpKey(email);
+        String attemptKey = RedisKeys.otpAttemptKey(email);
 
         // Store OTP with expiry
         redisTemplate.opsForValue().set(otpKey, otp, Duration.ofMinutes(OTP_EXPIRY_MINUTES));
@@ -39,8 +39,8 @@ public class OtpService {
     }
 
     public boolean validateOtp(String email, String inputOtp) {
-        String otpKey = RedisKeys.OTP_PREFIX + email;
-        String attemptKey = RedisKeys.OTP_ATTEMPT_PREFIX + email;
+        String otpKey = RedisKeys.otpKey(email);
+        String attemptKey = RedisKeys.otpAttemptKey(email);
 
         // Check if OTP exists and not expired
         String storedOtp = redisTemplate.opsForValue().get(otpKey);
@@ -78,20 +78,20 @@ public class OtpService {
     }
 
     public boolean otpExists(String email) {
-        String otpKey = RedisKeys.OTP_PREFIX + email;
+        String otpKey = RedisKeys.otpKey(email);
         return Boolean.TRUE.equals(redisTemplate.hasKey(otpKey));
     }
 
     public int getRemainingAttempts(String email) {
-        String attemptKey = RedisKeys.OTP_ATTEMPT_PREFIX + email;
+        String attemptKey = RedisKeys.otpAttemptKey(email);
         String attemptCountStr = redisTemplate.opsForValue().get(attemptKey);
         int attemptCount = attemptCountStr != null ? Integer.parseInt(attemptCountStr) : 0;
         return Math.max(0, MAX_OTP_ATTEMPTS - attemptCount);
     }
 
     public void removeOtp(String email) {
-        String otpKey = RedisKeys.OTP_PREFIX + email;
-        String attemptKey = RedisKeys.OTP_ATTEMPT_PREFIX + email;
+        String otpKey = RedisKeys.otpKey(email);
+        String attemptKey = RedisKeys.otpAttemptKey(email);
         redisTemplate.delete(otpKey);
         redisTemplate.delete(attemptKey);
         log.info("OTP removed for email: {}", email);
