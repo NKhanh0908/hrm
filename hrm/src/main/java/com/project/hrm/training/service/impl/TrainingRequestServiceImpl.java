@@ -1,12 +1,8 @@
 package com.project.hrm.training.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hrm.auth.service.AccountService;
 import com.project.hrm.common.response.PageDTO;
 import com.project.hrm.employee.service.EmployeeService;
-import com.project.hrm.notification.dto.NotificationCreateDTO;
-import com.project.hrm.notification.enums.SenderType;
 import com.project.hrm.notification.service.NotificationService;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestCreateDTO;
 import com.project.hrm.training.dto.trainingRequestDTO.TrainingRequestDTO;
@@ -156,7 +152,7 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
 
         TrainingRequestDTO trainingRequestDTO = trainingRequestMapper.convertEntityToDTO(trainingRequestRepository.save(trainingRequest));
 
-        getNotificationCreateDTO(trainingRequestDTO);
+        notificationService.sendTrainingRequest(trainingRequestDTO);
 
         if (trainingRequestDTO.getStatus().name().equals(TrainingRequestStatus.APPROVED.name())){
             trainingEnrollmentService.generateTrainingEnroll(trainingRequestDTO.getRequestedProgramId(), trainingRequest.getId());
@@ -164,33 +160,6 @@ public class TrainingRequestServiceImpl implements TrainingRequestService {
 
         return trainingRequestDTO;
     }
-
-    private void getNotificationCreateDTO(TrainingRequestDTO trainingRequestDTO) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String metadataJson = null;
-        try {
-            metadataJson = objectMapper.writeValueAsString(trainingRequestDTO);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        NotificationCreateDTO createDTO = new NotificationCreateDTO();
-        createDTO.setTitle("Training Request Status Update");
-        createDTO.setMessage("Your training request has been updated to " + trainingRequestDTO.getStatus().name() + ".");
-        createDTO.setSender(accountService.getPrincipal().getId());
-        createDTO.setSenderType(SenderType.EMPLOYEE);
-        createDTO.setRecipient(trainingRequestDTO.getEmployeeRequestId());
-        createDTO.setNotificationType("TRAINING_REQUEST_UPDATE");
-        createDTO.setModule("TRAINING");
-        createDTO.setReferenceId(trainingRequestDTO.getId());
-        createDTO.setMetadata(metadataJson);
-
-        notificationService.create(createDTO);
-
-        createDTO.setRecipient(trainingRequestDTO.getTargetEmployeeId());
-        notificationService.create(createDTO);
-    }
-
 
     /**
      * Retrieves a {@link TrainingRequest} entity by its ID.

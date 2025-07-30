@@ -33,6 +33,7 @@ public class RecruitmentMapper {
                         recruitmentRequirementsMapper.toDTO(recruitment.getRecruitmentRequirements()))
                 .employeeApproveId(recruitment.getApproveBy().getId())
                 .employeeApproveName(recruitment.getApproveBy().fullName())
+
                 .build();
     }
 

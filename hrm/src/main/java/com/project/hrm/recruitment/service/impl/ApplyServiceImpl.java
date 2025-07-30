@@ -108,35 +108,9 @@ public class ApplyServiceImpl implements ApplyService {
 
         ApplyDTO applyDTO = applyMapper.toDTO(apply);
 
-        generateNotification(applyDTO);
+        notificationService.sendApply(applyDTO);
 
         return applyDTO;
-    }
-
-    private void generateNotification(ApplyDTO applyDTO){
-        if(notificationService.existsNotificationByReferenceId("APPLY", applyDTO.getId())) {
-            return;
-        }
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String metadataJson = null;
-        try {
-            metadataJson = objectMapper.writeValueAsString(applyDTO);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        NotificationCreateDTO createDTO = new NotificationCreateDTO();
-        createDTO.setTitle("Recruitment Application Update");
-        createDTO.setMessage("Your application for the position has been updated. Please check your profile for details.");
-        createDTO.setSenderType(SenderType.EMPLOYEE);
-        createDTO.setRecipient(applyDTO.getRecruitmentDTO().getRecruitmentRequirementsDTO().getEmployeeId());
-        createDTO.setNotificationType("APPLY");
-        createDTO.setModule("APPLY");
-        createDTO.setReferenceId(applyDTO.getId());
-        createDTO.setMetadata(metadataJson);
-
-        notificationService.create(createDTO);
     }
 
     /**

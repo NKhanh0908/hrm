@@ -243,33 +243,9 @@ public class RecruitmentRequirementServiceImpl implements RecruitmentRequirement
 
         RecruitmentRequirementsDTO recruitmentRequirementsDTO = recruitmentRequirementsMapper.toDTO(entity);
 
-        getNotificationCreateDTO(recruitmentRequirementsDTO);
+        notificationService.sendRecruitmentRequest(recruitmentRequirementsDTO);
 
         return recruitmentRequirementsDTO;
-    }
-
-    private void getNotificationCreateDTO(RecruitmentRequirementsDTO recruitmentRequirementsDTO) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String metadataJson = null;
-        try {
-            metadataJson = objectMapper.writeValueAsString(recruitmentRequirementsDTO);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        NotificationCreateDTO createDTO = new NotificationCreateDTO();
-        createDTO.setTitle("Recruitment Requirement Update");
-        createDTO.setMessage("Recruitment requirement with ID " + recruitmentRequirementsDTO.getId() + " has been updated. " +
-                "Please check the details for more information.");
-        createDTO.setSender(accountService.getPrincipal().getId());
-        createDTO.setSenderType(SenderType.EMPLOYEE);
-        createDTO.setRecipient(recruitmentRequirementsDTO.getEmployeeId());
-        createDTO.setNotificationType("RECRUITMENT_RESULT");
-        createDTO.setModule("RECRUITMENT");
-        createDTO.setReferenceId(recruitmentRequirementsDTO.getId());
-        createDTO.setMetadata(metadataJson);
-
-        notificationService.create(createDTO);
     }
 
     /**

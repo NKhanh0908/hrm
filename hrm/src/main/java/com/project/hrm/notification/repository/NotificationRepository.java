@@ -12,23 +12,23 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification,Integer>, JpaSpecificationExecutor<Notification> {
     @Query(
-            value = "SELECT n FROM Notification n WHERE n.recipient.id = :recipientId",
+            value = "SELECT n.* FROM notification n WHERE n.recipient_id = :recipientId ORDER BY n.created_at DESC",
             nativeQuery = true
     )
     List<Notification> findByRecipientId(@Param("recipientId") Integer recipientId);
 
     @Query(
-            value = "SELECT n FROM Notification n WHERE n.recipient.id = :recipientId AND n.isRead = false",
+            value = "SELECT n.* FROM notification n WHERE n.recipient_id = :recipientId AND n.is_read = false ORDER BY n.created_at DESC",
             nativeQuery = true
     )
     List<Notification> findAllByRecipientIdAndIsReadFalse(@Param("recipientId") Integer recipientId);
 
     @Query(value = """
-            select IF(count(*) > 0, true, false)
+            select n.*
             from notification n
             where n.module = :module
               and n.metadata ->> '$.id' = :id""", nativeQuery = true)
-    boolean existsNotificationByReferenceId(@Param("module") String module, @Param("id") Integer id);
+    Notification existsNotificationByReferenceId(@Param("module") String module, @Param("id") Integer id);
 
 
 }

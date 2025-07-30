@@ -17,4 +17,6 @@ public interface StatisticsService {
     List<TotalContractByStatus> getTotalContractByStatus();
 
     List<TotalContractByStatusAndSalary> getTotalContractByStatusAndSalary(ContractStatus contractStatus);
+
+
 }
