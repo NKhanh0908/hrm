@@ -50,6 +50,25 @@ public class NotificationController {
                 .body(new APIResponse<>(true, "Notification created successfully", result, null, request.getRequestURI()));
     }
 
+    @PostMapping("/global")
+    @Operation(
+            summary = "Create a new global notification",
+            description = "Send a global notification",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = NotificationCreateDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Global notification created successfully",
+                            content = @Content(schema = @Schema(implementation = NotificationCreateDTO.class)))
+            }
+    )
+    public ResponseEntity<APIResponse<NotificationDTO>> createGlobalNotification(@RequestBody NotificationCreateDTO notificationCreateDTO, HttpServletRequest request) {
+        NotificationDTO result = notificationService.createGlobalNotification(notificationCreateDTO);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new APIResponse<>(true, "Global notification created successfully", result, null, request.getRequestURI()));
+    }
+
     @GetMapping
     @Operation(
             summary = "Get all notifications",
