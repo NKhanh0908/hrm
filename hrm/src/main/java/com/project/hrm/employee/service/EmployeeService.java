@@ -31,9 +31,9 @@ public interface EmployeeService {
 
     PageDTO<EmployeeDTO> filter(EmployeeFilter employeeFilter, int page, int size);
 
-    PageDTO<EmployeeDTO> filterByDepartmentID(Integer departmentId, int page, int size);
-
     Map<Integer ,Employees> getBatchEmployeeForPayPeriod(List<Integer> employeeIds);
 
     List<Integer> getAllActiveEmployeeIds();
+
+    List<Employees> getAllEmployeesByDepartmentId(Integer departmentId);
 }

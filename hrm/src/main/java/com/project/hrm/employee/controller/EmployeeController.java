@@ -156,34 +156,4 @@ public class EmployeeController {
                 );
         }
 
-
-//        @GetMapping("/filter-by-department")
-//        @Operation(
-//                summary = "Filter employees by department",
-//                description = "Retrieve a paginated list of employees who belong to the given department ID",
-//                parameters = {
-//                        @Parameter(name = "departmentId", description = "ID of the department to filter", required = true),
-//                        @Parameter(name = "page", description = "Page number (0-based)", example = "0"),
-//                        @Parameter(name = "size", description = "Page size", example = "10")
-//                },
-//                responses = {
-//                        @ApiResponse(responseCode = "200", description = "Successfully retrieved employee list", content = @Content(schema = @Schema(implementation = PageDTO.class)))
-//                }
-//        )
-//        public ResponseEntity<APIResponse<PageDTO<EmployeeDTO>>> filterByDepartmentId(
-//                @RequestParam Integer departmentId,
-//                @RequestParam(defaultValue = "0") int page,
-//                @RequestParam(defaultValue = "10") int size,
-//                HttpServletRequest request) {
-//
-//                PageDTO<EmployeeDTO> employees = employeeService.filterByDepartmentID(departmentId, page, size);
-//
-//                return ResponseEntity.ok(new APIResponse<>(
-//                        true,
-//                        "Filter employees by department successfully",
-//                        employees,
-//                        null,
-//                        request.getRequestURI()
-//                ));
-//        }
 }

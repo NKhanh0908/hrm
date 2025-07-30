@@ -5,40 +5,37 @@ import com.project.hrm.notification.entity.Notification;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class NotificationSpecification {
-    public static Specification<Notification> filter(NotificationFilterDTO dto) {
-        return (root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
+    public static Specification<Notification> isRead(Boolean isRead) {
+        return (root, query, cb) -> isRead != null ? cb.equal(root.get("isRead"), isRead) : null;
+    }
 
-            if (dto.getIsRead() != null) {
-                predicates.add(cb.equal(root.get("isRead"), dto.getIsRead()));
-            }
+    public static Specification<Notification> module(String module) {
+        return (root, query, cb) -> module != null ? cb.equal(root.get("module"), module) : null;
+    }
 
-            if (dto.getModule() != null) {
-                predicates.add(cb.equal(root.get("module"), dto.getModule()));
-            }
+    public static Specification<Notification> notificationType(String notificationType) {
+        return (root, query, cb) -> notificationType != null ? cb.equal(root.get("notificationType"), notificationType) : null;
+    }
 
-            if (dto.getNotificationType() != null) {
-                predicates.add(cb.equal(root.get("notificationType"), dto.getNotificationType()));
-            }
+    public static Specification<Notification> recipientId(Integer recipientId) {
+        return (root, query, cb) -> recipientId != null ? cb.equal(root.get("recipient").get("id"), recipientId) : null;
+    }
 
-            if (dto.getRecipientId() != null) {
-                predicates.add(cb.equal(root.get("recipient").get("id"), dto.getRecipientId()));
-            }
+    public static Specification<Notification> senderId(Integer senderId) {
+        return (root, query, cb) -> senderId != null ? cb.equal(root.get("sender").get("id"), senderId) : null;
+    }
 
-            if (dto.getFromDate() != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), dto.getFromDate()));
-            }
+    public static Specification<Notification> fromDate(LocalDateTime fromDate) {
+        return (root, query, cb) -> fromDate != null ? cb.greaterThanOrEqualTo(root.get("createdAt"), fromDate) : null;
+    }
 
-            if (dto.getToDate() != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), dto.getToDate()));
-            }
-
-            return cb.and(predicates.toArray(new Predicate[0]));
-        };
+    public static Specification<Notification> toDate(LocalDateTime toDate) {
+        return (root, query, cb) -> toDate != null ? cb.lessThanOrEqualTo(root.get("createdAt"), toDate) : null;
     }
 }

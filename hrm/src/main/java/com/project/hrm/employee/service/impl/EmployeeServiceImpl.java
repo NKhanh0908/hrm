@@ -79,28 +79,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return result;
     }
 
-    /**
-     * Retrieves a paginated list of employees associated with a given department ID
-     * through their contracts and roles.
-     *
-     * @param departmentId the ID of the department to filter employees by
-     * @param page         the page number (0-based)
-     * @param size         the page size
-     * @return a list of {@link EmployeeDTO} representing the employees in the department
-     */
-    @Transactional(readOnly = true)
-    @Override
-    public PageDTO<EmployeeDTO> filterByDepartmentID(Integer departmentId, int page, int size) {
-        log.info("Filtering employees by department ID: {}, page: {}, size: {}", departmentId, page, size);
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Employees> employeesPage = employeeRepository.findByDepartmentId(departmentId, pageable);
-
-        log.info("Found {} employees in department {}", employeesPage.getTotalElements(), departmentId);
-
-        return employeeMapper.toEmployeePageDTO(employeesPage);
-    }
-
     @Override
     public Map<Integer, Employees> getBatchEmployeeForPayPeriod(List<Integer> employeeIds) {
         log.info("Get batch employee for pay period by {} employees: {}", employeeIds.size(), employeeIds);
@@ -120,10 +98,29 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeesMap;
     }
 
+    /**
+     * Retrieves all active employee IDs.
+     *
+     * @return a list of active employee IDs
+     */
+    @Transactional(readOnly = true)
     @Override
     public List<Integer> getAllActiveEmployeeIds() {
         log.info("Get all active employee ids");
         return employeeRepository.getAllActiveEmployeeIds();
+    }
+
+    /**
+     * Retrieves all employees associated with a specific department ID.
+     * @param departmentId the ID of the department to filter employees by
+     * @return a list of {@link Employees} entities belonging to the specified department
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public List<Employees> getAllEmployeesByDepartmentId(Integer departmentId) {
+        log.info("Get all employees by department id: {}", departmentId);
+
+        return employeeRepository.findByDepartmentId(departmentId);
     }
 
     /**

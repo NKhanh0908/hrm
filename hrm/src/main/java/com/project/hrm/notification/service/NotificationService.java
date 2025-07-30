@@ -15,6 +15,8 @@ public interface NotificationService {
 
     NotificationDTO createGlobalNotification(NotificationCreateDTO notificationCreateDTO);
 
+    void createDepartmentNotification(NotificationCreateDTO notificationCreateDTO);
+
     NotificationDTO getDTOById(Integer id);
 
     Notification getEntityById(Integer id);

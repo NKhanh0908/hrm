@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -84,17 +85,46 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationDTO createGlobalNotification(NotificationCreateDTO notificationCreateDTO) {
         Notification notification = notificationMapper.covertCreateDTOToEntity(notificationCreateDTO);
 
-        String sender = accountService.getAccountAuth().getRole().name();
+        Employees sender = accountService.getPrincipal();
 
         notification.setId(IdGenerator.getGenerationId());
         notification.setNotificationType(NotificationType.GLOBAL_ANNOUNCEMENT);
-        notification.setSenderType(SenderType.valueOf(sender));
+        notification.setSenderType(SenderType.valueOf(sender.getRole().getName()));
+        notification.setSender(sender);
 
         NotificationDTO notificationDTO = notificationMapper.covertEntityToDTO(notificationRepository.save(notification));
 
         pushGlobalNotification(notificationDTO);
 
         return notificationDTO;
+    }
+
+    /**
+     * Creates a department notification that is sent to all employees in a specific department.
+     * @param notificationCreateDTO the data transfer object containing the details of the notification to be created.
+     * @return NotificationDTO containing the details of the created department notification.
+     */
+    @Transactional
+    @Override
+    public void createDepartmentNotification(NotificationCreateDTO notificationCreateDTO) {
+        log.info("Creating department notification: {}", notificationCreateDTO);
+        Notification notification = notificationMapper.covertCreateDTOToEntity(notificationCreateDTO);
+
+        Employees sender = accountService.getPrincipal();
+        notification.setId(IdGenerator.getGenerationId());
+        notification.setNotificationType(NotificationType.DEPARTMENT_ANNOUNCEMENT);
+        notification.setSenderType(SenderType.DEPARTMENT_HEAD);
+        notification.setSender(sender);
+
+        List<Employees> employees = employeeService.getAllEmployeesByDepartmentId(sender.getRole().getDepartments().getId());
+        employees.forEach(employee -> {
+            notification.setRecipient(employee);
+            Notification savedNotification = notificationRepository.save(notification);
+            NotificationDTO notificationDTO = notificationMapper.covertEntityToDTO(savedNotification);
+            if(!employee.getId().equals(sender.getId())) {
+                pushNotificationToUser(employee, notificationDTO);
+            }
+        });
     }
 
     /**
@@ -189,8 +219,21 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<NotificationDTO> filter(NotificationFilterDTO notificationFilterDTO, Integer page, Integer size) {
         log.info("Filtering notifications with criteria: {}, page: {}, size: {}", notificationFilterDTO, page, size);
-        Specification<Notification> specification = NotificationSpecification.filter(notificationFilterDTO);
-        Pageable pageable = PageRequest.of(page, size);
+
+        Employees employees = accountService.getPrincipal();
+
+        Specification<Notification> specification =
+                Specification.where(NotificationSpecification.isRead(notificationFilterDTO.getIsRead()))
+                        .and(NotificationSpecification.module(notificationFilterDTO.getModule()))
+                        .and(NotificationSpecification.notificationType(notificationFilterDTO.getNotificationType().name()))
+                        .and(NotificationSpecification.recipientId(employees.getId())
+                        .and(NotificationSpecification.senderId(notificationFilterDTO.isOwnerSender() ? employees.getId() : null)))
+                        .and(NotificationSpecification.fromDate(notificationFilterDTO.getFromDate()))
+                        .and(NotificationSpecification.toDate(notificationFilterDTO.getToDate()));
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
         return notificationMapper.convertPageToListDTO(
                 notificationRepository.findAll(specification, pageable).getContent());
     }

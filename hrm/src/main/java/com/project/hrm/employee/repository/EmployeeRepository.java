@@ -34,13 +34,8 @@ public interface EmployeeRepository extends JpaRepository<Employees, Integer>, J
                 FROM contracts c
                     INNER JOIN employees e ON c.employee_id = e.id
                     INNER JOIN role r ON c.role_id = r.id
-                WHERE r.departments_id = :departmentId""", countQuery = """
-        SELECT COUNT(*)
-        FROM contracts c
-        INNER JOIN employees e ON c.employee_id = e.id
-        INNER JOIN role r ON c.role_id = r.id
-        WHERE r.departments_id = :departmentId""", nativeQuery = true)
-    Page<Employees> findByDepartmentId(@Param("departmentId") Integer departmentId, Pageable pageable);
+                WHERE r.departments_id = :departmentId""", nativeQuery = true)
+    List<Employees> findByDepartmentId(@Param("departmentId") Integer departmentId);
 
     @Query("SELECT e.id as employeeId, e as Employee " +
             "FROM Employees e WHERE e.id in :employeeIds")

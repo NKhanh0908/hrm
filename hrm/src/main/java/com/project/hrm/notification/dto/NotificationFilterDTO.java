@@ -17,8 +17,8 @@ public class NotificationFilterDTO {
     private Boolean isRead;
     private NotificationType notificationType;
     private SenderType senderType;
-    private Integer recipientId;
     private String module;
     private LocalDateTime fromDate;
     private LocalDateTime toDate;
+    private boolean isOwnerSender;
 }

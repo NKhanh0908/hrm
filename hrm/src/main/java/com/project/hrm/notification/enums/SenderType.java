@@ -6,4 +6,5 @@ public enum SenderType {
     SYSTEM,
     ADMIN,
     HR,
+    DEPARTMENT_HEAD,
 }
