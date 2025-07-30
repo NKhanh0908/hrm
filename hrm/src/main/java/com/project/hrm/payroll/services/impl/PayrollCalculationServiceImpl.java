@@ -334,11 +334,11 @@ public class PayrollCalculationServiceImpl implements PayrollCalculationService 
         log.info("Creating batch payrolls for department {}", departmentId);
 
         // Lấy tất cả nhân viên trong phòng ban
-        PageDTO<EmployeeDTO> employeesPage = employeeService.filterByDepartmentID(departmentId, 0, Short.MAX_VALUE);
-        log.info("Employees page content: {}", employeesPage.getContent());
+        List<Employees> employees = employeeService.getAllEmployeesByDepartmentId(departmentId);
+        log.info("Employees page content: {}", employees);
         // Trích xuất danh sách ID từ Page
-        List<Integer> employeeIds = employeesPage.getContent().stream()
-                .map(EmployeeDTO::getId)
+        List<Integer> employeeIds = employees.stream()
+                .map(Employees::getId)
                 .toList();
 
         log.info("Creating batch payrolls for list employee {}", employeeIds);
