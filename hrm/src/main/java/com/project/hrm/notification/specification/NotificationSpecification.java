@@ -28,7 +28,7 @@ public class NotificationSpecification {
     }
 
     public static Specification<Notification> senderId(Integer senderId) {
-        return (root, query, cb) -> senderId != null ? cb.equal(root.get("sender").get("id"), senderId) : null;
+        return (root, query, cb) -> senderId != null ? cb.and(cb.equal(root.get("sender").get("id"), senderId), (cb.equal(root.get("recipient").get("id"), senderId))) : null;
     }
 
     public static Specification<Notification> fromDate(LocalDateTime fromDate) {

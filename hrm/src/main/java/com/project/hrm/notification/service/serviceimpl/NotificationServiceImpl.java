@@ -226,8 +226,8 @@ public class NotificationServiceImpl implements NotificationService {
                 Specification.where(NotificationSpecification.isRead(notificationFilterDTO.getIsRead()))
                         .and(NotificationSpecification.module(notificationFilterDTO.getModule()))
                         .and(NotificationSpecification.notificationType(notificationFilterDTO.getNotificationType().name()))
-                        .and(NotificationSpecification.recipientId(employees.getId())
-                        .and(NotificationSpecification.senderId(notificationFilterDTO.isOwnerSender() ? employees.getId() : null)))
+                        .and(NotificationSpecification.recipientId(employees.getId()))
+                        .and(NotificationSpecification.senderId(notificationFilterDTO.isOwnerSender() ? employees.getId() : null))
                         .and(NotificationSpecification.fromDate(notificationFilterDTO.getFromDate()))
                         .and(NotificationSpecification.toDate(notificationFilterDTO.getToDate()));
 
