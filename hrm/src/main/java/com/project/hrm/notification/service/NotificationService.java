@@ -29,6 +29,8 @@ public interface NotificationService {
 
     void delete(Integer id);
 
+    void clearAllNotifications(Integer recipientId);
+
     List<NotificationDTO> filter(NotificationFilterDTO notificationFilterDTO, Integer page, Integer size);
 
     List<NotificationDTO> getNotificationsForCurrentEmployee();

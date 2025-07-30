@@ -39,5 +39,7 @@ public interface NotificationRepository extends JpaRepository<Notification,Integ
     )
     void markAllAsRead(@Param("recipientId") Integer recipientId);
 
+    void deleteAllNotificationsByRecipient(Employees recipient);
+
 
 }

@@ -184,6 +184,24 @@ public class NotificationController {
                 .body(new APIResponse<>(true, "Notification deleted successfully", null, null, request.getRequestURI()));
     }
 
+    @DeleteMapping("/clear-all")
+    @Operation(
+            summary = "Clear all notifications for a recipient",
+            description = "Delete all notifications for a specific recipient",
+            parameters = {
+                    @Parameter(name = "recipientId", description = "ID of the recipient whose notifications will be cleared", required = true)
+            },
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "All notifications cleared successfully"),
+                    @ApiResponse(responseCode = "404", description = "Recipient not found")
+            }
+    )
+    public ResponseEntity<APIResponse<Void>> clearAllNotifications(@RequestParam Integer recipientId, HttpServletRequest request) {
+        notificationService.clearAllNotifications(recipientId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(new APIResponse<>(true, "All notifications cleared successfully", null, null, request.getRequestURI()));
+    }
+
     @GetMapping("/notifications-current-employee")
     @Operation(
             summary = "Get notifications for current employee",

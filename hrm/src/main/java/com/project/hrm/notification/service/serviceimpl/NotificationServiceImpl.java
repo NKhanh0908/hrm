@@ -208,6 +208,19 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     /**
+     * @param recipientId
+     */
+    @Override
+    public void clearAllNotifications(Integer recipientId) {
+        log.info("Clearing all notifications for recipient ID: {}", recipientId);
+
+        Employees employees = accountService.getPrincipal();
+
+        notificationRepository.deleteAllNotificationsByRecipient(employees);
+
+    }
+
+    /**
      * Filters notifications based on the provided filter criteria and pagination parameters.
      *
      * @param notificationFilterDTO the filter criteria for notifications.
