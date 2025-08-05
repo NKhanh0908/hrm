@@ -88,7 +88,7 @@ public class ApplyController {
         );
     }
 
-        @PutMapping("/{id}/status")
+        @PatchMapping("/{id}/status")
         @Operation(summary = "Update Apply Status", description = "Set a new status on an existing application", parameters = {
                         @Parameter(name = "id", description = "Application ID", required = true),
                         @Parameter(name = "status", description = "New status", schema = @Schema(implementation = ApplyStatus.class))
@@ -115,7 +115,7 @@ public class ApplyController {
                                 "Interview invitation sent successfully", updated, null, request.getRequestURI()));
         }
 
-    @PutMapping("/reject")
+    @PatchMapping("/reject")
     @Operation(summary = "Reject application",
             description = "Rejects an application by ID and sends a rejection notification email.",
             parameters = @Parameter(name = "applyId", description = "ID of the application to reject", required = true),
@@ -129,7 +129,7 @@ public class ApplyController {
         return ResponseEntity.ok(new APIResponse<>(true, "Reject application successfully", result, null, request.getRequestURI()));
     }
 
-    @PutMapping("/hire")
+    @PatchMapping("/hire")
     @Operation(
             summary = "Hire candidate",
             description = """

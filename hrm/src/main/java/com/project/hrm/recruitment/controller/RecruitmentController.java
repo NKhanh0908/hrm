@@ -128,7 +128,7 @@ public class RecruitmentController {
                         request.getRequestURI()));
         }
 
-        @PutMapping("/update-status")
+        @PatchMapping("/update-status")
         @Operation(
                 summary = "Update recruitment status",
                 description = "Update the status of a recruitment by its ID. Status can be OPEN, CLOSE, etc.",

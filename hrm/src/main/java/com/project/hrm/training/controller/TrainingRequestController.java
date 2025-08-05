@@ -62,7 +62,7 @@ public class TrainingRequestController {
         return ResponseEntity.ok(new APIResponse<>(true, "Training request updated successfully", result, null, request.getRequestURI()));
     }
 
-    @PutMapping("/update-status")
+    @PatchMapping("/update-status")
     @Operation(
             summary = "Update training request status",
             description = "Updates the status of a specific training request by its ID.",

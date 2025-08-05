@@ -103,7 +103,7 @@ public class RecruitmentRequirementsController {
                 );
         }
 
-        @PutMapping("/{id}/status")
+        @PatchMapping("/{id}/status")
         @Operation(summary = "Update Requirement Status", description = "Set a new status on an existing recruitment requirement", parameters = {
                         @Parameter(name = "id", description = "Requirement ID", required = true),
                         @Parameter(name = "status", description = "New status", schema = @Schema(implementation = RecruitmentRequirementsStatus.class))

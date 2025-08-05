@@ -72,7 +72,7 @@ public class TrainingEnrollmentController {
                         result, null, request.getRequestURI()));
     }
 
-    @PutMapping("/update-status")
+    @PatchMapping("/update-status")
     @Operation(
             summary     = "Update enrollment status",
             description = "Change the status of an enrollment by ID.",
