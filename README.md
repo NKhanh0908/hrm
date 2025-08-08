@@ -72,6 +72,7 @@ hrm/
 
 - Cấu trúc Module
 
+```
 |__ employee/
 │   ├── controller/     # REST Controllers
 │   ├── dto/            # Data Transfer Objects
@@ -90,6 +91,7 @@ hrm/
 │   |    └── impl/      # Implement service
 │   └── specification/  # Specification Excutor
 └──../
+```
 
 ### 🏢 Quản lý Tổ chức
 - Quản lý phòng ban
@@ -100,6 +102,7 @@ hrm/
 
 - Cấu trúc Module
 
+```
 |__ department/
 │   ├── controller/     # REST Controllers
 │   ├── dto/            # Data Transfer Objects
@@ -112,6 +115,7 @@ hrm/
 │   |    └── impl/      # Implement service
 │   └── specification/  # Specification Excutor
 └──../
+```
 
 ### 📋 Tuyển dụng
 - Quản lý yêu cầu tuyển dụng
@@ -126,6 +130,7 @@ hrm/
 
 - Cấu trúc module
 
+```
 |__ recruitment/
 │   ├── controller/     # REST Controllers
 │   ├── dto/            # Data Transfer Objects
@@ -142,6 +147,7 @@ hrm/
 │   |    └── impl/      # Implement service
 │   └── specifications/ # Specification Excutor
 └── ../
+```
 
 ### 💰 Tính lương
 - Quản lý chu kỳ lương
@@ -156,6 +162,7 @@ hrm/
 
 - Cấu trúc module
 
+```
 |__ payRoll/   # Quy định hệ thống
 │   ├── configuration/     # Config module
 │   ├── controller/     # REST Controllers
@@ -185,6 +192,7 @@ hrm/
 │   ├── service/        # Business Logic
 │   │    └── impl/      # Implement service
 └── ../
+```
 
 ### 🎓 Đào tạo
 - Quản lý chương trình đào tạo
@@ -196,6 +204,7 @@ hrm/
 
 - Cấu trúc module
 
+```
 |__ training/
 │   ├── controller/     # REST Controllers
 │   ├── dto/            # Data Transfer Objects
@@ -211,6 +220,7 @@ hrm/
 │   ├──  └── impl/      # Implement service
 │   └── specifications/ # Specification Excutor
 └── ../
+```
 
 ### 📄 Quản lý Tài liệu
 - Quản lý tài liệu hệ thống
@@ -222,6 +232,7 @@ hrm/
 
 - Cấu trúc module
 
+```
 |__ document/
 │   ├── controller/     # REST Controllers
 │   ├── dto/            # Data Transfer Objects
@@ -238,6 +249,7 @@ hrm/
 │   ├──  └── impl/      # Implement service
 │   └── specifications/ # Specification Excutor
 └── ../
+```
 
 ### Thông báo
 - Tạo thông báo toàn cục
@@ -248,6 +260,7 @@ hrm/
 
 - Cấu trúc module
 
+```
 |__ notification/
 │   ├── configuration/     # Config socket
 │   ├── controller/     # REST Controllers
@@ -261,6 +274,7 @@ hrm/
 │   ├──  └── impl/      # Implement service
 │   └── specifications/ # Specification Excutor
 └── ../
+```
 
 ### 📈 Thống kê & Báo cáo
 - Thống kê nhân viên theo phòng ban
@@ -270,12 +284,14 @@ hrm/
 
 - Cấu trúc module
 
+```
 |__ notification/
 │   ├── controller/     # REST Controllers
 │   ├── dto/            # Interface save result query statistic
 │   ├── service/        # Business Logic
 │   ├──  └── impl/      # Implement service
 └── ../
+```
 
 ### Quản lý tài khoản
 - Tạo tài khoản nhân viên
@@ -287,6 +303,7 @@ hrm/
 
 - Cấu trúc module
 
+```
 |__ auth/
 │   ├── configuration/     # Config module
 │   │    ├── BruteForceAuthenticationProvider.java
@@ -305,9 +322,11 @@ hrm/
 │   │   ├── LoginAttemptService.java
 │   │   └── OtpService.java
 └── ../
+```
 
 ## Cấu hình hệ thống
 
+```
 |__ common/
 │   ├── configuration/    
 │   │    ├── EmailAsyncConfig.java      # Config Async send Email
@@ -328,6 +347,7 @@ hrm/
 │   │    └── RedisService.java          # Rate Service
 │   └── utils/                          # Utils
 └── ../
+```
 
 ## 🛠️ Công nghệ sử dụng
 
