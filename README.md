@@ -13,57 +13,178 @@
 
 ## 🚀 Giới thiệu
 
-HRM (Human Resource Management) là một hệ thống quản lý nhân sự toàn diện, được phát triển bằng Java Spring Boot. Hệ thống cung cấp các tính năng quản lý nhân viên, tuyển dụng, chấm công, tính lương, đào tạo và đánh giá hiệu suất.
+HRM (Human Resource Management) là một hệ thống quản lý nhân sự của các phòng ban, với BE được phát triển bằng Java Spring Boot. Hệ thống cung cấp các tính năng quản lý nhân viên, quản lý phòng ban, tuyển dụng, chấm công, tính lương và đào tạo.
+
+## 📁 Cấu trúc dự án
+
+```
+hrm/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── project/
+│   │   │           └── hrm/
+|   |   |               |__ auth/                   # Module Auth
+│   │   │               ├── common/                 # Feature global
+│   │   │               ├── department/             # Department module 
+│   │   │               ├── document/               # Document module
+│   │   │               ├── employee/               # Employee module
+│   │   │               ├── notification/           # Notification module
+│   │   │               ├── payroll/                # Payroll module
+│   │   │               ├── recruitment/            # Recruitment module
+│   │   │               ├── statistics/             # Statistics module
+│   │   │               └── systemRegulation/       # System Regulation module            
+│   │   │               └── training/               # Training module            
+│   │   └── resources/
+│   │       |   └── fonts/          # Font Arial
+│   │       |   └── reports/        # Create pdf 
+│   │       ├── application.properties              # Config Spring boot
+│   │       ├── jasperreports_extension.properties  # Config JasperReports. Dùng để tạo và xuất báo cáo
+│   │       ├── logback-spring.xml                  # Logback hệ thống log của spring boot 
+│   └── test/
+├── pom.xml
+├── README.md
+└── .gitignore
+```
 
 ## ✨ Tính năng
 
 ### 👥 Quản lý Nhân viên
 - Quản lý thông tin cá nhân nhân viên
+    + CRUD
+    + Thống kê nhân viên theo phòng ban chức vụ
 - Quản lý người phụ thuộc
-- Quản lý hồ sơ ảnh đại diện
-- Phân quyền và vai trò
+    + CRUD
+    + Kiểm tra người phụ thuộc để giảm thuế
+- Quản lý hợp đồng của nhân viên
+    + CRUD
+    + Tự động ACTIVE, EXPIRED hợp đồng
+    + Tạo báo cáo hợp đồng
+    + Thống kê hợp đồng được ký theo nhân viên, phòng ban.
+- Quản lý điểm danh ca làm việc
+    + Check in
+    + Check out
+    + Thống kê theo tháng để tính lương
+- Quản lý nghỉ phép của nhân viên
+
+![Quản lý Nhân viên](ScreenShot/hrm-v3-module_employee_manager.png)
+
+- Cấu trúc Module
+
+|__ employee/
+│   ├── controller/     # REST Controllers
+│   ├── dto/            # Data Transfer Objects
+│   ├── entity/         # JPA Entities
+│   │   ├── Attendance.java
+│   │   ├── Contracts.java
+│   │   ├── DayOff.java
+│   │   ├── Dependent.java
+│   │   ├── DisciplinaryAction.java
+│   │   ├── Employees.java
+│   │   ├── Reward.java
+│   ├── enums/          # Enumerations
+│   ├── mapper/         # Mapper DTO Entity
+│   ├── repository/     # Data Access Layer
+│   ├── service/        # Business Logic
+│   |    └── impl/      # Implement service
+│   └── specification/  # Specification Excutor
+└──../
 
 ### 🏢 Quản lý Tổ chức
 - Quản lý phòng ban
 - Quản lý vai trò và chức vụ
 - Cấu trúc tổ chức phân cấp
 
+![Quản lý Tổ chức](ScreenShot/hrm-v3-module_department_manager.png)
+
+- Cấu trúc Module
+
+|__ department/
+│   ├── controller/     # REST Controllers
+│   ├── dto/            # Data Transfer Objects
+│   ├── entity/         # JPA Entities
+│   │   ├── Department.java
+│   │   └── Role.java
+│   ├── mapper/         # Mapper DTO Entity
+│   ├── repository/     # Data Access Layer
+│   ├── service/        # Business Logic
+│   |    └── impl/      # Implement service
+│   └── specification/  # Specification Excutor
+└──../
+
 ### 📋 Tuyển dụng
 - Quản lý yêu cầu tuyển dụng
+    + CRUD đơn tuyển dụng (Recruitment Requirements)
+    + CRUD bản tuyển dụng (Recruitment)
 - Quản lý hồ sơ ứng viên
-- Quản lý quy trình phỏng vấn
-- Gửi thư mời phỏng vấn và thông báo tuyển dụng
+    + Lưu hồ sơ ưng viên
+    + Thông báo Email cho ứng viên khi trúng tuyển, phỏng vấn.
+- Quản lý biên bản đánh giá ứng viên
 
 ![Quản lý tuyển dụng](ScreenShot/hrm-v2-module_recruitment.png)
 
-### 📝 Hợp đồng
-- Tạo và quản lý hợp đồng lao động
-- Theo dõi trạng thái hợp đồng
-- Tạo báo cáo hợp đồng
+- Cấu trúc module
 
-![Quản lý hợp đồng](ScreenShot/hrm-v2-module_contract.png)
-
-### ⏰ Chấm công
-- Chấm công check-in/check-out
-- Quản lý ca làm việc
-- Tính toán giờ làm việc và giờ tăng ca
-- Quản lý ngày nghỉ phép
+|__ recruitment/
+│   ├── controller/     # REST Controllers
+│   ├── dto/            # Data Transfer Objects
+│   ├── entity/         # JPA Entities
+│   │   ├── Apply.java
+│   │   ├── CandidateProfile.java
+│   │   ├── Evaluate.java
+│   │   ├── Recruitment.java
+│   │   ├── RecruitmentRequirements.java
+│   ├── enums/          # Enumerations
+│   ├── mapper/         # Mapper DTO Entity
+│   ├── repository/     # Data Access Layer
+│   ├── service/        # Business Logic
+│   |    └── impl/      # Implement service
+│   └── specifications/ # Specification Excutor
+└── ../
 
 ### 💰 Tính lương
 - Quản lý chu kỳ lương
 - Tính toán các thành phần lương
 - Quản lý bảng lương
 - Áp dụng quy định lương
+- Quản lý khen thưởng
+- Quản lý kỷ luật
+- Theo dõi lịch sử khen thưởng/kỷ luật
 
 ![Quản lý Lương](ScreenShot/hrm-v2-module_payroll.png)
 
-### 📊 Đánh giá hiệu suất
-- Quản lý đánh giá hiệu suất
-- Quản lý chi tiết đánh giá
-- Phản hồi từ nhân viên
-- Báo cáo hiệu suất
+- Cấu trúc module
 
-![Đánh giá hiệu suất](ScreenShot/hrm-v2-module_performance_employee.png)
+|__ payRoll/   # Quy định hệ thống
+│   ├── configuration/     # Config module
+│   ├── controller/     # REST Controllers
+│   ├── dto/            # Data Transfer Objects
+│   ├── entity/         # JPA Entities
+│   │   ├── Approvals.java
+│   │   ├── PayPeriods.java
+│   │   ├── PayrollComponents.java
+│   │   ├── Payrolls.java
+│   │   └── Regulations.java
+│   ├── enums/          # Enumerations
+│   ├── mapper/         # Mapper DTO Entity
+│   ├── repository/     # Data Access Layer
+│   ├── service/        # Business Logic
+│   ├──  └── impl/      # Implement service
+│   └── specifications/ # Specification Excutor
+│
+|__ systemRegulation/   # Quy định hệ thống
+│   ├── configuration/     # Config module
+│   ├── controller/     # REST Controllers
+│   ├── dto/            # Data Transfer Objects
+│   ├── entity/         # JPA Entities
+│   │   └── SystemRegulation.java
+│   ├── enums/          # Enumerations
+│   ├── mapper/         # Mapper DTO Entity
+│   ├── repository/     # Data Access Layer
+│   ├── service/        # Business Logic
+│   │    └── impl/      # Implement service
+└── ../
 
 ### 🎓 Đào tạo
 - Quản lý chương trình đào tạo
@@ -73,18 +194,73 @@ HRM (Human Resource Management) là một hệ thống quản lý nhân sự to�
 
 ![Quản lý đào tạo](ScreenShot/hrm-v2-module_training_employee.png)
 
+- Cấu trúc module
+
+|__ training/
+│   ├── controller/     # REST Controllers
+│   ├── dto/            # Data Transfer Objects
+│   ├── entity/         # JPA Entities
+│   │   ├── TrainingEnrollment.java
+│   │   ├── TrainingProgram.java
+│   │   ├── TrainingRequest.java
+│   │   └── TrainingSession.java
+│   ├── enums/          # Enumerations
+│   ├── mapper/         # Mapper DTO Entity
+│   ├── repository/     # Data Access Layer
+│   ├── service/        # Business Logic
+│   ├──  └── impl/      # Implement service
+│   └── specifications/ # Specification Excutor
+└── ../
+
 ### 📄 Quản lý Tài liệu
 - Quản lý tài liệu hệ thống
 - Phân quyền truy cập tài liệu
 - Quy trình phê duyệt tài liệu
 - Lưu trữ và tìm kiếm tài liệu
 
+![Quản lý Tài liệu](ScreenShot/hrm-v2-module_training_employee.png)
 
+- Cấu trúc module
 
-### 🏆 Khen thưởng & Kỷ luật
-- Quản lý khen thưởng
-- Quản lý kỷ luật
-- Theo dõi lịch sử khen thưởng/kỷ luật
+|__ document/
+│   ├── controller/     # REST Controllers
+│   ├── dto/            # Data Transfer Objects
+│   ├── entity/         # JPA Entities
+│   │   ├── DocumentAccesses.java
+│   │   ├── DocumentApprovals.java
+│   │   ├── DocumentApprover.java
+│   │   ├── Documents.java
+│   │   └── DocumentTypes.java
+│   ├── enums/          # Enumerations
+│   ├── mapper/         # Mapper DTO Entity
+│   ├── repository/     # Data Access Layer
+│   ├── service/        # Business Logic
+│   ├──  └── impl/      # Implement service
+│   └── specifications/ # Specification Excutor
+└── ../
+
+### Thông báo
+- Tạo thông báo toàn cục
+- Tạo thông báo nội bộ phòng ban
+- Thông báo cho nhân viên trong các module như training, contract, recruitment, ...
+
+![Quản lý Thông báo](ScreenShot/hrm-v3-module_notification_manager.png)
+
+- Cấu trúc module
+
+|__ notification/
+│   ├── configuration/     # Config socket
+│   ├── controller/     # REST Controllers
+│   ├── dto/            # Data Transfer Objects
+│   ├── entity/         # JPA Entities
+│   │   └── Notification.java
+│   ├── enums/          # Enumerations
+│   ├── mapper/         # Mapper DTO Entity
+│   ├── repository/     # Data Access Layer
+│   ├── service/        # Business Logic
+│   ├──  └── impl/      # Implement service
+│   └── specifications/ # Specification Excutor
+└── ../
 
 ### 📈 Thống kê & Báo cáo
 - Thống kê nhân viên theo phòng ban
@@ -92,9 +268,70 @@ HRM (Human Resource Management) là một hệ thống quản lý nhân sự to�
 - Báo cáo tài chính
 - Dashboard tổng quan
 
+- Cấu trúc module
+
+|__ notification/
+│   ├── controller/     # REST Controllers
+│   ├── dto/            # Interface save result query statistic
+│   ├── service/        # Business Logic
+│   ├──  └── impl/      # Implement service
+└── ../
+
+### Quản lý tài khoản
+- Tạo tài khoản nhân viên
+- Đăng nhập
+- Quên mật khẩu
+- Ngăn chặn spam dò mật khẩu 
+
+![Quản lý Thông báo](ScreenShot/hrm-v3-module_auth_manager.png)
+
+- Cấu trúc module
+
+|__ auth/
+│   ├── configuration/     # Config module
+│   │    ├── BruteForceAuthenticationProvider.java
+│   │    └── JwtAuthenticationFilter.java
+│   ├── controller/     # REST Controllers
+│   ├── dto/            # Data Transfer Objects
+│   ├── entity/         # JPA Entities
+│   │   └── Account.java
+│   ├── enums/          # Enumerations
+│   ├── mapper/         # Mapper DTO Entity
+│   ├── repository/     # Data Access Layer
+│   ├── service/        # Business Logic
+│   │    └── impl/      # Implement service
+│   ├── util/           # Util
+│   │   ├── JwtTokenUtil.java
+│   │   ├── LoginAttemptService.java
+│   │   └── OtpService.java
+└── ../
+
+## Cấu hình hệ thống
+
+|__ common/
+│   ├── configuration/    
+│   │    ├── EmailAsyncConfig.java      # Config Async send Email
+│   │    ├── JasperReportsConfig.java   # Config export reports
+│   │    ├── RateLimitFilter.java       # Rate Limiting API
+│   │    ├── RateLimitService.java
+│   │    ├── SwaggerConfig.java         # Config Swagger
+│   │    └── WebConfig.java             # Config Cors Mappings
+│   ├── exceptions/                     # Handle Exception
+│   ├── logging/                        # Logging 
+│   ├── redis/                          # Config Redis template and redis key
+│   ├── response/                       # Response Api
+│   ├── security/                       # Security 
+│   ├── service/                        # Service 
+│   │    ├── impl/
+│   │    ├── FileService.java           # Upload file
+│   │    ├── MailService.java           # Send Email
+│   │    └── RedisService.java          # Rate Service
+│   └── utils/                          # Utils
+└── ../
+
 ## 🛠️ Công nghệ sử dụng
 
-- **Backend**: Java 17, Spring Boot 3.x
+- **Backend**: Java 21, Spring Boot 3.x
 - **Database**: MySQL
 - **Security**: Spring Security, JWT
 - **Documentation**: Swagger/OpenAPI 3
@@ -106,7 +343,7 @@ HRM (Human Resource Management) là một hệ thống quản lý nhân sự to�
 ## 🔧 Cài đặt
 
 ### Yêu cầu hệ thống
-- Java 17 hoặc cao hơn
+- Java 21 hoặc cao hơn
 - Maven 3.8+
 - MySQL 8.0+
 
@@ -167,6 +404,12 @@ spring.servlet.multipart.max-request-size=10MB
 cloudinary.cloud-name=your_cloud_name
 cloudinary.api-key=your_api_key
 cloudinary.api-secret=your_api_secret
+
+# Redis
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+spring.data.redis.password=
+spring.data.redis.database=0
 ```
 
 ### Biến môi trường
@@ -207,40 +450,6 @@ http://localhost:8080/api/v1/swagger-ui/swagger-ui/index.html
 - `/payroll/calculate` - Tính lương
 - `/payroll/employee/{id}` - Bảng lương nhân viên
 
-## 📁 Cấu trúc dự án
-
-```
-hrm/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/
-│   │   │       └── project/
-│   │   │           └── hrm/
-|   |   |               |__ configuration/   # Config
-│   │   │               ├── controllers/     # REST Controllers
-│   │   │               ├── dto/             # Data Transfer Objects
-│   │   │               ├── entities/        # JPA Entities
-│   │   │               ├── enums/           # Enumerations
-│   │   │               ├── exception/       # Exception Handling
-│   │   │               ├── logging/         # Logging 
-│   │   │               ├── mapper/          # Mapper DTO Entity
-│   │   │               ├── repositories/    # Data Access Layer
-│   │   │               ├── services/        # Business Logic
-│   │   │               |    └── impl/          # Implement service
-│   │   │               ├── specifications/  # Specification Excutor
-│   │   │               └── utils/           # Utility Classes
-│   │   └── resources/
-│   │       |   └── fonts/          # Font Arial
-│   │       |   └── reports/        # Create pdf 
-│   │       ├── application.properties
-│   │       ├── jasperreports_extension.properties
-│   │       ├── logback-spring.xml
-│   └── test/
-├── pom.xml
-├── README.md
-└── .gitignore
-```
 
 ## 🔒 Bảo mật
 
@@ -249,7 +458,7 @@ hrm/
 - Phân quyền dựa trên vai trò (Role-based Access Control)
 - Validation đầu vào
 - CORS configuration
-- Rate limiting (khuyến nghị)
+- Rate limiting
 
 ## 📝 Logging
 
