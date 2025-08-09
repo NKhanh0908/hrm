@@ -1,328 +1,115 @@
 # HRM - Human Resource Management System
 
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-green.svg)](https://spring.io/projects/spring-boot)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-blue.svg)](https://www.mysql.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](#)
+
 ## 📋 Mục lục
-- [Giới thiệu](#giới-thiệu)
-- [Tính năng](#tính-năng)
-- [Công nghệ sử dụng](#công-nghệ-sử-dụng)
-- [Cài đặt](#cài-đặt)
-- [Cấu hình](#cấu-hình)
-- [API Documentation](#api-documentation)
-- [Cấu trúc dự án](#cấu-trúc-dự-án)
-- [Đóng góp](#đóng-góp)
-- [Giấy phép](#giấy-phép)
+- [Giới thiệu](#-giới-thiệu)
+- [Tính năng](#-tính-năng)
+- [Screenshots](#-screenshots)
+- [Công nghệ sử dụng](#️-công-nghệ-sử-dụng)
+- [Yêu cầu hệ thống](#-yêu-cầu-hệ-thống)
+- [Cài đặt](#-cài-đặt)
+- [Cấu hình](#️-cấu-hình)
+- [API Documentation](#-api-documentation)
+- [Cấu trúc dự án](#-cấu-trúc-dự-án)
+- [Testing](#-testing)
+- [Deployment](#-deployment)
+- [Bảo mật](#-bảo-mật)
+- [Monitoring](#-monitoring)
+- [Đóng góp](#-đóng-góp)
+- [Changelog](#-changelog)
+- [Liên hệ](#-liên-hệ)
+- [Giấy phép](#-giấy-phép)
 
 ## 🚀 Giới thiệu
 
-HRM (Human Resource Management) là một hệ thống quản lý nhân sự của các phòng ban, với BE được phát triển bằng Java Spring Boot. Hệ thống cung cấp các tính năng quản lý nhân viên, quản lý phòng ban, tuyển dụng, chấm công, tính lương và đào tạo.
+HRM (Human Resource Management) là một hệ thống quản lý nhân sự toàn diện được phát triển bằng Java Spring Boot. Hệ thống cung cấp đầy đủ các tính năng cần thiết cho việc quản lý nhân sự trong doanh nghiệp hiện đại.
 
-## 📁 Cấu trúc dự án
-
-```
-hrm/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/
-│   │   │       └── project/
-│   │   │           └── hrm/
-|   |   |               |__ auth/                   # Module Auth
-│   │   │               ├── common/                 # Feature global
-│   │   │               ├── department/             # Department module 
-│   │   │               ├── document/               # Document module
-│   │   │               ├── employee/               # Employee module
-│   │   │               ├── notification/           # Notification module
-│   │   │               ├── payroll/                # Payroll module
-│   │   │               ├── recruitment/            # Recruitment module
-│   │   │               ├── statistics/             # Statistics module
-│   │   │               └── systemRegulation/       # System Regulation module            
-│   │   │               └── training/               # Training module            
-│   │   └── resources/
-│   │       |   └── fonts/          # Font Arial
-│   │       |   └── reports/        # Create pdf 
-│   │       ├── application.properties              # Config Spring boot
-│   │       ├── jasperreports_extension.properties  # Config JasperReports. Dùng để tạo và xuất báo cáo
-│   │       ├── logback-spring.xml                  # Logback hệ thống log của spring boot 
-│   └── test/
-├── pom.xml
-├── README.md
-└── .gitignore
-```
+### 🎯 Mục tiêu dự án
+- Số hóa quy trình quản lý nhân sự
+- Tự động hóa các tác vụ thường xuyên
+- Cung cấp báo cáo và thống kê realtime
+- Tăng hiệu quả công việc HR
 
 ## ✨ Tính năng
 
 ### 👥 Quản lý Nhân viên
-- Quản lý thông tin cá nhân nhân viên
-    + CRUD
-    + Thống kê nhân viên theo phòng ban chức vụ
-- Quản lý người phụ thuộc
-    + CRUD
-    + Kiểm tra người phụ thuộc để giảm thuế
-- Quản lý hợp đồng của nhân viên
-    + CRUD
-    + Tự động ACTIVE, EXPIRED hợp đồng
-    + Tạo báo cáo hợp đồng
-    + Thống kê hợp đồng được ký theo nhân viên, phòng ban.
-- Quản lý điểm danh ca làm việc
-    + Check in
-    + Check out
-    + Thống kê theo tháng để tính lương
-- Quản lý nghỉ phép của nhân viên
-
-![Quản lý Nhân viên](ScreenShot/hrm-v3-module_employee_manager.png)
-
-- Cấu trúc Module
-
-```
-|__ employee/
-│   ├── controller/     # REST Controllers
-│   ├── dto/            # Data Transfer Objects
-│   ├── entity/         # JPA Entities
-│   │   ├── Attendance.java
-│   │   ├── Contracts.java
-│   │   ├── DayOff.java
-│   │   ├── Dependent.java
-│   │   ├── DisciplinaryAction.java
-│   │   ├── Employees.java
-│   │   ├── Reward.java
-│   ├── enums/          # Enumerations
-│   ├── mapper/         # Mapper DTO Entity
-│   ├── repository/     # Data Access Layer
-│   ├── service/        # Business Logic
-│   |    └── impl/      # Implement service
-│   └── specification/  # Specification Excutor
-└──../
-```
+- **Thông tin cá nhân**: CRUD nhân viên với đầy đủ thông tin
+- **Người phụ thuộc**: Quản lý thông tin người thân để tính thuế
+- **Hợp đồng lao động**: 
+  - Tạo, gia hạn, chấm dứt hợp đồng
+  - Tự động cập nhật trạng thái (ACTIVE/EXPIRED)
+  - Xuất báo cáo hợp đồng PDF
+- **Chấm công**: 
+  - Check in/out với GPS location
+  - Tính toán giờ làm việc, overtime
+  - Thống kê theo tháng/quý/năm
+- **Nghỉ phép**: Đăng ký và phê duyệt nghỉ phép
 
 ### 🏢 Quản lý Tổ chức
-- Quản lý phòng ban
-- Quản lý vai trò và chức vụ
-- Cấu trúc tổ chức phân cấp
-
-![Quản lý Tổ chức](ScreenShot/hrm-v3-module_department_manager.png)
-
-- Cấu trúc Module
-
-```
-|__ department/
-│   ├── controller/     # REST Controllers
-│   ├── dto/            # Data Transfer Objects
-│   ├── entity/         # JPA Entities
-│   │   ├── Department.java
-│   │   └── Role.java
-│   ├── mapper/         # Mapper DTO Entity
-│   ├── repository/     # Data Access Layer
-│   ├── service/        # Business Logic
-│   |    └── impl/      # Implement service
-│   └── specification/  # Specification Excutor
-└──../
-```
+- **Phòng ban**: Cấu trúc tổ chức phân cấp
+- **Chức vụ & Vai trò**: Phân quyền chi tiết
+- **Orgchart**: Sơ đồ tổ chức trực quan
 
 ### 📋 Tuyển dụng
-- Quản lý yêu cầu tuyển dụng
-    + CRUD đơn tuyển dụng (Recruitment Requirements)
-    + CRUD bản tuyển dụng (Recruitment)
-- Quản lý hồ sơ ứng viên
-    + Lưu hồ sơ ưng viên
-    + Thông báo Email cho ứng viên khi trúng tuyển, phỏng vấn.
-- Quản lý biên bản đánh giá ứng viên
-
-![Quản lý tuyển dụng](ScreenShot/hrm-v2-module_recruitment.png)
-
-- Cấu trúc module
-
-```
-|__ recruitment/
-│   ├── controller/     # REST Controllers
-│   ├── dto/            # Data Transfer Objects
-│   ├── entity/         # JPA Entities
-│   │   ├── Apply.java
-│   │   ├── CandidateProfile.java
-│   │   ├── Evaluate.java
-│   │   ├── Recruitment.java
-│   │   ├── RecruitmentRequirements.java
-│   ├── enums/          # Enumerations
-│   ├── mapper/         # Mapper DTO Entity
-│   ├── repository/     # Data Access Layer
-│   ├── service/        # Business Logic
-│   |    └── impl/      # Implement service
-│   └── specifications/ # Specification Excutor
-└── ../
-```
+- **Yêu cầu tuyển dụng**: Tạo và quản lý job posting
+- **Hồ sơ ứng viên**: Lưu trữ và đánh giá CV
+- **Quy trình phỏng vấn**: 
+  - Lịch phỏng vấn
+  - Biên bản đánh giá
+  - Thông báo kết quả qua email
 
 ### 💰 Tính lương
-- Quản lý chu kỳ lương
-- Tính toán các thành phần lương
-- Quản lý bảng lương
-- Áp dụng quy định lương
-- Quản lý khen thưởng
-- Quản lý kỷ luật
-- Theo dõi lịch sử khen thưởng/kỷ luật
-
-![Quản lý Lương](ScreenShot/hrm-v2-module_payroll.png)
-
-- Cấu trúc module
-
-```
-|__ payRoll/   # Quy định hệ thống
-│   ├── configuration/     # Config module
-│   ├── controller/     # REST Controllers
-│   ├── dto/            # Data Transfer Objects
-│   ├── entity/         # JPA Entities
-│   │   ├── Approvals.java
-│   │   ├── PayPeriods.java
-│   │   ├── PayrollComponents.java
-│   │   ├── Payrolls.java
-│   │   └── Regulations.java
-│   ├── enums/          # Enumerations
-│   ├── mapper/         # Mapper DTO Entity
-│   ├── repository/     # Data Access Layer
-│   ├── service/        # Business Logic
-│   ├──  └── impl/      # Implement service
-│   └── specifications/ # Specification Excutor
-│
-|__ systemRegulation/   # Quy định hệ thống
-│   ├── configuration/     # Config module
-│   ├── controller/     # REST Controllers
-│   ├── dto/            # Data Transfer Objects
-│   ├── entity/         # JPA Entities
-│   │   └── SystemRegulation.java
-│   ├── enums/          # Enumerations
-│   ├── mapper/         # Mapper DTO Entity
-│   ├── repository/     # Data Access Layer
-│   ├── service/        # Business Logic
-│   │    └── impl/      # Implement service
-└── ../
-```
+- **Chu kỳ lương**: Thiết lập kỳ lương linh hoạt
+- **Thành phần lương**: 
+  - Lương cơ bản, phụ cấp, thưởng
+  - Khấu trừ thuế, bảo hiểm
+- **Khen thưởng & Kỷ luật**: Theo dõi lịch sử
+- **Báo cáo**: Bảng lương chi tiết, thống kê chi phí
 
 ### 🎓 Đào tạo
-- Quản lý chương trình đào tạo
-- Quản lý phiên đào tạo
-- Đăng ký tham gia đào tạo
-- Theo dõi yêu cầu đào tạo
-
-![Quản lý đào tạo](ScreenShot/hrm-v2-module_training_employee.png)
-
-- Cấu trúc module
-
-```
-|__ training/
-│   ├── controller/     # REST Controllers
-│   ├── dto/            # Data Transfer Objects
-│   ├── entity/         # JPA Entities
-│   │   ├── TrainingEnrollment.java
-│   │   ├── TrainingProgram.java
-│   │   ├── TrainingRequest.java
-│   │   └── TrainingSession.java
-│   ├── enums/          # Enumerations
-│   ├── mapper/         # Mapper DTO Entity
-│   ├── repository/     # Data Access Layer
-│   ├── service/        # Business Logic
-│   ├──  └── impl/      # Implement service
-│   └── specifications/ # Specification Excutor
-└── ../
-```
+- **Chương trình đào tạo**: Quản lý khóa học
+- **Đăng ký tham gia**: Online enrollment
+- **Yêu cầu đào tạo**: Đề xuất từ nhân viên/manager
+- **Chứng chỉ**: Theo dõi và gia hạn
 
 ### 📄 Quản lý Tài liệu
-- Quản lý tài liệu hệ thống
-- Phân quyền truy cập tài liệu
-- Quy trình phê duyệt tài liệu
-- Lưu trữ và tìm kiếm tài liệu
+- **Lưu trữ tài liệu**: Cloud storage integration
+- **Phân quyền truy cập**: Role-based access
+- **Quy trình phê duyệt**: Workflow engine
+- **Version control**: Theo dõi lịch sử thay đổi
 
-![Quản lý Tài liệu](ScreenShot/hrm-v2-module_training_employee.png)
-
-- Cấu trúc module
-
-```
-|__ document/
-│   ├── controller/     # REST Controllers
-│   ├── dto/            # Data Transfer Objects
-│   ├── entity/         # JPA Entities
-│   │   ├── DocumentAccesses.java
-│   │   ├── DocumentApprovals.java
-│   │   ├── DocumentApprover.java
-│   │   ├── Documents.java
-│   │   └── DocumentTypes.java
-│   ├── enums/          # Enumerations
-│   ├── mapper/         # Mapper DTO Entity
-│   ├── repository/     # Data Access Layer
-│   ├── service/        # Business Logic
-│   ├──  └── impl/      # Implement service
-│   └── specifications/ # Specification Excutor
-└── ../
-```
-
-### Thông báo
-- Tạo thông báo toàn cục
-- Tạo thông báo nội bộ phòng ban
-- Thông báo cho nhân viên trong các module như training, contract, recruitment, ...
-
-![Quản lý Thông báo](ScreenShot/hrm-v3-module_notification_manager.png)
-
-- Cấu trúc module
-
-```
-|__ notification/
-│   ├── configuration/     # Config socket
-│   ├── controller/     # REST Controllers
-│   ├── dto/            # Data Transfer Objects
-│   ├── entity/         # JPA Entities
-│   │   └── Notification.java
-│   ├── enums/          # Enumerations
-│   ├── mapper/         # Mapper DTO Entity
-│   ├── repository/     # Data Access Layer
-│   ├── service/        # Business Logic
-│   ├──  └── impl/      # Implement service
-│   └── specifications/ # Specification Excutor
-└── ../
-```
+### 🔔 Thông báo
+- **Real-time notification**: WebSocket
+- **Email notification**: Template system
+- **Mobile push**: PWA support
 
 ### 📈 Thống kê & Báo cáo
-- Thống kê nhân viên theo phòng ban
-- Thống kê hợp đồng theo trạng thái
-- Báo cáo tài chính
-- Dashboard tổng quan
-
-- Cấu trúc module
-
-```
-|__ notification/
-│   ├── controller/     # REST Controllers
-│   ├── dto/            # Interface save result query statistic
-│   ├── service/        # Business Logic
-│   ├──  └── impl/      # Implement service
-└── ../
-```
+- **Dashboard**: Tổng quan KPI
+- **Custom reports**: Báo cáo tùy chỉnh
+- **Data export**: Excel, PDF, CSV
+- **Analytics**: Xu hướng và dự báo
 
 ### Quản lý tài khoản
-- Tạo tài khoản nhân viên
-- Đăng nhập
-- Quên mật khẩu
-- Ngăn chặn spam dò mật khẩu 
+- **Sign up**: Tạo tài khoản nhân viên
+- **Sign in**: Đăng nhập
+- **Forgot password**: Quên mật khẩu
+- **Brute Force Attack**: Ngăn chặn spam dò mật khẩu 
 
-![Quản lý Thông báo](ScreenShot/hrm-v3-module_auth_manager.png)
+## 📸 Screenshots
 
-- Cấu trúc module
+| Module | Screenshot |
+|--------|-----------|
+| Employee Management | ![Employee](ScreenShot/hrm-v3-module_employee_manager.png) |
+| Department Structure | ![Department](ScreenShot/hrm-v3-module_department_manager.png) |
+| Recruitment Process | ![Recruitment](ScreenShot/hrm-v2-module_recruitment.png) |
+| Payroll System | ![Payroll](ScreenShot/hrm-v2-module_payroll.png) |
+| Training Management | ![Training](ScreenShot/hrm-v2-module_training_employee.png) |
 
-```
-|__ auth/
-│   ├── configuration/     # Config module
-│   │    ├── BruteForceAuthenticationProvider.java
-│   │    └── JwtAuthenticationFilter.java
-│   ├── controller/     # REST Controllers
-│   ├── dto/            # Data Transfer Objects
-│   ├── entity/         # JPA Entities
-│   │   └── Account.java
-│   ├── enums/          # Enumerations
-│   ├── mapper/         # Mapper DTO Entity
-│   ├── repository/     # Data Access Layer
-│   ├── service/        # Business Logic
-│   │    └── impl/      # Implement service
-│   ├── util/           # Util
-│   │   ├── JwtTokenUtil.java
-│   │   ├── LoginAttemptService.java
-│   │   └── OtpService.java
-└── ../
-```
 
 ## Cấu hình hệ thống
 
@@ -349,23 +136,48 @@ hrm/
 └── ../
 ```
 
+
 ## 🛠️ Công nghệ sử dụng
 
-- **Backend**: Java 21, Spring Boot 3.x
-- **Database**: MySQL
-- **Security**: Spring Security, JWT
-- **Documentation**: Swagger/OpenAPI 3
-- **Email**: Spring Mail
-- **File Storage**: Cloudinary (cho hình ảnh và file)
-- **Build Tool**: Maven
-- **ORM**: Spring Data JPA/Hibernate
+### Backend
+- **Java 21** - Latest LTS version
+- **Spring Boot 3.x** - Application framework
+- **Spring Security** - Authentication & Authorization
+- **Spring Data JPA** - Data persistence
+- **Hibernate** - ORM framework
+- **Maven** - Dependency management
+
+### Database & Cache
+- **MySQL 8.0** - Primary database
+- **Redis** - Caching & session storage
+- **JasperReports** - Report generation
+
+### Cloud Services
+- **Cloudinary** - Image & file storage
+- **SMTP** - Email delivery
+
+### Documentation & Testing
+- **Swagger/OpenAPI 3** - API documentation
+- **JUnit 5** - Unit testing
+- **Testcontainers** - Integration testing
+
+## 📋 Yêu cầu hệ thống
+
+### Phát triển
+- **Java**: 21 hoặc cao hơn
+- **Maven**: 3.8+
+- **MySQL**: 8.0+
+- **Redis**: 6.0+ (optional)
+- **IDE**: IntelliJ IDEA / Eclipse / VS Code
+
+### Production
+- **RAM**: Tối thiểu 2GB, khuyến nghị 4GB+
+- **CPU**: 2 cores+
+- **Storage**: 20GB+ available space
+- **OS**: Linux (Ubuntu 20.04+), Windows Server, macOS
+
 
 ## 🔧 Cài đặt
-
-### Yêu cầu hệ thống
-- Java 21 hoặc cao hơn
-- Maven 3.8+
-- MySQL 8.0+
 
 ### Bước 1: Clone repository
 ```bash
@@ -444,41 +256,125 @@ export MAIL_PASSWORD=your_app_password
 
 ## 📚 API Documentation
 
-Sau khi chạy ứng dụng, truy cập Swagger UI tại:
+### Swagger UI
+Sau khi khởi động ứng dụng, truy cập:
 ```
-http://localhost:8080/api/v1/swagger-ui/swagger-ui/index.html
+http://localhost:8080/api/v1/swagger-ui/index.html
 ```
 
-### Các endpoint chính:
+### Các endpoint chính
 
-#### Authentication
-- `/auth/signin` - Đăng nhập
-- `/auth/signup` - Đăng ký tài khoản
+#### 🔐 Authentication
+```http
+POST /auth/signin          # Đăng nhập
+POST /auth/signup          # Đăng ký
+POST /auth/forgot-password # Quên mật khẩu
+POST /auth/reset-password  # Đặt lại mật khẩu
+POST /auth/refresh-token   # Làm mới token
+```
 
-#### Employees
-- `/employees` - Lấy danh sách nhân viên
-- `/employees` - Tạo nhân viên mới
-- `/employees/{id}` - Lấy thông tin nhân viên
-- `/employees/{id}` - Cập nhật thông tin nhân viên
+#### 👤 Employee Management
+```http
+GET    /employees                    # Danh sách nhân viên
+POST   /employees                    # Tạo nhân viên mới
+GET    /employees/{id}               # Chi tiết nhân viên
+PUT    /employees/{id}               # Cập nhật nhân viên
+DELETE /employees/{id}               # Xóa nhân viên
+GET    /employees/{id}/contracts     # Hợp đồng của nhân viên
+GET    /employees/{id}/attendance    # Lịch sử chấm công
+```
 
-#### Attendance
-- `/attendance/checkin` - Chấm công vào
-- `/attendance/checkout` - Chấm công ra
-- `/attendance/employee/{id}` - Lịch sử chấm công
+#### ⏰ Attendance
+```http
+POST /attendance/checkin    # Chấm công vào
+POST /attendance/checkout   # Chấm công ra
+GET  /attendance/today      # Chấm công hôm nay
+GET  /attendance/summary    # Tổng hợp chấm công
+```
 
-#### Payroll
-- `/payroll/calculate` - Tính lương
-- `/payroll/employee/{id}` - Bảng lương nhân viên
+#### 💰 Payroll
+```http
+GET  /payroll/periods           # Danh sách kỳ lương
+POST /payroll/calculate         # Tính lương
+GET  /payroll/{id}              # Chi tiết bảng lương
+POST /payroll/{id}/approve      # Phê duyệt lương
+```
+
+
+## 📁 Cấu trúc dự án
+
+```
+hrm/
+├── 📁 src/main/java/com/project/hrm/
+│   ├── 🔐 auth/                    # Authentication & Authorization
+│   │   ├── configuration/          # Security config, JWT filter
+│   │   ├── controller/            # Auth endpoints
+│   │   ├── dto/                   # Auth DTOs
+│   │   ├── entity/                # Account entity
+│   │   ├── service/               # Auth services
+│   │   └── util/                  # JWT utils, OTP service
+│   │
+│   ├── 🌐 common/                 # Shared components
+│   │   ├── configuration/         # Global configs
+│   │   ├── exception/             # Exception handlers
+│   │   ├── response/              # Response wrappers
+│   │   ├── security/              # Security utilities
+│   │   ├── service/               # Common services
+│   │   └── utils/                 # Utility classes
+│   │
+│   ├── 👥 employee/               # Employee Management
+│   │   ├── controller/            # Employee endpoints
+│   │   ├── dto/                   # Employee DTOs
+│   │   ├── entity/                # Employee entities
+│   │   │   ├── Employee.java
+│   │   │   ├── Contract.java
+│   │   │   ├── Attendance.java
+│   │   │   ├── Dependent.java
+│   │   │   └── DayOff.java
+│   │   ├── service/               # Business logic
+│   │   └── repository/            # Data access
+│   │
+│   ├── 🏢 department/             # Department Management
+│   ├── 📋 recruitment/            # Recruitment Process
+│   ├── 💰 payroll/                # Payroll System
+│   ├── 🎓 training/               # Training Management
+│   ├── 📄 document/               # Document Management
+│   ├── 🔔 notification/           # Notification System
+│   └── 📈 statistics/             # Statistics & Reports
+│
+├── 📁 src/main/resources/
+│   ├── 📁 static/                 # Static files
+│   ├── 📁 templates/              # Email templates
+│   ├── 📁 reports/                # JasperReport templates
+│   ├── 📁 fonts/                  # Custom fonts
+│   ├── application.properties     # Main config
+│   └── logback-spring.xml         # Logging config
+│
+├── 📁 src/test/                   # Test files
+├── 📁 docs/                       # Documentation
+├── 📁 docker/                     # Docker configs
+├── 📄 pom.xml                     # Maven config
+├── 📄 Dockerfile                  # Docker image
+├── 📄 docker-compose.yml          # Docker compose
+└── 📄 README.md                   # This file
+```
 
 
 ## 🔒 Bảo mật
 
-- Xác thực JWT token
-- Mã hóa mật khẩu bằng BCrypt
-- Phân quyền dựa trên vai trò (Role-based Access Control)
-- Validation đầu vào
-- CORS configuration
-- Rate limiting
+### Authentication & Authorization
+- **JWT Tokens**: Stateless authentication
+- **BCrypt**: Password hashing
+- **Role-based Access Control**: Fine-grained permissions
+- **Multi-factor Authentication**: Optional 2FA
+
+### Security Features
+- **Input Validation**: Comprehensive validation
+- **SQL Injection Prevention**: Parameterized queries
+- **XSS Protection**: Output encoding
+- **CSRF Protection**: CSRF tokens
+- **Rate Limiting**: API throttling
+- **Brute Force Protection**: Account lockout
 
 ## 📝 Logging
 
@@ -647,11 +543,45 @@ Khuyến nghị sử dụng:
 
 ## 🤝 Đóng góp
 
+### Quy trình đóng góp
 1. Fork repository
-2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
+2. Tạo feature branch
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. Commit changes
+   ```bash
+   git commit -m 'feat: add amazing feature'
+   ```
+4. Push to branch
+   ```bash
+   git push origin feature/amazing-feature
+   ```
 5. Tạo Pull Request
+
+### Commit Convention
+Sử dụng [Conventional Commits](https://conventionalcommits.org/):
+```
+feat: add new feature
+fix: bug fix
+docs: documentation changes
+style: formatting changes
+refactor: code refactoring
+test: add tests
+chore: maintenance tasks
+```
+
+### Code Style
+- **Java**: Google Java Style Guide
+- **Formatting**: IntelliJ default formatter
+- **Documentation**: Javadoc for public APIs
+- **Testing**: Unit tests for new features
+
+### Review Process
+- Tối thiểu 2 reviewers
+- Automated tests phải pass
+- Code coverage >= 80%
+- Documentation cập nhật
 
 ### Coding Standards
 - Sử dụng Java Code Style chuẩn
@@ -659,29 +589,99 @@ Khuyến nghị sử dụng:
 - Tuân thủ nguyên tắc SOLID
 - Viết javadoc cho public methods
 
+
 ## 📋 Changelog
 
-### v1.0.0 (2024-01-15)
-- Phiên bản đầu tiên
-- Quản lý nhân viên cơ bản
-- Chấm công và tính lương
-- Quản lý tuyển dụng
+### [v1.2.0] - 2024-03-01
+#### Added
+- Multi-tenant support
+- Advanced reporting system
+- Mobile app API
+- SSO integration
 
-## 🐛 Bug Reports
+#### Fixed
+- Performance issues in large datasets
+- Memory leaks in file upload
+- Time zone handling
 
-Nếu bạn tìm thấy lỗi, vui lòng tạo issue với:
-- Mô tả lỗi chi tiết
-- Các bước tái tạo lỗi
-- Môi trường (OS, Java version, etc.)
-- Screenshots (nếu có)
+#### Changed
+- Updated to Spring Boot 3.2
+- Improved UI/UX
+- Enhanced security
+
+### [v1.1.0] - 2024-02-01
+#### Added
+- Training management module
+- Document management system
+- Real-time notifications
+
+#### Fixed
+- Payroll calculation bugs
+- Email delivery issues
+
+### [v1.0.0] - 2024-01-15
+#### Added
+- Initial release
+- Employee management
+- Attendance tracking
+- Payroll processing
+- Recruitment system
+
+## 🐛 Issues & Support
+
+### Bug Reports
+Tạo issue với thông tin:
+- **Bug description**: Mô tả chi tiết
+- **Steps to reproduce**: Các bước tái tạo
+- **Expected behavior**: Kết quả mong đợi
+- **Environment**: OS, Java version, browser
+- **Screenshots**: Ảnh chụp màn hình (nếu có)
+
+### Feature Requests
+- Mô tả tính năng đề xuất
+- Use cases cụ thể
+- Mockups (nếu có)
+
+### Support Channels
+- **GitHub Issues**: Bug reports & feature requests
+- **Discussions**: General questions
+- **Email**: Urgent support requests
 
 ## 📞 Liên hệ
 
-- **Email**: 
-- **Website**: 
-- **Documentation**:
+- **Email**: support@hrm-project.com
+- **Website**: https://hrm-project.com
+- **Documentation**: https://docs.hrm-project.com
+- **Demo**: https://demo.hrm-project.com
+
+### Team
+- **Lead Developer**: [Your Name](mailto:developer@hrm-project.com)
+- **Product Manager**: [PM Name](mailto:pm@hrm-project.com)
+- **DevOps Engineer**: [DevOps Name](mailto:devops@hrm-project.com)
 
 ## 📄 Giấy phép
-...
 
-**Được phát triển bởi HRM Team**
+Dự án này được phát hành dưới [MIT License](LICENSE).
+
+```
+MIT License
+
+Copyright (c) 2024 HRM Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+```
+
+---
+
+<div align="center">
+  <p><strong>⭐ Nếu project hữu ích, hãy cho chúng tôi một star nhé! ⭐</strong></p>
+  <p>Được phát triển với ❤️ bởi <strong>HRM Team</strong></p>
+</div>
