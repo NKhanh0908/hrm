@@ -110,33 +110,6 @@ HRM (Human Resource Management) là một hệ thống quản lý nhân sự to�
 | Payroll System | ![Payroll](ScreenShot/hrm-v2-module_payroll.png) |
 | Training Management | ![Training](ScreenShot/hrm-v2-module_training_employee.png) |
 
-
-## Cấu hình hệ thống
-
-```
-|__ common/
-│   ├── configuration/    
-│   │    ├── EmailAsyncConfig.java      # Config Async send Email
-│   │    ├── JasperReportsConfig.java   # Config export reports
-│   │    ├── RateLimitFilter.java       # Rate Limiting API
-│   │    ├── RateLimitService.java
-│   │    ├── SwaggerConfig.java         # Config Swagger
-│   │    └── WebConfig.java             # Config Cors Mappings
-│   ├── exceptions/                     # Handle Exception
-│   ├── logging/                        # Logging 
-│   ├── redis/                          # Config Redis template and redis key
-│   ├── response/                       # Response Api
-│   ├── security/                       # Security 
-│   ├── service/                        # Service 
-│   │    ├── impl/
-│   │    ├── FileService.java           # Upload file
-│   │    ├── MailService.java           # Send Email
-│   │    └── RedisService.java          # Rate Service
-│   └── utils/                          # Utils
-└── ../
-```
-
-
 ## 🛠️ Công nghệ sử dụng
 
 ### Backend
@@ -300,7 +273,6 @@ GET  /payroll/{id}              # Chi tiết bảng lương
 POST /payroll/{id}/approve      # Phê duyệt lương
 ```
 
-
 ## 📁 Cấu trúc dự án
 
 ```
@@ -317,6 +289,7 @@ hrm/
 │   ├── 🌐 common/                 # Shared components
 │   │   ├── configuration/         # Global configs
 │   │   ├── exception/             # Exception handlers
+│   │   ├── redis/                 # Config Redis template and redis key
 │   │   ├── response/              # Response wrappers
 │   │   ├── security/              # Security utilities
 │   │   ├── service/               # Common services
@@ -358,7 +331,6 @@ hrm/
 ├── 📄 docker-compose.yml          # Docker compose
 └── 📄 README.md                   # This file
 ```
-
 
 ## 🔒 Bảo mật
 
