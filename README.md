@@ -21,7 +21,6 @@
 - [Docker](#-docker)
 - [Monitoring](#-monitoring)
 - [Đóng góp](#-đóng-góp)
-- [Changelog](#-changelog)
 - [Liên hệ](#-liên-hệ)
 - [Giấy phép](#-giấy-phép)
 
@@ -45,7 +44,7 @@ HRM (Human Resource Management) là một hệ thống quản lý nhân sự to�
   - Tự động cập nhật trạng thái (ACTIVE/EXPIRED)
   - Xuất báo cáo hợp đồng PDF
 - **Chấm công**: 
-  - Check in/out với GPS location
+  - Check in/out
   - Tính toán giờ làm việc, overtime
   - Thống kê theo tháng/quý/năm
 - **Nghỉ phép**: Đăng ký và phê duyệt nghỉ phép
@@ -89,10 +88,8 @@ HRM (Human Resource Management) là một hệ thống quản lý nhân sự to�
 - **Mobile push**: PWA support
 
 ### 📈 Thống kê & Báo cáo
-- **Dashboard**: Tổng quan KPI
+- **Dashboard**: Tổng quan Hệ thống
 - **Custom reports**: Báo cáo tùy chỉnh
-- **Data export**: Excel, PDF, CSV
-- **Analytics**: Xu hướng và dự báo
 
 ### Quản lý tài khoản
 - **Sign up**: Tạo tài khoản nhân viên
@@ -608,44 +605,6 @@ chore: maintenance tasks
 - Tuân thủ nguyên tắc SOLID
 - Viết javadoc cho public methods
 
-
-## 📋 Changelog
-
-### [v1.2.0] - 2024-03-01
-#### Added
-- Multi-tenant support
-- Advanced reporting system
-- Mobile app API
-- SSO integration
-
-#### Fixed
-- Performance issues in large datasets
-- Memory leaks in file upload
-- Time zone handling
-
-#### Changed
-- Updated to Spring Boot 3.2
-- Improved UI/UX
-- Enhanced security
-
-### [v1.1.0] - 2024-02-01
-#### Added
-- Training management module
-- Document management system
-- Real-time notifications
-
-#### Fixed
-- Payroll calculation bugs
-- Email delivery issues
-
-### [v1.0.0] - 2024-01-15
-#### Added
-- Initial release
-- Employee management
-- Attendance tracking
-- Payroll processing
-- Recruitment system
-
 ## 🐛 Issues & Support
 
 ### Bug Reports
@@ -668,10 +627,8 @@ Tạo issue với thông tin:
 
 ## 📞 Liên hệ
 
-- **Email**: support@hrm-project.com
-- **Website**: https://hrm-project.com
-- **Documentation**: https://docs.hrm-project.com
-- **Demo**: https://demo.hrm-project.com
+- **Email**: khanhnq0908@gmail.com
+- **Facebook**: https://www.facebook.com/nguyen.khanh.475088
 
 ### Team
 - **Lead Developer**: [Your Name](mailto:developer@hrm-project.com)
