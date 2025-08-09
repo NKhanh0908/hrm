@@ -16,9 +16,9 @@
 - [Cấu hình](#️-cấu-hình)
 - [API Documentation](#-api-documentation)
 - [Cấu trúc dự án](#-cấu-trúc-dự-án)
-- [Testing](#-testing)
-- [Deployment](#-deployment)
 - [Bảo mật](#-bảo-mật)
+- [Logging](#-logging)
+- [Docker](#-docker)
 - [Monitoring](#-monitoring)
 - [Đóng góp](#-đóng-góp)
 - [Changelog](#-changelog)
@@ -186,45 +186,81 @@ mvn spring-boot:run
 
 ### application.properties
 ```properties
-# Database Configuration
-spring.datasource.url=jdbc:mysql://localhost:3306/hrm
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+# Server Configuration
+server.port=8080
+server.servlet.context-path=/api/v1
 
-# JPA Configuration
+# Database Configuration
+spring.datasource.url=jdbc:mysql://localhost:3306/hrm?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+spring.datasource.username=hrm_user
+spring.datasource.password=your_password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# JPA/Hibernate Configuration
 spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+spring.jpa.properties.hibernate.format_sql=true
+
+# Redis Configuration
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+spring.data.redis.password=
+spring.data.redis.database=0
+spring.data.redis.timeout=2000ms
 
 # Mail Configuration
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
-spring.mail.username=your_email@gmail.com
-spring.mail.password=your_app_password
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
 
 # File Upload Configuration
 spring.servlet.multipart.max-file-size=10MB
 spring.servlet.multipart.max-request-size=10MB
 
-# Cloudinary Configuration (for image storage)
-cloudinary.cloud-name=your_cloud_name
-cloudinary.api-key=your_api_key
-cloudinary.api-secret=your_api_secret
+# Cloudinary Configuration
+cloudinary.cloud-name=${CLOUDINARY_CLOUD_NAME}
+cloudinary.api-key=${CLOUDINARY_API_KEY}
+cloudinary.api-secret=${CLOUDINARY_API_SECRET}
 
-# Redis
-spring.data.redis.host=localhost
-spring.data.redis.port=6379
-spring.data.redis.password=
-spring.data.redis.database=0
+# JWT Configuration
+jwt.secret=${JWT_SECRET:hrm-secret-key-2024}
+jwt.expiration=86400000
+
+# Logging
+logging.level.com.project.hrm=DEBUG
+logging.file.name=logs/hrm.log
+logging.pattern.file=%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
 ```
 
 ### Biến môi trường
 Có thể sử dụng biến môi trường cho production:
 ```bash
-export DB_URL=jdbc:mysql://localhost:3306/hrm_db
-export DB_USERNAME=your_username
+# Database
+export DB_HOST=localhost
+export DB_PORT=3306
+export DB_NAME=hrm
+export DB_USERNAME=hrm_user
 export DB_PASSWORD=your_password
+
+# Mail
 export MAIL_USERNAME=your_email@gmail.com
 export MAIL_PASSWORD=your_app_password
+
+# Cloudinary
+export CLOUDINARY_CLOUD_NAME=your_cloud_name
+export CLOUDINARY_API_KEY=your_api_key
+export CLOUDINARY_API_SECRET=your_api_secret
+
+# JWT
+export JWT_SECRET=your-super-secret-jwt-key
+
+# Redis (optional)
+export REDIS_HOST=localhost
+export REDIS_PORT=6379
 ```
 
 ## 📚 API Documentation
@@ -355,13 +391,7 @@ hrm/
 - Log files được lưu trong thư mục `logs/`
 - Rotation logs theo ngày
 
-## 🧪 Testing
-...
-
-## 🚀 Deployment
-...
-
-### Docker
+## Docker
 
 - Docker file tại nhánh deloy/docker
 
@@ -506,12 +536,29 @@ networks:
     redis-cli -h redis-hrm-app ping   # trả về PONG nếu ok
 ```
 
+
 ## 📊 Monitoring
 
-Khuyến nghị sử dụng:
-- Spring Boot Actuator cho health checks
-- Micrometer với Prometheus cho metrics
-- ELK Stack cho log aggregation
+### Health Checks
+```bash
+# Application health
+curl http://localhost:8080/actuator/health
+
+# Detailed health
+curl http://localhost:8080/actuator/health/details
+```
+
+### Metrics
+- **Spring Boot Actuator**: Built-in metrics
+- **Micrometer**: Metrics facade
+- **Prometheus**: Metrics collection
+- **Grafana**: Visualization
+
+### Logging
+- **SLF4J + Logback**: Structured logging
+- **Log levels**: Configurable per package
+- **Log rotation**: Daily rotation with retention
+- **Centralized logging**: ELK Stack integration
 
 ## 🤝 Đóng góp
 
