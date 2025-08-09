@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  mysql-hrm-app:
+    image: mysql:8.0
+    container_name: mysql-hrm-app
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hrm-app
+    volumes:
+      - todo-mysql-data:/var/lib/mysql
+    networks:
+      - logjava
+
+
+  redis-hrm-app:
+    image: redis:latest
+    container_name: redis-hrm-app
+    command: redis-server --save "" --maxmemory 128mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - logjava
+
+
+
+  server:
+    build: .
+    container_name: server-hrm-app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql-hrm-app:
+        condition: service_started
+      redis-hrm-app:
+        condition: service_healthy
+    networks:
+      - logjava
+
+networks:
+  logjava:
+    name: logjava
+    driver: bridge
+
+
+volumes:
+  todo-mysql-data:
