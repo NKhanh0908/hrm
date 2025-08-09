@@ -40,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     private final FileService imageEmployeeService;
-    // private final RedisService redisService;
+    private final RedisService redisService;
     private final RoleService roleService;
     private final AccountService accountService;
 
@@ -61,20 +61,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     public PageDTO<EmployeeDTO> filter(EmployeeFilter employeeFilter, int page, int size) {
         log.info("Filter EmployeeDTO");
 
-//        String cacheKey = String.format("%s:page:%d:size:%d:filter:%s",
-//                RedisKeys.EMPLOYEES_LIST, page, size, employeeFilter.toString());
-//        PageDTO<EmployeeDTO> cache = redisService.get(cacheKey, PageDTO.class);
-//        if (cache != null) {
-//            log.info("Retrieved employee from cache: {}", cacheKey);
-//            return cache;
-//        }
+        String cacheKey = String.format("%s:page:%d:size:%d:filter:%s",
+                RedisKeys.EMPLOYEES_LIST, page, size, employeeFilter.toString());
+        PageDTO<EmployeeDTO> cache = redisService.get(cacheKey, PageDTO.class);
+        if (cache != null) {
+            log.info("Retrieved employee from cache: {}", cacheKey);
+            return cache;
+        }
 
         Specification<Employees> spec = EmployeeSpecification.filterEmployee(employeeFilter);
         Pageable pageable = PageRequest.of(page, size);
 
         PageDTO<EmployeeDTO> result = employeeMapper.toEmployeePageDTO(employeeRepository.findAll(spec, pageable));
 
-        // redisService.set(cacheKey, result, Duration.ofMinutes(10));
+        redisService.set(cacheKey, result, Duration.ofMinutes(10));
 
         return result;
     }
@@ -216,7 +216,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setImage(imageEmployeeService.saveImage(employeeCreateDTO.getImage()));
         }
 
-        // redisService.deletePattern("employees:list:*");
+        redisService.deletePattern("employees:list:*");
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
     }
@@ -267,7 +267,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setRole(role);
         }
 
-        // redisService.deletePattern("employees:list:*");
+        redisService.deletePattern("employees:list:*");
 
         return employeeMapper.toEmployeeDTO(employeeRepository.save(employee));
     }
@@ -286,7 +286,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (checkExists(employeeId)) {
             employeeRepository.deleteById(employeeId);
 
-            // redisService.deletePattern("employees:list:*");
+            redisService.deletePattern("employees:list:*");
         } else {
             throw new CustomException(Error.EMPLOYEE_NOT_FOUND);
         }
