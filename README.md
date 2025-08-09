@@ -494,7 +494,149 @@ http://localhost:8080/api/v1/swagger-ui/swagger-ui/index.html
 ...
 
 ### Docker
-...
+
+- Docker file tại nhánh deloy/docker
+
+#### Mục lục
+
+0. Chuẩn bị
+- Cài Docker Desktop (Windows/macOS) hoặc Docker Engine + Docker Compose (Linux). Kiểm tra:
+
+```
+    docker --version
+    docker-compose --version
+```
+
+1. Build image app
+- Di chuyển đến thư mục D:\your_path\hrm\hrm
+```
+    docker build -t hrm-app .
+```
++ Nếu muốn tag phiên bản:
+```
+    docker build -t hrm-app:0.0.1 .
+```
+
+2. Chạy đơn lẻ bằng docker run (với --link) — demo / không khuyến nghị cho production
+- Trước tiên cần phải tạo thư viện .jar. Trong IntellJi:
+    + Chọn Maven -> Folder dự án (ở đây là hrm) -> Lifecycle -> clean (để dọn sạch các file đã chạy)
+    + Tiếp tục chọn install. IntellJi sẽ tự động tạo thư viện .jar theo version trong pom.xml 
+
+- Pull images cần thiết
+```
+    docker pull mysql
+    docker pull redis-server
+```
+
+- Lưu ý: --link đã deprecated. Dùng được để quick-demo, nhưng tốt hơn nên dùng Docker network hoặc docker-compose.
+- Cách dùng --link để kết nối app tới MySQL và Redis đã chạy:
+```
+    # MySQL container
+    docker run -d --name mysql-hrm-app -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=hrm-app -p 3307:3306 mysql:8.0
+
+    # Redis container
+    docker run -d --name redis-hrm-app -p 6379:6379 redis:latest
+```
+
+- link:
+```
+    docker run -it \
+    --link mysql-hrm-app:mysql \
+    --link redis-hrm-app:redis \
+    -p 8080:8080 \
+    hrm-app
+```
+3. Chạy toàn bộ (MySQL + Redis + App) bằng docker-compose — khuyến nghị
+- Ví dụ docker-compose.yml đầy đủ, phù hợp dev, có volume cho MySQL, network chung, và healthcheck để giảm rủi ro app kết nối trước DB (sử dụng một script wait-for hoặc Spring Retry để đảm bảo app chờ DB chuẩn):
+```
+version: "3.9"
+
+services:
+  mysql-hrm-app:
+    image: mysql:8.0
+    container_name: mysql-hrm-app
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hrm-app
+      # MYSQL_USER / MYSQL_PASSWORD nếu muốn user non-root
+    ports:
+      - "3307:3306"      # host:container (host dùng 3307 để tránh trùng local mysql)
+    volumes:
+      - todo-mysql-data:/var/lib/mysql
+    networks:
+      - hrm-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis-hrm-app:
+    image: redis:latest
+    container_name: redis-hrm-app
+    command: redis-server --save "" --maxmemory 128mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    networks:
+      - hrm-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  server:
+    build: .
+    image: hrm-app
+    container_name: server-hrm-app
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql-hrm-app
+      - redis-hrm-app
+    environment:
+      # Trong docker-compose, app sẽ kết nối bằng tên service: mysql-hrm-app, redis-hrm-app
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-hrm-app:3306/hrm-app?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_REDIS_HOST: redis-hrm-app
+      SPRING_REDIS_PORT: 6379
+    networks:
+      - hrm-net
+
+volumes:
+  todo-mysql-data:
+
+networks:
+  hrm-net:
+    driver: bridge
+```
+
+- Sau khi đã chuẩn bị chạy 
+```
+    docker-compose up --build
+```
+
+4. Lệnh kiểm tra & debug
+```
+    # Xem container đang chạy
+    docker ps
+
+    # Xem logs (theo dõi realtime)
+    docker-compose logs -f
+    docker logs -f server-hrm-app
+
+    # Vào shell container
+    docker exec -it server-hrm-app sh  # hoặc bash nếu image có bash
+
+    # Vào mysql cli trong container mysql
+    docker exec -it mysql-hrm-app mysql -u root -p
+    # (nhập mật khẩu root)
+
+    # Kiểm tra redis từ container app (nếu redis-cli có sẵn)
+    redis-cli -h redis-hrm-app ping   # trả về PONG nếu ok
+```
 
 ## 📊 Monitoring
 
