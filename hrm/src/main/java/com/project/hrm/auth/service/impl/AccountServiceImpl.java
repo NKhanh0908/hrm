@@ -84,6 +84,10 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountRepository.findByUsername(name)
                     .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND));
 
+            if(account.isAccountNonLocked() && !account.isEnabled()) {
+                throw new CustomException(Error.ACCOUNT_DISABLED);
+            }
+
             String ip = RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes
                     ? ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getRemoteAddr()
                     : "unknown";
@@ -101,6 +105,10 @@ public class AccountServiceImpl implements AccountService {
                 int remaining = loginAttemptService.getRemainingAttempts(key);
                 log.warn("Login attempt failed for user: {}, remaining attempts: {}", name, remaining);
                 if (remaining <= 0) {
+                    log.error("Account locked due to too many failed attempts for user: {}", name);
+                    account.setStatus(true); // Lock the account
+                    accountRepository.save(account);
+
                     throw new CustomException(Error.ACCOUNT_LOCKED_TEMPORARILY);
                 } else {
                     throw new CustomException(Error.ACCOUNT_INVALID_PASSWORD);

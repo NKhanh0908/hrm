@@ -26,7 +26,7 @@ public class AccountMapper {
         return Account.builder()
                 .username(accountCreateDTO.getUsername())
                 .createAt(LocalDateTime.now())
-                .status(true)
+                .status(false)
                 .employees(employees)
                 .role(AccountRole.valueOf(accountCreateDTO.getRole()))
                 .build();

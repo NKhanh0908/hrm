@@ -37,8 +37,9 @@ public enum Error {
     ACCOUNT_USERNAME_TO_LONG(1008, "Username account to long", HttpStatus.BAD_REQUEST),
     ACCOUNT_PASSWORD_TO_SHORT(1008, "Password account to short", HttpStatus.BAD_REQUEST),
     ACCOUNT_LOCKED_TEMPORARILY(1009, "Account is temporarily locked due to too many failed login attempts", HttpStatus.FORBIDDEN),
-    PASSWORD_RESET_FAILED(1010, "Password reset failed", HttpStatus.INTERNAL_SERVER_ERROR),
-    PASSWORD_RESET_INVALID_REQUEST(1011, "Invalid password reset request", HttpStatus.BAD_REQUEST),
+    ACCOUNT_DISABLED(1010, "Account is disabled", HttpStatus.FORBIDDEN),
+    PASSWORD_RESET_FAILED(1011, "Password reset failed", HttpStatus.INTERNAL_SERVER_ERROR),
+    PASSWORD_RESET_INVALID_REQUEST(1012, "Invalid password reset request", HttpStatus.BAD_REQUEST),
 
     // Employee-related errors
     EMPLOYEE_NOT_FOUND(2001, "Employee not found", HttpStatus.NOT_FOUND),
