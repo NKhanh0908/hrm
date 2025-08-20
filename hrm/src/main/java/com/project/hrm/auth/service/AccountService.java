@@ -15,6 +15,8 @@ public interface AccountService {
 
     AccountDTO getAccountByEmployeeId(Integer employeeId);
 
+    AuthenticationDTO refreshToken(RefreshTokenDTO refreshTokenDTO);
+
     Employees getPrincipal();
 
     String getUsernameByEmployeeId(Integer employeeId);

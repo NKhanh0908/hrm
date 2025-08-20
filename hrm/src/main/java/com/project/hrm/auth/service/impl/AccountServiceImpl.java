@@ -206,6 +206,37 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * Refreshes the JWT token for the user.
+     * @param refreshTokenDTO  the DTO containing the refresh token to be validated
+     * @return an {@link AuthenticationDTO} containing the new access token and refresh token
+     */
+    @Override
+    public AuthenticationDTO refreshToken(RefreshTokenDTO refreshTokenDTO) {
+        log.info("Refreshing token for user");
+        try {
+            String refreshToken = refreshTokenDTO.getRefreshToken();
+            if (!jwtTokenUtil.isTokenExpired(refreshToken)) {
+                throw new CustomException(Error.REFRESH_TOKEN_NOT_EXPIRED);
+            }
+
+            String username = jwtTokenUtil.extractTokenGetUsername(refreshToken);
+            Account account = accountRepository.findByUsername(username)
+                    .orElseThrow(() -> new CustomException(Error.ACCOUNT_NOT_FOUND));
+
+            String jwtToken = jwtTokenUtil.generateToken((UserDetails) account);
+            String newRefreshToken = jwtTokenUtil.generateRefreshToken((UserDetails) account);
+
+            return AuthenticationDTO.builder()
+                    .token(jwtToken)
+                    .refreshToken(newRefreshToken)
+                    .build();
+        } catch (Exception e) {
+            log.error("Error processing successful login: ", e);
+            throw new RuntimeException("Login processing failed", e);
+        }
+    }
+
+    /**
      * Initiates the password recovery process for a user identified by their email address.
      *
      * @param email the email address of the user requesting password recovery

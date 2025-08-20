@@ -40,6 +40,7 @@ public enum Error {
     ACCOUNT_DISABLED(1010, "Account is disabled", HttpStatus.FORBIDDEN),
     PASSWORD_RESET_FAILED(1011, "Password reset failed", HttpStatus.INTERNAL_SERVER_ERROR),
     PASSWORD_RESET_INVALID_REQUEST(1012, "Invalid password reset request", HttpStatus.BAD_REQUEST),
+    REFRESH_TOKEN_NOT_EXPIRED(1013, "Refresh token is not expired", HttpStatus.BAD_REQUEST),
 
     // Employee-related errors
     EMPLOYEE_NOT_FOUND(2001, "Employee not found", HttpStatus.NOT_FOUND),

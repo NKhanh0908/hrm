@@ -178,4 +178,36 @@ public class AccountController {
         ));
     }
 
+    @PostMapping("/refresh-token")
+    @Operation(
+            summary = "Refresh Token",
+            description = "Refreshes the authentication token",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Refresh token data",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RefreshTokenDTO.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Token refreshed successfully",
+                            content = @Content(schema = @Schema(implementation = AuthenticationDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "401", description = "Invalid refresh token")
+            }
+    )
+    public ResponseEntity<APIResponse<AuthenticationDTO>> refreshToken(
+            @Valid @RequestBody RefreshTokenDTO refreshTokenDTO,
+            HttpServletRequest request) {
+
+        AuthenticationDTO authDTO = accountService.refreshToken(refreshTokenDTO);
+
+        return ResponseEntity.ok(new APIResponse<>(
+                true,
+                "Token refreshed successfully",
+                authDTO,
+                null,
+                request.getRequestURI()
+        ));
+    }
+
 }
